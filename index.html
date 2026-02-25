@@ -25,16 +25,11 @@
     --tag-text: #6b3a30;
     --compatible: #5a7a5a;
     --undetermined: #8b6914;
-    --hold: #8b6914;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { font-size: 17px; scroll-behavior: smooth; }
-  body {
-    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-    background: var(--bg-main); color: var(--text);
-    line-height: 1.72; -webkit-font-smoothing: antialiased;
-  }
+  body { font-family: 'Source Serif 4', Georgia, serif; background: var(--bg-main); color: var(--text); line-height: 1.72; -webkit-font-smoothing: antialiased; }
   .page-wrap { max-width: 740px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
 
   header { margin-bottom: 2.8rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
@@ -73,10 +68,6 @@
   .ledger tr:last-child td, .compact-table tr:last-child td { border-bottom: none; }
   .id-col { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.82rem; color: var(--accent); white-space: nowrap; width: 3rem; }
 
-  .figure-ref { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1.2rem 1.4rem; margin: 1.4rem 0; text-align: center; }
-  .figure-ref .fig-label { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
-  .figure-ref .fig-caption { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
-
   .glossary { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1rem 1.2rem; margin: 1.2rem 0 2rem; font-size: 0.88rem; }
   .glossary dt { font-weight: 600; color: var(--text); margin-top: 0.5rem; }
   .glossary dt:first-child { margin-top: 0; }
@@ -108,9 +99,27 @@
   .callout { background: var(--bg-card); border: 1px solid var(--border-light); border-left: 3px solid var(--accent-light); padding: 0.9rem 1.2rem; margin: 1.2rem 0; font-size: 0.9rem; }
   .callout .cl { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
 
+  /* — Figure panels — */
+  .fig-panel { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1rem; margin: 1.4rem 0; }
+  .fig-panel img { width: 100%; height: auto; display: block; border: 1px solid var(--border-light); margin-bottom: 0.6rem; }
+  .fig-panel .fig-label { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
+  .fig-panel .fig-caption { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.55; }
+
+  .fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.4rem 0; }
+  .fig-grid .fig-panel { margin: 0; }
+  @media (max-width: 600px) { .fig-grid { grid-template-columns: 1fr; } }
+
+  .fig-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  .fig-settings .fig-panel { margin: 0; padding: 0.8rem; }
+  .fig-settings img { border: none; }
+
+  .figure-ref { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1.2rem 1.4rem; margin: 1.4rem 0; text-align: center; }
+  .figure-ref .fig-label { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
+  .figure-ref .fig-caption { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+
   footer { margin-top: 4rem; padding-top: 1.2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
 
-  @media (max-width: 600px) { html { font-size: 15px; } .page-wrap { padding: 2rem 1rem 4rem; } nav { gap: 1rem; } }
+  @media (max-width: 600px) { html { font-size: 15px; } .page-wrap { padding: 2rem 1rem 4rem; } nav { gap: 1rem; } .fig-settings { grid-template-columns: 1fr; } }
   @media print { body { background: white; color: black; } .tab-content { display: block !important; } }
 </style>
 </head>
@@ -131,39 +140,39 @@
 <div class="meta-block">
   <p><strong>Source:</strong> F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz · <a href="https://doi.org/10.1103/PhysRevA.109.053105">Phys. Rev. A <strong>109</strong>, 053105 (2024)</a> · <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
   <p><strong>Endorsement Marker:</strong> Local candidate framework (no parity implied with externally validated laws)</p>
-  <p><span class="tag tag-tier">Tier 1b</span> <span class="tag tag-layer">Breakwater</span> <span class="tag tag-request">v0.3</span></p>
+  <p><span class="tag tag-tier">Tier 1b</span> <span class="tag tag-layer">Breakwater</span> <span class="tag tag-request">v0.4</span></p>
   <p><strong>Stances:</strong> Guardian, Scout, Cartographer · <strong>Date:</strong> 2026-02-25</p>
 </div>
 
-<!-- ══════════════════════ DOSSIER ══════════════════════ -->
+<!-- ═══════════════ DOSSIER ═══════════════ -->
 <div id="tab-dossier" class="tab-content active">
 
 <h2>One-Sentence Claim</h2>
-<p>Hasse et al. phase-lock four oscillators (MW reference, optical running-wave phase, spin, motion) and use a stroboscopic Raman pulse train on a short-period travelling polarisation gradient (λ<sub>eff</sub>&thinsp;≈&thinsp;140&thinsp;nm, η<sub>LF</sub>&thinsp;≈&thinsp;0.40) to map an ion's motional phase-space dynamics with super-resolution, where position appears primarily as a spin-fringe phase shift and the <em>p</em>-quadrature proxy appears through the characteristic Doppler-detuning spectrum of the analysis pulse, encoding the ion's velocity distribution.</p>
+<p>Hasse et al. phase-lock four oscillators (MW reference, optical running-wave phase, spin, motion) and use a stroboscopic Raman pulse train on a short-period travelling polarisation gradient (λ<sub>eff</sub>&thinsp;≈&thinsp;140&thinsp;nm, η<sub>LF</sub>&thinsp;≈&thinsp;0.40) to map an ion's motional phase-space dynamics with super-resolution, where position appears as a spin-fringe phase shift and the <em>p</em>-quadrature proxy appears through the characteristic Doppler-detuning spectrum of the analysis pulse, encoding the ion's velocity distribution.</p>
 
 <h2>Glossary</h2>
 <dl class="glossary">
-  <dt>Momentum observable</dt><dd>A velocity / <em>p</em>-quadrature proxy estimator inferred from the Doppler-detuning response of the stroboscopic analysis pulse, not a direct canonical <em>P</em> measurement.</dd>
-  <dt>Super-resolution</dt><dd>Position sensitivity at the scale of an engineered short-period polarisation gradient (λ<sub>eff</sub>&thinsp;≈&thinsp;140 nm ≪ optical wavelength). Does not imply sub-<em>x</em><sub>0</sub> or QND.</dd>
-  <dt>Sideband scaling ~η<sup>s</sup></dt><dd>Heuristic mnemonic. Actual matrix elements depend on <em>n</em> through Laguerre polynomial structure.</dd>
-  <dt>Detuning spectrum</dt><dd>Spin-flip probability <em>P</em><sub>↑</sub>(δ) as function of analysis-pulse detuning. For a moving ion, δ includes the Doppler shift <em>k</em><sub>eff</sub>·<em>v</em>, so this spectrum directly encodes the velocity distribution.</dd>
+  <dt>Momentum observable</dt><dd>A velocity / <em>p</em>-quadrature proxy inferred from the Doppler-detuning response of the stroboscopic analysis pulse.</dd>
+  <dt>Super-resolution</dt><dd>Position sensitivity at λ<sub>eff</sub>&thinsp;≈&thinsp;140 nm ≪ optical wavelength. Does not imply sub-<em>x</em><sub>0</sub> or QND.</dd>
+  <dt>Sideband scaling ~η<sup>s</sup></dt><dd>Heuristic. Actual weights depend on <em>n</em> via Laguerre polynomials.</dd>
+  <dt>Detuning spectrum</dt><dd><em>P</em><sub>↑</sub>(δ) as function of analysis-pulse detuning. Encodes velocity distribution via Doppler shift <em>k</em><sub>eff</sub>·<em>v</em>.</dd>
 </dl>
 
 <hr>
 
 <h2>Claim Analysis Ledger</h2>
-<p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">Each claim classified per Breakwater protocol. Underdetermined → <code>hold/</code>. Intake: <span class="tag tag-request">REQUEST</span> unless marked <span class="tag tag-sweep">SWEEP</span>. The Ledger measures; it does not govern.</p>
+<p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">Underdetermined → <code>hold/</code>. Intake: <span class="tag tag-request">REQUEST</span> unless <span class="tag tag-sweep">SWEEP</span>. The Ledger measures; it does not govern.</p>
 
 <table class="ledger">
 <thead><tr><th>#</th><th>Claim</th><th>Status</th><th>Discriminant Condition</th></tr></thead>
 <tbody>
-<tr><td class="id-col">L1</td><td>Phase-locking of four oscillators enables coherent stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td></tr>
-<tr><td class="id-col">L2</td><td>Position → phase shift; <em>p</em>-proxy → Doppler-detuning spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify phase–Doppler crosstalk vs. η, α, δ<em>t</em>.</td></tr>
-<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm ≪ optical wavelength.</td></tr>
-<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>(i) Injectivity for target states. (ii) Stability under noise (projection + phase + Doppler broadening).</td></tr>
-<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap. δ⟨<em>n</em>⟩ alone insufficient.</td></tr>
-<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction with η², η³ corrections.</td></tr>
-<tr><td class="id-col">L7</td><td>Extension to nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability + Wigner feature resolution.</td></tr>
+<tr><td class="id-col">L1</td><td>Four-oscillator phase lock enables stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td></tr>
+<tr><td class="id-col">L2</td><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify crosstalk vs. η, α, δ<em>t</em>.</td></tr>
+<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm.</td></tr>
+<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity + noise stability for target states.</td></tr>
+<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap.</td></tr>
+<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction.</td></tr>
+<tr><td class="id-col">L7</td><td>Nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability.</td></tr>
 <tr><td class="id-col">L8</td><td>Phase lock stable over experimental timescales.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated. Long-term diffusion uncharacterised. <span class="tag tag-sweep">SWEEP</span></td></tr>
 </tbody>
 </table>
@@ -172,15 +181,15 @@
 
 <h2>Evidence Summary</h2>
 <h3>Experimentally established</h3>
-<p>Four-oscillator phase lock. AC Raman: λ<sub>eff</sub> ≈ 140 nm, Ω/(2π) ≈ 0.3 MHz. η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Timing: <em>t</em><sub>π/2,S</sub> ≈ 30 × 770 ns ≈ 23.1 μs.</p>
+<p>Four-oscillator phase lock. AC Raman: λ<sub>eff</sub> ≈ 140 nm, Ω/(2π) ≈ 0.3 MHz. η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Timing: <em>t</em><sub>π/2,S</sub> ≈ 23.1 μs.</p>
 
 <div class="figure-ref">
   <div class="fig-label">Figures 1–4</div>
-  <div class="fig-caption">Setup, geometry, pulse sequence, phase-space data. <a href="https://arxiv.org/abs/2309.15580">arXiv</a> · <a href="https://doi.org/10.1103/PhysRevA.109.053105">APS</a></div>
+  <div class="fig-caption"><a href="https://arxiv.org/abs/2309.15580">arXiv</a> · <a href="https://doi.org/10.1103/PhysRevA.109.053105">APS</a></div>
 </div>
 
 <h3>Analytically grounded</h3>
-<p>Coherent-state baseline: exp(−η²/2)·exp(i2η Re α). Sideband amplitudes from ground state: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010. Finite-flash sinc correction.</p>
+<p>Coherent-state baseline: exp(−η²/2)·exp(i2η Re α). Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
 
 <h3>Numerical calibration only</h3>
 <p>Full decoder for arbitrary states. Backaction beyond ⟨<em>n</em>⟩. Non-Gaussian behaviour.</p>
@@ -195,7 +204,7 @@
 <tr><td class="id-col">R2</td><td>Phase–Doppler crosstalk at high α (L2).</td><td>Guardian, Cart.</td><td>Medium</td></tr>
 <tr><td class="id-col">R3</td><td>BAE regime narrow or inaccessible (L6).</td><td>All</td><td>Medium</td></tr>
 <tr><td class="id-col">R4</td><td>Injectivity failure for non-Gaussian states (L7).</td><td>Guardian, Scout</td><td><strong>High</strong></td></tr>
-<tr><td class="id-col">R5</td><td>Doppler dominance needs explicit confirmation vs. Ω.</td><td>Scout</td><td>Medium</td></tr>
+<tr><td class="id-col">R5</td><td>Doppler dominance needs explicit confirmation.</td><td>Scout</td><td>Medium</td></tr>
 <tr><td class="id-col">R6</td><td>δ⟨<em>n</em>⟩ hides coherence redistribution (L5).</td><td>Guardian</td><td>Medium</td></tr>
 <tr><td class="id-col">R7</td><td>Inversion scales poorly with state complexity.</td><td>Cartographer</td><td>Low→High</td></tr>
 </tbody>
@@ -204,219 +213,236 @@
 <hr>
 
 <h2>Strategic Resolution</h2>
-<p><strong>Primary framing: Tomography.</strong> η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. <strong>Guardian proviso:</strong> backaction quantification first. <strong>L6:</strong> Underdetermined (supervisor correction). <strong>WP-D:</strong> no BAE rescue.</p>
+<p><strong>Primary framing: Tomography.</strong> η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. <strong>Guardian proviso:</strong> backaction first. <strong>L6:</strong> Undetermined (supervisor). <strong>WP-D:</strong> no rescue.</p>
 
 <h2>Council Decisions</h2>
 <table class="compact-table">
 <thead><tr><th>Item</th><th>Decision</th><th>Justification</th></tr></thead>
 <tbody>
 <tr><td>Primary framing</td><td>Tomography</td><td>η ≈ 0.4 is asset for χ(ξ), liability for BAE.</td></tr>
-<tr><td>L6</td><td>Undetermined</td><td>Supervisor correction. Not established, not excluded.</td></tr>
+<tr><td>L6</td><td>Undetermined</td><td>Not established, not excluded.</td></tr>
 <tr><td>BAE</td><td>Forward view (WP-D)</td><td>No rescue.</td></tr>
 <tr><td>Sequence</td><td>A.3→A.1→A.2→B→C→D</td><td>Backaction prerequisite.</td></tr>
-<tr><td>Gates</td><td>C on A; D on A+C</td><td>No unquantified assumptions.</td></tr>
-<tr><td>Momentum</td><td>Doppler detuning primary</td><td>δ<sub>D</sub>/Ω ≫ 1 for α ≥ 1. Contrast loss is integrated consequence.</td></tr>
+<tr><td>Momentum</td><td>Doppler detuning primary</td><td>δ<sub>D</sub>/Ω ≫ 1 for α ≥ 1.</td></tr>
 </tbody>
 </table>
 </div>
 
-<!-- ══════════════════════ FRAMEWORK ══════════════════════ -->
+<!-- ═══════════════ FRAMEWORK ═══════════════ -->
 <div id="tab-framework" class="tab-content">
 
 <h2>Interaction Hamiltonian</h2>
-<p>For one motional mode (Supplement):</p>
 <div class="formula-box">
-  H<sub>TI</sub> = ℏ(ω<sub>z</sub>/2)σ<sub>z</sub> + ℏω<sub>m</sub> a†a + ℏ(Ω/2)[C σ<sub>−</sub> + C† σ<sub>+</sub>]
-  <br><br>where &ensp; <strong>C(η, a, a†) = exp(iη(a + a†))</strong>
+  H<sub>TI</sub> = ℏ(ω<sub>z</sub>/2)σ<sub>z</sub> + ℏω<sub>m</sub> a†a + ℏ(Ω/2)[C σ<sub>−</sub> + C† σ<sub>+</sub>]<br><br>
+  where &ensp; <strong>C(η, a, a†) = exp(iη(a + a†))</strong>
 </div>
-<p>The coupling is an exponential in the position quadrature — not truncated. This is the source of both power (Doppler-resolved momentum mapping, higher sidebands) and complications (backaction, nonlinear decoding).</p>
+<p>Exponential coupling in the position quadrature — not truncated. Source of both power (Doppler-resolved mapping, higher sidebands) and complications (backaction, nonlinear decoding).</p>
 
 <h2>Where η ≈ 0.4 Enters</h2>
-<p>AC Raman: λ<sub>eff</sub> ≈ 140 nm, η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. MW and CC: η ≈ 0. Not in the deep Lamb–Dicke regime.</p>
+<p>AC Raman: λ<sub>eff</sub> ≈ 140 nm, η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Not in the deep Lamb–Dicke regime. Debye–Waller factor exp(−η²/2) ≈ 0.924. Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
 
-<h3>Sideband content (from |0⟩)</h3>
-<p>Debye–Waller exp(−η²/2) ≈ 0.923. Matrix elements |⟨<em>s</em>|C|0⟩|: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010. Higher-<em>n</em> transitions involve Laguerre polynomials.</p>
-
-<h2>Measurement Mechanism: Two Channels</h2>
-
+<h2>Measurement: Two Channels</h2>
 <h3>Position → phase shift</h3>
 <p>Travelling wave imprints spin-dependent phase ∝ <em>k</em><sub>eff</sub>·<em>x</em>(<em>t</em>).</p>
-
 <h3>Velocity → Doppler detuning</h3>
-<p>An ion with velocity <em>v</em> sees a Doppler-shifted two-photon transition: δ<sub>D</sub> = <em>k</em><sub>eff</sub>·<em>v</em> = (η/<em>x</em><sub>0</sub>)·<em>v</em>. For coherent states, the peak Doppler shift is 2η·ω<sub>m</sub>·|α|. At the paper's parameters this exceeds Ω for all α ≥ 1, making the detuning spectrum the primary momentum channel.</p>
+<p>Moving ion sees δ<sub>D</sub> = <em>k</em><sub>eff</sub>·<em>v</em>. Peak Doppler shift 2η·ω<sub>m</sub>·|α| exceeds Ω for all α ≥ 1. Detuning spectrum is the primary momentum channel.</p>
 
 <h2>Semiclassical Baseline</h2>
 <div class="formula-box">⟨α|exp(iη(a+a†))|α⟩ = exp(−η²/2) · exp(i 2η Re α)</div>
-<p>Debye–Waller factor + phase ∝ displacement quadrature. Deviations quantify backaction/nonclassicality.</p>
 
-<h2>Backaction Structure</h2>
-<p>True BAE requires linear coupling to one rotating quadrature; exp(iη(a+a†)) at η ≈ 0.4 couples both. Open question whether a perturbative regime exists (L6).</p>
+<h2>Backaction &amp; BAE</h2>
+<p>exp(iη(a+a†)) at η ≈ 0.4 couples both quadratures. Whether a perturbative linear regime exists is open (L6).</p>
 
 <h2>Tomographic Potential</h2>
-<p>Phase shift (position) and Doppler spectrum (momentum) together access the full phase-space quasi-probability distribution. Scanning analysis-pulse frequency traces the velocity distribution at each oscillation phase. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides a complementary formalism.</p>
+<p>Phase shift (position) + Doppler spectrum (momentum) together access full phase-space. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides complementary formalism.</p>
 
 <h2>Lock-Key Assignments</h2>
 <table class="compact-table">
 <thead><tr><th>Element</th><th>Type</th><th>Status</th></tr></thead>
 <tbody>
 <tr><td>Stroboscopic coupling maps phase-space → spin.</td><td><strong>Lock</strong></td><td>Established.</td></tr>
-<tr><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td>Key</td><td>Under test (L2).</td></tr>
+<tr><td>Position → phase; <em>p</em>-proxy → Doppler.</td><td>Key</td><td>Under test (L2).</td></tr>
 <tr><td>Decoder faithful under noise.</td><td>Key</td><td>Under test (L4).</td></tr>
 <tr><td>Near-BAE.</td><td>Key</td><td>Undetermined (L6).</td></tr>
 <tr><td>Nonclassical tomography.</td><td>Key</td><td>Gated (L7).</td></tr>
 </tbody>
 </table>
-
-<h2>External Constraints (citation-only)</h2>
-<p>Trapped-ion Hamiltonian (textbook). Displacement-operator elements (standard QO). QND/BAE theory (standard). QuTiP (external tool).</p>
 </div>
 
-<!-- ══════════════════════ TUTORIAL ══════════════════════ -->
+<!-- ═══════════════ TUTORIAL ═══════════════ -->
 <div id="tab-tutorial" class="tab-content">
 
 <h2>The Doppler Mechanism: Primary Momentum Readout</h2>
 
-<p>The analysis pulse is a two-photon Raman transition driven by the AC travelling wave with <em>k</em><sub>eff</sub> = 2π/λ<sub>eff</sub>. An ion moving with velocity <em>v</em> along <em>k</em><sub>eff</sub> sees a Doppler-shifted transition. The effective detuning becomes:</p>
+<p>The analysis pulse is a two-photon Raman transition with <em>k</em><sub>eff</sub> = 2π/λ<sub>eff</sub>. An ion moving with velocity <em>v</em> sees a Doppler-shifted transition:</p>
 
 <div class="formula-box">
   δ<sub>eff</sub> = δ<sub>0</sub> + δ<sub>D</sub> &emsp; where &emsp; δ<sub>D</sub> = <em>k</em><sub>eff</sub> · <em>v</em> = (η / <em>x</em><sub>0</sub>) · <em>v</em>
 </div>
 
-<p>For a coherent state |α⟩ oscillating at ω<sub>m</sub>, the velocity at the turning point is <em>v</em><sub>peak</sub> = 2<em>x</em><sub>0</sub>ω<sub>m</sub>|α|, giving a peak Doppler shift:</p>
+<p>For a coherent state |α⟩ at ω<sub>m</sub>, the peak Doppler shift is:</p>
 
-<div class="formula-box">
-  δ<sub>D</sub><sup>peak</sup> = 2η · ω<sub>m</sub> · |α|
-</div>
+<div class="formula-box">δ<sub>D</sub><sup>peak</sup> = 2η · ω<sub>m</sub> · |α|</div>
 
-<p>The spin-flip probability as a function of analysis-pulse frequency — the <em>detuning spectrum</em> — directly encodes the velocity distribution. Scanning this frequency (or equivalently, sampling at different motional phases where velocity differs) traces the distribution. The centre gives mean velocity; the width gives velocity spread — zero-point for coherent states, broader for thermal or squeezed states.</p>
+<p>The detuning spectrum <em>P</em><sub>↑</sub>(δ) directly encodes the velocity distribution. Scanning the analysis-pulse frequency sweeps a narrow velocity filter across the distribution.</p>
 
 <hr>
 
-<h2>Doppler Estimates at the Paper's Parameters</h2>
+<h2>Analytic Estimates</h2>
 
 <p>Using η<sub>LF</sub> = 0.40, ω<sub>LF</sub>/(2π) = 1.30 MHz, Ω/(2π) = 0.30 MHz:</p>
 
 <table class="est-table">
-<thead><tr><th>Quantity</th><th>α = 0</th><th>α = 1</th><th>α = 3</th></tr></thead>
+<thead><tr><th>Quantity</th><th>α = 0</th><th>α = 1</th><th>α = 3</th><th>α = 5</th></tr></thead>
 <tbody>
-<tr><td>Mean occupation ⟨<em>n</em>⟩ = |α|²</td><td>0</td><td>1</td><td>9</td></tr>
-<tr><td>Peak displacement 2<em>x</em><sub>0</sub>|α|</td><td>0</td><td>2 <em>x</em><sub>0</sub></td><td>6 <em>x</em><sub>0</sub></td></tr>
-<tr class="hl"><td>Peak Doppler shift δ<sub>D</sub><sup>peak</sup>/(2π)</td><td>0</td><td>1.04 MHz</td><td>3.12 MHz</td></tr>
-<tr class="hl"><td><strong>δ<sub>D</sub><sup>peak</sup> / Ω</strong></td><td>—</td><td><strong>3.5</strong></td><td><strong>10.4</strong></td></tr>
-<tr><td>Zero-point Doppler width σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup> / Ω</td><td>1.73</td><td>1.73</td><td>1.73</td></tr>
+<tr><td>⟨<em>n</em>⟩ = |α|²</td><td>0</td><td>1</td><td>9</td><td>25</td></tr>
+<tr class="hl"><td>δ<sub>D</sub><sup>peak</sup>/(2π)</td><td>0</td><td>1.04 MHz</td><td>3.12 MHz</td><td>5.16 MHz</td></tr>
+<tr class="hl"><td><strong>δ<sub>D</sub><sup>peak</sup> / Ω</strong></td><td>—</td><td><strong>3.5</strong></td><td><strong>10.4</strong></td><td><strong>17.2</strong></td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup> / Ω</td><td>1.73</td><td>1.73</td><td>1.73</td><td>1.73</td></tr>
 </tbody>
 </table>
 
 <div class="callout">
   <div class="cl">Key result</div>
-  <p style="margin-bottom:0;">Even <strong>zero-point motion</strong> produces Doppler shifts comparable to Ω (ratio 1.73). At α = 1 the peak shift is 3.5× Ω; at α = 3 it reaches 10.4×. The Doppler mechanism is not a perturbative correction — it <em>is</em> the momentum measurement.</p>
+  <p style="margin-bottom:0;">Even <strong>zero-point motion</strong> produces Doppler shifts comparable to Ω (ratio 1.73). At α = 1 the peak shift is 3.5× Ω; at α = 5 it reaches 17.2×. The Doppler mechanism is not a correction — it <em>is</em> the momentum measurement.</p>
 </div>
 
-<hr>
+<h3>The Rabi instrument function</h3>
 
-<h2>The Detuning Spectrum</h2>
-
-<p>For an analysis pulse of duration τ = π/(2Ω) (nominal π/2) and effective detuning δ:</p>
-
-<div class="formula-box">
-  <em>P</em><sub>↑</sub>(δ) = (Ω² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω² + δ²)
-</div>
-
-<p>This Rabi lineshape is the <em>instrument function</em> for velocity measurement. Its width is set by Ω; velocities producing δ<sub>D</sub> ≫ Ω are strongly suppressed:</p>
+<div class="formula-box"><em>P</em><sub>↑</sub>(δ) = (Ω² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω² + δ²)</div>
 
 <table class="est-table">
-<thead><tr><th>Detuning δ/(2π)</th><th>δ/Ω</th><th>Physical origin</th><th><em>P</em><sub>↑</sub></th></tr></thead>
+<thead><tr><th>δ/(2π)</th><th>δ/Ω</th><th>Origin</th><th><em>P</em><sub>↑</sub></th></tr></thead>
 <tbody>
-<tr><td>0</td><td>0</td><td>Ion at rest (resonance)</td><td>0.500</td></tr>
-<tr><td>0.30 MHz</td><td>1.0</td><td>δ = Ω (half-power point)</td><td>0.401</td></tr>
-<tr><td>0.52 MHz</td><td>1.7</td><td>Zero-point RMS (α = 0)</td><td>0.250</td></tr>
-<tr><td>1.04 MHz</td><td>3.5</td><td>Peak velocity, α = 1</td><td>0.007</td></tr>
-<tr><td>3.12 MHz</td><td>10.4</td><td>Peak velocity, α = 3</td><td>0.008</td></tr>
+<tr><td>0</td><td>0</td><td>Resonance</td><td>0.500</td></tr>
+<tr><td>0.30 MHz</td><td>1.0</td><td>δ = Ω</td><td>0.401</td></tr>
+<tr><td>0.52 MHz</td><td>1.7</td><td>Zero-point RMS</td><td>0.250</td></tr>
+<tr><td>1.04 MHz</td><td>3.5</td><td>Peak vel., α = 1</td><td>0.007</td></tr>
+<tr><td>3.12 MHz</td><td>10.4</td><td>Peak vel., α = 3</td><td>0.008</td></tr>
 </tbody>
 </table>
 
-<div class="callout">
-  <div class="cl">Reading this table</div>
-  <p style="margin-bottom:0;">At α = 1, the ion at peak velocity is essentially <em>invisible</em> to a resonant analysis pulse (<em>P</em><sub>↑</sub> drops from 0.50 to 0.007). The pulse acts as a narrow velocity filter centred on <em>v</em> = 0 with width ~Ω/<em>k</em><sub>eff</sub>. Scanning the pulse frequency sweeps this filter across the velocity distribution.</p>
-</div>
-
-<h3>From detuning spectrum to momentum distribution</h3>
-
-<p>For a motional state with velocity distribution <em>P</em>(<em>v</em>), the observed spin-flip probability at set detuning δ<sub>0</sub> is the convolution:</p>
-
-<div class="formula-box">
-  ⟨<em>P</em><sub>↑</sub>⟩(δ<sub>0</sub>) = ∫ <em>P</em>(<em>v</em>) · <em>P</em><sub>↑</sub>(δ<sub>0</sub> + <em>k</em><sub>eff</sub><em>v</em>) d<em>v</em>
-</div>
-
-<p>Standard deconvolution: the instrument function <em>P</em><sub>↑</sub>(δ) has known shape (set by Ω, τ); the unknown is <em>P</em>(<em>v</em>). For a coherent state |α⟩ sampled at a specific oscillation phase, the velocity distribution is Gaussian with mean <em>v̄</em> = 2<em>x</em><sub>0</sub>ω<sub>m</sub>|α| sin(ω<sub>m</sub><em>t</em>) and width σ<sub><em>v</em></sub> = <em>x</em><sub>0</sub>ω<sub>m</sub> (the zero-point spread, independent of α).</p>
-
-<h3>Doppler width for thermal states</h3>
-
-<p>For a thermal state at mean occupation <em>n̄</em>, the velocity distribution is Gaussian with width σ<sub><em>v</em></sub> = <em>x</em><sub>0</sub>ω<sub>m</sub>√(2<em>n̄</em>+1), giving Doppler width σ<sub>D</sub>/(2π) = ηω<sub>m</sub>√(2<em>n̄</em>+1)/(2π):</p>
+<h3>Small-η expansion</h3>
 
 <table class="est-table">
-<thead><tr><th><em>n̄</em></th><th>σ<sub>D</sub>/(2π)</th><th>σ<sub>D</sub> / Ω</th><th>Resolvable?</th></tr></thead>
+<thead><tr><th>Order</th><th>Term</th><th>η = 0.4</th><th>vs. linear</th></tr></thead>
 <tbody>
-<tr><td>0 (ground)</td><td>0.52 MHz</td><td>1.73</td><td>Yes — width > Ω</td></tr>
-<tr><td>1</td><td>0.90 MHz</td><td>3.0</td><td>Yes</td></tr>
-<tr><td>5</td><td>1.72 MHz</td><td>5.7</td><td>Yes</td></tr>
-<tr><td>10</td><td>2.38 MHz</td><td>7.9</td><td>Yes</td></tr>
-</tbody>
-</table>
-
-<p>All thermal states from ground state upward produce Doppler widths exceeding the instrument resolution. The Doppler spectrum discriminates thermal populations and distinguishes coherent from thermal states of the same ⟨<em>n</em>⟩ through their different velocity distributions.</p>
-
-<hr>
-
-<h2>Small-η Expansion and Validity</h2>
-
-<p>Expanding C = exp(iη(a + a†)):</p>
-
-<div class="formula-box">
-  C = 1 + iη(a + a†) − (η²/2)(a + a†)² − i(η³/6)(a + a†)³ + …
-</div>
-
-<table class="est-table">
-<thead><tr><th>Order</th><th>Term</th><th>Value at η = 0.4</th><th>Relative to linear</th></tr></thead>
-<tbody>
-<tr><td>0 (carrier)</td><td>1</td><td>1</td><td>—</td></tr>
-<tr><td>1 (linear)</td><td>η</td><td>0.40</td><td>reference</td></tr>
+<tr><td>1 (linear)</td><td>η</td><td>0.40</td><td>ref.</td></tr>
 <tr><td>2 (quadratic)</td><td>η²/2</td><td>0.080</td><td>20%</td></tr>
 <tr><td>3 (cubic)</td><td>η³/6</td><td>0.011</td><td>2.7%</td></tr>
 </tbody>
 </table>
 
 <div class="callout">
-  <div class="cl">Truncation guidance</div>
-  <p style="margin-bottom:0;"><strong>Linear only (Lamb–Dicke):</strong> ~20% error. Order-of-magnitude only.<br><strong>Through η²:</strong> ~3% residual. Adequate for most analytic estimates.<br><strong>Through η³:</strong> sub-percent. Matches numerics for moderate α.</p>
+  <div class="cl">Truncation</div>
+  <p style="margin-bottom:0;"><strong>Linear only:</strong> ~20% error. <strong>Through η²:</strong> ~3%. <strong>Through η³:</strong> sub-percent.</p>
 </div>
-
-<h3>Sideband amplitudes from |0⟩</h3>
-
-<table class="est-table">
-<thead><tr><th>Sideband <em>s</em></th><th>|⟨<em>s</em>|C|0⟩|</th><th>vs. carrier</th></tr></thead>
-<tbody>
-<tr><td>0 (carrier)</td><td>0.923</td><td>1.00</td></tr>
-<tr><td>1</td><td>0.369</td><td>0.40</td></tr>
-<tr><td>2</td><td>0.074</td><td>0.080</td></tr>
-<tr><td>3</td><td>0.010</td><td>0.011</td></tr>
-</tbody>
-</table>
-
-<p>For displaced or thermal states with population at higher <em>n</em>, the matrix elements involve Laguerre polynomials and differ substantially from these ground-state values.</p>
-
-<h3>Sideband ↔ Doppler equivalence</h3>
-
-<p>In the Lamb–Dicke limit, the first-order coupling iη(a+a†)σ<sub>−</sub> drives transitions |↓,<em>n</em>⟩ → |↑,<em>n</em>±1⟩ split by ω<sub>m</sub> from the carrier — the discrete sideband picture. The Doppler picture is the semiclassical equivalent: velocity <em>v</em> produces a continuous shift <em>k</em><sub>eff</sub>·<em>v</em>, and discrete sidebands emerge because the velocity oscillates at ω<sub>m</sub>. The two descriptions are fully equivalent for small η. At η = 0.4, the sideband picture requires summing to <em>s</em> ≥ 2 for quantitative accuracy; the Doppler picture absorbs all orders into a single detuning parameter, which is why it provides cleaner analytic estimates for coherent-state dynamics.</p>
 
 <hr>
 
-<h2>Contrast Loss as Integrated Doppler Effect</h2>
+<h2>Numerical Results: Detuning Spectra at Maximum Momentum</h2>
 
-<p>The earlier briefing described "momentum via contrast modulation from finite-pulse-time averaging." This is a <em>secondary description</em> of the same physics. During a flash, the ion traverses a range of velocities; averaging <em>P</em><sub>↑</sub> over the resulting Doppler shifts reduces fringe visibility. Contrast loss is the frequency-integrated effect of the Doppler mechanism — it discards the spectral information that a full detuning scan preserves.</p>
+<p>The following simulations show the full spin response (σ<sub>x</sub>, σ<sub>y</sub>, σ<sub>z</sub>), coherence, and von Neumann entropy as functions of analysis-pulse detuning for displaced coherent states at α = 0, 1, 3, 5, sampled at the oscillation phase of maximum momentum.</p>
 
-<p>For continuing research, the detuning spectrum is the more informative observable. Contrast loss remains a quick diagnostic (it signals when Doppler broadening is significant) but is not the primary measurement channel for momentum or state reconstruction.</p>
+<h3>Simulation settings</h3>
+
+<div class="fig-settings">
+  <div class="fig-panel">
+    <div class="fig-label">State &amp; coupling</div>
+    <img src="Settings_0.png" alt="Simulation parameters: mode freq, eta, Rabi rate, excitation settings">
+    <div class="fig-caption">
+      ω<sub>m</sub>/(2π) = 1.3 MHz, η<sub>eff</sub> = 0.397, Ω/(2π) = 0.3 MHz. Effective carrier Rabi rate 0.277 MHz = Ω·exp(−η²/2) — confirming the Debye–Waller factor. Thermal background ⟨<em>n</em>⟩ = 0.001.
+    </div>
+  </div>
+  <div class="fig-panel">
+    <div class="fig-label">Stroboscopic drive</div>
+    <img src="Settings_AC.png" alt="AC drive modulation: stroboscopic pulse train with 5.2% duty cycle">
+    <div class="fig-caption">
+      Stroboscopic modulation at ω<sub>m</sub>. Pulse duration ≈ 40 ns, duty cycle 5.2%, 326 pulses in train, total π/2 length 17.0 μs (~22 motional cycles, ~15 flashes per cycle). Lower panel: pulse envelope (dark blue) superimposed on motional oscillation (light blue).
+    </div>
+  </div>
+</div>
+
+<h3>α = 0 — ground state</h3>
+
+<div class="fig-panel">
+  <img src="R_0_alpha.png" alt="Detuning spectrum for alpha=0 (ground state)">
+  <div class="fig-caption">
+    <strong>σ<sub>x</sub>, σ<sub>y</sub></strong> (red, blue): full contrast (1.00), rapid sideband oscillations with spacing ~ω<sub>m</sub> in detuning. <strong>σ<sub>z</sub></strong> (orange): contrast 0.61, reflecting the carrier Rabi dynamics modulated by Doppler dephasing even from zero-point motion (σ<sub>D</sub><sup>zp</sup>/Ω = 1.73). <strong>Coherence</strong> (black): narrow peak near δ = 0, width set by zero-point Doppler spread. <strong>Entropy</strong>: narrow peak, confirming spin–motion entanglement is concentrated near resonance.
+  </div>
+</div>
+
+<div class="callout">
+  <div class="cl">Analytic check</div>
+  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast of 0.61 for the ground state is consistent with Doppler dephasing from zero-point motion: the zero-point Doppler width σ<sub>D</sub><sup>zp</sup>/(2π) = 0.52 MHz already exceeds Ω/(2π) = 0.3 MHz, so even at α = 0 the velocity spread partially washes out the σ<sub>z</sub> fringe. The effective carrier Rabi rate in the settings (0.277 MHz = 0.3 × 0.924) independently confirms exp(−η²/2) ≈ 0.924.</p>
+</div>
+
+<h3>α = 1 — ⟨<em>n</em>⟩ = 1</h3>
+
+<div class="fig-panel">
+  <img src="R_1_alpha.png" alt="Detuning spectrum for alpha=1">
+  <div class="fig-caption">
+    σ<sub>z</sub> contrast rises to 0.71. <strong>Coherence peak broadens</strong> compared to α = 0 — the displaced ion's velocity distribution extends the Doppler envelope. The sideband pattern in σ<sub>x</sub>, σ<sub>y</sub> becomes asymmetric about δ = 0, reflecting the broken symmetry of the displaced state. Entropy broadens correspondingly.
+  </div>
+</div>
+
+<h3>α = 3 — ⟨<em>n</em>⟩ = 9</h3>
+
+<div class="fig-panel">
+  <img src="R_3_alpha.png" alt="Detuning spectrum for alpha=3">
+  <div class="fig-caption">
+    σ<sub>z</sub> contrast reaches 0.84 — the highest in this series. <strong>Coherence broadens further</strong>, now spanning a wider detuning range. The sideband structure in σ<sub>x</sub>, σ<sub>y</sub> shows increasing complexity: more sidebands become populated as the displaced state's Fock-space support extends to higher <em>n</em>. The entropy distribution widens, consistent with Doppler broadening from peak velocities at δ<sub>D</sub><sup>peak</sup>/Ω ≈ 10.
+  </div>
+</div>
+
+<h3>α = 5 — ⟨<em>n</em>⟩ = 25</h3>
+
+<div class="fig-panel">
+  <img src="R_5_alpha.png" alt="Detuning spectrum for alpha=5">
+  <div class="fig-caption">
+    σ<sub>z</sub> contrast drops to 0.75 — the non-monotonic trend reverses. <strong>Coherence envelope is broadest</strong>, consistent with peak Doppler shift δ<sub>D</sub><sup>peak</sup>/Ω ≈ 17. The sideband pattern in σ<sub>x</sub>, σ<sub>y</sub> is now dense with overlapping contributions from many Fock components. Entropy spreads across a wide detuning range.
+  </div>
+</div>
+
+<hr>
+
+<h2>Reading the Numerical Results</h2>
+
+<h3>What the coherence envelope tells us</h3>
+
+<p>The coherence (Bloch vector length in the equatorial plane) directly reveals the Doppler velocity distribution. At each detuning δ<sub>0</sub>, only the velocity class satisfying <em>k</em><sub>eff</sub>·<em>v</em> ≈ −δ<sub>0</sub> contributes coherently; other velocity classes dephase. The coherence envelope is therefore a proxy for the velocity distribution convolved with the Rabi instrument function. Its progressive broadening from α = 0 → 5 confirms the Doppler mechanism quantitatively.</p>
+
+<h3>σ<sub>z</sub> contrast: non-monotonic behaviour</h3>
+
+<p>The σ<sub>z</sub> contrast follows 0.61 → 0.71 → 0.84 → 0.75. This non-monotonic trend arises from the interplay of two effects. For the ground state (α = 0), even zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) partially dephases the σ<sub>z</sub> fringe. As α increases, the stroboscopic sampling catches the ion at different velocities across its oscillation cycle; the carrier coupling is modulated by the instantaneous Doppler shift, and the time-averaged σ<sub>z</sub> signal reflects the overlap between the velocity distribution and the Rabi instrument function. The initial contrast rise from α = 0 → 3 and the subsequent drop at α = 5 encode information about the velocity distribution's shape — this is momentum information appearing directly in the population channel.</p>
+
+<h3>Sideband structure as Doppler fingerprint</h3>
+
+<p>The σ<sub>x</sub>, σ<sub>y</sub> traces show sideband oscillations with spacing ~ω<sub>m</sub>. As α increases, the sideband pattern becomes asymmetric and increasingly complex. In the sideband picture, this reflects higher-order transitions becoming significant as the Fock-space support broadens. In the Doppler picture, it reflects the frequency-dependent coupling of different velocity classes to the analysis pulse. The two descriptions are equivalent; the Doppler interpretation is more transparent for reading off momentum information.</p>
+
+<h3>Entropy as spin–motion entanglement map</h3>
+
+<p>The von Neumann entropy of the spin state (lower panels) peaks where spin–motion entanglement is strongest — at detunings where the analysis pulse partially drives sidebands, creating superpositions of spin-up-with-one-motional-state and spin-down-with-another. The entropy broadening with α maps the growing range of Doppler-accessible transitions. Far from resonance (|δ| ≫ ω<sub>m</sub>), entropy drops because the pulse is too far detuned to drive any transition.</p>
+
+<hr>
+
+<h2>Connecting Numerics to Analytics</h2>
+
+<table class="est-table">
+<thead><tr><th>Quantity</th><th>Analytic prediction</th><th>Simulation</th><th>Consistent?</th></tr></thead>
+<tbody>
+<tr><td>Debye–Waller factor</td><td>exp(−η²/2) = 0.924</td><td>Ω<sub>eff,carrier</sub>/Ω = 0.277/0.300 = 0.923</td><td>✓</td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup>/Ω</td><td>1.73</td><td>σ<sub>z</sub> contrast 0.61 at α = 0 (significant dephasing from ZPM)</td><td>✓</td></tr>
+<tr><td>Coherence broadening</td><td>Width scales as √(2⟨n⟩ + 1)</td><td>Monotonic broadening α = 0 → 5</td><td>✓</td></tr>
+<tr><td>Sideband complexity</td><td>Higher <em>s</em> populated for larger α</td><td>Increasing asymmetry and density in σ<sub>x</sub>, σ<sub>y</sub></td><td>✓</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <div class="cl">Contrast loss = integrated Doppler</div>
+  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast modulation (0.61 → 0.71 → 0.84 → 0.75) is the frequency-integrated version of the Doppler velocity distribution. The full detuning scan (coherence envelope) preserves the spectral structure. For state reconstruction, the detuning spectrum is the primary observable; contrast alone discards information.</p>
+</div>
 
 <hr>
 
@@ -435,78 +461,75 @@
 <div class="wp-card">
   <p><span class="wp-id">WP-A.3</span> <span class="gate-badge">prerequisite</span></p>
   <p class="wp-title">Backaction Scaling</p>
-  <p>Weak-measurement expansion of δ⟨<em>n</em>⟩. Purity Tr(ρ²). Quadrature disturbance: Δ⟨X⟩, Δ⟨P⟩, Δ⟨X²⟩, Δ⟨P²⟩. Coherent-state overlap. Residual backaction as function of η with η², η³ terms.</p>
+  <p>Purity, quadrature disturbance, coherent-state overlap. Residual backaction vs. η with η², η³ terms.</p>
   <p class="deliverable">Backaction budget table (η, α, Ωδt, N<sub>S</sub>). Resolves L5.</p>
 </div>
 
 <div class="wp-card">
   <p><span class="wp-id">WP-A.1</span></p>
   <p class="wp-title">Coherent-State Signal Model (Doppler + Phase)</p>
-  <p><strong>Phase channel:</strong> position → spin-fringe phase shift (semiclassical baseline).<br><strong>Doppler channel:</strong> compute detuning spectrum <em>P</em><sub>↑</sub>(δ<sub>0</sub>) for α = 0, 1, 3 including convolution with velocity distribution. Derive analytic Doppler-broadened lineshape. Quantify phase–Doppler crosstalk vs. α, δ<em>t</em>.</p>
-  <p class="deliverable">Two-channel analytic signal model. Resolves L2.</p>
+  <p><strong>Phase:</strong> position → fringe shift. <strong>Doppler:</strong> detuning spectrum for α = 0, 1, 3, 5 including velocity convolution. Analytic Doppler-broadened lineshape. Crosstalk vs. α, δ<em>t</em>. Compare against simulation coherence envelopes.</p>
+  <p class="deliverable">Two-channel analytic model. Resolves L2.</p>
 </div>
 
 <div class="wp-card">
   <p><span class="wp-id">WP-A.2</span></p>
   <p class="wp-title">Sideband Truncation Bounds</p>
-  <p>Weights to s = 3 with Laguerre structure. Map failure in (η, α, Ωδ<em>t</em>). Cross-reference with Doppler predictions at each truncation order.</p>
-  <p class="deliverable">Truncation validity map; sideband–Doppler consistency check.</p>
+  <p>Weights to s = 3 with Laguerre structure. Truncation failure map. Cross-reference sideband and Doppler descriptions.</p>
+  <p class="deliverable">Truncation validity map.</p>
 </div>
 
 <div class="wp-card">
   <p><span class="wp-id">WP-B</span></p>
   <p class="wp-title">Numerical Anchoring</p>
-  <p><em>k</em><sub>eff</sub>Δ<em>x</em> during a flash for |α| = 0, 1, 3. Confirm δ<sub>D</sub>/Ω ratios. <strong>δ<em>t</em> sweep</strong> to validate Doppler dominance. Reproduce decoder against WP-A analytics.</p>
+  <p>Confirm δ<sub>D</sub>/Ω ratios against simulation. δ<em>t</em> sweep. Reproduce σ<sub>z</sub> contrast trend (0.61→0.71→0.84→0.75) from analytic Doppler model.</p>
   <p class="deliverable">Verification memo. Resolves R5.</p>
 </div>
 
 <div class="wp-card">
   <p><span class="wp-id">WP-C</span> <span class="gate-badge">gated on WP-A</span></p>
   <p class="wp-title">Tomographic Stress-Test</p>
-  <p><strong>C.1:</strong> Simulate M: ρ → (phase, Doppler spectrum) for Fock, squeezed, cat. Include backaction.<br><strong>C.2:</strong> Injectivity + noise stability (hard gate). Condition number under realistic noise.<br><strong>C.3:</strong> Reconstruction fidelity.</p>
-  <p class="deliverable">Injectivity certificate or failure modes. Fidelity table. Resolves L4, L7.</p>
+  <p><strong>C.1:</strong> M: ρ → (phase, Doppler spectrum) for Fock, squeezed, cat. <strong>C.2:</strong> Injectivity + noise (hard gate). <strong>C.3:</strong> Fidelity.</p>
+  <p class="deliverable">Injectivity certificate. Fidelity table. Resolves L4, L7.</p>
 </div>
 
 <div class="wp-card">
   <p><span class="wp-id">WP-D</span> <span class="gate-badge">gated on A+C</span></p>
   <p class="wp-title">BAE Forward View</p>
-  <p>Test L6 discriminant. Characterise regime if it exists; archive as resolved if not. Assess alternative geometries. No rescue.</p>
-  <p class="deliverable">BAE feasibility or formal archival of L6.</p>
+  <p>Test L6. Characterise or archive. No rescue.</p>
+  <p class="deliverable">BAE feasibility or archival.</p>
 </div>
 
 <hr>
 
 <h2>Standing Question</h2>
-<blockquote>"Is the phase+Doppler readout best formalised as sampling a characteristic function χ(ξ) (tomography framing), or as estimating two dynamical parameters (<em>x</em>, <em>v</em>) with calibration (metrology framing) — and under which noise model does either framing remain stable?"</blockquote>
+<blockquote>"Is the phase+Doppler readout best formalised as sampling χ(ξ) (tomography), or as estimating (<em>x</em>, <em>v</em>) with calibration (metrology) — and under which noise model does either remain stable?"</blockquote>
 
 <hr>
 
 <h2>Practical Starting Points</h2>
 
-<h3>1. First calculation: Doppler lineshape for a coherent state</h3>
-<p>For |α⟩ sampled at ω<sub>m</sub><em>t</em> = π/2 (max velocity), compute ⟨<em>P</em><sub>↑</sub>⟩(δ<sub>0</sub>) = ∫ G(<em>v</em>; <em>v̄</em>, σ<sub><em>v</em></sub>) · <em>P</em><sub>↑</sub>(δ<sub>0</sub> + <em>k</em><sub>eff</sub><em>v</em>) d<em>v</em> for α = 0, 1, 3. You should see: a centred peak at α = 0, a shifted peak at α = 1 (by 1.04 MHz), and a strongly shifted and flattened peak at α = 3 (by 3.12 MHz). Width encodes zero-point velocity spread in all cases.</p>
+<h3>1. Reproduce the coherence envelope analytically</h3>
+<p>The simulation coherence profiles for α = 0, 1, 3, 5 are now available as benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. The coherence at detuning δ<sub>0</sub> should be proportional to the overlap of the Rabi lineshape with the Doppler distribution at that offset. Matching the simulated envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
 
-<h3>2. Coherent vs. thermal: a one-shot diagnostic</h3>
-<p>Compare Doppler lineshape of |α = √5⟩ (⟨<em>n</em>⟩ = 5) with thermal <em>n̄</em> = 5. The coherent state at fixed oscillation phase has a narrow Gaussian (σ<sub>D</sub>/(2π) = 0.52 MHz) shifted from zero; the thermal state has a broad Gaussian (1.72 MHz) centred at zero. Trivially distinguishable from a single detuning scan.</p>
+<h3>2. Explain the σ<sub>z</sub> contrast trend</h3>
+<p>The non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75 is a concrete numerical target for WP-B. An analytic model that reproduces this trend from the velocity-distribution overlap with the Rabi lineshape, without free parameters, would close R5 and establish Doppler dominance definitively.</p>
 
-<h3>3. Numbers to reproduce from the paper</h3>
-<p>Verify δ<sub>D</sub>/Ω ratios above using Ω/(2π) = 0.3 MHz, η<sub>LF</sub> = 0.40, ω<sub>LF</sub>/(2π) = 1.30 MHz. Then estimate <em>k</em><sub>eff</sub>Δ<em>x</em> during one flash for |α| = 1 (requires δ<em>t</em> from supplement). This connects Doppler and geometric pictures: <em>k</em><sub>eff</sub>Δ<em>x</em> ≈ δ<sub>D</sub>·δ<em>t</em>.</p>
+<h3>3. Coherent vs. thermal discrimination</h3>
+<p>Run the same simulation for a thermal state at <em>n̄</em> = 9 (matching α = 3's ⟨<em>n</em>⟩). The coherence envelope should be symmetric and broader (σ<sub>D</sub>/(2π) = 2.5 MHz vs. the coherent state's shifted but narrower distribution). This is the one-shot diagnostic that demonstrates the Doppler spectrum's discriminating power.</p>
 
-<h3>4. Small-η validation ladder</h3>
-<p>Compute the detuning spectrum at each truncation order (linear, quadratic, full exponential) for α = 1. Linear should capture peak shift but miss tails. Quadratic brings tails within ~3%. This validates the truncation guidance and establishes which order is needed per observable.</p>
-
-<h3>5. Simulation scaffold for WP-C</h3>
-<p>Use QuTiP: construct M: ρ → (phase, Doppler spectrum) for displaced thermal, Fock, squeezed, cat states. For each, record both channels. Ask: can you recover ρ from combined data? The two channels together provide richer information than contrast loss alone — the Doppler spectrum resolves velocity structure that contrast merely averages over.</p>
+<h3>4. Sideband–Doppler consistency</h3>
+<p>Compute the detuning spectrum from the sideband picture (summing transitions to <em>s</em> = 0, 1, 2, 3 with Laguerre weights) and from the Doppler picture (velocity convolution) for α = 1. The two should converge to the simulated result. Discrepancies at the tails identify where truncation fails and where the full exponential coupling matters.</p>
 
 <hr>
 
 <h2>Harbour Layer</h2>
-<p>Ledger: <strong>Breakwater</strong>. Work Packages: <strong>Handbooks</strong>. Essays/assessments: <strong>Sails</strong>. Routing: L1, L3, L8 → <code>compatible/</code>; L2, L4, L5, L6, L7 → <code>hold/</code>.</p>
+<p>Ledger: <strong>Breakwater</strong>. Work Packages: <strong>Handbooks</strong>. Essays: <strong>Sails</strong>. Routing: L1, L3, L8 → <code>compatible/</code>; L2, L4, L5, L6, L7 → <code>hold/</code>.</p>
 
 </div>
 
 <footer>
-  <p>Dossier v0.3 · Council-3 ADM-EC · Guardian stance with Scout, Cartographer, Supervisor inputs.<br>
+  <p>Dossier v0.4 · Council-3 ADM-EC · Guardian stance with Scout, Cartographer, Supervisor inputs.<br>
   Open Science Harbour · Breakwater Layer · <code>hold/</code> (five underdetermined claims).</p>
 </footer>
 </div>
