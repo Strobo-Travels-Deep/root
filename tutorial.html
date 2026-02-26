@@ -32,9 +32,9 @@
   δ<sub>eff</sub> = δ<sub>0</sub> + δ<sub>D</sub> &emsp; where &emsp; δ<sub>D</sub> = <em>k</em><sub>eff</sub> · <em>v</em> = (η / <em>x</em><sub>0</sub>) · <em>v</em>
 </div>
 
-<p>For a coherent state |α⟩ at ω<sub>m</sub>, the peak Doppler shift is:</p>
+<p>For a coherent state |α⟩ at ω<sub>m</sub>, the velocity at the turning point is <em>v</em><sub>peak</sub> = ω<sub>m</sub> <em>x</em><sub>0</sub> √2 |α|, giving a peak Doppler shift:</p>
 
-<div class="formula-box">δ<sub>D</sub><sup>peak</sup> = 2η · ω<sub>m</sub> · |α|</div>
+<div class="formula-box">δ<sub>D</sub><sup>peak</sup> = <em>k</em><sub>eff</sub> · <em>v</em><sub>peak</sub> = 2η · ω<sub>m</sub> · |α|</div>
 
 <p>The detuning spectrum <em>P</em><sub>↑</sub>(δ) directly encodes the velocity distribution. Scanning the analysis-pulse frequency sweeps a narrow velocity filter across the distribution.</p>
 
@@ -52,7 +52,7 @@
 <tr><td>⟨<em>n</em>⟩ = |α|²</td><td>0</td><td>1</td><td>9</td><td>25</td></tr>
 <tr class="hl"><td>δ<sub>D</sub><sup>peak</sup>/(2π)</td><td>0</td><td>1.04 MHz</td><td>3.12 MHz</td><td>5.16 MHz</td></tr>
 <tr class="hl"><td><strong>δ<sub>D</sub><sup>peak</sup> / Ω</strong></td><td>—</td><td><strong>3.5</strong></td><td><strong>10.4</strong></td><td><strong>17.2</strong></td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
+<tr><td>RMS Doppler width σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
 <tr><td>σ<sub>D</sub><sup>zp</sup> / Ω</td><td>1.73</td><td>1.73</td><td>1.73</td><td>1.73</td></tr>
 </tbody>
 </table>
@@ -64,7 +64,11 @@
 
 <h3>The Rabi instrument function</h3>
 
-<div class="formula-box"><em>P</em><sub>↑</sub>(δ) = (Ω² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω² + δ²)</div>
+<p>The analysis pulse acts as a narrowband frequency discriminator. For a nominal π/2 pulse of duration τ = π/(2Ω<sub>R</sub>), the spin-flip probability at effective detuning δ is:</p>
+
+<div class="formula-box"><em>P</em><sub>↑</sub>(δ) = (Ω<sub>R</sub>² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω<sub>R</sub>² + δ²)</div>
+
+<p>Here Ω<sub>R</sub> = Ω · exp(−η²/2) ≈ 0.277 MHz is the Debye–Waller-suppressed carrier Rabi rate (not the bare Ω = 0.300 MHz). This sets the width of the velocity filter: Doppler shifts δ<sub>D</sub> ≫ Ω<sub>R</sub> are strongly suppressed.</p>
 
 <table class="est-table">
 <thead><tr><th>δ/(2π)</th><th>δ/Ω</th><th>Origin</th><th><em>P</em><sub>↑</sub></th></tr></thead>
@@ -95,7 +99,59 @@
 
 <hr>
 
-<!-- ── Reading numerics ──────────────────────────────────────── -->
+<!-- ── Finite-pulse effects ────────────────────────────────────── -->
+
+<h2>Finite-Pulse Effects: What "Blur" Actually Means</h2>
+
+<p>The Doppler estimates above assume instantaneous pulses. In reality, each flash has duration δ<em>t</em> ≈ 40 ns, during which the ion moves. The heuristic phase blur Δφ ~ <em>k</em><sub>eff</sub> <em>v</em> δ<em>t</em> = δ<sub>D</sub> δ<em>t</em> is a useful scale, but in a full model finite-δ<em>t</em> effects split into two distinct mechanisms:</p>
+
+<div class="callout">
+  <div class="cl">Two-mechanism split</div>
+  <p style="margin-bottom:0.4rem;"><strong>Geometric phase averaging</strong> — set by how much <em>k</em><sub>eff</sub>·<em>x</em>(<em>t</em>) changes over the pulse. Scales with both ω<sub>m</sub>δ<em>t</em> (fraction of motional cycle) and <em>k</em><sub>eff</sub><em>v</em> δ<em>t</em> (depending on motional state). Controls the spatial averaging of the travelling-wave pattern.</p>
+  <p style="margin-bottom:0;"><strong>Doppler-detuning distortion</strong> — controlled by δ<sub>D</sub>/Ω<sub>R</sub>, i.e. the Doppler shift relative to the Rabi linewidth. Changes the effective rotation angle and axis for each velocity class.</p>
+</div>
+
+<h3>Corrected experimental parameters</h3>
+
+<p>The stroboscopic pulse train accumulates a π/2 rotation over ~22 pulses (1 per motional cycle), not in a single kick. Key numbers:</p>
+
+<table class="est-table">
+<thead><tr><th>Parameter</th><th>Value</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Mode frequency ω<sub>m</sub>/(2π)</td><td>1.30 MHz</td><td></td></tr>
+<tr><td>Motional period <em>T</em><sub>m</sub></td><td>769 ns</td><td></td></tr>
+<tr><td>Effective η</td><td>0.397</td><td>AC Raman, LF mode</td></tr>
+<tr><td>Eff. carrier Rabi Ω<sub>R</sub>/(2π)</td><td>0.277 MHz</td><td>= Ω · exp(−η²/2)</td></tr>
+<tr><td>Pulse duration δ<em>t</em></td><td>40 ns</td><td></td></tr>
+<tr><td>δ<em>t</em>/<em>T</em><sub>m</sub></td><td>0.052</td><td></td></tr>
+<tr><td>Rotation per pulse θ</td><td>0.070 rad (4.0°)</td><td>= Ω<sub>R</sub> · δ<em>t</em></td></tr>
+<tr class="hl"><td><strong>Pulses for π/2</strong></td><td><strong>~22</strong></td><td><strong>1 per motional cycle</strong></td></tr>
+<tr><td>Total π/2 time</td><td>17.0 μs</td><td>= 22 × <em>T</em><sub>m</sub></td></tr>
+<tr><td>Duty cycle</td><td>5.2%</td><td>= δ<em>t</em>/<em>T</em><sub>m</sub></td></tr>
+</tbody>
+</table>
+
+<h3>Intra-pulse phase blur (corrected)</h3>
+
+<p>During each 40 ns flash, the coherent peak motion produces a Doppler phase evolution Δφ = δ<sub>D</sub> · δ<em>t</em> = 2π · [δ<sub>D</sub>/(2π)] · δ<em>t</em>. Note the factor of 2π when δ<sub>D</sub>/(2π) is quoted in MHz:</p>
+
+<table class="est-table">
+<thead><tr><th>α</th><th>δ<sub>D</sub><sup>peak</sup>/(2π)</th><th>Δφ<sub>peak</sub> (rad)</th><th>Significance</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1.04 MHz</td><td>0.26</td><td>Small–moderate</td></tr>
+<tr><td>3</td><td>3.12 MHz</td><td>0.78</td><td>Moderate</td></tr>
+<tr class="hl"><td>5</td><td>5.16 MHz</td><td>1.30</td><td>Order-unity (~1 rad, tens of degrees)</td></tr>
+</tbody>
+</table>
+
+<p>The baseline finite-time parameter is ω<sub>m</sub>δ<em>t</em> ≈ 0.33 rad, present even at α = 0. The zero-point Doppler contribution adds an additional ~0.13 rad RMS. At α = 5, intra-pulse blur (1.3 rad) exceeds the motional phase per pulse (0.33 rad) — position readout is genuinely degraded, strengthening the case for treating the analysis pulse as a Doppler spectroscope rather than a phase-sensitive position probe.</p>
+
+<div class="callout">
+  <div class="cl">Floquet identity</div>
+  <p style="margin-bottom:0;">This protocol is a <strong>Floquet-synchronised quadrature probe</strong>, not a softened Monroe ultrafast kick. Information comes from coherent accumulation over ~22 phase-locked flashes, not single-pulse impulsiveness. The stroboscopic synchronisation trades the Monroe requirement δ<em>t</em> ≪ <em>T</em><sub>m</sub> for a phase-stability requirement over <em>N</em> ≈ 22 pulses: Δω<sub>m</sub>/ω<sub>m</sub> ≪ 1/(<em>N</em>π) ≈ 0.7%. See the <a href="ideal-limit-principles.md">Sail essay</a> (§3) for full analysis.</p>
+</div>
+
+<hr>
 
 <h2>Reading the Numerical Results</h2>
 
