@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framework — Hasse et al.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://harbour-architecture.github.io/root/">Open Science Harbour</a> · Breakwater Layer</div>
+  <h1>Framework</h1>
+  <p class="subtitle">Interaction Hamiltonian &amp; measurement channels</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html" aria-current="page">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+  </nav>
+</header>
+
+<h2>Interaction Hamiltonian</h2>
+<div class="formula-box">
+  H<sub>TI</sub> = ℏ(ω<sub>z</sub>/2)σ<sub>z</sub> + ℏω<sub>m</sub> a†a + ℏ(Ω/2)[C σ<sub>−</sub> + C† σ<sub>+</sub>]<br><br>
+  where &ensp; <strong>C(η, a, a†) = exp(iη(a + a†))</strong>
+</div>
+<p>Exponential coupling in the position quadrature — not truncated. Source of both power (Doppler-resolved mapping, higher sidebands) and complications (backaction, nonlinear decoding).</p>
+
+<h2>Where η ≈ 0.4 Enters</h2>
+<p>AC Raman: λ<sub>eff</sub> ≈ 140 nm, η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Not in the deep Lamb–Dicke regime. Debye–Waller factor exp(−η²/2) ≈ 0.924. Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
+
+<h2>Measurement: Two Channels</h2>
+<h3>Position → phase shift</h3>
+<p>Travelling wave imprints spin-dependent phase ∝ <em>k</em><sub>eff</sub>·<em>x</em>(<em>t</em>).</p>
+<h3>Velocity → Doppler detuning</h3>
+<p>Moving ion sees δ<sub>D</sub> = <em>k</em><sub>eff</sub>·<em>v</em>. Peak Doppler shift 2η·ω<sub>m</sub>·|α| exceeds Ω for all α ≥ 1. Detuning spectrum is the primary momentum channel.</p>
+
+<h2>Semiclassical Baseline</h2>
+<div class="formula-box">⟨α|exp(iη(a+a†))|α⟩ = exp(−η²/2) · exp(i 2η Re α)</div>
+
+<h2>Backaction &amp; BAE</h2>
+<p>exp(iη(a+a†)) at η ≈ 0.4 couples both quadratures. Whether a perturbative linear regime exists is open (<a href="dossier.html">L6</a>).</p>
+
+<h2>Tomographic Potential</h2>
+<p>Phase shift (position) + Doppler spectrum (momentum) together access full phase-space. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides complementary formalism.</p>
+
+<h2>Lock-Key Assignments</h2>
+<table class="compact-table">
+<thead><tr><th>Element</th><th>Type</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Stroboscopic coupling maps phase-space → spin.</td><td><strong>Lock</strong></td><td>Established.</td></tr>
+<tr><td>Position → phase; <em>p</em>-proxy → Doppler.</td><td>Key</td><td>Under test (L2).</td></tr>
+<tr><td>Decoder faithful under noise.</td><td>Key</td><td>Under test (L4).</td></tr>
+<tr><td>Near-BAE.</td><td>Key</td><td>Undetermined (L6).</td></tr>
+<tr><td>Nonclassical tomography.</td><td>Key</td><td>Gated (L7).</td></tr>
+</tbody>
+</table>
+
+<footer>
+  <p>Dossier v0.4 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="numerics.html">Numerics</a></p>
+</footer>
+
+</div>
+</body>
+</html>

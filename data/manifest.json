@@ -1,0 +1,30 @@
+[
+  {
+    "alpha": 0,
+    "label": "Ground state",
+    "nbar": 0,
+    "path": "data/alpha_0/detuning_scan.h5",
+    "contrast_z": 0.29
+  },
+  {
+    "alpha": 1,
+    "label": "\u27e8n\u27e9 = 1",
+    "nbar": 1,
+    "path": "data/alpha_1/detuning_scan.h5",
+    "contrast_z": 0.35
+  },
+  {
+    "alpha": 3,
+    "label": "\u27e8n\u27e9 = 9",
+    "nbar": 9,
+    "path": "data/alpha_3/detuning_scan.h5",
+    "contrast_z": 0.41
+  },
+  {
+    "alpha": 5,
+    "label": "\u27e8n\u27e9 = 25",
+    "nbar": 25,
+    "path": "data/alpha_5/detuning_scan.h5",
+    "contrast_z": 0.37
+  }
+]

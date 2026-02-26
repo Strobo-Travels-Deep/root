@@ -4,124 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dossier: Hasse et al. — Breakwater Layer</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap');
-
-  :root {
-    --bg-main: #f2dcd6;
-    --bg-section: #efe0db;
-    --bg-card: #faf3f0;
-    --bg-code: #f9edea;
-    --border: #d4a99e;
-    --border-light: #e3c5bd;
-    --text: #3a2520;
-    --text-secondary: #6b4a40;
-    --text-muted: #8c6e63;
-    --accent: #a0453a;
-    --accent-light: #c46b5f;
-    --link: #8b3a30;
-    --link-hover: #a0453a;
-    --tag-bg: #e8cdc6;
-    --tag-text: #6b3a30;
-    --compatible: #5a7a5a;
-    --undetermined: #8b6914;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { font-size: 17px; scroll-behavior: smooth; }
-  body { font-family: 'Source Serif 4', Georgia, serif; background: var(--bg-main); color: var(--text); line-height: 1.72; -webkit-font-smoothing: antialiased; }
-  .page-wrap { max-width: 740px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
-
-  header { margin-bottom: 2.8rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
-  .site-id { font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
-  .site-id a { color: var(--text-muted); text-decoration: none; }
-  .site-id a:hover { color: var(--accent); }
-  nav { display: flex; gap: 1.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
-  nav a { font-size: 0.88rem; color: var(--link); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; transition: border-color 0.2s; cursor: pointer; }
-  nav a:hover, nav a.active { border-bottom-color: var(--accent); }
-
-  h1 { font-size: 1.6rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.4rem; }
-  h2 { font-size: 1.15rem; font-weight: 600; margin-top: 2.6rem; margin-bottom: 0.6rem; letter-spacing: 0.01em; }
-  h3 { font-size: 1rem; font-weight: 600; margin-top: 1.8rem; margin-bottom: 0.4rem; color: var(--text-secondary); }
-  p { margin-bottom: 1rem; }
-  a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-  a:hover { color: var(--link-hover); }
-  hr { border: none; border-top: 1px solid var(--border); margin: 2.4rem 0; }
-  strong { font-weight: 600; }
-  code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background: var(--bg-code); padding: 0.15em 0.35em; border-radius: 3px; }
-  .subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
-
-  .meta-block { background: var(--bg-card); border: 1px solid var(--border-light); border-left: 3px solid var(--accent); padding: 1rem 1.2rem; margin: 1.4rem 0 2rem; font-size: 0.88rem; line-height: 1.65; color: var(--text-secondary); }
-  .meta-block p { margin-bottom: 0.25rem; }
-
-  .tag { display: inline-block; font-size: 0.76rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; padding: 0.15em 0.55em; border-radius: 3px; vertical-align: middle; }
-  .tag-compatible { background: #d4e6d4; color: var(--compatible); }
-  .tag-undetermined { background: #ede0b8; color: var(--undetermined); }
-  .tag-request { background: var(--tag-bg); color: var(--tag-text); }
-  .tag-sweep { background: #d8cfe8; color: #5a4a6a; }
-  .tag-tier { background: var(--tag-bg); color: var(--tag-text); }
-  .tag-layer { background: #d4dce8; color: #3a4a5a; }
-
-  .ledger, .compact-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1.8rem; font-size: 0.88rem; line-height: 1.55; }
-  .ledger th, .compact-table th { text-align: left; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--border); background: var(--bg-section); }
-  .ledger td, .compact-table td { padding: 0.6rem; border-bottom: 1px solid var(--border-light); vertical-align: top; }
-  .ledger tr:last-child td, .compact-table tr:last-child td { border-bottom: none; }
-  .id-col { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.82rem; color: var(--accent); white-space: nowrap; width: 3rem; }
-
-  .glossary { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1rem 1.2rem; margin: 1.2rem 0 2rem; font-size: 0.88rem; }
-  .glossary dt { font-weight: 600; color: var(--text); margin-top: 0.5rem; }
-  .glossary dt:first-child { margin-top: 0; }
-  .glossary dd { color: var(--text-secondary); margin: 0 0 0.3rem 1rem; }
-
-  .wp-card { background: var(--bg-card); border: 1px solid var(--border-light); border-left: 3px solid var(--accent); padding: 1rem 1.2rem; margin: 1rem 0; }
-  .wp-card .wp-id { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.82rem; color: var(--accent); }
-  .wp-card .wp-title { font-weight: 600; margin-bottom: 0.4rem; }
-  .wp-card p { font-size: 0.9rem; margin-bottom: 0.5rem; }
-  .wp-card .deliverable { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
-  .gate-badge { display: inline-block; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.15em 0.5em; border-radius: 3px; background: #e8c4c4; color: #a04040; margin-left: 0.4rem; }
-
-  blockquote { border-left: 3px solid var(--accent); padding: 0.8rem 1.2rem; margin: 1.4rem 0; background: var(--bg-card); font-style: italic; color: var(--text-secondary); }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  .formula-box { background: var(--bg-card); border: 1px solid var(--border-light); padding: 0.9rem 1.2rem; margin: 1rem 0 1.2rem; font-style: italic; text-align: center; line-height: 1.9; }
-  .formula { text-align: center; padding: 0.7rem 1rem; margin: 0.8rem 0 1rem; font-style: italic; line-height: 1.9; }
-
-  .est-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem; font-size: 0.88rem; line-height: 1.55; }
-  .est-table th { text-align: center; font-weight: 600; font-size: 0.82rem; color: var(--text-muted); padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--border); background: var(--bg-section); }
-  .est-table th:first-child { text-align: left; }
-  .est-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border-light); text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; }
-  .est-table td:first-child { text-align: left; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.88rem; }
-  .est-table tr:last-child td { border-bottom: none; }
-  .est-table .hl td { background: var(--bg-code); font-weight: 500; }
-
-  .callout { background: var(--bg-card); border: 1px solid var(--border-light); border-left: 3px solid var(--accent-light); padding: 0.9rem 1.2rem; margin: 1.2rem 0; font-size: 0.9rem; }
-  .callout .cl { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
-
-  /* — Figure panels — */
-  .fig-panel { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1rem; margin: 1.4rem 0; }
-  .fig-panel img { width: 100%; height: auto; display: block; border: 1px solid var(--border-light); margin-bottom: 0.6rem; }
-  .fig-panel .fig-label { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
-  .fig-panel .fig-caption { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.55; }
-
-  .fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.4rem 0; }
-  .fig-grid .fig-panel { margin: 0; }
-  @media (max-width: 600px) { .fig-grid { grid-template-columns: 1fr; } }
-
-  .fig-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
-  .fig-settings .fig-panel { margin: 0; padding: 0.8rem; }
-  .fig-settings img { border: none; }
-
-  .figure-ref { background: var(--bg-card); border: 1px solid var(--border-light); padding: 1.2rem 1.4rem; margin: 1.4rem 0; text-align: center; }
-  .figure-ref .fig-label { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; }
-  .figure-ref .fig-caption { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
-
-  footer { margin-top: 4rem; padding-top: 1.2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
-
-  @media (max-width: 600px) { html { font-size: 15px; } .page-wrap { padding: 2rem 1rem 4rem; } nav { gap: 1rem; } .fig-settings { grid-template-columns: 1fr; } }
-  @media print { body { background: white; color: black; } .tab-content { display: block !important; } }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="page-wrap">
@@ -131,9 +14,10 @@
   <h1>Dossier: Hasse et al.</h1>
   <p class="subtitle">Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics</p>
   <nav>
-    <a class="active" onclick="switchTab('dossier')">Dossier</a>
-    <a onclick="switchTab('framework')">Framework</a>
-    <a onclick="switchTab('tutorial')">Tutorial</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
   </nav>
 </header>
 
@@ -144,419 +28,55 @@
   <p><strong>Stances:</strong> Guardian, Scout, Cartographer · <strong>Date:</strong> 2026-02-25</p>
 </div>
 
-<!-- ═══════════════ DOSSIER ═══════════════ -->
-<div id="tab-dossier" class="tab-content active">
+<h2>Structure</h2>
 
-<h2>One-Sentence Claim</h2>
-<p>Hasse et al. phase-lock four oscillators (MW reference, optical running-wave phase, spin, motion) and use a stroboscopic Raman pulse train on a short-period travelling polarisation gradient (λ<sub>eff</sub>&thinsp;≈&thinsp;140&thinsp;nm, η<sub>LF</sub>&thinsp;≈&thinsp;0.40) to map an ion's motional phase-space dynamics with super-resolution, where position appears as a spin-fringe phase shift and the <em>p</em>-quadrature proxy appears through the characteristic Doppler-detuning spectrum of the analysis pulse, encoding the ion's velocity distribution.</p>
+<p>This dossier evaluates the stroboscopic travelling-wave measurement scheme of Hasse et al. through the Harbour Breakwater Layer — a Claim Analysis Ledger that classifies experimental claims as compatible, underdetermined, or inconsistent, with discriminant conditions for resolution.</p>
 
-<h2>Glossary</h2>
-<dl class="glossary">
-  <dt>Momentum observable</dt><dd>A velocity / <em>p</em>-quadrature proxy inferred from the Doppler-detuning response of the stroboscopic analysis pulse.</dd>
-  <dt>Super-resolution</dt><dd>Position sensitivity at λ<sub>eff</sub>&thinsp;≈&thinsp;140 nm ≪ optical wavelength. Does not imply sub-<em>x</em><sub>0</sub> or QND.</dd>
-  <dt>Sideband scaling ~η<sup>s</sup></dt><dd>Heuristic. Actual weights depend on <em>n</em> via Laguerre polynomials.</dd>
-  <dt>Detuning spectrum</dt><dd><em>P</em><sub>↑</sub>(δ) as function of analysis-pulse detuning. Encodes velocity distribution via Doppler shift <em>k</em><sub>eff</sub>·<em>v</em>.</dd>
-</dl>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.4rem 0;">
 
-<hr>
+  <a href="dossier.html" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;">
+      <p class="wp-title" style="color:var(--accent);">Dossier</p>
+      <p>Claim Analysis Ledger (8 entries: 3 compatible, 5 underdetermined), Risk Register, Council Decisions.</p>
+    </div>
+  </a>
 
-<h2>Claim Analysis Ledger</h2>
-<p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">Underdetermined → <code>hold/</code>. Intake: <span class="tag tag-request">REQUEST</span> unless <span class="tag tag-sweep">SWEEP</span>. The Ledger measures; it does not govern.</p>
+  <a href="framework.html" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;">
+      <p class="wp-title" style="color:var(--accent);">Framework</p>
+      <p>Interaction Hamiltonian, two-channel measurement, Lock-Key assignments, BAE analysis.</p>
+    </div>
+  </a>
 
-<table class="ledger">
-<thead><tr><th>#</th><th>Claim</th><th>Status</th><th>Discriminant Condition</th></tr></thead>
-<tbody>
-<tr><td class="id-col">L1</td><td>Four-oscillator phase lock enables stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td></tr>
-<tr><td class="id-col">L2</td><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify crosstalk vs. η, α, δ<em>t</em>.</td></tr>
-<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm.</td></tr>
-<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity + noise stability for target states.</td></tr>
-<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap.</td></tr>
-<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction.</td></tr>
-<tr><td class="id-col">L7</td><td>Nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability.</td></tr>
-<tr><td class="id-col">L8</td><td>Phase lock stable over experimental timescales.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated. Long-term diffusion uncharacterised. <span class="tag tag-sweep">SWEEP</span></td></tr>
-</tbody>
-</table>
+  <a href="tutorial.html" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;">
+      <p class="wp-title" style="color:var(--accent);">Tutorial</p>
+      <p>Doppler mechanism, analytic estimates, Work Packages A–D, practical starting points.</p>
+    </div>
+  </a>
 
-<hr>
+  <a href="numerics.html" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;">
+      <p class="wp-title" style="color:var(--accent);">Numerics</p>
+      <p>Interactive viewer for detuning-scan simulations (HDF5). Load, plot, and download raw data.</p>
+    </div>
+  </a>
 
-<h2>Evidence Summary</h2>
-<h3>Experimentally established</h3>
-<p>Four-oscillator phase lock. AC Raman: λ<sub>eff</sub> ≈ 140 nm, Ω/(2π) ≈ 0.3 MHz. η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Timing: <em>t</em><sub>π/2,S</sub> ≈ 23.1 μs.</p>
-
-<div class="figure-ref">
-  <div class="fig-label">Figures 1–4</div>
-  <div class="fig-caption"><a href="https://arxiv.org/abs/2309.15580">arXiv</a> · <a href="https://doi.org/10.1103/PhysRevA.109.053105">APS</a></div>
-</div>
-
-<h3>Analytically grounded</h3>
-<p>Coherent-state baseline: exp(−η²/2)·exp(i2η Re α). Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
-
-<h3>Numerical calibration only</h3>
-<p>Full decoder for arbitrary states. Backaction beyond ⟨<em>n</em>⟩. Non-Gaussian behaviour.</p>
-
-<hr>
-
-<h2>Risk Register</h2>
-<table class="compact-table">
-<thead><tr><th>#</th><th>Risk</th><th>Source</th><th>Severity</th></tr></thead>
-<tbody>
-<tr><td class="id-col">R1</td><td>Decoder without analytic error bounds.</td><td>Scout</td><td><strong>High</strong></td></tr>
-<tr><td class="id-col">R2</td><td>Phase–Doppler crosstalk at high α (L2).</td><td>Guardian, Cart.</td><td>Medium</td></tr>
-<tr><td class="id-col">R3</td><td>BAE regime narrow or inaccessible (L6).</td><td>All</td><td>Medium</td></tr>
-<tr><td class="id-col">R4</td><td>Injectivity failure for non-Gaussian states (L7).</td><td>Guardian, Scout</td><td><strong>High</strong></td></tr>
-<tr><td class="id-col">R5</td><td>Doppler dominance needs explicit confirmation.</td><td>Scout</td><td>Medium</td></tr>
-<tr><td class="id-col">R6</td><td>δ⟨<em>n</em>⟩ hides coherence redistribution (L5).</td><td>Guardian</td><td>Medium</td></tr>
-<tr><td class="id-col">R7</td><td>Inversion scales poorly with state complexity.</td><td>Cartographer</td><td>Low→High</td></tr>
-</tbody>
-</table>
-
-<hr>
-
-<h2>Strategic Resolution</h2>
-<p><strong>Primary framing: Tomography.</strong> η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. <strong>Guardian proviso:</strong> backaction first. <strong>L6:</strong> Undetermined (supervisor). <strong>WP-D:</strong> no rescue.</p>
-
-<h2>Council Decisions</h2>
-<table class="compact-table">
-<thead><tr><th>Item</th><th>Decision</th><th>Justification</th></tr></thead>
-<tbody>
-<tr><td>Primary framing</td><td>Tomography</td><td>η ≈ 0.4 is asset for χ(ξ), liability for BAE.</td></tr>
-<tr><td>L6</td><td>Undetermined</td><td>Not established, not excluded.</td></tr>
-<tr><td>BAE</td><td>Forward view (WP-D)</td><td>No rescue.</td></tr>
-<tr><td>Sequence</td><td>A.3→A.1→A.2→B→C→D</td><td>Backaction prerequisite.</td></tr>
-<tr><td>Momentum</td><td>Doppler detuning primary</td><td>δ<sub>D</sub>/Ω ≫ 1 for α ≥ 1.</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- ═══════════════ FRAMEWORK ═══════════════ -->
-<div id="tab-framework" class="tab-content">
-
-<h2>Interaction Hamiltonian</h2>
-<div class="formula-box">
-  H<sub>TI</sub> = ℏ(ω<sub>z</sub>/2)σ<sub>z</sub> + ℏω<sub>m</sub> a†a + ℏ(Ω/2)[C σ<sub>−</sub> + C† σ<sub>+</sub>]<br><br>
-  where &ensp; <strong>C(η, a, a†) = exp(iη(a + a†))</strong>
-</div>
-<p>Exponential coupling in the position quadrature — not truncated. Source of both power (Doppler-resolved mapping, higher sidebands) and complications (backaction, nonlinear decoding).</p>
-
-<h2>Where η ≈ 0.4 Enters</h2>
-<p>AC Raman: λ<sub>eff</sub> ≈ 140 nm, η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Not in the deep Lamb–Dicke regime. Debye–Waller factor exp(−η²/2) ≈ 0.924. Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
-
-<h2>Measurement: Two Channels</h2>
-<h3>Position → phase shift</h3>
-<p>Travelling wave imprints spin-dependent phase ∝ <em>k</em><sub>eff</sub>·<em>x</em>(<em>t</em>).</p>
-<h3>Velocity → Doppler detuning</h3>
-<p>Moving ion sees δ<sub>D</sub> = <em>k</em><sub>eff</sub>·<em>v</em>. Peak Doppler shift 2η·ω<sub>m</sub>·|α| exceeds Ω for all α ≥ 1. Detuning spectrum is the primary momentum channel.</p>
-
-<h2>Semiclassical Baseline</h2>
-<div class="formula-box">⟨α|exp(iη(a+a†))|α⟩ = exp(−η²/2) · exp(i 2η Re α)</div>
-
-<h2>Backaction &amp; BAE</h2>
-<p>exp(iη(a+a†)) at η ≈ 0.4 couples both quadratures. Whether a perturbative linear regime exists is open (L6).</p>
-
-<h2>Tomographic Potential</h2>
-<p>Phase shift (position) + Doppler spectrum (momentum) together access full phase-space. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides complementary formalism.</p>
-
-<h2>Lock-Key Assignments</h2>
-<table class="compact-table">
-<thead><tr><th>Element</th><th>Type</th><th>Status</th></tr></thead>
-<tbody>
-<tr><td>Stroboscopic coupling maps phase-space → spin.</td><td><strong>Lock</strong></td><td>Established.</td></tr>
-<tr><td>Position → phase; <em>p</em>-proxy → Doppler.</td><td>Key</td><td>Under test (L2).</td></tr>
-<tr><td>Decoder faithful under noise.</td><td>Key</td><td>Under test (L4).</td></tr>
-<tr><td>Near-BAE.</td><td>Key</td><td>Undetermined (L6).</td></tr>
-<tr><td>Nonclassical tomography.</td><td>Key</td><td>Gated (L7).</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- ═══════════════ TUTORIAL ═══════════════ -->
-<div id="tab-tutorial" class="tab-content">
-
-<h2>The Doppler Mechanism: Primary Momentum Readout</h2>
-
-<p>The analysis pulse is a two-photon Raman transition with <em>k</em><sub>eff</sub> = 2π/λ<sub>eff</sub>. An ion moving with velocity <em>v</em> sees a Doppler-shifted transition:</p>
-
-<div class="formula-box">
-  δ<sub>eff</sub> = δ<sub>0</sub> + δ<sub>D</sub> &emsp; where &emsp; δ<sub>D</sub> = <em>k</em><sub>eff</sub> · <em>v</em> = (η / <em>x</em><sub>0</sub>) · <em>v</em>
-</div>
-
-<p>For a coherent state |α⟩ at ω<sub>m</sub>, the peak Doppler shift is:</p>
-
-<div class="formula-box">δ<sub>D</sub><sup>peak</sup> = 2η · ω<sub>m</sub> · |α|</div>
-
-<p>The detuning spectrum <em>P</em><sub>↑</sub>(δ) directly encodes the velocity distribution. Scanning the analysis-pulse frequency sweeps a narrow velocity filter across the distribution.</p>
-
-<hr>
-
-<h2>Analytic Estimates</h2>
-
-<p>Using η<sub>LF</sub> = 0.40, ω<sub>LF</sub>/(2π) = 1.30 MHz, Ω/(2π) = 0.30 MHz:</p>
-
-<table class="est-table">
-<thead><tr><th>Quantity</th><th>α = 0</th><th>α = 1</th><th>α = 3</th><th>α = 5</th></tr></thead>
-<tbody>
-<tr><td>⟨<em>n</em>⟩ = |α|²</td><td>0</td><td>1</td><td>9</td><td>25</td></tr>
-<tr class="hl"><td>δ<sub>D</sub><sup>peak</sup>/(2π)</td><td>0</td><td>1.04 MHz</td><td>3.12 MHz</td><td>5.16 MHz</td></tr>
-<tr class="hl"><td><strong>δ<sub>D</sub><sup>peak</sup> / Ω</strong></td><td>—</td><td><strong>3.5</strong></td><td><strong>10.4</strong></td><td><strong>17.2</strong></td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup> / Ω</td><td>1.73</td><td>1.73</td><td>1.73</td><td>1.73</td></tr>
-</tbody>
-</table>
-
-<div class="callout">
-  <div class="cl">Key result</div>
-  <p style="margin-bottom:0;">Even <strong>zero-point motion</strong> produces Doppler shifts comparable to Ω (ratio 1.73). At α = 1 the peak shift is 3.5× Ω; at α = 5 it reaches 17.2×. The Doppler mechanism is not a correction — it <em>is</em> the momentum measurement.</p>
-</div>
-
-<h3>The Rabi instrument function</h3>
-
-<div class="formula-box"><em>P</em><sub>↑</sub>(δ) = (Ω² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω² + δ²)</div>
-
-<table class="est-table">
-<thead><tr><th>δ/(2π)</th><th>δ/Ω</th><th>Origin</th><th><em>P</em><sub>↑</sub></th></tr></thead>
-<tbody>
-<tr><td>0</td><td>0</td><td>Resonance</td><td>0.500</td></tr>
-<tr><td>0.30 MHz</td><td>1.0</td><td>δ = Ω</td><td>0.401</td></tr>
-<tr><td>0.52 MHz</td><td>1.7</td><td>Zero-point RMS</td><td>0.250</td></tr>
-<tr><td>1.04 MHz</td><td>3.5</td><td>Peak vel., α = 1</td><td>0.007</td></tr>
-<tr><td>3.12 MHz</td><td>10.4</td><td>Peak vel., α = 3</td><td>0.008</td></tr>
-</tbody>
-</table>
-
-<h3>Small-η expansion</h3>
-
-<table class="est-table">
-<thead><tr><th>Order</th><th>Term</th><th>η = 0.4</th><th>vs. linear</th></tr></thead>
-<tbody>
-<tr><td>1 (linear)</td><td>η</td><td>0.40</td><td>ref.</td></tr>
-<tr><td>2 (quadratic)</td><td>η²/2</td><td>0.080</td><td>20%</td></tr>
-<tr><td>3 (cubic)</td><td>η³/6</td><td>0.011</td><td>2.7%</td></tr>
-</tbody>
-</table>
-
-<div class="callout">
-  <div class="cl">Truncation</div>
-  <p style="margin-bottom:0;"><strong>Linear only:</strong> ~20% error. <strong>Through η²:</strong> ~3%. <strong>Through η³:</strong> sub-percent.</p>
 </div>
 
 <hr>
 
-<h2>Numerical Results: Detuning Spectra at Maximum Momentum</h2>
+<h2>Quick Summary</h2>
 
-<p>The following simulations show the full spin response (σ<sub>x</sub>, σ<sub>y</sub>, σ<sub>z</sub>), coherence, and von Neumann entropy as functions of analysis-pulse detuning for displaced coherent states at α = 0, 1, 3, 5, sampled at the oscillation phase of maximum momentum.</p>
+<p><strong>Primary framing: Tomography.</strong> The η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. The Doppler detuning spectrum — not contrast loss — is the primary momentum readout: δ<sub>D</sub>/Ω ≫ 1 for all α ≥ 1.</p>
 
-<h3>Simulation settings</h3>
-
-<div class="fig-settings">
-  <div class="fig-panel" style="padding:1rem 1.2rem;">
-    <div class="fig-label">Simulation parameters</div>
-    <table class="compact-table" style="margin:0.4rem 0 0;">
-    <tbody>
-    <tr><td>Mode freq. (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">1.3</td></tr>
-    <tr><td>Thermal ⟨<em>n</em>⟩</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.001</td></tr>
-    <tr><td>Eff. η</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.397</td></tr>
-    <tr><td>Rabi rate (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.300</td></tr>
-    <tr><td>Eff. carrier Rabi (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.277</td></tr>
-    <tr><td>Laser detuning (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.0</td></tr>
-    <tr><td>AOM setup</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">fast</td></tr>
-    </tbody>
-    </table>
-  </div>
-  <div class="fig-panel" style="padding:1rem 1.2rem;">
-    <div class="fig-label">Stroboscopic drive</div>
-    <table class="compact-table" style="margin:0.4rem 0 0;">
-    <tbody>
-    <tr><td>Modulation</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">Stroboscopic</td></tr>
-    <tr><td>Mod. freq. (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">1.3</td></tr>
-    <tr><td>Pulse duration (μs)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.04</td></tr>
-    <tr><td>Duty cycle</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.05</td></tr>
-    <tr><td>Pulses in train</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">22</td></tr>
-    <tr><td>AC Strobo π/2 length (μs)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">17.0</td></tr>
-    </tbody>
-    </table>
-  </div>
-</div>
-
-<h3>α = 0 — ground state</h3>
-
-<div class="fig-panel">
-  <img src="R_0_alpha.png" alt="Detuning spectrum for alpha=0 (ground state)">
-  <div class="fig-caption">
-    <strong>σ<sub>x</sub>, σ<sub>y</sub></strong> (red, blue): full contrast (1.00), rapid sideband oscillations with spacing ~ω<sub>m</sub> in detuning. <strong>σ<sub>z</sub></strong> (orange): contrast 0.61, reflecting the carrier Rabi dynamics modulated by Doppler dephasing even from zero-point motion (σ<sub>D</sub><sup>zp</sup>/Ω = 1.73). <strong>Coherence</strong> (black): narrow peak near δ = 0, width set by zero-point Doppler spread. <strong>Entropy</strong>: narrow peak, confirming spin–motion entanglement is concentrated near resonance.
-  </div>
-</div>
-
-<div class="callout">
-  <div class="cl">Analytic check</div>
-  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast of 0.61 for the ground state is consistent with Doppler dephasing from zero-point motion: the zero-point Doppler width σ<sub>D</sub><sup>zp</sup>/(2π) = 0.52 MHz already exceeds Ω/(2π) = 0.3 MHz, so even at α = 0 the velocity spread partially washes out the σ<sub>z</sub> fringe. The effective carrier Rabi rate in the settings (0.277 MHz = 0.3 × 0.924) independently confirms exp(−η²/2) ≈ 0.924.</p>
-</div>
-
-<h3>α = 1 — ⟨<em>n</em>⟩ = 1</h3>
-
-<div class="fig-panel">
-  <img src="R_1_alpha.png" alt="Detuning spectrum for alpha=1">
-  <div class="fig-caption">
-    σ<sub>z</sub> contrast rises to 0.71. <strong>Coherence peak broadens</strong> compared to α = 0 — the displaced ion's velocity distribution extends the Doppler envelope. The sideband pattern in σ<sub>x</sub>, σ<sub>y</sub> becomes asymmetric about δ = 0, reflecting the broken symmetry of the displaced state. Entropy broadens correspondingly.
-  </div>
-</div>
-
-<h3>α = 3 — ⟨<em>n</em>⟩ = 9</h3>
-
-<div class="fig-panel">
-  <img src="R_3_alpha.png" alt="Detuning spectrum for alpha=3">
-  <div class="fig-caption">
-    σ<sub>z</sub> contrast reaches 0.84 — the highest in this series. <strong>Coherence broadens further</strong>, now spanning a wider detuning range. The sideband structure in σ<sub>x</sub>, σ<sub>y</sub> shows increasing complexity: more sidebands become populated as the displaced state's Fock-space support extends to higher <em>n</em>. The entropy distribution widens, consistent with Doppler broadening from peak velocities at δ<sub>D</sub><sup>peak</sup>/Ω ≈ 10.
-  </div>
-</div>
-
-<h3>α = 5 — ⟨<em>n</em>⟩ = 25</h3>
-
-<div class="fig-panel">
-  <img src="R_5_alpha.png" alt="Detuning spectrum for alpha=5">
-  <div class="fig-caption">
-    σ<sub>z</sub> contrast drops to 0.75 — the non-monotonic trend reverses. <strong>Coherence envelope is broadest</strong>, consistent with peak Doppler shift δ<sub>D</sub><sup>peak</sup>/Ω ≈ 17. The sideband pattern in σ<sub>x</sub>, σ<sub>y</sub> is now dense with overlapping contributions from many Fock components. Entropy spreads across a wide detuning range.
-  </div>
-</div>
-
-<hr>
-
-<h2>Reading the Numerical Results</h2>
-
-<h3>What the coherence envelope tells us</h3>
-
-<p>The coherence (Bloch vector length in the equatorial plane) directly reveals the Doppler velocity distribution. At each detuning δ<sub>0</sub>, only the velocity class satisfying <em>k</em><sub>eff</sub>·<em>v</em> ≈ −δ<sub>0</sub> contributes coherently; other velocity classes dephase. The coherence envelope is therefore a proxy for the velocity distribution convolved with the Rabi instrument function. Its progressive broadening from α = 0 → 5 confirms the Doppler mechanism quantitatively.</p>
-
-<h3>σ<sub>z</sub> contrast: non-monotonic behaviour</h3>
-
-<p>The σ<sub>z</sub> contrast follows 0.61 → 0.71 → 0.84 → 0.75. This non-monotonic trend arises from the interplay of two effects. For the ground state (α = 0), even zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) partially dephases the σ<sub>z</sub> fringe. As α increases, the stroboscopic sampling catches the ion at different velocities across its oscillation cycle; the carrier coupling is modulated by the instantaneous Doppler shift, and the time-averaged σ<sub>z</sub> signal reflects the overlap between the velocity distribution and the Rabi instrument function. The initial contrast rise from α = 0 → 3 and the subsequent drop at α = 5 encode information about the velocity distribution's shape — this is momentum information appearing directly in the population channel.</p>
-
-<h3>Sideband structure as Doppler fingerprint</h3>
-
-<p>The σ<sub>x</sub>, σ<sub>y</sub> traces show sideband oscillations with spacing ~ω<sub>m</sub>. As α increases, the sideband pattern becomes asymmetric and increasingly complex. In the sideband picture, this reflects higher-order transitions becoming significant as the Fock-space support broadens. In the Doppler picture, it reflects the frequency-dependent coupling of different velocity classes to the analysis pulse. The two descriptions are equivalent; the Doppler interpretation is more transparent for reading off momentum information.</p>
-
-<h3>Entropy as spin–motion entanglement map</h3>
-
-<p>The von Neumann entropy of the spin state (lower panels) peaks where spin–motion entanglement is strongest — at detunings where the analysis pulse partially drives sidebands, creating superpositions of spin-up-with-one-motional-state and spin-down-with-another. The entropy broadening with α maps the growing range of Doppler-accessible transitions. Far from resonance (|δ| ≫ ω<sub>m</sub>), entropy drops because the pulse is too far detuned to drive any transition.</p>
-
-<hr>
-
-<h2>Connecting Numerics to Analytics</h2>
-
-<table class="est-table">
-<thead><tr><th>Quantity</th><th>Analytic prediction</th><th>Simulation</th><th>Consistent?</th></tr></thead>
-<tbody>
-<tr><td>Debye–Waller factor</td><td>exp(−η²/2) = 0.924</td><td>Ω<sub>eff,carrier</sub>/Ω = 0.277/0.300 = 0.923</td><td>✓</td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup>/Ω</td><td>1.73</td><td>σ<sub>z</sub> contrast 0.61 at α = 0 (significant dephasing from ZPM)</td><td>✓</td></tr>
-<tr><td>Coherence broadening</td><td>Width scales as √(2⟨n⟩ + 1)</td><td>Monotonic broadening α = 0 → 5</td><td>✓</td></tr>
-<tr><td>Sideband complexity</td><td>Higher <em>s</em> populated for larger α</td><td>Increasing asymmetry and density in σ<sub>x</sub>, σ<sub>y</sub></td><td>✓</td></tr>
-</tbody>
-</table>
-
-<div class="callout">
-  <div class="cl">Contrast loss = integrated Doppler</div>
-  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast modulation (0.61 → 0.71 → 0.84 → 0.75) is the frequency-integrated version of the Doppler velocity distribution. The full detuning scan (coherence envelope) preserves the spectral structure. For state reconstruction, the detuning spectrum is the primary observable; contrast alone discards information.</p>
-</div>
-
-<hr>
-
-<h2>Council Action Plan</h2>
-
-<p style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;line-height:1.7;background:var(--bg-card);padding:1rem 1.2rem;border:1px solid var(--border-light);margin:1rem 0;">
-  WP-A.3 (backaction) → WP-A.1 (signal model) → WP-A.2 (truncation)<br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;WP-B (numerics)<br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;WP-C (tomography) ← <strong>GATE: WP-A</strong><br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;WP-D (BAE view) ← <strong>GATE: WP-A+C</strong>
-</p>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-A.3</span> <span class="gate-badge">prerequisite</span></p>
-  <p class="wp-title">Backaction Scaling</p>
-  <p>Purity, quadrature disturbance, coherent-state overlap. Residual backaction vs. η with η², η³ terms.</p>
-  <p class="deliverable">Backaction budget table (η, α, Ωδt, N<sub>S</sub>). Resolves L5.</p>
-</div>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-A.1</span></p>
-  <p class="wp-title">Coherent-State Signal Model (Doppler + Phase)</p>
-  <p><strong>Phase:</strong> position → fringe shift. <strong>Doppler:</strong> detuning spectrum for α = 0, 1, 3, 5 including velocity convolution. Analytic Doppler-broadened lineshape. Crosstalk vs. α, δ<em>t</em>. Compare against simulation coherence envelopes.</p>
-  <p class="deliverable">Two-channel analytic model. Resolves L2.</p>
-</div>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-A.2</span></p>
-  <p class="wp-title">Sideband Truncation Bounds</p>
-  <p>Weights to s = 3 with Laguerre structure. Truncation failure map. Cross-reference sideband and Doppler descriptions.</p>
-  <p class="deliverable">Truncation validity map.</p>
-</div>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-B</span></p>
-  <p class="wp-title">Numerical Anchoring</p>
-  <p>Confirm δ<sub>D</sub>/Ω ratios against simulation. δ<em>t</em> sweep. Reproduce σ<sub>z</sub> contrast trend (0.61→0.71→0.84→0.75) from analytic Doppler model.</p>
-  <p class="deliverable">Verification memo. Resolves R5.</p>
-</div>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-C</span> <span class="gate-badge">gated on WP-A</span></p>
-  <p class="wp-title">Tomographic Stress-Test</p>
-  <p><strong>C.1:</strong> M: ρ → (phase, Doppler spectrum) for Fock, squeezed, cat. <strong>C.2:</strong> Injectivity + noise (hard gate). <strong>C.3:</strong> Fidelity.</p>
-  <p class="deliverable">Injectivity certificate. Fidelity table. Resolves L4, L7.</p>
-</div>
-
-<div class="wp-card">
-  <p><span class="wp-id">WP-D</span> <span class="gate-badge">gated on A+C</span></p>
-  <p class="wp-title">BAE Forward View</p>
-  <p>Test L6. Characterise or archive. No rescue.</p>
-  <p class="deliverable">BAE feasibility or archival.</p>
-</div>
-
-<hr>
-
-<h2>Standing Question</h2>
-<blockquote>"Is the phase+Doppler readout best formalised as sampling χ(ξ) (tomography), or as estimating (<em>x</em>, <em>v</em>) with calibration (metrology) — and under which noise model does either remain stable?"</blockquote>
-
-<hr>
-
-<h2>Practical Starting Points</h2>
-
-<h3>1. Reproduce the coherence envelope analytically</h3>
-<p>The simulation coherence profiles for α = 0, 1, 3, 5 are now available as benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. The coherence at detuning δ<sub>0</sub> should be proportional to the overlap of the Rabi lineshape with the Doppler distribution at that offset. Matching the simulated envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
-
-<h3>2. Explain the σ<sub>z</sub> contrast trend</h3>
-<p>The non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75 is a concrete numerical target for WP-B. An analytic model that reproduces this trend from the velocity-distribution overlap with the Rabi lineshape, without free parameters, would close R5 and establish Doppler dominance definitively.</p>
-
-<h3>3. Coherent vs. thermal discrimination</h3>
-<p>Run the same simulation for a thermal state at <em>n̄</em> = 9 (matching α = 3's ⟨<em>n</em>⟩). The coherence envelope should be symmetric and broader (σ<sub>D</sub>/(2π) = 2.5 MHz vs. the coherent state's shifted but narrower distribution). This is the one-shot diagnostic that demonstrates the Doppler spectrum's discriminating power.</p>
-
-<h3>4. Sideband–Doppler consistency</h3>
-<p>Compute the detuning spectrum from the sideband picture (summing transitions to <em>s</em> = 0, 1, 2, 3 with Laguerre weights) and from the Doppler picture (velocity convolution) for α = 1. The two should converge to the simulated result. Discrepancies at the tails identify where truncation fails and where the full exponential coupling matters.</p>
-
-<hr>
-
-<h2>Harbour Layer</h2>
-<p>Ledger: <strong>Breakwater</strong>. Work Packages: <strong>Handbooks</strong>. Essays: <strong>Sails</strong>. Routing: L1, L3, L8 → <code>compatible/</code>; L2, L4, L5, L6, L7 → <code>hold/</code>.</p>
-
-</div>
+<p><strong>Status:</strong> Five underdetermined claims in <code>hold/</code>. Work package sequence: A.3 (backaction) → A.1 (signal model) → A.2 (truncation) → B (numerics) → C (tomography) → D (BAE forward view).</p>
 
 <footer>
   <p>Dossier v0.4 · Council-3 ADM-EC · Guardian stance with Scout, Cartographer, Supervisor inputs.<br>
   Open Science Harbour · Breakwater Layer · <code>hold/</code> (five underdetermined claims).</p>
 </footer>
-</div>
 
-<script>
-function switchTab(name) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  const links = document.querySelectorAll('nav a');
-  const map = { dossier: 0, framework: 1, tutorial: 2 };
-  if (map[name] !== undefined) links[map[name]].classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-</script>
+</div>
 </body>
 </html>

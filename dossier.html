@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier — Hasse et al.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://harbour-architecture.github.io/root/">Open Science Harbour</a> · Breakwater Layer</div>
+  <h1>Dossier</h1>
+  <p class="subtitle">Claim Analysis Ledger · Hasse et al. (PRA 2024)</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html" aria-current="page">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+  </nav>
+</header>
+
+<h2>One-Sentence Claim</h2>
+<p>Hasse et al. phase-lock four oscillators (MW reference, optical running-wave phase, spin, motion) and use a stroboscopic Raman pulse train on a short-period travelling polarisation gradient (λ<sub>eff</sub>&thinsp;≈&thinsp;140&thinsp;nm, η<sub>LF</sub>&thinsp;≈&thinsp;0.40) to map an ion's motional phase-space dynamics with super-resolution, where position appears as a spin-fringe phase shift and the <em>p</em>-quadrature proxy appears through the characteristic Doppler-detuning spectrum of the analysis pulse, encoding the ion's velocity distribution.</p>
+
+<h2>Glossary</h2>
+<dl class="glossary">
+  <dt>Momentum observable</dt><dd>A velocity / <em>p</em>-quadrature proxy inferred from the Doppler-detuning response of the stroboscopic analysis pulse.</dd>
+  <dt>Super-resolution</dt><dd>Position sensitivity at λ<sub>eff</sub>&thinsp;≈&thinsp;140 nm ≪ optical wavelength. Does not imply sub-<em>x</em><sub>0</sub> or QND.</dd>
+  <dt>Sideband scaling ~η<sup>s</sup></dt><dd>Heuristic. Actual weights depend on <em>n</em> via Laguerre polynomials.</dd>
+  <dt>Detuning spectrum</dt><dd><em>P</em><sub>↑</sub>(δ) as function of analysis-pulse detuning. Encodes velocity distribution via Doppler shift <em>k</em><sub>eff</sub>·<em>v</em>.</dd>
+</dl>
+
+<hr>
+
+<h2>Claim Analysis Ledger</h2>
+<p style="font-size:0.88rem;color:var(--text-sec);margin-bottom:0.8rem;">Underdetermined → <code>hold/</code>. Intake: <span class="tag tag-request">REQUEST</span> unless <span class="tag tag-sweep">SWEEP</span>. The Ledger measures; it does not govern.</p>
+
+<table class="ledger">
+<thead><tr><th>#</th><th>Claim</th><th>Status</th><th>Discriminant Condition</th></tr></thead>
+<tbody>
+<tr><td class="id-col">L1</td><td>Four-oscillator phase lock enables stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td></tr>
+<tr><td class="id-col">L2</td><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify crosstalk vs. η, α, δ<em>t</em>.</td></tr>
+<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm.</td></tr>
+<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity + noise stability for target states.</td></tr>
+<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap.</td></tr>
+<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction.</td></tr>
+<tr><td class="id-col">L7</td><td>Nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability.</td></tr>
+<tr><td class="id-col">L8</td><td>Phase lock stable over experimental timescales.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated. Long-term diffusion uncharacterised. <span class="tag tag-sweep">SWEEP</span></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>Evidence Summary</h2>
+<h3>Experimentally established</h3>
+<p>Four-oscillator phase lock. AC Raman: λ<sub>eff</sub> ≈ 140 nm, Ω/(2π) ≈ 0.3 MHz. η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Timing: <em>t</em><sub>π/2,S</sub> ≈ 23.1 μs.</p>
+
+<div class="figure-ref">
+  <div class="fig-label">Figures 1–4</div>
+  <div class="fig-caption"><a href="https://arxiv.org/abs/2309.15580">arXiv</a> · <a href="https://doi.org/10.1103/PhysRevA.109.053105">APS</a></div>
+</div>
+
+<h3>Analytically grounded</h3>
+<p>Coherent-state baseline: exp(−η²/2)·exp(i2η Re α). Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
+
+<h3>Numerical calibration only</h3>
+<p>Full decoder for arbitrary states. Backaction beyond ⟨<em>n</em>⟩. Non-Gaussian behaviour. See <a href="numerics.html">Numerics</a> for interactive data.</p>
+
+<hr>
+
+<h2>Risk Register</h2>
+<table class="compact-table">
+<thead><tr><th>#</th><th>Risk</th><th>Source</th><th>Severity</th></tr></thead>
+<tbody>
+<tr><td class="id-col">R1</td><td>Decoder without analytic error bounds.</td><td>Scout</td><td><strong>High</strong></td></tr>
+<tr><td class="id-col">R2</td><td>Phase–Doppler crosstalk at high α (L2).</td><td>Guardian, Cart.</td><td>Medium</td></tr>
+<tr><td class="id-col">R3</td><td>BAE regime narrow or inaccessible (L6).</td><td>All</td><td>Medium</td></tr>
+<tr><td class="id-col">R4</td><td>Injectivity failure for non-Gaussian states (L7).</td><td>Guardian, Scout</td><td><strong>High</strong></td></tr>
+<tr><td class="id-col">R5</td><td>Doppler dominance needs explicit confirmation.</td><td>Scout</td><td>Medium</td></tr>
+<tr><td class="id-col">R6</td><td>δ⟨<em>n</em>⟩ hides coherence redistribution (L5).</td><td>Guardian</td><td>Medium</td></tr>
+<tr><td class="id-col">R7</td><td>Inversion scales poorly with state complexity.</td><td>Cartographer</td><td>Low→High</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>Strategic Resolution</h2>
+<p><strong>Primary framing: Tomography.</strong> η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. <strong>Guardian proviso:</strong> backaction first. <strong>L6:</strong> Undetermined (supervisor). <strong>WP-D:</strong> no rescue.</p>
+
+<h2>Council Decisions</h2>
+<table class="compact-table">
+<thead><tr><th>Item</th><th>Decision</th><th>Justification</th></tr></thead>
+<tbody>
+<tr><td>Primary framing</td><td>Tomography</td><td>η ≈ 0.4 is asset for χ(ξ), liability for BAE.</td></tr>
+<tr><td>L6</td><td>Undetermined</td><td>Not established, not excluded.</td></tr>
+<tr><td>BAE</td><td>Forward view (WP-D)</td><td>No rescue.</td></tr>
+<tr><td>Sequence</td><td>A.3→A.1→A.2→B→C→D</td><td>Backaction prerequisite.</td></tr>
+<tr><td>Momentum</td><td>Doppler detuning primary</td><td>δ<sub>D</sub>/Ω ≫ 1 for α ≥ 1.</td></tr>
+</tbody>
+</table>
+
+<footer>
+  <p>Dossier v0.4 · Breakwater Layer · Routing: L1, L3, L8 → <code>compatible/</code>; L2, L4, L5, L6, L7 → <code>hold/</code>.</p>
+</footer>
+
+</div>
+</body>
+</html>

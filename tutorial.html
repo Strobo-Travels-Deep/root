@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial — Hasse et al.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://harbour-architecture.github.io/root/">Open Science Harbour</a> · Breakwater Layer</div>
+  <h1>Tutorial</h1>
+  <p class="subtitle">Doppler mechanism, analytic estimates &amp; work packages</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html" aria-current="page">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+  </nav>
+</header>
+
+<!-- ── Doppler mechanism ─────────────────────────────────────── -->
+
+<h2>The Doppler Mechanism: Primary Momentum Readout</h2>
+
+<p>The analysis pulse is a two-photon Raman transition with <em>k</em><sub>eff</sub> = 2π/λ<sub>eff</sub>. An ion moving with velocity <em>v</em> sees a Doppler-shifted transition:</p>
+
+<div class="formula-box">
+  δ<sub>eff</sub> = δ<sub>0</sub> + δ<sub>D</sub> &emsp; where &emsp; δ<sub>D</sub> = <em>k</em><sub>eff</sub> · <em>v</em> = (η / <em>x</em><sub>0</sub>) · <em>v</em>
+</div>
+
+<p>For a coherent state |α⟩ at ω<sub>m</sub>, the peak Doppler shift is:</p>
+
+<div class="formula-box">δ<sub>D</sub><sup>peak</sup> = 2η · ω<sub>m</sub> · |α|</div>
+
+<p>The detuning spectrum <em>P</em><sub>↑</sub>(δ) directly encodes the velocity distribution. Scanning the analysis-pulse frequency sweeps a narrow velocity filter across the distribution.</p>
+
+<hr>
+
+<!-- ── Estimates ──────────────────────────────────────────────── -->
+
+<h2>Analytic Estimates</h2>
+
+<p>Using η<sub>LF</sub> = 0.40, ω<sub>LF</sub>/(2π) = 1.30 MHz, Ω/(2π) = 0.30 MHz:</p>
+
+<table class="est-table">
+<thead><tr><th>Quantity</th><th>α = 0</th><th>α = 1</th><th>α = 3</th><th>α = 5</th></tr></thead>
+<tbody>
+<tr><td>⟨<em>n</em>⟩ = |α|²</td><td>0</td><td>1</td><td>9</td><td>25</td></tr>
+<tr class="hl"><td>δ<sub>D</sub><sup>peak</sup>/(2π)</td><td>0</td><td>1.04 MHz</td><td>3.12 MHz</td><td>5.16 MHz</td></tr>
+<tr class="hl"><td><strong>δ<sub>D</sub><sup>peak</sup> / Ω</strong></td><td>—</td><td><strong>3.5</strong></td><td><strong>10.4</strong></td><td><strong>17.2</strong></td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup>/(2π) = ηω<sub>m</sub>/(2π)</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td><td>0.52 MHz</td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup> / Ω</td><td>1.73</td><td>1.73</td><td>1.73</td><td>1.73</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <div class="cl">Key result</div>
+  <p style="margin-bottom:0;">Even <strong>zero-point motion</strong> produces Doppler shifts comparable to Ω (ratio 1.73). At α = 1 the peak shift is 3.5× Ω; at α = 5 it reaches 17.2×. The Doppler mechanism is not a correction — it <em>is</em> the momentum measurement.</p>
+</div>
+
+<h3>The Rabi instrument function</h3>
+
+<div class="formula-box"><em>P</em><sub>↑</sub>(δ) = (Ω² / Ω<sub>eff</sub>²) · sin²(Ω<sub>eff</sub> τ / 2) &emsp; where &emsp; Ω<sub>eff</sub> = √(Ω² + δ²)</div>
+
+<table class="est-table">
+<thead><tr><th>δ/(2π)</th><th>δ/Ω</th><th>Origin</th><th><em>P</em><sub>↑</sub></th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>Resonance</td><td>0.500</td></tr>
+<tr><td>0.30 MHz</td><td>1.0</td><td>δ = Ω</td><td>0.401</td></tr>
+<tr><td>0.52 MHz</td><td>1.7</td><td>Zero-point RMS</td><td>0.250</td></tr>
+<tr><td>1.04 MHz</td><td>3.5</td><td>Peak vel., α = 1</td><td>0.007</td></tr>
+<tr><td>3.12 MHz</td><td>10.4</td><td>Peak vel., α = 3</td><td>0.008</td></tr>
+</tbody>
+</table>
+
+<h3>Small-η expansion</h3>
+
+<table class="est-table">
+<thead><tr><th>Order</th><th>Term</th><th>η = 0.4</th><th>vs. linear</th></tr></thead>
+<tbody>
+<tr><td>1 (linear)</td><td>η</td><td>0.40</td><td>ref.</td></tr>
+<tr><td>2 (quadratic)</td><td>η²/2</td><td>0.080</td><td>20%</td></tr>
+<tr><td>3 (cubic)</td><td>η³/6</td><td>0.011</td><td>2.7%</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <div class="cl">Truncation</div>
+  <p style="margin-bottom:0;"><strong>Linear only:</strong> ~20% error. <strong>Through η²:</strong> ~3%. <strong>Through η³:</strong> sub-percent.</p>
+</div>
+
+<hr>
+
+<!-- ── Reading numerics ──────────────────────────────────────── -->
+
+<h2>Reading the Numerical Results</h2>
+
+<p>Interactive plots of the simulation data are on the <a href="numerics.html">Numerics</a> page. Below is guidance for interpreting the detuning spectra at α = 0, 1, 3, 5.</p>
+
+<h3>What the coherence envelope tells us</h3>
+<p>The coherence (Bloch vector length in the equatorial plane) directly reveals the Doppler velocity distribution. At each detuning δ<sub>0</sub>, only the velocity class satisfying <em>k</em><sub>eff</sub>·<em>v</em> ≈ −δ<sub>0</sub> contributes coherently; other velocity classes dephase. The coherence envelope is a proxy for the velocity distribution convolved with the Rabi instrument function. Its progressive broadening from α = 0 → 5 confirms the Doppler mechanism quantitatively.</p>
+
+<h3>σ<sub>z</sub> contrast: non-monotonic behaviour</h3>
+<p>The σ<sub>z</sub> contrast follows 0.61 → 0.71 → 0.84 → 0.75. This non-monotonic trend arises from the interplay of two effects. For the ground state (α = 0), even zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) partially dephases the σ<sub>z</sub> fringe. As α increases, the stroboscopic sampling catches the ion at different velocities across its oscillation cycle; the time-averaged σ<sub>z</sub> signal reflects the overlap between the velocity distribution and the Rabi instrument function. The initial contrast rise from α = 0 → 3 and the subsequent drop at α = 5 encode information about the velocity distribution's shape.</p>
+
+<h3>Sideband structure as Doppler fingerprint</h3>
+<p>The σ<sub>x</sub>, σ<sub>y</sub> traces show sideband oscillations with spacing ~ω<sub>m</sub>. As α increases, the pattern becomes asymmetric and increasingly complex. In the sideband picture, this reflects higher-order transitions. In the Doppler picture, it reflects frequency-dependent coupling of different velocity classes. The two descriptions are equivalent; the Doppler interpretation is more transparent for reading off momentum information.</p>
+
+<h3>Entropy as spin–motion entanglement map</h3>
+<p>The von Neumann entropy peaks where spin–motion entanglement is strongest. The entropy broadening with α maps the growing range of Doppler-accessible transitions.</p>
+
+<h2>Connecting Numerics to Analytics</h2>
+
+<table class="est-table">
+<thead><tr><th>Quantity</th><th>Analytic</th><th>Simulation</th><th></th></tr></thead>
+<tbody>
+<tr><td>Debye–Waller</td><td>exp(−η²/2) = 0.924</td><td>Ω<sub>eff</sub>/Ω = 0.277/0.300 = 0.923</td><td>✓</td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup>/Ω</td><td>1.73</td><td>σ<sub>z</sub> contrast 0.61 at α = 0</td><td>✓</td></tr>
+<tr><td>Coherence width</td><td>∝ √(2⟨n⟩ + 1)</td><td>Monotonic broadening α = 0 → 5</td><td>✓</td></tr>
+<tr><td>Sideband complexity</td><td>Higher <em>s</em> for larger α</td><td>Increasing asymmetry</td><td>✓</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <div class="cl">Contrast loss = integrated Doppler</div>
+  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast modulation (0.61 → 0.71 → 0.84 → 0.75) is the frequency-integrated version of the Doppler velocity distribution. The full detuning scan preserves the spectral structure. For state reconstruction, the detuning spectrum is the primary observable; contrast alone discards information.</p>
+</div>
+
+<hr>
+
+<!-- ── Work Packages ─────────────────────────────────────────── -->
+
+<h2>Council Action Plan</h2>
+
+<div class="dep-flow">
+  WP-A.3 (backaction) → WP-A.1 (signal model) → WP-A.2 (truncation)<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;WP-B (numerics)<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;WP-C (tomography) ← <strong>GATE: WP-A</strong><br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;↓<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;WP-D (BAE view) ← <strong>GATE: WP-A+C</strong>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-A.3</span> <span class="gate-badge">prerequisite</span></p>
+  <p class="wp-title">Backaction Scaling</p>
+  <p>Purity, quadrature disturbance, coherent-state overlap. Residual backaction vs. η with η², η³ terms.</p>
+  <p class="deliverable">Backaction budget table (η, α, Ωδt, N<sub>S</sub>). Resolves L5.</p>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-A.1</span></p>
+  <p class="wp-title">Coherent-State Signal Model (Doppler + Phase)</p>
+  <p><strong>Phase:</strong> position → fringe shift. <strong>Doppler:</strong> detuning spectrum for α = 0, 1, 3, 5 including velocity convolution. Compare against <a href="numerics.html">simulation coherence envelopes</a>.</p>
+  <p class="deliverable">Two-channel analytic model. Resolves L2.</p>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-A.2</span></p>
+  <p class="wp-title">Sideband Truncation Bounds</p>
+  <p>Weights to s = 3 with Laguerre structure. Truncation failure map. Cross-reference sideband and Doppler descriptions.</p>
+  <p class="deliverable">Truncation validity map.</p>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-B</span></p>
+  <p class="wp-title">Numerical Anchoring</p>
+  <p>Confirm δ<sub>D</sub>/Ω ratios against simulation. δ<em>t</em> sweep. Reproduce σ<sub>z</sub> contrast trend (0.61→0.71→0.84→0.75) from analytic Doppler model.</p>
+  <p class="deliverable">Verification memo. Resolves R5.</p>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-C</span> <span class="gate-badge">gated on WP-A</span></p>
+  <p class="wp-title">Tomographic Stress-Test</p>
+  <p><strong>C.1:</strong> M: ρ → (phase, Doppler spectrum) for Fock, squeezed, cat. <strong>C.2:</strong> Injectivity + noise (hard gate). <strong>C.3:</strong> Fidelity.</p>
+  <p class="deliverable">Injectivity certificate. Fidelity table. Resolves L4, L7.</p>
+</div>
+
+<div class="wp-card">
+  <p><span class="wp-id">WP-D</span> <span class="gate-badge">gated on A+C</span></p>
+  <p class="wp-title">BAE Forward View</p>
+  <p>Test L6. Characterise or archive. No rescue.</p>
+  <p class="deliverable">BAE feasibility or archival.</p>
+</div>
+
+<hr>
+
+<h2>Standing Question</h2>
+<blockquote>"Is the phase+Doppler readout best formalised as sampling χ(ξ) (tomography), or as estimating (<em>x</em>, <em>v</em>) with calibration (metrology) — and under which noise model does either remain stable?"</blockquote>
+
+<hr>
+
+<h2>Practical Starting Points</h2>
+
+<h3>1. Reproduce the coherence envelope analytically</h3>
+<p>The simulation coherence profiles (see <a href="numerics.html">Numerics</a>) are benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. Matching the envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
+
+<h3>2. Explain the σ<sub>z</sub> contrast trend</h3>
+<p>The non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75 is a concrete numerical target for WP-B. An analytic model that reproduces this from velocity-distribution overlap, without free parameters, would close R5.</p>
+
+<h3>3. Coherent vs. thermal discrimination</h3>
+<p>Run the same simulation for a thermal state at <em>n̄</em> = 9 (matching α = 3). The coherence envelope should be symmetric and broader. This is the one-shot diagnostic.</p>
+
+<h3>4. Sideband–Doppler consistency</h3>
+<p>Compute the detuning spectrum from both sideband (s = 0–3) and Doppler (velocity convolution) pictures for α = 1. Discrepancies at the tails identify where the full exponential coupling matters.</p>
+
+<footer>
+  <p>Dossier v0.4 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="numerics.html">Numerics</a></p>
+</footer>
+
+</div>
+</body>
+</html>
