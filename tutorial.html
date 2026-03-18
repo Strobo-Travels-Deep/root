@@ -10,7 +10,7 @@
 <div class="page-wrap">
 
 <header>
-  <div class="site-id"><a href="https://harbour-architecture.github.io/root/">Open Science Harbour</a> · Breakwater Layer</div>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
   <h1>Tutorial</h1>
   <p class="subtitle">Doppler mechanism, analytic estimates &amp; work packages</p>
   <nav>
@@ -19,6 +19,7 @@
     <a href="framework.html">Framework</a>
     <a href="tutorial.html" aria-current="page">Tutorial</a>
     <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a>
   </nav>
 </header>
 
@@ -155,7 +156,8 @@
 
 <h2>Reading the Numerical Results</h2>
 
-<p>Interactive plots of the simulation data are on the <a href="numerics.html">Numerics</a> page. Below is guidance for interpreting the detuning spectra at α = 0, 1, 3, 5.</p>
+<p>Interactive plots of the simulation data are on the <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a> page. Below is guidance for interpreting the detuning spectra at α = 0, 1, 3, 5.</p>
 
 <h3>What the coherence envelope tells us</h3>
 <p>The coherence (Bloch vector length in the equatorial plane) directly reveals the Doppler velocity distribution. At each detuning δ<sub>0</sub>, only the velocity class satisfying <em>k</em><sub>eff</sub>·<em>v</em> ≈ −δ<sub>0</sub> contributes coherently; other velocity classes dephase. The coherence envelope is a proxy for the velocity distribution convolved with the Rabi instrument function. Its progressive broadening from α = 0 → 5 confirms the Doppler mechanism quantitatively.</p>
@@ -254,7 +256,8 @@
 <h2>Practical Starting Points</h2>
 
 <h3>1. Reproduce the coherence envelope analytically</h3>
-<p>The simulation coherence profiles (see <a href="numerics.html">Numerics</a>) are benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. Matching the envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
+<p>The simulation coherence profiles (see <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a>) are benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. Matching the envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
 
 <h3>2. Explain the σ<sub>z</sub> contrast trend</h3>
 <p>The non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75 is a concrete numerical target for WP-B. An analytic model that reproduces this from velocity-distribution overlap, without free parameters, would close R5.</p>
@@ -266,7 +269,8 @@
 <p>Compute the detuning spectrum from both sideband (s = 0–3) and Doppler (velocity convolution) pictures for α = 1. Discrepancies at the tails identify where the full exponential coupling matters.</p>
 
 <footer>
-  <p>Dossier v0.4 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="numerics.html">Numerics</a></p>
+  <p>Dossier v0.4 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a></p>
 </footer>
 
 </div>

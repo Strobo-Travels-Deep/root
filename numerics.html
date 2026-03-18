@@ -11,22 +11,20 @@
 <div class="page-wrap">
 
 <header>
-  <div class="site-id"><a href="https://harbour-architecture.github.io/root/">Open Science Harbour</a> · Breakwater Layer</div>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
   <h1>Numerics</h1>
-  <p class="subtitle">Detuning-scan simulations · interactive HDF5 viewer</p>
+  <p class="subtitle">Detuning-scan data · pre-computed &amp; simulated</p>
   <nav>
     <a href="index.html">Overview</a>
     <a href="dossier.html">Dossier</a>
     <a href="framework.html">Framework</a>
     <a href="tutorial.html">Tutorial</a>
     <a href="numerics.html" aria-current="page">Numerics</a>
+    <a href="simulate.html">Simulate</a>
   </nav>
 </header>
 
-<!-- ── Settings ───────────────────────────────────────────────── -->
-
 <h2>Simulation Settings</h2>
-
 <div class="settings-panel">
   <div class="fig-panel" style="padding:1rem 1.2rem;">
     <div class="fig-label">Simulation parameters</div>
@@ -37,8 +35,6 @@
     <tr><td>Eff. η</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.397</td></tr>
     <tr><td>Rabi rate (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.300</td></tr>
     <tr><td>Eff. carrier Rabi (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.277</td></tr>
-    <tr><td>Laser detuning (2π MHz)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.0</td></tr>
-    <tr><td>AOM setup</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">fast</td></tr>
     </tbody>
     </table>
   </div>
@@ -51,7 +47,6 @@
     <tr><td>Pulse duration (μs)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.04</td></tr>
     <tr><td>Duty cycle</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.052</td></tr>
     <tr><td>Pulses in train</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">326</td></tr>
-    <tr><td>AC Strobo π/2 length (μs)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">17.0</td></tr>
     </tbody>
     </table>
   </div>
@@ -59,69 +54,63 @@
 
 <hr>
 
-<!-- ── Dataset selector ──────────────────────────────────────── -->
+<h2>Data Source</h2>
+<p style="font-size:0.88rem;color:var(--text-sec);">View pre-computed HDF5 data or simulation results from <a href="simulate.html">Simulate</a>. You can also upload your own downloaded JSON.</p>
 
-<h2>Select Dataset</h2>
-<p style="font-size:0.88rem;color:var(--text-sec);">Detuning scans at maximum momentum for displaced coherent states. Click to load HDF5 data and render interactively.</p>
-
-<div class="dataset-grid" id="dataset-grid">
-  <!-- populated by JS from manifest -->
+<div style="display:flex;gap:0.5rem;margin:0.8rem 0;flex-wrap:wrap;">
+  <button class="dataset-card" id="tab-hdf5" onclick="switchSource('hdf5')" style="border-width:2px;font-size:0.82rem;padding:0.5rem 0.9rem;">Pre-computed (HDF5)</button>
+  <button class="dataset-card" id="tab-runs" onclick="switchSource('runs')" style="font-size:0.82rem;padding:0.5rem 0.9rem;">Default Runs (JSON)</button>
+  <button class="dataset-card" id="tab-upload" onclick="switchSource('upload')" style="font-size:0.82rem;padding:0.5rem 0.9rem;">Upload JSON</button>
 </div>
 
-<!-- ── Plot area ─────────────────────────────────────────────── -->
+<!-- HDF5 panel -->
+<div class="source-panel" id="panel-hdf5">
+  <div class="dataset-grid" id="dataset-grid-hdf5"></div>
+</div>
 
+<!-- Runs panel -->
+<div class="source-panel" id="panel-runs" style="display:none;">
+  <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:0.6rem;">Default runs: unitary evolution, no decoherence, infinite statistics. Cross-validate against HDF5.</p>
+  <div class="dataset-grid" id="dataset-grid-runs"></div>
+  <div id="run-conv-info" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.78rem;padding:0.4rem 0.6rem;border-radius:3px;margin:0.6rem 0;"></div>
+</div>
+
+<!-- Upload panel -->
+<div class="source-panel" id="panel-upload" style="display:none;">
+  <div style="border:2px dashed var(--border-light);border-radius:4px;padding:1.5rem;text-align:center;margin:0.8rem 0;cursor:pointer;" onclick="document.getElementById('file-input').click()">
+    <p style="font-size:0.88rem;color:var(--text-muted);margin:0;">Click to upload a <code>simulation_results.json</code></p>
+    <p style="font-size:0.78rem;color:var(--text-muted);margin:0.3rem 0 0;">(from the Simulate page download)</p>
+  </div>
+  <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleUpload(event)">
+  <div id="upload-conv-info" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.78rem;padding:0.4rem 0.6rem;border-radius:3px;margin:0.6rem 0;"></div>
+</div>
+
+<hr>
+
+<!-- Plot areas -->
 <div id="plot-sigma" class="plot-container">
   <p class="status-msg" id="status-sigma">Select a dataset above to view the detuning spectrum.</p>
 </div>
-
 <div id="plot-entropy" class="plot-container" style="min-height:180px;">
   <p class="status-msg" id="status-entropy">&nbsp;</p>
 </div>
 
-<!-- ── Metadata readout ──────────────────────────────────────── -->
-
 <div id="meta-readout" class="meta-row" style="display:none;"></div>
 
-<!-- ── Download ──────────────────────────────────────────────── -->
-
 <div id="download-area" style="margin:1rem 0;display:none;">
-  <a id="download-link" class="download-link" href="#" download>
-    ↓ Download HDF5
-  </a>
+  <a id="download-link" class="download-link" href="#" download>↓ Download data</a>
 </div>
 
 <hr>
 
 <h2>Data Format</h2>
-
-<p>Each HDF5 file contains one group per dataset with the structure:</p>
-
-<table class="compact-table" style="max-width:480px;">
-<thead><tr><th>Dataset</th><th>Shape</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>detuning</code></td><td>(N,)</td><td>Detuning in units of 2π ω<sub>LF</sub></td></tr>
-<tr><td><code>sigma_x</code></td><td>(N,)</td><td>⟨σ<sub>x</sub>⟩</td></tr>
-<tr><td><code>sigma_y</code></td><td>(N,)</td><td>⟨σ<sub>y</sub>⟩</td></tr>
-<tr><td><code>sigma_z</code></td><td>(N,)</td><td>⟨σ<sub>z</sub>⟩</td></tr>
-<tr><td><code>entropy</code></td><td>(N,)</td><td>Von Neumann entropy</td></tr>
-<tr><td><code>coherence</code></td><td>(N,)</td><td>Bloch vector length</td></tr>
-</tbody>
-</table>
-
-<p>Attributes on the root group store simulation parameters: <code>alpha</code>, <code>eta</code>, <code>omega_m</code>, <code>omega_rabi</code>, <code>n_thermal</code>, <code>aom_setup</code>, <code>contrast_x/y/z</code>.</p>
-
-<p>To generate these files from your adaptive-learner output, use <a href="scripts/export_hdf5.py"><code>scripts/export_hdf5.py</code></a>. To produce Harbour-styled SVG figures, use <a href="scripts/plot_detuning_harbour.py"><code>scripts/plot_detuning_harbour.py</code></a>.</p>
+<p style="font-size:0.88rem;">HDF5 files contain <code>detuning</code>, <code>sigma_x/y/z</code>, <code>entropy</code>, <code>coherence</code> arrays plus root-group attributes. JSON files from <a href="simulate.html">Simulate</a> contain a <code>manifest</code> (parameters, provenance hash, convergence) and the same <code>data</code> arrays. See <a href="scripts/export_hdf5.py"><code>scripts/export_hdf5.py</code></a> for the HDF5 export pipeline.</p>
 
 <footer>
-  <p>Dossier v0.4 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="tutorial.html">Tutorial</a></p>
+  <p>Dossier v0.6 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="simulate.html">Simulate</a></p>
 </footer>
 
 </div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     Numerics viewer — loads manifest, fetches HDF5, plots via Plotly
-     Uses jsfive for pure-JS HDF5 parsing (no WASM dependency)
-     ═══════════════════════════════════════════════════════════════ -->
 <script src="js/numerics-viewer.js"></script>
 </body>
 </html>

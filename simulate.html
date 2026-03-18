@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulate — Stroboscopic Detuning Scan · Open Science Harbour</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js" charset="utf-8"></script>
+<style>
+:root {
+  --bg-main:#f2dcd6;--bg-section:#efe0db;--bg-card:#faf3f0;--bg-code:#f9edea;--bg-input:#fff9f7;
+  --border:#d4a99e;--border-light:#e3c5bd;--border-focus:#a0453a;
+  --text:#3a2520;--text-sec:#6b4a40;--text-muted:#8c6e63;
+  --accent:#a0453a;--accent-light:#c46b5f;--accent-glow:rgba(160,69,58,0.15);
+  --link:#8b3a30;--link-hover:#a0453a;--tag-bg:#e8cdc6;--tag-text:#6b3a30;
+  --trace-sx:#a0453a;--trace-sy:#3a5a8a;--trace-sz:#c08a20;--trace-coh:#3a2520;--trace-ent:#6b4a40;
+  --run-green:#4a7a4a;--run-green-bg:#d8ead8;
+  --warn-amber:#b8860b;--warn-amber-bg:#fdf4dc;--warn-red:#a04040;--warn-red-bg:#fce4e4;
+  --ok-green:#4a7a4a;--ok-green-bg:#e4f2e4;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:17px;scroll-behavior:smooth}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--bg-main);color:var(--text);line-height:1.72;-webkit-font-smoothing:antialiased}
+.page-wrap{max-width:820px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:.3rem}
+h2{font-size:1.1rem;font-weight:600;margin-top:2.2rem;margin-bottom:.5rem;letter-spacing:.01em;display:flex;align-items:center;gap:.5rem}
+h2 .step-num{display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--accent);color:#faf3f0;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;flex-shrink:0}
+h3{font-size:.95rem;font-weight:600;margin-top:1.4rem;margin-bottom:.3rem;color:var(--text-sec)}
+p{margin-bottom:.8rem}
+a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:2px}a:hover{color:var(--link-hover)}
+hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+code{font-family:'JetBrains Mono',monospace;font-size:.83em;background:var(--bg-code);padding:.12em .3em;border-radius:3px}
+.subtitle{font-size:.92rem;color:var(--text-sec);margin-bottom:.2rem}
+header{margin-bottom:2.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)}
+.site-id{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem}
+.site-id a{color:var(--text-muted);text-decoration:none}.site-id a:hover{color:var(--accent)}
+nav{display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:.7rem}
+nav a{font-size:.86rem;color:var(--link);text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent;transition:border-color .2s}
+nav a:hover,nav a[aria-current="page"]{border-bottom-color:var(--accent)}
+.endorsement{background:var(--bg-card);border:1px solid var(--border-light);border-left:3px solid var(--accent);padding:.7rem 1rem;margin:.8rem 0 1.6rem;font-size:.82rem;line-height:1.55;color:var(--text-sec)}
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.8rem 0 1rem}
+@media(max-width:600px){.param-grid{grid-template-columns:1fr}}
+.param-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:4px;padding:.8rem 1rem}
+.param-card label{display:block;font-size:.78rem;font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.04em;color:var(--accent);text-transform:uppercase;margin-bottom:.3rem}
+.param-card .param-row{display:flex;align-items:center;gap:.5rem}
+.param-card input[type="range"]{flex:1;accent-color:var(--accent);height:6px}
+.param-card .param-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:500;color:var(--text);min-width:4.5rem;text-align:right}
+.param-card .param-hint{font-size:.76rem;color:var(--text-muted);margin-top:.2rem}
+.param-card input[type="number"]{width:100%;padding:.35rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.88rem;border:1px solid var(--border-light);border-radius:3px;background:var(--bg-input);color:var(--text);outline:none}
+.param-card input[type="number"]:focus{border-color:var(--border-focus);box-shadow:0 0 0 2px var(--accent-glow)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin:1.4rem 0 .3rem;padding-bottom:.2rem;border-bottom:1px dashed var(--border-light)}
+.obs-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem}
+.obs-toggle{display:flex;align-items:center;gap:.4rem;cursor:pointer;padding:.35rem .65rem;border-radius:3px;border:1px solid var(--border-light);background:var(--bg-card);font-size:.82rem;font-family:'JetBrains Mono',monospace;transition:all .15s;user-select:none}
+.obs-toggle:hover{border-color:var(--accent)}.obs-toggle.active{border-color:var(--accent);background:var(--tag-bg)}
+.obs-toggle .obs-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}.obs-toggle input{display:none}
+.run-row{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;flex-wrap:wrap}
+#run-btn{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:600;padding:.55rem 1.6rem;border:2px solid var(--run-green);border-radius:4px;background:var(--run-green-bg);color:var(--run-green);cursor:pointer;letter-spacing:.03em;transition:all .2s}
+#run-btn:hover{background:var(--run-green);color:#fff}#run-btn:disabled{opacity:.5;cursor:wait}
+#run-status{font-size:.84rem;color:var(--text-muted);font-style:italic}
+.progress-wrap{width:100%;height:4px;background:var(--border-light);border-radius:2px;margin:.4rem 0 .8rem;overflow:hidden;display:none}
+.progress-wrap.visible{display:block}
+.progress-bar{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .1s}
+.conv-banner{display:none;padding:.6rem 1rem;border-radius:4px;margin:.8rem 0;font-size:.82rem;font-family:'JetBrains Mono',monospace;line-height:1.5;border:1px solid}
+.conv-banner.ok{background:var(--ok-green-bg);border-color:#a8d4a8;color:var(--ok-green)}
+.conv-banner.warn{background:var(--warn-amber-bg);border-color:#e8d08a;color:var(--warn-amber)}
+.conv-banner.fail{background:var(--warn-red-bg);border-color:#e8a8a8;color:var(--warn-red)}
+.plot-container{background:var(--bg-card);border:1px solid var(--border-light);border-radius:4px;padding:.6rem;margin:1rem 0;min-height:340px}
+.status-msg{font-size:.86rem;color:var(--text-muted);text-align:center;padding:2rem 1rem;font-style:italic}
+.meta-row{display:flex;flex-wrap:wrap;gap:1rem;margin:.8rem 0;font-size:.82rem;color:var(--text-sec)}
+.meta-item{display:flex;gap:.25rem}.meta-key{font-weight:600;color:var(--text-muted)}
+.download-section{background:var(--bg-card);border:1px solid var(--border-light);border-radius:4px;padding:1rem 1.2rem;margin:1.2rem 0}
+.hash-display{font-family:'JetBrains Mono',monospace;font-size:.72rem;word-break:break-all;background:var(--bg-code);padding:.4rem .6rem;border-radius:3px;margin:.4rem 0;color:var(--text-sec);line-height:1.5}
+.hash-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.dl-btns{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.dl-btn{display:inline-flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:500;padding:.4rem .8rem;border:1px solid var(--border);border-radius:3px;background:var(--bg-main);color:var(--link);text-decoration:none;cursor:pointer;transition:all .15s}
+.dl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--bg-card)}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text-muted);line-height:1.55}
+@media(max-width:600px){html{font-size:15px}.page-wrap{padding:1.8rem 1rem 3rem}nav{gap:.9rem}}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform</div>
+  <h1>Simulate: Stroboscopic Detuning Scan</h1>
+  <p class="subtitle">In-browser quantum simulation · Hasse et al. (PRA 2024)</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+    <a href="simulate.html" aria-current="page">Simulate</a>
+  </nav>
+</header>
+
+<div class="endorsement">
+  <strong>Endorsement Marker:</strong> Local candidate framework (no parity implied with externally validated laws).<br>
+  <strong>Provenance:</strong> All results carry a SHA-256 hash covering parameters, code version, and output arrays.
+  Results are traceable and mergeable into the <a href="https://github.com/threehouse-plus-ec/open-research-platform">open-research-platform</a> data pipeline.
+</div>
+
+<h2><span class="step-num">1</span> Set Parameters</h2>
+<p style="font-size:.86rem;color:var(--text-sec)">Configure the stroboscopic Raman interaction. The simulation solves the full spin–motion Schrödinger equation (truncated Fock basis) for a displaced coherent state driven by a pulsed travelling wave.</p>
+
+<div class="section-label">Hamiltonian parameters</div>
+<div class="param-grid">
+  <div class="param-card"><label>Displacement α</label><div class="param-row"><input type="range" id="p-alpha" min="0" max="8" step="0.5" value="3"><span class="param-val" id="v-alpha">3.0</span></div><div class="param-hint">⟨n⟩ = <span id="h-nbar">9</span></div></div>
+  <div class="param-card"><label>Lamb–Dicke η</label><div class="param-row"><input type="range" id="p-eta" min="0.05" max="0.8" step="0.01" value="0.397"><span class="param-val" id="v-eta">0.397</span></div><div class="param-hint">Debye–Waller: <span id="h-dw">0.924</span></div></div>
+  <div class="param-card"><label>Mode freq. ω<sub>m</sub>/(2π) [MHz]</label><div class="param-row"><input type="range" id="p-omega-m" min="0.3" max="4.0" step="0.05" value="1.30"><span class="param-val" id="v-omega-m">1.300</span></div></div>
+  <div class="param-card"><label>Rabi rate Ω/(2π) [MHz]</label><div class="param-row"><input type="range" id="p-omega-r" min="0.05" max="1.0" step="0.01" value="0.30"><span class="param-val" id="v-omega-r">0.300</span></div><div class="param-hint">Eff. carrier: <span id="h-eff-rabi">0.277</span> MHz</div></div>
+  <div class="param-card"><label>Thermal ⟨n⟩<sub>th</sub></label><div class="param-row"><input type="range" id="p-nth" min="0" max="2.0" step="0.01" value="0.001"><span class="param-val" id="v-nth">0.001</span></div></div>
+  <div class="param-card"><label>Fock truncation N<sub>max</sub></label><div class="param-row"><input type="range" id="p-nmax" min="10" max="80" step="5" value="40"><span class="param-val" id="v-nmax">40</span></div><div class="param-hint">Convergence checked post-run</div></div>
+</div>
+
+<div class="section-label">Decoherence</div>
+<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem">Set to 0 for unitary evolution. Non-zero values activate quantum-trajectory averaging (computation time × N<sub>traj</sub>).</p>
+<div class="param-grid">
+  <div class="param-card"><label>Spin T<sub>1</sub> [μs]</label><div class="param-row"><input type="range" id="p-T1" min="0" max="5000" step="50" value="0"><span class="param-val" id="v-T1">∞</span></div><div class="param-hint">Spin relaxation (|↑⟩→|↓⟩). 0 = off.</div></div>
+  <div class="param-card"><label>Spin T<sub>2</sub> [μs]</label><div class="param-row"><input type="range" id="p-T2" min="0" max="5000" step="50" value="0"><span class="param-val" id="v-T2">∞</span></div><div class="param-hint">Spin dephasing (pure). 0 = off.</div></div>
+  <div class="param-card"><label>Motional heating dn/dt [quanta/ms]</label><div class="param-row"><input type="range" id="p-heating" min="0" max="500" step="5" value="0"><span class="param-val" id="v-heating">0</span></div><div class="param-hint">Anomalous heating rate. 0 = off.</div></div>
+  <div class="param-card"><label>Trajectories N<sub>traj</sub></label><div class="param-row"><input type="range" id="p-ntraj" min="1" max="50" step="1" value="10"><span class="param-val" id="v-ntraj">10</span></div><div class="param-hint">Only used when decoherence ≠ 0</div></div>
+</div>
+
+<div class="section-label">Measurement noise</div>
+<div class="param-grid">
+  <div class="param-card"><label>Projection noise: N<sub>rep</sub></label><div class="param-row"><input type="range" id="p-nrep" min="0" max="1000" step="10" value="0"><span class="param-val" id="v-nrep">∞</span></div><div class="param-hint">Experimental shots per point. 0 = ideal (∞).</div></div>
+  <div class="param-card" style="display:flex;flex-direction:column;justify-content:center"><p style="font-size:.8rem;color:var(--text-muted);margin:0">With N<sub>rep</sub> > 0, each σ measurement is binomially sampled. Error bars show ±1σ quantum projection noise.</p></div>
+</div>
+
+<div class="section-label">Detuning range &amp; pulse count</div>
+<div class="param-grid">
+  <div class="param-card"><label>δ min / ω<sub>m</sub></label><input type="number" id="p-det-min" value="-6.0" step="0.5"></div>
+  <div class="param-card"><label>δ max / ω<sub>m</sub></label><input type="number" id="p-det-max" value="6.0" step="0.5"></div>
+  <div class="param-card"><label>Number of points</label><input type="number" id="p-npts" value="201" min="21" max="801" step="10"></div>
+  <div class="param-card"><label>Stroboscopic pulses</label><input type="number" id="p-npulses" value="22" min="1" max="100" step="1"><div class="param-hint">~π/2 rotation for 22 pulses</div></div>
+</div>
+
+<hr>
+
+<h2><span class="step-num">2</span> Choose Observables</h2>
+<p style="font-size:.86rem;color:var(--text-sec)">Select which quantities to display. With N<sub>rep</sub> > 0, both ideal (lines) and noisy (markers with error bars) are shown.</p>
+<div class="obs-grid" id="obs-grid">
+  <label class="obs-toggle active" data-key="sigma_x"><input type="checkbox" checked><span class="obs-swatch" style="background:var(--trace-sx)"></span>σ<sub>x</sub></label>
+  <label class="obs-toggle active" data-key="sigma_y"><input type="checkbox" checked><span class="obs-swatch" style="background:var(--trace-sy)"></span>σ<sub>y</sub></label>
+  <label class="obs-toggle active" data-key="sigma_z"><input type="checkbox" checked><span class="obs-swatch" style="background:var(--trace-sz)"></span>σ<sub>z</sub></label>
+  <label class="obs-toggle active" data-key="coherence"><input type="checkbox" checked><span class="obs-swatch" style="background:var(--trace-coh)"></span>Coherence</label>
+  <label class="obs-toggle active" data-key="entropy"><input type="checkbox" checked><span class="obs-swatch" style="background:var(--trace-ent)"></span>Entropy</label>
+</div>
+
+<hr>
+
+<h2><span class="step-num">3</span> Run Simulation</h2>
+<p style="font-size:.86rem;color:var(--text-sec)">Runs entirely in your browser (CPU). Decoherence multiplies time by N<sub>traj</sub>. Typical unitary run: 5–30 s.</p>
+<div class="run-row"><button id="run-btn" onclick="runSimulation()">▶ Run</button><span id="run-status">Ready.</span></div>
+<div class="progress-wrap" id="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+<div class="conv-banner" id="conv-banner"></div>
+
+<div id="plot-sigma" class="plot-container"><p class="status-msg" id="status-sigma">Configure parameters above, then press Run.</p></div>
+<div id="plot-entropy" class="plot-container" style="min-height:180px"><p class="status-msg" id="status-entropy">&nbsp;</p></div>
+<div id="meta-readout" class="meta-row" style="display:none"></div>
+
+<hr>
+
+<h2><span class="step-num">4</span> Download Results</h2>
+<div class="download-section" id="download-section" style="display:none">
+  <p style="font-size:.86rem;color:var(--text-sec);margin-bottom:.6rem">Your results are bundled with full provenance. The SHA-256 hash covers all parameters (including decoherence and shot noise settings), code version, and output fingerprints.</p>
+  <div class="hash-label">SHA-256 Provenance Hash</div>
+  <div class="hash-display" id="hash-display">—</div>
+  <div class="dl-btns">
+    <button class="dl-btn" onclick="downloadJSON()">↓ Results (JSON)</button>
+    <button class="dl-btn" onclick="downloadCSV()">↓ Results (CSV)</button>
+    <button class="dl-btn" onclick="downloadCode()">↓ Simulation Code (Python)</button>
+    <button class="dl-btn" onclick="downloadManifest()">↓ Manifest</button>
+  </div>
+</div>
+<div id="no-results-msg" style="font-size:.86rem;color:var(--text-muted);font-style:italic;margin:.6rem 0">Run a simulation first to enable downloads.</div>
+
+<hr>
+
+<h2>Method</h2>
+<p>For each laser detuning δ₀, the simulation: (1) prepares |↓⟩⊗D(α)|0⟩ in a truncated Fock basis; (2) applies N<sub>pulses</sub> stroboscopic unitary kicks U=exp(−iH<sub>eff</sub>δt), with optional Lindblad collapse between pulses; (3) computes spin observables and entropy; (4) optionally applies binomial projection noise.</p>
+<p style="font-size:.86rem;color:var(--text-sec)">
+  <strong>Fock convergence:</strong> After each run, population in the top 3 Fock levels is measured. A banner reports whether the truncation is converged (<0.01%), marginal (0.01–1%), or unreliable (>1%), with a recommended N<sub>max</sub>.<br>
+  <strong>Decoherence:</strong> Three Lindblad channels — spin decay (1/T₁), pure dephasing (1/T₂ − 1/(2T₁)), and motional heating (dn/dt via a†) — implemented via quantum-trajectory (Monte Carlo wavefunction) method, averaged over N<sub>traj</sub> trajectories.<br>
+  <strong>Projection noise:</strong> Each spin expectation value is binomially sampled with N<sub>rep</sub> trials, modelling quantum projection noise in a real experiment. Error bars show ±1σ shot noise.
+</p>
+
+<footer>
+  <p>Dossier v0.6 · Breakwater Layer · Rocket Science Demonstrator<br>
+  <a href="https://github.com/threehouse-plus-ec/open-research-platform">open-research-platform</a> ·
+  Source: Hasse et al., <a href="https://doi.org/10.1103/PhysRevA.109.053105">PRA 109, 053105 (2024)</a> ·
+  <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
+</footer>
+</div>
+
+<script>
+"use strict";
+const PAL={bg_figure:'#f2dcd6',bg_axes:'#faf3f0',grid:'#d4a99e',text:'#3a2520',text_muted:'#8c6e63',accent:'#a0453a',border:'#d4a99e',sigma_x:'#a0453a',sigma_y:'#3a5a8a',sigma_z:'#c08a20',coherence:'#3a2520',entropy:'#6b4a40'};
+const CODE_VERSION='0.6.0',REPO_URL='https://github.com/threehouse-plus-ec/open-research-platform';
+let lastResult=null,lastHash=null;
+
+function wireSlider(id,valId,fmt,onChange){const sl=document.getElementById(id),vl=document.getElementById(valId);const up=()=>{vl.textContent=fmt(sl.value);if(onChange)onChange(sl.value)};sl.addEventListener('input',up);up()}
+wireSlider('p-alpha','v-alpha',v=>parseFloat(v).toFixed(1),v=>{document.getElementById('h-nbar').textContent=(parseFloat(v)**2).toFixed(0)});
+wireSlider('p-eta','v-eta',v=>parseFloat(v).toFixed(3),v=>{document.getElementById('h-dw').textContent=Math.exp(-parseFloat(v)**2/2).toFixed(3);const o=parseFloat(document.getElementById('p-omega-r').value);document.getElementById('h-eff-rabi').textContent=(o*Math.exp(-parseFloat(v)**2/2)).toFixed(3)});
+wireSlider('p-omega-m','v-omega-m',v=>parseFloat(v).toFixed(3));
+wireSlider('p-omega-r','v-omega-r',v=>parseFloat(v).toFixed(3),v=>{const e=parseFloat(document.getElementById('p-eta').value);document.getElementById('h-eff-rabi').textContent=(parseFloat(v)*Math.exp(-e**2/2)).toFixed(3)});
+wireSlider('p-nth','v-nth',v=>parseFloat(v).toFixed(3));
+wireSlider('p-nmax','v-nmax',v=>parseInt(v).toString());
+wireSlider('p-T1','v-T1',v=>parseFloat(v)===0?'∞':parseFloat(v).toFixed(0));
+wireSlider('p-T2','v-T2',v=>parseFloat(v)===0?'∞':parseFloat(v).toFixed(0));
+wireSlider('p-heating','v-heating',v=>parseFloat(v).toFixed(0));
+wireSlider('p-ntraj','v-ntraj',v=>parseInt(v).toString());
+wireSlider('p-nrep','v-nrep',v=>parseInt(v)===0?'∞':parseInt(v).toString());
+
+document.querySelectorAll('.obs-toggle').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('active');el.querySelector('input').checked=el.classList.contains('active');if(lastResult)plotResults(lastResult)})});
+function activeObs(){const o={};document.querySelectorAll('.obs-toggle').forEach(el=>{o[el.dataset.key]=el.classList.contains('active')});return o}
+
+function readParams(){return{alpha:parseFloat(document.getElementById('p-alpha').value),eta:parseFloat(document.getElementById('p-eta').value),omega_m:parseFloat(document.getElementById('p-omega-m').value),omega_r:parseFloat(document.getElementById('p-omega-r').value),n_thermal:parseFloat(document.getElementById('p-nth').value),nmax:parseInt(document.getElementById('p-nmax').value),det_min:parseFloat(document.getElementById('p-det-min').value),det_max:parseFloat(document.getElementById('p-det-max').value),npts:parseInt(document.getElementById('p-npts').value),n_pulses:parseInt(document.getElementById('p-npulses').value),T1:parseFloat(document.getElementById('p-T1').value),T2:parseFloat(document.getElementById('p-T2').value),heating:parseFloat(document.getElementById('p-heating').value),n_traj:parseInt(document.getElementById('p-ntraj').value),n_rep:parseInt(document.getElementById('p-nrep').value)}}
+function hasDeco(p){return p.T1>0||p.T2>0||p.heating>0}
+
+/* ═══ Complex linear algebra ═══ */
+function idx(n,i,j){return 2*(i*n+j)}
+function czeros(n){return new Float64Array(2*n*n)}
+function ceye(n){const m=czeros(n);for(let i=0;i<n;i++)m[idx(n,i,i)]=1;return m}
+function cmmul(A,B,n){const C=czeros(n);for(let i=0;i<n;i++)for(let k=0;k<n;k++){const ar=A[idx(n,i,k)],ai=A[idx(n,i,k)+1];if(ar===0&&ai===0)continue;for(let j=0;j<n;j++){const p=idx(n,i,j),q=idx(n,k,j);C[p]+=ar*B[q]-ai*B[q+1];C[p+1]+=ar*B[q+1]+ai*B[q]}}return C}
+function cmvmul(A,x,n){const y=new Float64Array(2*n);for(let i=0;i<n;i++){let r=0,m=0;for(let j=0;j<n;j++){const p=idx(n,i,j),q=2*j;r+=A[p]*x[q]-A[p+1]*x[q+1];m+=A[p]*x[q+1]+A[p+1]*x[q]}y[2*i]=r;y[2*i+1]=m}return y}
+function cdagger(A,n){const B=czeros(n);for(let i=0;i<n;i++)for(let j=0;j<n;j++){B[idx(n,i,j)]=A[idx(n,j,i)];B[idx(n,i,j)+1]=-A[idx(n,j,i)+1]}return B}
+function cadd(A,B,n){const C=new Float64Array(A.length);for(let k=0;k<C.length;k++)C[k]=A[k]+B[k];return C}
+function cscale(A,sr,si){const B=new Float64Array(A.length);for(let k=0;k<A.length;k+=2){B[k]=sr*A[k]-si*A[k+1];B[k+1]=sr*A[k+1]+si*A[k]}return B}
+function factorial(n){let f=1;for(let i=2;i<=n;i++)f*=i;return f}
+function cexpm(M,n){let nrm=0;for(let k=0;k<M.length;k++)nrm+=M[k]*M[k];nrm=Math.sqrt(nrm);let s=Math.max(0,Math.ceil(Math.log2(nrm+1e-16)));const sc=Math.pow(2,-s),Ms=cscale(M,sc,0);let R=ceye(n),Mk=ceye(n);for(let k=1;k<=12;k++){Mk=cmmul(Mk,Ms,n);R=cadd(R,cscale(Mk,1/factorial(k),0),n)}for(let i=0;i<s;i++)R=cmmul(R,R,n);return R}
+function cvnorm(v){let s=0;for(let k=0;k<v.length;k++)s+=v[k]*v[k];return Math.sqrt(s)}
+function cvnormalize(v){const n=cvnorm(v);if(n>0)for(let k=0;k<v.length;k++)v[k]/=n;return v}
+
+/* ═══ Physics ═══ */
+function buildX(nm){const x=czeros(nm);for(let n=0;n<nm-1;n++){const v=Math.sqrt(n+1);x[idx(nm,n,n+1)]+=v;x[idx(nm,n+1,n)]+=v}return x}
+function buildExpIetaX(eta,nm){return cexpm(cscale(buildX(nm),0,eta),nm)}
+function coherentState(alpha,nm){const p=new Float64Array(2*nm),a2=alpha*alpha,ef=Math.exp(-a2/2);for(let n=0;n<nm;n++){let c=ef;for(let k=1;k<=n;k++)c*=alpha/Math.sqrt(k);p[2*n]=c}return p}
+function buildHeff(eta,or,delta,nm,C,Cd){const d=2*nm,H=czeros(d);for(let n=0;n<nm;n++){H[idx(d,n,n)]=-delta/2;H[idx(d,nm+n,nm+n)]=delta/2}for(let i=0;i<nm;i++)for(let j=0;j<nm;j++){const pc=idx(nm,i,j);const h1=idx(d,i,nm+j);H[h1]+=(or/2)*C[pc];H[h1+1]+=(or/2)*C[pc+1];const h2=idx(d,nm+i,j);H[h2]+=(or/2)*Cd[pc];H[h2+1]+=(or/2)*Cd[pc+1]}return H}
+
+function computeObs(psi,nm){let dd=0,uu=0,dur=0,dui=0;for(let n=0;n<nm;n++){const dr=psi[2*n],di=psi[2*n+1],ur=psi[2*(nm+n)],ui=psi[2*(nm+n)+1];dd+=dr*dr+di*di;uu+=ur*ur+ui*ui;dur+=dr*ur+di*ui;dui+=di*ur-dr*ui}
+const sx=2*dur,sy=-2*dui,sz=uu-dd,coh=Math.sqrt(sx*sx+sy*sy+sz*sz);const r=Math.sqrt(4*(dur*dur+dui*dui)+(uu-dd)**2),lp=(1+r)/2,lm=(1-r)/2;let ent=0;if(lp>1e-15)ent-=lp*Math.log2(lp);if(lm>1e-15)ent-=lm*Math.log2(lm);return{sigma_x:sx,sigma_y:sy,sigma_z:sz,coherence:coh,entropy:ent}}
+
+function fockLeak(psi,nm){let l=0;for(let n=Math.max(0,nm-3);n<nm;n++){l+=psi[2*n]**2+psi[2*n+1]**2;l+=psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2}return l}
+
+/* ═══ Decoherence: quantum trajectory collapse ═══ */
+function collapseStep(psi,nm,Tm,g1,gp,gh){
+  const d=2*nm;
+  let pu=0;for(let n=0;n<nm;n++)pu+=psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2;
+  const dp1=g1*Tm*pu;
+  const dp2=(gp/2)*Tm;
+  let np1=0;for(let n=0;n<nm;n++){const w=n+1;np1+=w*(psi[2*n]**2+psi[2*n+1]**2);np1+=w*(psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2)}
+  const dp3=gh*Tm*np1;
+  const r=Math.random();
+  if(r<dp1&&dp1>0){const o=new Float64Array(2*d);for(let n=0;n<nm;n++){o[2*n]=psi[2*(nm+n)];o[2*n+1]=psi[2*(nm+n)+1]}return cvnormalize(o)}
+  if(r<dp1+dp2&&dp2>0){const o=new Float64Array(psi);for(let n=0;n<nm;n++){o[2*n]=-psi[2*n];o[2*n+1]=-psi[2*n+1]}return cvnormalize(o)}
+  if(r<dp1+dp2+dp3&&dp3>0){const o=new Float64Array(2*d);for(let n=0;n<nm-1;n++){const sq=Math.sqrt(n+1);o[2*(n+1)]+=sq*psi[2*n];o[2*(n+1)+1]+=sq*psi[2*n+1];o[2*(nm+n+1)]+=sq*psi[2*(nm+n)];o[2*(nm+n+1)+1]+=sq*psi[2*(nm+n)+1]}return cvnormalize(o)}
+  // No jump
+  const o=new Float64Array(psi);for(let n=0;n<nm;n++){const s1=g1*Tm/2;o[2*(nm+n)]-=s1*psi[2*(nm+n)];o[2*(nm+n)+1]-=s1*psi[2*(nm+n)+1];const s2=(gp/2)*Tm/2;o[2*n]-=s2*psi[2*n];o[2*n+1]-=s2*psi[2*n+1];o[2*(nm+n)]-=s2*psi[2*(nm+n)];o[2*(nm+n)+1]-=s2*psi[2*(nm+n)+1];const s3=gh*(n+1)*Tm/2;o[2*n]-=s3*psi[2*n];o[2*n+1]-=s3*psi[2*n+1];o[2*(nm+n)]-=s3*psi[2*(nm+n)];o[2*(nm+n)+1]-=s3*psi[2*(nm+n)+1]}
+  return cvnormalize(o);
+}
+
+function addQPN(ideal,nr){if(nr<=0)return{noisy:ideal,err:0};const p=Math.max(1e-10,Math.min(1-1e-10,(1+ideal)/2));let s=0;for(let i=0;i<nr;i++)if(Math.random()<p)s++;return{noisy:2*(s/nr)-1,err:2*Math.sqrt(p*(1-p)/nr)}}
+
+/* ═══ Main simulation ═══ */
+async function runSimulation(){
+  const btn=document.getElementById('run-btn'),st=document.getElementById('run-status'),pw=document.getElementById('progress-wrap'),pb=document.getElementById('progress-bar'),cb=document.getElementById('conv-banner');
+  btn.disabled=true;st.textContent='Initialising…';pw.classList.add('visible');pb.style.width='0%';cb.style.display='none';
+  const P=readParams(),{alpha,eta,omega_m,omega_r,nmax,det_min,det_max,npts,n_pulses,T1,T2,heating,n_traj,n_rep}=P;
+  const useDeco=hasDeco(P),ntraj=useDeco?n_traj:1;
+  const dets=[];for(let i=0;i<npts;i++)dets.push(det_min+(det_max-det_min)*i/(npts-1));
+  const oeff=omega_r*Math.exp(-eta**2/2),dt=(Math.PI/2)/(n_pulses*oeff),Tm=2*Math.PI/omega_m;
+  const g1=T1>0?1/T1:0,gp_raw=T2>0?1/T2:0,gp=Math.max(0,gp_raw-g1/2),gh=heating>0?heating/1000:0;
+  const Cm=buildExpIetaX(eta,nmax),Cdm=cdagger(Cm,nmax);
+  const pm=coherentState(alpha,nmax),dim=2*nmax,psi0=new Float64Array(2*dim);
+  for(let n=0;n<nmax;n++){psi0[2*n]=pm[2*n];psi0[2*n+1]=pm[2*n+1]}
+  const R={detuning:new Float64Array(npts),sigma_x:new Float64Array(npts),sigma_y:new Float64Array(npts),sigma_z:new Float64Array(npts),coherence:new Float64Array(npts),entropy:new Float64Array(npts),noisy_sigma_x:new Float64Array(npts),noisy_sigma_y:new Float64Array(npts),noisy_sigma_z:new Float64Array(npts),err_sigma_x:new Float64Array(npts),err_sigma_y:new Float64Array(npts),err_sigma_z:new Float64Array(npts),max_leakage:0};
+  const t0=performance.now();let maxLk=0;const tw=npts*ntraj;let wd=0;
+  for(let i=0;i<npts;i++){
+    const delta=dets[i]*omega_m;const H=buildHeff(eta,omega_r,delta,nmax,Cm,Cdm),M=cscale(H,0,-dt),U=cexpm(M,dim);
+    let ax=0,ay=0,az=0,ac=0,ae=0;
+    for(let t=0;t<ntraj;t++){
+      let psi=new Float64Array(psi0);
+      for(let p=0;p<n_pulses;p++){psi=cmvmul(U,psi,dim);if(useDeco&&p<n_pulses-1)psi=collapseStep(psi,nmax,Tm,g1,gp,gh)}
+      const ob=computeObs(psi,nmax);ax+=ob.sigma_x;ay+=ob.sigma_y;az+=ob.sigma_z;ac+=ob.coherence;ae+=ob.entropy;
+      if(t===ntraj-1){const lk=fockLeak(psi,nmax);if(lk>maxLk)maxLk=lk}
+      wd++;
+    }
+    const sx=ax/ntraj,sy=ay/ntraj,sz=az/ntraj;
+    R.detuning[i]=dets[i];R.sigma_x[i]=sx;R.sigma_y[i]=sy;R.sigma_z[i]=sz;R.coherence[i]=ac/ntraj;R.entropy[i]=ae/ntraj;
+    if(n_rep>0){const nx=addQPN(sx,n_rep),ny=addQPN(sy,n_rep),nz=addQPN(sz,n_rep);R.noisy_sigma_x[i]=nx.noisy;R.err_sigma_x[i]=nx.err;R.noisy_sigma_y[i]=ny.noisy;R.err_sigma_y[i]=ny.err;R.noisy_sigma_z[i]=nz.noisy;R.err_sigma_z[i]=nz.err}
+    if(wd%Math.max(1,Math.floor(tw/100))<ntraj){pb.style.width=(wd/tw*100).toFixed(0)+'%';st.textContent=`Point ${i+1}/${npts}${useDeco?' (traj '+ntraj+')':''}…`;await new Promise(r=>setTimeout(r,0))}
+  }
+  R.max_leakage=maxLk;
+  const el=((performance.now()-t0)/1000).toFixed(1);pb.style.width='100%';
+  st.textContent=`Done in ${el} s. ${npts} pts, dim=${dim}${useDeco?', '+ntraj+' traj':''}${n_rep>0?', N_rep='+n_rep:''}.`;
+  showConvBanner(maxLk,alpha,nmax);
+  lastResult={params:P,data:R,elapsed:el,timestamp:new Date().toISOString()};
+  plotResults(lastResult);await computeHash(lastResult);
+  document.getElementById('download-section').style.display='block';document.getElementById('no-results-msg').style.display='none';showMeta(P,maxLk);btn.disabled=false;
+}
+
+function showConvBanner(lk,alpha,nmax){
+  const cb=document.getElementById('conv-banner'),pct=(lk*100).toFixed(3),rec=Math.ceil(alpha**2+5*Math.sqrt(alpha**2)+10);
+  if(lk<1e-4){cb.className='conv-banner ok';cb.innerHTML=`✓ FOCK CONVERGENCE OK — Boundary population: ${pct}% (< 0.01%)`}
+  else if(lk<0.01){cb.className='conv-banner warn';cb.innerHTML=`⚠ MARGINAL — Boundary population: ${pct}%. Consider N<sub>max</sub> ≥ ${rec}.`}
+  else{cb.className='conv-banner fail';cb.innerHTML=`✗ NOT CONVERGED — Boundary population: ${pct}% (>1%). Increase N<sub>max</sub> to ≥ ${rec}. Results unreliable.`}
+  cb.style.display='block';
+}
+
+/* ═══ Plotting ═══ */
+const LB={paper_bgcolor:PAL.bg_figure,plot_bgcolor:PAL.bg_axes,font:{family:'Source Serif 4,Georgia,serif',color:PAL.text,size:13},margin:{l:56,r:20,t:8,b:4},xaxis:{gridcolor:PAL.grid,gridwidth:.6,linecolor:PAL.border,linewidth:.7,tickfont:{size:11,color:PAL.text_muted},zeroline:false},yaxis:{gridcolor:PAL.grid,gridwidth:.6,linecolor:PAL.border,linewidth:.7,tickfont:{size:11,color:PAL.text_muted},zeroline:false},showlegend:true,legend:{bgcolor:PAL.bg_axes,bordercolor:PAL.border,borderwidth:1,font:{size:10},x:1,xanchor:'right',y:1,yanchor:'top'}};
+function tS(c){return{mode:'lines',line:{color:c,width:1.4}}}
+
+function plotResults(res){
+  const{data:D,params:P}=res,obs=activeObs(),xs=Array.from(D.detuning),hn=P.n_rep>0;
+  function C(a){const v=Array.from(a);return((Math.max(...v)-Math.min(...v))/2).toFixed(3)}
+  const tr=[];
+  for(const[k,c,l]of[['sigma_x',PAL.sigma_x,'σₓ'],['sigma_y',PAL.sigma_y,'σᵧ'],['sigma_z',PAL.sigma_z,'σ_z']]){
+    if(!obs[k])continue;
+    tr.push({x:xs,y:Array.from(D[k]),name:`${l} C=${C(D[k])}${hn?' (ideal)':''}`,mode:'lines',line:{color:c,width:hn?1:1.4,dash:hn?'dot':'solid'}});
+    if(hn)tr.push({x:xs,y:Array.from(D['noisy_'+k]),error_y:{type:'data',array:Array.from(D['err_'+k]),visible:true,color:c,thickness:.8,width:2},name:`${l} (N=${P.n_rep})`,mode:'markers',marker:{color:c,size:3,opacity:.7}});
+  }
+  if(obs.coherence)tr.push({x:xs,y:Array.from(D.coherence),name:'Coherence',...tS(PAL.coherence),line:{color:PAL.coherence,width:1.2,dash:'dot'}});
+  const pd=document.getElementById('plot-sigma');pd.innerHTML='';
+  if(tr.length>0)Plotly.newPlot(pd,tr,{...LB,yaxis:{...LB.yaxis,title:{text:'⟨σᵢ⟩',font:{size:13}},range:[-1.08,1.08]},xaxis:{...LB.xaxis,title:''},height:hn?380:340},{responsive:true,displayModeBar:true,modeBarButtonsToRemove:['lasso2d','select2d']});
+  else pd.innerHTML='<p class="status-msg">No observables selected.</p>';
+  const ed=document.getElementById('plot-entropy');ed.innerHTML='';
+  if(obs.entropy)Plotly.newPlot(ed,[{x:xs,y:Array.from(D.entropy),name:'Entropy',...tS(PAL.entropy)}],{...LB,yaxis:{...LB.yaxis,title:{text:'S (bits)',font:{size:13}},rangemode:'tozero'},xaxis:{...LB.xaxis,title:{text:'Detuning (ω_m)',font:{size:13}}},height:180,showlegend:false,margin:{l:56,r:20,t:4,b:40}},{responsive:true,displayModeBar:false});
+}
+
+function showMeta(P,lk){
+  const d=document.getElementById('meta-readout'),it=[['α',P.alpha],['η',P.eta],['ω_m',P.omega_m+' MHz'],['Ω',P.omega_r+' MHz'],['N_max',P.nmax],['Pts',P.npts],['Pulses',P.n_pulses],['Leak',(lk*100).toFixed(4)+'%']];
+  if(P.T1>0)it.push(['T₁',P.T1+' μs']);if(P.T2>0)it.push(['T₂',P.T2+' μs']);if(P.heating>0)it.push(['dn/dt',P.heating+' q/ms']);if(P.n_rep>0)it.push(['N_rep',P.n_rep]);
+  d.innerHTML=it.map(([k,v])=>`<span class="meta-item"><span class="meta-key">${k}:</span> ${v}</span>`).join('');d.style.display='flex';
+}
+
+/* ═══ SHA-256 ═══ */
+async function computeHash(res){
+  const p={code_version:CODE_VERSION,repo:REPO_URL,params:res.params,timestamp:res.timestamp,data_fingerprint:{sigma_x_sum:Array.from(res.data.sigma_x).reduce((a,b)=>a+b,0),sigma_y_sum:Array.from(res.data.sigma_y).reduce((a,b)=>a+b,0),sigma_z_sum:Array.from(res.data.sigma_z).reduce((a,b)=>a+b,0),entropy_sum:Array.from(res.data.entropy).reduce((a,b)=>a+b,0),coherence_sum:Array.from(res.data.coherence).reduce((a,b)=>a+b,0),n_points:res.data.detuning.length,max_leakage:res.data.max_leakage}};
+  const d=new TextEncoder().encode(JSON.stringify(p)),b=await crypto.subtle.digest('SHA-256',d);
+  lastHash=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+  document.getElementById('hash-display').textContent=lastHash;return lastHash;
+}
+
+/* ═══ Downloads ═══ */
+function buildManifest(){const p=lastResult.params;return{schema_version:'1.1',code_version:CODE_VERSION,repository:REPO_URL,source_paper:{authors:'F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz',title:'Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics',journal:'Phys. Rev. A 109, 053105 (2024)',doi:'10.1103/PhysRevA.109.053105',arxiv:'2309.15580'},endorsement_marker:'Local candidate framework (no parity implied with externally validated laws)',parameters:p,derived:{omega_eff_carrier:p.omega_r*Math.exp(-p.eta**2/2),debye_waller:Math.exp(-p.eta**2/2),n_mean:p.alpha**2,hilbert_dim:2*p.nmax,decoherence_active:hasDeco(p),projection_noise_active:p.n_rep>0},convergence:{max_fock_leakage:lastResult.data.max_leakage,converged:lastResult.data.max_leakage<0.01},execution:{timestamp:lastResult.timestamp,elapsed_s:parseFloat(lastResult.elapsed),engine:'browser-js',method:hasDeco(p)?'quantum-trajectory-stroboscopic':'exact-fock-expm-stroboscopic'},provenance_hash:lastHash,n_points:lastResult.data.detuning.length}}
+
+function downloadJSON(){if(!lastResult)return;const d=lastResult.data,o={manifest:buildManifest(),data:{detuning:Array.from(d.detuning),sigma_x:Array.from(d.sigma_x),sigma_y:Array.from(d.sigma_y),sigma_z:Array.from(d.sigma_z),coherence:Array.from(d.coherence),entropy:Array.from(d.entropy)}};if(lastResult.params.n_rep>0){o.data.noisy_sigma_x=Array.from(d.noisy_sigma_x);o.data.noisy_sigma_y=Array.from(d.noisy_sigma_y);o.data.noisy_sigma_z=Array.from(d.noisy_sigma_z);o.data.err_sigma_x=Array.from(d.err_sigma_x);o.data.err_sigma_y=Array.from(d.err_sigma_y);o.data.err_sigma_z=Array.from(d.err_sigma_z)}dl('simulation_results.json',JSON.stringify(o,null,2),'application/json')}
+
+function downloadCSV(){if(!lastResult)return;const d=lastResult.data,p=lastResult.params;let c='# Stroboscopic Detuning Scan — Hasse et al. (PRA 2024)\n';c+=`# Hash: ${lastHash}\n# Params: alpha=${p.alpha} eta=${p.eta} omega_m=${p.omega_m} omega_r=${p.omega_r} nmax=${p.nmax} pulses=${p.n_pulses}\n`;c+=`# Deco: T1=${p.T1||'inf'} T2=${p.T2||'inf'} heating=${p.heating} ntraj=${p.n_traj}\n# QPN: n_rep=${p.n_rep||'inf'}\n# Convergence: leak=${(d.max_leakage*100).toFixed(4)}%\n`;c+=`# ${REPO_URL}  v${CODE_VERSION}  ${lastResult.timestamp}\n`;let h='detuning,sigma_x,sigma_y,sigma_z,coherence,entropy';if(p.n_rep>0)h+=',noisy_sx,noisy_sy,noisy_sz,err_sx,err_sy,err_sz';c+=h+'\n';for(let i=0;i<d.detuning.length;i++){let r=`${d.detuning[i].toFixed(6)},${d.sigma_x[i].toFixed(8)},${d.sigma_y[i].toFixed(8)},${d.sigma_z[i].toFixed(8)},${d.coherence[i].toFixed(8)},${d.entropy[i].toFixed(8)}`;if(p.n_rep>0)r+=`,${d.noisy_sigma_x[i].toFixed(8)},${d.noisy_sigma_y[i].toFixed(8)},${d.noisy_sigma_z[i].toFixed(8)},${d.err_sigma_x[i].toFixed(8)},${d.err_sigma_y[i].toFixed(8)},${d.err_sigma_z[i].toFixed(8)}`;c+=r+'\n'}dl('simulation_results.csv',c,'text/csv')}
+
+function downloadCode(){if(!lastResult)return;const p=lastResult.params;
+dl('stroboscopic_scan.py',`#!/usr/bin/env python3
+"""
+Stroboscopic Detuning Scan — Hasse et al. (PRA 2024)
+With decoherence (quantum trajectories) and projection noise.
+
+Repository : ${REPO_URL}
+Code ver.  : ${CODE_VERSION}
+Paper      : Phys. Rev. A 109, 053105 (2024), arXiv: 2309.15580
+Endorsement: Local candidate framework
+Browser hash: ${lastHash}
+
+Install: pip install qutip numpy
+"""
+import numpy as np, json, hashlib
+from datetime import datetime
+try:
+    import qutip as qt
+except ImportError:
+    raise ImportError("pip install qutip")
+
+ALPHA=${p.alpha}; ETA=${p.eta}; OMEGA_M=${p.omega_m}; OMEGA_R=${p.omega_r}
+N_THERMAL=${p.n_thermal}; NMAX=${p.nmax}
+DET_MIN=${p.det_min}; DET_MAX=${p.det_max}; NPTS=${p.npts}; N_PULSES=${p.n_pulses}
+T1=${p.T1||0}; T2=${p.T2||0}; HEATING=${p.heating||0}; N_TRAJ=${p.n_traj}; N_REP=${p.n_rep}
+CODE_VERSION="${CODE_VERSION}"; REPO_URL="${REPO_URL}"
+
+omega_eff=OMEGA_R*np.exp(-ETA**2/2); dt=(np.pi/2)/(N_PULSES*omega_eff)
+T_m=2*np.pi/OMEGA_M; dets=np.linspace(DET_MIN,DET_MAX,NPTS)
+USE_DECO=T1>0 or T2>0 or HEATING>0; ntraj=N_TRAJ if USE_DECO else 1
+
+a=qt.tensor(qt.qeye(2),qt.destroy(NMAX)); sm=qt.tensor(qt.destroy(2),qt.qeye(NMAX))
+sz=qt.tensor(qt.sigmaz(),qt.qeye(NMAX)); sx=qt.tensor(qt.sigmax(),qt.qeye(NMAX))
+sy=qt.tensor(qt.sigmay(),qt.qeye(NMAX))
+x_op=qt.tensor(qt.qeye(2),qt.destroy(NMAX)+qt.create(NMAX))
+C=(1j*ETA*x_op).expm()
+
+c_ops=[]
+if T1>0: c_ops.append(np.sqrt(1.0/T1)*sm)
+if T2>0:
+    gp=max(0,1.0/T2-0.5*(1.0/T1 if T1>0 else 0))
+    if gp>0: c_ops.append(np.sqrt(gp/2)*sz)
+if HEATING>0: c_ops.append(np.sqrt(HEATING/1000.0)*a.dag())
+
+psi0=qt.tensor(qt.basis(2,0),qt.coherent(NMAX,ALPHA))
+res={k:[] for k in ['detuning','sigma_x','sigma_y','sigma_z','coherence','entropy']}
+if N_REP>0:
+    for k in ['noisy_sigma_x','noisy_sigma_y','noisy_sigma_z','err_sigma_x','err_sigma_y','err_sigma_z']:
+        res[k]=[]
+max_leak=0
+print(f"Running {NPTS} pts, dim={2*NMAX}, traj={ntraj}...")
+for i,det in enumerate(dets):
+    delta=det*OMEGA_M; H=-(delta/2)*sz+(OMEGA_R/2)*(C*sm+sm.dag()*C.dag())
+    U=(-1j*dt*H).expm(); acc=np.zeros(5)
+    for t in range(ntraj):
+        psi=psi0.copy()
+        for p in range(N_PULSES):
+            psi=U*psi
+            if USE_DECO and p<N_PULSES-1:
+                for L in c_ops:
+                    dp=T_m*qt.expect(L.dag()*L,psi)
+                    if np.random.random()<dp: psi=L*psi; psi=psi/psi.norm()
+                    else: psi=psi-0.5*T_m*L.dag()*L*psi; psi=psi/psi.norm()
+        sx_v,sy_v,sz_v=qt.expect(sx,psi),qt.expect(sy,psi),qt.expect(sz,psi)
+        coh=np.sqrt(sx_v**2+sy_v**2+sz_v**2)
+        rho_s=psi.ptrace(0); ev=rho_s.eigenenergies(); ev=ev[ev>1e-15]
+        ent=-np.sum(ev*np.log2(ev)); acc+=[sx_v,sy_v,sz_v,coh,ent]
+        if t==ntraj-1:
+            diag=psi.ptrace(1).diag(); max_leak=max(max_leak,float(np.sum(diag[-3:])))
+    acc/=ntraj; res['detuning'].append(float(det))
+    for k,j in [('sigma_x',0),('sigma_y',1),('sigma_z',2),('coherence',3),('entropy',4)]:
+        res[k].append(float(acc[j]))
+    if N_REP>0:
+        for k,j in [('sigma_x',0),('sigma_y',1),('sigma_z',2)]:
+            p_up=np.clip((1+acc[j])/2,1e-10,1-1e-10)
+            shots=np.random.binomial(N_REP,p_up); noisy=2*(shots/N_REP)-1
+            err=2*np.sqrt(p_up*(1-p_up)/N_REP)
+            res[f'noisy_{k}'].append(float(noisy)); res[f'err_{k}'].append(float(err))
+    if(i+1)%20==0: print(f"  {i+1}/{NPTS}")
+print(f"Done. Max Fock leakage: {max_leak*100:.4f}%")
+manifest={'code_version':CODE_VERSION,'repo':REPO_URL,'params':{'alpha':ALPHA,'eta':ETA,'omega_m':OMEGA_M,'omega_r':OMEGA_R,'n_thermal':N_THERMAL,'nmax':NMAX,'det_min':DET_MIN,'det_max':DET_MAX,'npts':NPTS,'n_pulses':N_PULSES,'T1':T1,'T2':T2,'heating':HEATING,'n_traj':N_TRAJ,'n_rep':N_REP},'timestamp':datetime.utcnow().isoformat()+'Z','data_fingerprint':{'sigma_x_sum':sum(res['sigma_x']),'sigma_y_sum':sum(res['sigma_y']),'sigma_z_sum':sum(res['sigma_z']),'entropy_sum':sum(res['entropy']),'coherence_sum':sum(res['coherence']),'n_points':NPTS,'max_leakage':max_leak}}
+h=hashlib.sha256(json.dumps(manifest).encode()).hexdigest()
+print(f"Hash: {h}")
+output={'manifest':{**manifest,'provenance_hash':h},'data':res}
+with open('simulation_results.json','w') as f: json.dump(output,f,indent=2)
+print("Saved: simulation_results.json")
+`,'text/x-python')}
+
+function downloadManifest(){if(!lastResult)return;dl('manifest.json',JSON.stringify(buildManifest(),null,2),'application/json')}
+function dl(fn,ct,mt){const b=new Blob([ct],{type:mt}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
+</script>
+</body>
+</html>
