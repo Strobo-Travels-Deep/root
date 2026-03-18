@@ -34,6 +34,7 @@ except ImportError:
 
 
 # ── Default simulation parameters (override via kwargs) ──────
+# v0.7: n_pulses corrected from 326 to 22 (1 per motional cycle)
 DEFAULTS = dict(
     eta=0.397,
     omega_m=1.3,           # 2π MHz
@@ -42,7 +43,7 @@ DEFAULTS = dict(
     aom_setup="fast",
     pulse_duration_us=0.04,
     duty_cycle=0.052,
-    n_pulses=326,
+    n_pulses=22,           # v0.7: corrected from 326
     strobo_pi2_us=17.0,
 )
 
@@ -110,7 +111,7 @@ def export_learner(learner, alpha, outdir="data",
         f.attrs['duty_cycle']        = cfg['duty_cycle']
         f.attrs['n_pulses']          = cfg['n_pulses']
         f.attrs['strobo_pi2_us']     = cfg['strobo_pi2_us']
-        f.attrs['export_version']    = '0.4'
+        f.attrs['export_version']    = '0.7'
 
     print(f"  ✓  {filepath}  ({len(xs)} points, α={alpha}, C(σz)={cz:.2f})")
     return filepath

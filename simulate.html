@@ -134,7 +134,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);font-
   <div class="param-card"><label>δ min / ω<sub>m</sub></label><input type="number" id="p-det-min" value="-6.0" step="0.5"></div>
   <div class="param-card"><label>δ max / ω<sub>m</sub></label><input type="number" id="p-det-max" value="6.0" step="0.5"></div>
   <div class="param-card"><label>Number of points</label><input type="number" id="p-npts" value="201" min="21" max="801" step="10"></div>
-  <div class="param-card"><label>Stroboscopic pulses</label><input type="number" id="p-npulses" value="22" min="1" max="100" step="1"><div class="param-hint">~π/2 rotation for 22 pulses</div></div>
+  <div class="param-card"><label>Stroboscopic pulses</label><input type="number" id="p-npulses" value="22" min="1" max="100" step="1"><div class="param-hint">~π/2 rotation for 22 pulses (1 per motional cycle)</div></div>
 </div>
 
 <hr>
@@ -182,13 +182,13 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);font-
 <h2>Method</h2>
 <p>For each laser detuning δ₀, the simulation: (1) prepares |↓⟩⊗D(α)|0⟩ in a truncated Fock basis; (2) applies N<sub>pulses</sub> stroboscopic unitary kicks U=exp(−iH<sub>eff</sub>δt), with optional Lindblad collapse between pulses; (3) computes spin observables and entropy; (4) optionally applies binomial projection noise.</p>
 <p style="font-size:.86rem;color:var(--text-sec)">
-  <strong>Fock convergence:</strong> After each run, population in the top 3 Fock levels is measured. A banner reports whether the truncation is converged (<0.01%), marginal (0.01–1%), or unreliable (>1%), with a recommended N<sub>max</sub>.<br>
-  <strong>Decoherence:</strong> Three Lindblad channels — spin decay (1/T₁), pure dephasing (1/T₂ − 1/(2T₁)), and motional heating (dn/dt via a†) — implemented via quantum-trajectory (Monte Carlo wavefunction) method, averaged over N<sub>traj</sub> trajectories.<br>
+  <strong>Fock convergence:</strong> After each run, population in the top 3 Fock levels is measured across all trajectories. A banner reports whether the truncation is converged (&lt;0.01%), marginal (0.01–1%), or unreliable (&gt;1%), with a recommended N<sub>max</sub>.<br>
+  <strong>Decoherence:</strong> Three Lindblad channels — spin decay (1/T₁), pure dephasing (1/T₂ − 1/(2T₁)), and motional heating (dn/dt via a†) — implemented via quantum-trajectory (Monte Carlo wavefunction) method, averaged over N<sub>traj</sub> trajectories. Total collapse probability is clamped to &lt;1 per step; a warning is shown if saturation occurs.<br>
   <strong>Projection noise:</strong> Each spin expectation value is binomially sampled with N<sub>rep</sub> trials, modelling quantum projection noise in a real experiment. Error bars show ±1σ shot noise.
 </p>
 
 <footer>
-  <p>Dossier v0.6 · Breakwater Layer · Rocket Science Demonstrator<br>
+  <p>Dossier v0.7 · Breakwater Layer · Rocket Science Demonstrator<br>
   <a href="https://github.com/threehouse-plus-ec/open-research-platform">open-research-platform</a> ·
   Source: Hasse et al., <a href="https://doi.org/10.1103/PhysRevA.109.053105">PRA 109, 053105 (2024)</a> ·
   <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
@@ -198,7 +198,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);font-
 <script>
 "use strict";
 const PAL={bg_figure:'#f2dcd6',bg_axes:'#faf3f0',grid:'#d4a99e',text:'#3a2520',text_muted:'#8c6e63',accent:'#a0453a',border:'#d4a99e',sigma_x:'#a0453a',sigma_y:'#3a5a8a',sigma_z:'#c08a20',coherence:'#3a2520',entropy:'#6b4a40'};
-const CODE_VERSION='0.6.0',REPO_URL='https://github.com/threehouse-plus-ec/open-research-platform';
+const CODE_VERSION='0.7.0',REPO_URL='https://github.com/threehouse-plus-ec/open-research-platform';
 let lastResult=null,lastHash=null;
 
 function wireSlider(id,valId,fmt,onChange){const sl=document.getElementById(id),vl=document.getElementById(valId);const up=()=>{vl.textContent=fmt(sl.value);if(onChange)onChange(sl.value)};sl.addEventListener('input',up);up()}
@@ -245,7 +245,9 @@ const sx=2*dur,sy=-2*dui,sz=uu-dd,coh=Math.sqrt(sx*sx+sy*sy+sz*sz);const r=Math.
 
 function fockLeak(psi,nm){let l=0;for(let n=Math.max(0,nm-3);n<nm;n++){l+=psi[2*n]**2+psi[2*n+1]**2;l+=psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2}return l}
 
-/* ═══ Decoherence: quantum trajectory collapse ═══ */
+/* ═══ Decoherence: quantum trajectory collapse (v0.7 — FIX M1) ═══ */
+let decoSaturationCount = 0; // v0.7: track saturation events
+
 function collapseStep(psi,nm,Tm,g1,gp,gh){
   const d=2*nm;
   let pu=0;for(let n=0;n<nm;n++)pu+=psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2;
@@ -253,11 +255,26 @@ function collapseStep(psi,nm,Tm,g1,gp,gh){
   const dp2=(gp/2)*Tm;
   let np1=0;for(let n=0;n<nm;n++){const w=n+1;np1+=w*(psi[2*n]**2+psi[2*n+1]**2);np1+=w*(psi[2*(nm+n)]**2+psi[2*(nm+n)+1]**2)}
   const dp3=gh*Tm*np1;
+
+  // v0.7 FIX M1: Clamp total collapse probability
+  const dpTotal = dp1 + dp2 + dp3;
+  if (dpTotal >= 1.0) {
+    decoSaturationCount++;
+    // Rescale probabilities to sum to 0.95 (leave 5% for no-jump)
+    const scale = 0.95 / dpTotal;
+    return collapseStepScaled(psi, nm, Tm, g1, gp, gh, dp1*scale, dp2*scale, dp3*scale);
+  }
+
+  return collapseStepScaled(psi, nm, Tm, g1, gp, gh, dp1, dp2, dp3);
+}
+
+function collapseStepScaled(psi,nm,Tm,g1,gp,gh,dp1,dp2,dp3){
+  const d=2*nm;
   const r=Math.random();
   if(r<dp1&&dp1>0){const o=new Float64Array(2*d);for(let n=0;n<nm;n++){o[2*n]=psi[2*(nm+n)];o[2*n+1]=psi[2*(nm+n)+1]}return cvnormalize(o)}
   if(r<dp1+dp2&&dp2>0){const o=new Float64Array(psi);for(let n=0;n<nm;n++){o[2*n]=-psi[2*n];o[2*n+1]=-psi[2*n+1]}return cvnormalize(o)}
   if(r<dp1+dp2+dp3&&dp3>0){const o=new Float64Array(2*d);for(let n=0;n<nm-1;n++){const sq=Math.sqrt(n+1);o[2*(n+1)]+=sq*psi[2*n];o[2*(n+1)+1]+=sq*psi[2*n+1];o[2*(nm+n+1)]+=sq*psi[2*(nm+n)];o[2*(nm+n+1)+1]+=sq*psi[2*(nm+n)+1]}return cvnormalize(o)}
-  // No jump
+  // No jump — non-Hermitian decay
   const o=new Float64Array(psi);for(let n=0;n<nm;n++){const s1=g1*Tm/2;o[2*(nm+n)]-=s1*psi[2*(nm+n)];o[2*(nm+n)+1]-=s1*psi[2*(nm+n)+1];const s2=(gp/2)*Tm/2;o[2*n]-=s2*psi[2*n];o[2*n+1]-=s2*psi[2*n+1];o[2*(nm+n)]-=s2*psi[2*(nm+n)];o[2*(nm+n)+1]-=s2*psi[2*(nm+n)+1];const s3=gh*(n+1)*Tm/2;o[2*n]-=s3*psi[2*n];o[2*n+1]-=s3*psi[2*n+1];o[2*(nm+n)]-=s3*psi[2*(nm+n)];o[2*(nm+n)+1]-=s3*psi[2*(nm+n)+1]}
   return cvnormalize(o);
 }
@@ -268,6 +285,7 @@ function addQPN(ideal,nr){if(nr<=0)return{noisy:ideal,err:0};const p=Math.max(1e
 async function runSimulation(){
   const btn=document.getElementById('run-btn'),st=document.getElementById('run-status'),pw=document.getElementById('progress-wrap'),pb=document.getElementById('progress-bar'),cb=document.getElementById('conv-banner');
   btn.disabled=true;st.textContent='Initialising…';pw.classList.add('visible');pb.style.width='0%';cb.style.display='none';
+  decoSaturationCount = 0; // v0.7: reset saturation counter
   const P=readParams(),{alpha,eta,omega_m,omega_r,nmax,det_min,det_max,npts,n_pulses,T1,T2,heating,n_traj,n_rep}=P;
   const useDeco=hasDeco(P),ntraj=useDeco?n_traj:1;
   const dets=[];for(let i=0;i<npts;i++)dets.push(det_min+(det_max-det_min)*i/(npts-1));
@@ -285,7 +303,8 @@ async function runSimulation(){
       let psi=new Float64Array(psi0);
       for(let p=0;p<n_pulses;p++){psi=cmvmul(U,psi,dim);if(useDeco&&p<n_pulses-1)psi=collapseStep(psi,nmax,Tm,g1,gp,gh)}
       const ob=computeObs(psi,nmax);ax+=ob.sigma_x;ay+=ob.sigma_y;az+=ob.sigma_z;ac+=ob.coherence;ae+=ob.entropy;
-      if(t===ntraj-1){const lk=fockLeak(psi,nmax);if(lk>maxLk)maxLk=lk}
+      // v0.7 FIX M2: Check Fock leakage on EVERY trajectory
+      const lk=fockLeak(psi,nmax);if(lk>maxLk)maxLk=lk;
       wd++;
     }
     const sx=ax/ntraj,sy=ay/ntraj,sz=az/ntraj;
@@ -295,9 +314,12 @@ async function runSimulation(){
   }
   R.max_leakage=maxLk;
   const el=((performance.now()-t0)/1000).toFixed(1);pb.style.width='100%';
-  st.textContent=`Done in ${el} s. ${npts} pts, dim=${dim}${useDeco?', '+ntraj+' traj':''}${n_rep>0?', N_rep='+n_rep:''}.`;
+  let statusMsg=`Done in ${el} s. ${npts} pts, dim=${dim}${useDeco?', '+ntraj+' traj':''}${n_rep>0?', N_rep='+n_rep:''}.`;
+  // v0.7: Report decoherence saturation if it occurred
+  if(decoSaturationCount>0) statusMsg+=` ⚠ ${decoSaturationCount} collapse-probability saturations (rates too high for step size).`;
+  st.textContent=statusMsg;
   showConvBanner(maxLk,alpha,nmax);
-  lastResult={params:P,data:R,elapsed:el,timestamp:new Date().toISOString()};
+  lastResult={params:P,data:R,elapsed:el,timestamp:new Date().toISOString(),decoSaturations:decoSaturationCount};
   plotResults(lastResult);await computeHash(lastResult);
   document.getElementById('download-section').style.display='block';document.getElementById('no-results-msg').style.display='none';showMeta(P,maxLk);btn.disabled=false;
 }
@@ -346,7 +368,7 @@ async function computeHash(res){
 }
 
 /* ═══ Downloads ═══ */
-function buildManifest(){const p=lastResult.params;return{schema_version:'1.1',code_version:CODE_VERSION,repository:REPO_URL,source_paper:{authors:'F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz',title:'Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics',journal:'Phys. Rev. A 109, 053105 (2024)',doi:'10.1103/PhysRevA.109.053105',arxiv:'2309.15580'},endorsement_marker:'Local candidate framework (no parity implied with externally validated laws)',parameters:p,derived:{omega_eff_carrier:p.omega_r*Math.exp(-p.eta**2/2),debye_waller:Math.exp(-p.eta**2/2),n_mean:p.alpha**2,hilbert_dim:2*p.nmax,decoherence_active:hasDeco(p),projection_noise_active:p.n_rep>0},convergence:{max_fock_leakage:lastResult.data.max_leakage,converged:lastResult.data.max_leakage<0.01},execution:{timestamp:lastResult.timestamp,elapsed_s:parseFloat(lastResult.elapsed),engine:'browser-js',method:hasDeco(p)?'quantum-trajectory-stroboscopic':'exact-fock-expm-stroboscopic'},provenance_hash:lastHash,n_points:lastResult.data.detuning.length}}
+function buildManifest(){const p=lastResult.params;return{schema_version:'1.1',code_version:CODE_VERSION,repository:REPO_URL,source_paper:{authors:'F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz',title:'Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics',journal:'Phys. Rev. A 109, 053105 (2024)',doi:'10.1103/PhysRevA.109.053105',arxiv:'2309.15580'},endorsement_marker:'Local candidate framework (no parity implied with externally validated laws)',parameters:p,derived:{omega_eff_carrier:p.omega_r*Math.exp(-p.eta**2/2),debye_waller:Math.exp(-p.eta**2/2),n_mean:p.alpha**2,hilbert_dim:2*p.nmax,decoherence_active:hasDeco(p),projection_noise_active:p.n_rep>0},convergence:{max_fock_leakage:lastResult.data.max_leakage,converged:lastResult.data.max_leakage<0.01},execution:{timestamp:lastResult.timestamp,elapsed_s:parseFloat(lastResult.elapsed),engine:'browser-js',method:hasDeco(p)?'quantum-trajectory-stroboscopic':'exact-fock-expm-stroboscopic',deco_saturations:lastResult.decoSaturations||0},provenance_hash:lastHash,n_points:lastResult.data.detuning.length}}
 
 function downloadJSON(){if(!lastResult)return;const d=lastResult.data,o={manifest:buildManifest(),data:{detuning:Array.from(d.detuning),sigma_x:Array.from(d.sigma_x),sigma_y:Array.from(d.sigma_y),sigma_z:Array.from(d.sigma_z),coherence:Array.from(d.coherence),entropy:Array.from(d.entropy)}};if(lastResult.params.n_rep>0){o.data.noisy_sigma_x=Array.from(d.noisy_sigma_x);o.data.noisy_sigma_y=Array.from(d.noisy_sigma_y);o.data.noisy_sigma_z=Array.from(d.noisy_sigma_z);o.data.err_sigma_x=Array.from(d.err_sigma_x);o.data.err_sigma_y=Array.from(d.err_sigma_y);o.data.err_sigma_z=Array.from(d.err_sigma_z)}dl('simulation_results.json',JSON.stringify(o,null,2),'application/json')}
 
@@ -413,14 +435,16 @@ for i,det in enumerate(dets):
             if USE_DECO and p<N_PULSES-1:
                 for L in c_ops:
                     dp=T_m*qt.expect(L.dag()*L,psi)
-                    if np.random.random()<dp: psi=L*psi; psi=psi/psi.norm()
-                    else: psi=psi-0.5*T_m*L.dag()*L*psi; psi=psi/psi.norm()
+                    if np.random.random()<min(dp,0.95):
+                        psi=L*psi; psi=psi/psi.norm()
+                    else:
+                        psi=psi-0.5*T_m*L.dag()*L*psi; psi=psi/psi.norm()
         sx_v,sy_v,sz_v=qt.expect(sx,psi),qt.expect(sy,psi),qt.expect(sz,psi)
         coh=np.sqrt(sx_v**2+sy_v**2+sz_v**2)
         rho_s=psi.ptrace(0); ev=rho_s.eigenenergies(); ev=ev[ev>1e-15]
         ent=-np.sum(ev*np.log2(ev)); acc+=[sx_v,sy_v,sz_v,coh,ent]
-        if t==ntraj-1:
-            diag=psi.ptrace(1).diag(); max_leak=max(max_leak,float(np.sum(diag[-3:])))
+        # Check Fock leakage on every trajectory
+        diag=psi.ptrace(1).diag(); max_leak=max(max_leak,float(np.sum(diag[-3:])))
     acc/=ntraj; res['detuning'].append(float(det))
     for k,j in [('sigma_x',0),('sigma_y',1),('sigma_z',2),('coherence',3),('entropy',4)]:
         res[k].append(float(acc[j]))
