@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Documentation — Stroboscopic Simulation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
+  <h1>Code Documentation</h1>
+  <p class="subtitle">Simulation engine reference · v0.7</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a>
+    <a href="code.html" aria-current="page">Code</a>
+  </nav>
+</header>
+
+<div class="meta-block">
+  <p><strong>Source:</strong> F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz · <a href="https://doi.org/10.1103/PhysRevA.109.053105">Phys. Rev. A <strong>109</strong>, 053105 (2024)</a></p>
+  <p><strong>Endorsement Marker:</strong> Local candidate framework (no parity implied with externally validated laws)</p>
+  <p><strong>Implementation:</strong> Browser JavaScript (simulate.html) with WebGPU acceleration. Reference Python/QuTiP script in downloads.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>1. Hilbert Space</h2>
+
+<p>The simulation works in the tensor-product space spin ⊗ motion, with basis ordering:</p>
+
+<div class="formula-box">
+  |↓,0⟩, |↓,1⟩, …, |↓,N<sub>max</sub>−1⟩, |↑,0⟩, |↑,1⟩, …, |↑,N<sub>max</sub>−1⟩
+</div>
+
+<p>The total Hilbert space dimension is 2 × N<sub>max</sub>. All operators are represented as complex matrices of this dimension. Complex numbers are stored as pairs of Float64 values [re, im] in a flat array of length 2 × (2N<sub>max</sub>)².</p>
+
+<h3>Fock truncation</h3>
+
+<p>The truncation at N<sub>max</sub> is the primary source of systematic error. After each simulation run, the population in the top 3 Fock states (both spin components) is measured:</p>
+
+<div class="callout">
+  <div class="cl">Convergence criterion</div>
+  <p style="margin-bottom:0.3rem;"><strong>Green (OK):</strong> boundary population &lt; 0.01% — results converged.</p>
+  <p style="margin-bottom:0.3rem;"><strong>Amber (Marginal):</strong> 0.01–1% — possible truncation artefacts.</p>
+  <p style="margin-bottom:0;"><strong>Red (Unreliable):</strong> &gt; 1% — results not converged. Recommended N<sub>max</sub> ≥ ⟨n⟩ + 5√⟨n⟩ + 10.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>2. Hamiltonian</h2>
+
+<p>In the rotating frame at the laser frequency, the effective Hamiltonian for one stroboscopic pulse at detuning δ₀ is:</p>
+
+<div class="formula-box">
+  H<sub>eff</sub>(δ₀) = −(δ₀/2) σ<sub>z</sub> ⊗ I<sub>m</sub> + (Ω/2) [ C ⊗ σ₋ + C† ⊗ σ₊ ]
+</div>
+
+<p>where:</p>
+
+<div class="formula-box">
+  C = exp(iη(a + a†))
+</div>
+
+<p>The operator C is computed <em>exactly</em> in the Fock basis via matrix exponentiation of the position quadrature operator X = a + a†. No Lamb–Dicke approximation or sideband truncation is applied. The matrix exponential uses a Taylor(12) series with scaling and squaring.</p>
+
+<h3>Coupling structure</h3>
+
+<p>In the 2N<sub>max</sub> × 2N<sub>max</sub> matrix:</p>
+
+<table class="compact-table" style="max-width:500px;">
+<thead><tr><th>Block</th><th>Rows</th><th>Cols</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>↓↓</td><td>0…N−1</td><td>0…N−1</td><td>−δ₀/2 on diagonal</td></tr>
+<tr><td>↑↑</td><td>N…2N−1</td><td>N…2N−1</td><td>+δ₀/2 on diagonal</td></tr>
+<tr><td>↓↑ (σ₋)</td><td>0…N−1</td><td>N…2N−1</td><td>(Ω/2) · C</td></tr>
+<tr><td>↑↓ (σ₊)</td><td>N…2N−1</td><td>0…N−1</td><td>(Ω/2) · C†</td></tr>
+</tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>3. Stroboscopic Protocol</h2>
+
+<h3>Pulse timing</h3>
+
+<p>The protocol applies N<sub>p</sub> pulses, each separated by one motional period T<sub>m</sub> = 2π/ω<sub>m</sub>. The per-pulse unitary is:</p>
+
+<div class="formula-box">
+  U = exp(−i H<sub>eff</sub> δt)
+</div>
+
+<p>The pulse duration δt is <em>derived</em> from the requirement that the total accumulated rotation equals π/2:</p>
+
+<div class="formula-box">
+  N<sub>p</sub> × Ω<sub>eff</sub> × δt = π/2 &emsp;→&emsp; δt = π / (2 N<sub>p</sub> Ω<sub>eff</sub>)
+</div>
+
+<p>where Ω<sub>eff</sub> = Ω · exp(−η²/2) is the Debye–Waller suppressed carrier Rabi rate.</p>
+
+<div class="callout">
+  <div class="cl">Key identity</div>
+  <p style="margin-bottom:0;">Changing N<sub>p</sub> does <em>not</em> change the total rotation — it changes the per-pulse rotation angle θ = π/(2N<sub>p</sub>) and the duty cycle δt/T<sub>m</sub>. The total sequence duration is N<sub>p</sub> × T<sub>m</sub>.</p>
+</div>
+
+<h3>Free evolution between pulses</h3>
+
+<p>Between pulses, the ion evolves freely for one motional period. In the Fock basis:</p>
+
+<div class="formula-box">
+  exp(−iω<sub>m</sub> a†a · T<sub>m</sub>) = exp(−i 2π n̂) = I
+</div>
+
+<p>This is <em>exact</em> for integer Fock states: exp(−i2πn) = 1 for all n ∈ {0, 1, 2, …}. The stroboscopic condition is therefore built into the Fock-basis representation — the inter-pulse free evolution is the identity operator. The full N<sub>p</sub>-pulse propagator is simply U<sup>N<sub>p</sub></sup>.</p>
+
+<h3>Derived timing table</h3>
+
+<p>For the default parameters (η = 0.397, Ω/(2π) = 0.300 MHz, ω<sub>m</sub>/(2π) = 1.30 MHz):</p>
+
+<table class="compact-table" style="max-width:500px;">
+<thead><tr><th>N<sub>p</sub></th><th>θ/pulse</th><th>δt [ns]</th><th>Duty cycle</th><th>T<sub>seq</sub> [μs]</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>9.0°</td><td>90</td><td>11.7%</td><td>7.7</td></tr>
+<tr><td>22</td><td>4.1°</td><td>41</td><td>5.3%</td><td>16.9</td></tr>
+<tr><td>50</td><td>1.8°</td><td>18</td><td>2.3%</td><td>38.5</td></tr>
+</tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>4. Initial State</h2>
+
+<div class="formula-box">
+  |ψ₀⟩ = |↓⟩ ⊗ D(α)|0⟩
+</div>
+
+<p>The displaced coherent state D(α)|0⟩ is computed in the Fock basis as:</p>
+
+<div class="formula-box">
+  ⟨n|α⟩ = exp(−|α|²/2) · α<sup>n</sup> / √(n!)
+</div>
+
+<p>For real α (convention used throughout), all coefficients are real.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>5. Observables</h2>
+
+<p>After the pulse sequence, the reduced spin density matrix is obtained by tracing over the motional degrees of freedom:</p>
+
+<div class="formula-box">
+  ρ<sub>↓↓</sub> = Σ<sub>n</sub> |⟨↓,n|ψ⟩|² &emsp;&emsp; ρ<sub>↓↑</sub> = Σ<sub>n</sub> ⟨↓,n|ψ⟩ ⟨ψ|↑,n⟩
+</div>
+
+<p>From the 2×2 spin density matrix:</p>
+
+<table class="compact-table" style="max-width:500px;">
+<thead><tr><th>Observable</th><th>Formula</th></tr></thead>
+<tbody>
+<tr><td>⟨σ<sub>x</sub>⟩</td><td>2 Re(ρ<sub>↓↑</sub>)</td></tr>
+<tr><td>⟨σ<sub>y</sub>⟩</td><td>−2 Im(ρ<sub>↓↑</sub>)</td></tr>
+<tr><td>⟨σ<sub>z</sub>⟩</td><td>ρ<sub>↑↑</sub> − ρ<sub>↓↓</sub></td></tr>
+<tr><td>Coherence</td><td>√(⟨σ<sub>x</sub>⟩² + ⟨σ<sub>y</sub>⟩² + ⟨σ<sub>z</sub>⟩²)</td></tr>
+<tr><td>Entropy S</td><td>−λ₊ log₂ λ₊ − λ₋ log₂ λ₋</td></tr>
+</tbody>
+</table>
+
+<p>where λ± = (1 ± r)/2 and r is the Bloch vector length.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>6. Decoherence</h2>
+
+<p>When any decoherence parameter is non-zero, the simulation switches from pure unitary evolution to the quantum trajectory (Monte Carlo wavefunction) method. Three Lindblad channels act during the inter-pulse free evolution periods:</p>
+
+<table class="compact-table">
+<thead><tr><th>Channel</th><th>Collapse operator</th><th>Rate</th></tr></thead>
+<tbody>
+<tr><td>Spin decay</td><td>L₁ = √γ₁ · σ₋ ⊗ I</td><td>γ₁ = 1/T₁</td></tr>
+<tr><td>Pure dephasing</td><td>L₂ = √(γ<sub>φ</sub>/2) · σ<sub>z</sub> ⊗ I</td><td>γ<sub>φ</sub> = 1/T₂ − 1/(2T₁)</td></tr>
+<tr><td>Motional heating</td><td>L₃ = √γ<sub>h</sub> · I ⊗ a†</td><td>γ<sub>h</sub> = (dn/dt) / 1000 μs⁻¹</td></tr>
+</tbody>
+</table>
+
+<p>For each inter-pulse interval T<sub>m</sub>, the jump probabilities are:</p>
+
+<div class="formula-box">
+  dp₁ = γ₁ T<sub>m</sub> ⟨↑|ρ|↑⟩ &emsp; dp₂ = (γ<sub>φ</sub>/2) T<sub>m</sub> &emsp; dp₃ = γ<sub>h</sub> T<sub>m</sub> ⟨a a†⟩
+</div>
+
+<p>A random number selects which (if any) jump occurs. If no jump: the non-Hermitian correction (I − Σ L†L/2 · T<sub>m</sub>)|ψ⟩ is applied and renormalised. Results are averaged over N<sub>traj</sub> trajectories.</p>
+
+<div class="callout">
+  <div class="cl">T₂ constraint</div>
+  <p style="margin-bottom:0;">The pure dephasing rate γ<sub>φ</sub> = 1/T₂ − 1/(2T₁) is clamped to ≥ 0. If T₂ &gt; 2T₁, the pure dephasing contribution is zero — all decoherence comes from population decay.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>7. Quantum Projection Noise</h2>
+
+<p>When N<sub>rep</sub> &gt; 0, each spin expectation value is sampled as a Bernoulli experiment:</p>
+
+<div class="formula-box">
+  p = (1 + ⟨σ⟩) / 2 &emsp;&emsp; successes ~ Binomial(N<sub>rep</sub>, p) &emsp;&emsp; ⟨σ⟩<sub>noisy</sub> = 2 · successes/N<sub>rep</sub> − 1
+</div>
+
+<p>The ±1σ error bar is 2√(p(1−p)/N<sub>rep</sub>). This models the quantum projection noise of a real single-ion experiment.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>8. GPU Acceleration</h2>
+
+<p>On browsers with WebGPU support (Chrome 113+, Edge 113+), the complex matrix multiplication — the bottleneck of the Taylor-series matrix exponential — is offloaded to a GPU compute shader. The WGSL kernel dispatches 8×8 workgroups for tiled complex GEMM.</p>
+
+<div class="callout">
+  <div class="cl">Precision note</div>
+  <p style="margin-bottom:0;">The GPU path converts Float64 → Float32 for the shader and back. This provides ~7 significant digits, which is adequate for η ≈ 0.4 physics (where the coupling matrix elements span ~3 orders of magnitude). The CPU fallback uses Float64 throughout. The provenance manifest records which engine was used.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>9. Provenance</h2>
+
+<p>Every simulation result carries a SHA-256 hash computed over a JSON payload containing:</p>
+
+<table class="compact-table">
+<thead><tr><th>Field</th><th>Content</th></tr></thead>
+<tbody>
+<tr><td>code_version</td><td>Semantic version of the simulation engine</td></tr>
+<tr><td>repo</td><td>GitHub repository URL</td></tr>
+<tr><td>params</td><td>All input parameters (including decoherence and noise settings)</td></tr>
+<tr><td>timestamp</td><td>ISO 8601 timestamp of the run</td></tr>
+<tr><td>data_fingerprint</td><td>Array sums for σ<sub>x,y,z</sub>, entropy, coherence; point count; max Fock leakage</td></tr>
+</tbody>
+</table>
+
+<p>The hash appears in every download format (JSON, CSV, Python script, manifest) and enables traceability if results are merged into the <a href="https://github.com/threehouse-plus-ec/open-research-platform">open-research-platform</a> database. Two runs with identical parameters but different random seeds (decoherence trajectories, projection noise) will produce different hashes — the hash authenticates the <em>specific</em> output, not the parameter set.</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<h2>10. File Formats</h2>
+
+<h3>JSON output</h3>
+
+<p>Structure: <code>{ manifest: {...}, data: {...} }</code></p>
+
+<table class="compact-table">
+<thead><tr><th>Path</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>manifest.parameters</code></td><td>Object</td><td>All input parameters</td></tr>
+<tr><td><code>manifest.convergence</code></td><td>Object</td><td>max_fock_leakage, converged (bool)</td></tr>
+<tr><td><code>manifest.provenance_hash</code></td><td>String</td><td>SHA-256 hex</td></tr>
+<tr><td><code>data.detuning</code></td><td>Array</td><td>Detuning values (units of ω<sub>m</sub>)</td></tr>
+<tr><td><code>data.sigma_x/y/z</code></td><td>Array</td><td>Spin expectation values (ideal)</td></tr>
+<tr><td><code>data.coherence</code></td><td>Array</td><td>Bloch vector length</td></tr>
+<tr><td><code>data.entropy</code></td><td>Array</td><td>Von Neumann entropy (bits)</td></tr>
+<tr><td><code>data.noisy_sigma_*</code></td><td>Array</td><td>Shot-noise sampled values (if N<sub>rep</sub> &gt; 0)</td></tr>
+<tr><td><code>data.err_sigma_*</code></td><td>Array</td><td>±1σ error bars (if N<sub>rep</sub> &gt; 0)</td></tr>
+</tbody>
+</table>
+
+<h3>Python script</h3>
+
+<p>The downloadable <code>stroboscopic_scan.py</code> is a self-contained QuTiP script that reproduces the browser simulation with identical physics. It includes all parameters from the browser session and the browser provenance hash for cross-reference.</p>
+
+<footer>
+  <p>Dossier v0.7 · Breakwater Layer · <a href="simulate.html">Simulate</a> · <a href="numerics.html">Numerics</a> · <a href="dossier.html">Claim Ledger</a></p>
+</footer>
+
+</div>
+</body>
+</html>

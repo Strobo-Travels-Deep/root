@@ -21,6 +21,7 @@
     <a href="tutorial.html">Tutorial</a>
     <a href="numerics.html" aria-current="page">Numerics</a>
     <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a>
   </nav>
 </header>
 
@@ -42,7 +43,8 @@
   </div>
   <div class="fig-panel" style="padding:1rem 1.2rem;">
     <div class="fig-label">Physics notes</div>
-    <p style="font-size:0.84rem;color:var(--text-sec);margin:0.4rem 0;">Default runs use unitary evolution (no decoherence) and infinite statistics (no projection noise). Run your own simulation with custom parameters on the <a href="simulate.html">Simulate</a> page, then view results here via Upload.</p>
+    <p style="font-size:0.84rem;color:var(--text-sec);margin:0.4rem 0;">Default runs use unitary evolution (no decoherence) and infinite statistics (no projection noise). Run your own simulation with custom parameters on the <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a> page, then view results here via Upload.</p>
     <p style="font-size:0.84rem;color:var(--text-sec);margin:0;">α = 5 run shows 1.1% Fock leakage at N<sub>max</sub> = 40 — the convergence diagnostic flags this correctly.</p>
   </div>
 </div>
@@ -50,7 +52,8 @@
 <hr>
 
 <h2>Data Source</h2>
-<p style="font-size:0.88rem;color:var(--text-sec);">View default simulation runs or upload your own JSON from the <a href="simulate.html">Simulate</a> page.</p>
+<p style="font-size:0.88rem;color:var(--text-sec);">View default simulation runs or upload your own JSON from the <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a> page.</p>
 
 <div style="display:flex;gap:0.5rem;margin:0.8rem 0;flex-wrap:wrap;">
   <button class="dataset-card active" id="tab-runs" onclick="switchSource('runs')" style="border-width:2px;font-size:0.82rem;padding:0.5rem 0.9rem;">Default Runs</button>
@@ -93,10 +96,12 @@
 
 <h2>Data Format</h2>
 <p style="font-size:0.88rem;">Each JSON file contains a <code>manifest</code> (parameters, provenance SHA-256 hash, convergence diagnostics) and a <code>data</code> object with arrays: <code>detuning</code>, <code>sigma_x</code>, <code>sigma_y</code>, <code>sigma_z</code>, <code>coherence</code>, <code>entropy</code>. Files from runs with projection noise additionally include <code>noisy_sigma_*</code> and <code>err_sigma_*</code>.</p>
-<p style="font-size:0.88rem;">Generate your own results on the <a href="simulate.html">Simulate</a> page, or use the downloadable Python/QuTiP script for batch runs.</p>
+<p style="font-size:0.88rem;">Generate your own results on the <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a> page, or use the downloadable Python/QuTiP script for batch runs.</p>
 
 <footer>
-  <p>Dossier v0.7 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="simulate.html">Simulate</a></p>
+  <p>Dossier v0.7 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a></p>
 </footer>
 
 </div>

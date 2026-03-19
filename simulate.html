@@ -141,6 +141,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border
     <a href="framework.html">Framework</a> <a href="tutorial.html">Tutorial</a>
     <a href="numerics.html">Numerics</a>
     <a href="simulate.html" aria-current="page">Simulate</a>
+    <a href="code.html">Code</a>
   </nav>
 </header>
 
@@ -179,10 +180,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border
 
 <div class="sl">Scan range</div>
 <div class="pg">
-  <div class="pc"><label>δ min / ω<sub>m</sub></label><input type="number" id="p-dmin" value="-6.0" step="0.5"></div>
-  <div class="pc"><label>δ max / ω<sub>m</sub></label><input type="number" id="p-dmax" value="6.0" step="0.5"></div>
+  <div class="pc"><label>δ<sub>min</sub> / ω<sub>m</sub></label><input type="number" id="p-dmin" value="-6.0" step="0.5"></div>
+  <div class="pc"><label>δ<sub>max</sub> / ω<sub>m</sub></label><input type="number" id="p-dmax" value="6.0" step="0.5"></div>
   <div class="pc"><label>Points</label><input type="number" id="p-npts" value="201" min="21" max="801" step="10"></div>
-  <div class="pc"><label>Pulses</label><input type="number" id="p-npulses" value="22" min="1" max="100" step="1"><div class="ph">~π/2 for 22 pulses</div></div>
+  <div class="pc"><label>Pulses N<sub>p</sub></label><input type="number" id="p-npulses" value="22" min="1" max="100" step="1"><div class="ph">Total rotation always π/2. Per-pulse: θ = π/(2N<sub>p</sub>)</div><div class="ph" id="h-timing" style="margin-top:0.15rem;"></div></div>
 </div>
 
 <hr>
@@ -225,7 +226,11 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border
 <hr>
 
 <h2>Method</h2>
-<p style="font-size:0.88rem">Full spin–motion Schrödinger equation in truncated Fock basis. exp(iη(a+a†)) computed exactly via matrix exponentiation. Decoherence: quantum trajectories with T₁, T₂, heating channels. Projection noise: binomial sampling. GPU acceleration via WebGPU when available (matrix multiply kernel); CPU fallback otherwise.</p>
+<p style="font-size:0.88rem">Full spin–motion Schrödinger equation in truncated Fock basis. exp(iη(a+a†)) computed exactly via matrix exponentiation. For each detuning δ₀, N<sub>p</sub> stroboscopic pulses are applied, each separated by one motional period T<sub>m</sub> = 2π/ω<sub>m</sub>. The per-pulse duration δt is set so that N<sub>p</sub> × Ω<sub>eff</sub> × δt = π/2, i.e. the total accumulated rotation is always π/2 regardless of the chosen pulse count. Changing N<sub>p</sub> adjusts δt and the duty cycle accordingly.</p>
+<p style="font-size:0.86rem;color:var(--text-sec)">
+  <strong>Stroboscopic condition:</strong> Between pulses, free evolution over one motional period gives exp(−iω<sub>m</sub>a†a · T<sub>m</sub>) = exp(−i2πa†a) = I — the identity for integer Fock states. This is exact; no rotating-wave approximation is needed for the free evolution.<br>
+  <strong>Decoherence:</strong> Three Lindblad channels (spin T₁, pure dephasing T₂, motional heating) via quantum trajectories, applied during the inter-pulse free evolution periods.<br>
+  <strong>GPU:</strong> WebGPU compute shader for complex matrix multiply when available (Float32 precision ≈ 7 digits). CPU fallback uses Float64.</p>
 
 <footer>
   <p>Dossier v0.7 · Breakwater Layer · Rocket Science Demonstrator ·
@@ -300,6 +305,30 @@ wire('p-T2', 'v-T2', x => parseFloat(x) === 0 ? '∞' : x);
 wire('p-heat', 'v-heat', x => x);
 wire('p-ntraj', 'v-ntraj', x => x);
 wire('p-nrep', 'v-nrep', x => parseInt(x) === 0 ? '∞' : x);
+
+// ── Derived timing readout ──────────────────────────────────
+function updateTiming() {
+  const eta = parseFloat(document.getElementById('p-eta').value);
+  const omega_r = parseFloat(document.getElementById('p-omega-r').value);
+  const omega_m = parseFloat(document.getElementById('p-omega-m').value);
+  const np = parseInt(document.getElementById('p-npulses').value);
+  const oeff = omega_r * Math.exp(-(eta * eta) / 2);        // Ω_eff/(2π) in MHz
+  const dt_us = (Math.PI / 2) / (np * oeff * 2 * Math.PI);  // pulse duration in μs
+  const Tm_us = 1.0 / omega_m;                               // motional period in μs
+  const duty = dt_us / Tm_us;
+  const total_us = np * Tm_us;
+  const theta_deg = (90.0 / np).toFixed(1);
+  const el = document.getElementById('h-timing');
+  if (el) el.textContent =
+    'θ/pulse = ' + theta_deg + '°, δt = ' + (dt_us * 1000).toFixed(1) + ' ns, ' +
+    'duty = ' + (duty * 100).toFixed(1) + '%, T_seq = ' + total_us.toFixed(1) + ' μs';
+}
+// Wire timing update to all relevant inputs
+['p-eta', 'p-omega-r', 'p-omega-m', 'p-npulses'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateTiming);
+  document.getElementById(id).addEventListener('change', updateTiming);
+});
+updateTiming();
 
 // Observable toggles
 document.querySelectorAll('.ot').forEach(el => {
@@ -701,6 +730,14 @@ async function runSim() {
   for (let i = 0; i < P.npts; i++)
     dets.push(P.det_min + (P.det_max - P.det_min) * i / (P.npts - 1));
 
+  // ── Pulse timing ──────────────────────────────────────────
+  // Ω_eff = Ω · exp(-η²/2)  (Debye–Waller suppressed carrier Rabi rate)
+  // Per-pulse rotation: θ = Ω_eff · δt
+  // Total rotation: N_p · θ = π/2   →   δt = (π/2) / (N_p · Ω_eff)
+  // Inter-pulse spacing: T_m = 2π/ω_m (one motional period)
+  // Free evolution: exp(-i ω_m a†a T_m) = exp(-i 2π n̂) = I  (exact)
+  // Total sequence: N_p × T_m
+  // Changing N_p adjusts δt to maintain π/2 total rotation.
   const oeff = P.omega_r * Math.exp(-(P.eta * P.eta) / 2);
   const dt = (Math.PI / 2) / (P.n_pulses * oeff);
   const Tm = 2 * Math.PI / P.omega_m;
@@ -850,22 +887,22 @@ function doPlot(res) {
   const pd = document.getElementById('pl-s'); pd.innerHTML = '';
   if (tr.length > 0)
     Plotly.newPlot(pd, tr, { ...LB, yaxis: { ...LB.yaxis, title: { text: '⟨σᵢ⟩', font: { size: 13 } }, range: [-1.08, 1.08] },
-      xaxis: { ...LB.xaxis, title: '' }, height: hn ? 380 : 340 },
+      xaxis: { ...LB.xaxis, title: { text: 'Detuning  δ₀ / ωₘ', font: { size: 12 } } }, height: hn ? 380 : 340 },
       { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });
 
   const ed = document.getElementById('pl-e'); ed.innerHTML = '';
   if (obs.entropy) Plotly.newPlot(ed,
     [{ x: xs, y: Array.from(D.entropy), name: 'Entropy', mode: 'lines', line: { color: PAL.entropy, width: 1.2 } }],
     { ...LB, yaxis: { ...LB.yaxis, title: { text: 'S (bits)', font: { size: 13 } }, rangemode: 'tozero' },
-      xaxis: { ...LB.xaxis, title: { text: 'Detuning (ω_m)', font: { size: 13 } } },
+      xaxis: { ...LB.xaxis, title: { text: 'Detuning  δ₀ / ωₘ', font: { size: 13 } } },
       height: 180, showlegend: false, margin: { l: 56, r: 20, t: 4, b: 40 } },
     { responsive: true, displayModeBar: false });
 }
 
 function showMeta(P, lk) {
   const d = document.getElementById('meta');
-  const it = [['α', P.alpha], ['η', P.eta], ['ω_m', P.omega_m], ['Ω', P.omega_r],
-    ['N_max', P.nmax], ['Pts', P.npts], ['Leak', (lk * 100).toFixed(4) + '%']];
+  const it = [['α', P.alpha], ['η', P.eta], ['ωₘ/(2π)', P.omega_m + ' MHz'], ['Ω/(2π)', P.omega_r + ' MHz'],
+    ['N_max', P.nmax], ['Pts', P.npts], ['N_p', P.n_pulses], ['Leak', (lk * 100).toFixed(4) + '%']];
   if (P.T1 > 0) it.push(['T₁', P.T1 + 'μs']);
   if (P.T2 > 0) it.push(['T₂', P.T2 + 'μs']);
   if (P.heating > 0) it.push(['dn/dt', P.heating]);
