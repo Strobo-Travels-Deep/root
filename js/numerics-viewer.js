@@ -1,5 +1,5 @@
 /**
- * numerics-viewer.js  v0.7
+ * numerics-viewer.js  v0.8
  * JSON-only viewer for simulation results.
  * Sources: default runs (data/runs/) and user uploads.
  */

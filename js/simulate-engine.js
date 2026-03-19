@@ -145,6 +145,13 @@ wire('p-heat', 'v-heat', x => x);
 wire('p-ntraj', 'v-ntraj', x => x);
 wire('p-nrep', 'v-nrep', x => parseInt(x) === 0 ? '∞' : x);
 
+// Pulse separation slider
+wire('p-tsep', 'v-tsep', x => {
+  const v = parseFloat(x);
+  if (Math.abs(v - 1.0) < 0.001) return '1.000 (strobo)';
+  return v.toFixed(3);
+}, () => updateTiming());
+
 const npEl = document.getElementById('p-npulses');
 if (npEl) { npEl.addEventListener('input', updateTiming); npEl.addEventListener('change', updateTiming); }
 
@@ -153,21 +160,26 @@ function updateTiming() {
   const or = parseFloat(document.getElementById('p-omega-r').value);
   const om = parseFloat(document.getElementById('p-omega-m').value);
   const np = parseInt(document.getElementById('p-npulses').value) || 22;
+  const tsep_el = document.getElementById('p-tsep');
+  const tsf = tsep_el ? parseFloat(tsep_el.value) || 1.0 : 1.0;
   const oeff = or * Math.exp(-(eta * eta) / 2);
-  const dt_us = 1 / (4 * np * oeff); // π/(2 Np Ωeff 2π)
+  const dt_us = 1 / (4 * np * oeff);
   const Tm_us = 1 / om;
-  const duty = dt_us / Tm_us;
-  const total = np * Tm_us;
+  const Tsep_us = Tm_us * tsf;
+  const duty = dt_us / Tsep_us;
+  const total = np * Tsep_us;
   const el = document.getElementById('h-timing');
   if (el) el.textContent =
     'θ/pulse=' + (90 / np).toFixed(1) + '°  δt=' + (dt_us * 1e3).toFixed(1) +
-    'ns  duty=' + (duty * 100).toFixed(1) + '%  T_seq=' + total.toFixed(1) + 'μs';
+    'ns  T_sep=' + (Tsep_us * 1e3).toFixed(0) + 'ns  duty=' + (duty * 100).toFixed(1) +
+    '%  T_seq=' + total.toFixed(1) + 'μs';
   const wn = document.getElementById('duty-warn');
   if (wn) {
-    if (duty > 1) { wn.textContent = '⚠ Duty > 100%: pulse exceeds motional period.'; wn.style.display = 'block'; }
+    if (duty > 1) { wn.textContent = '⚠ Duty > 100%: pulse exceeds inter-pulse spacing.'; wn.style.display = 'block'; wn.style.color = '#a03030'; }
+    else if (Math.abs(tsf - 1.0) > 0.01) { wn.textContent = '⚡ Non-stroboscopic: T_sep ≠ T_m. Free evolution ≠ identity.'; wn.style.display = 'block'; wn.style.color = '#a08000'; }
     else { wn.style.display = 'none'; }
   }
-  drawPulseSVG(np, dt_us, Tm_us);
+  drawPulseSVG(np, dt_us, Tsep_us);
 }
 updateTiming();
 
@@ -239,6 +251,7 @@ function readP() {
     det_max: parseFloat(document.getElementById('p-dmax').value),
     npts: parseInt(document.getElementById('p-npts').value),
     n_pulses: parseInt(document.getElementById('p-npulses').value),
+    t_sep_factor: parseFloat(document.getElementById('p-tsep').value),
     T1: parseFloat(document.getElementById('p-T1').value),
     T2: parseFloat(document.getElementById('p-T2').value),
     heating: parseFloat(document.getElementById('p-heat').value),
@@ -522,7 +535,62 @@ function compObs(psi, nm) {
   let ent = 0;
   if (lp > 1e-15) ent -= lp * Math.log2(lp);
   if (lm > 1e-15) ent -= lm * Math.log2(lm);
-  return { sigma_x: sx, sigma_y: sy, sigma_z: sz, coherence: coh, entropy: ent };
+
+  // ⟨n⟩ = Σ_n n·(|⟨↓,n|ψ⟩|² + |⟨↑,n|ψ⟩|²)
+  let nbar = 0;
+  for (let n = 0; n < nm; n++) {
+    nbar += n * (psi[2 * n] * psi[2 * n] + psi[2 * n + 1] * psi[2 * n + 1]);
+    nbar += n * (psi[2 * (nm + n)] * psi[2 * (nm + n)] + psi[2 * (nm + n) + 1] * psi[2 * (nm + n) + 1]);
+  }
+
+  // Motional purity: Tr(ρ_m²)
+  // ρ_m(i,j) = Σ_s ψ*(s,i) ψ(s,j) where s ∈ {↓,↑}
+  // Tr(ρ_m²) = Σ_{i,j} |ρ_m(i,j)|²
+  // This is O(nm²) — compute the reduced density matrix elements on the fly
+  let purity = 0;
+  for (let i = 0; i < nm; i++) {
+    for (let j = 0; j < nm; j++) {
+      // ρ_m(i,j) = ψ*(↓,i)ψ(↓,j) + ψ*(↑,i)ψ(↑,j)
+      const di_r = psi[2 * i], di_i = psi[2 * i + 1];
+      const dj_r = psi[2 * j], dj_i = psi[2 * j + 1];
+      const ui_r = psi[2 * (nm + i)], ui_i = psi[2 * (nm + i) + 1];
+      const uj_r = psi[2 * (nm + j)], uj_i = psi[2 * (nm + j) + 1];
+      // conj(d_i)*d_j + conj(u_i)*u_j
+      const rho_re = (di_r * dj_r + di_i * dj_i) + (ui_r * uj_r + ui_i * uj_i);
+      const rho_im = (di_r * dj_i - di_i * dj_r) + (ui_r * uj_i - ui_i * uj_r);
+      purity += rho_re * rho_re + rho_im * rho_im;
+    }
+  }
+
+  return { sigma_x: sx, sigma_y: sy, sigma_z: sz, coherence: coh, entropy: ent,
+           nbar: nbar, motional_purity: purity };
+}
+
+// Fidelity of final motional state with initial: F = ⟨ψ_m,init|ρ_m,final|ψ_m,init⟩
+// = Σ_{i,j} ψ*_init(i) ρ_m(i,j) ψ_init(j)
+function motionalFidelity(psi, psi_m_init, nm) {
+  // ρ_m(i,j) = Σ_s ψ*(s,i)ψ(s,j)
+  // F = Σ_{i,j} ψ*_init(i) [Σ_s ψ*(s,i)ψ(s,j)] ψ_init(j)
+  //   = Σ_s |Σ_i ψ*_init(i) ψ(s,i)|²  (rewritten as sum of overlaps)
+  let F = 0;
+  // s = ↓ (indices 0..nm-1)
+  let ov_re = 0, ov_im = 0;
+  for (let i = 0; i < nm; i++) {
+    const ir = psi_m_init[2 * i], ii = psi_m_init[2 * i + 1];
+    // conj(init) * psi(↓,i)
+    ov_re += ir * psi[2 * i] + ii * psi[2 * i + 1];
+    ov_im += ir * psi[2 * i + 1] - ii * psi[2 * i];
+  }
+  F += ov_re * ov_re + ov_im * ov_im;
+  // s = ↑ (indices nm..2nm-1)
+  ov_re = 0; ov_im = 0;
+  for (let i = 0; i < nm; i++) {
+    const ir = psi_m_init[2 * i], ii = psi_m_init[2 * i + 1];
+    ov_re += ir * psi[2 * (nm + i)] + ii * psi[2 * (nm + i) + 1];
+    ov_im += ir * psi[2 * (nm + i) + 1] - ii * psi[2 * (nm + i)];
+  }
+  F += ov_re * ov_re + ov_im * ov_im;
+  return F;
 }
 
 function fockLeak(psi, nm) {
@@ -614,7 +682,8 @@ async function runSim() {
 
   const oeff = P.omega_r * Math.exp(-(P.eta * P.eta) / 2);
   const dt = (Math.PI / 2) / (P.n_pulses * oeff);
-  const Tm = 2 * Math.PI / P.omega_m;
+  const Tm = 2 * Math.PI / P.omega_m;  // motional period
+  const Tsep = Tm * P.t_sep_factor;     // actual inter-pulse spacing
   const g1 = P.T1 > 0 ? 1 / P.T1 : 0;
   const gpR = P.T2 > 0 ? 1 / P.T2 : 0;
   const gp = Math.max(0, gpR - g1 / 2);
@@ -626,10 +695,33 @@ async function runSim() {
   const Cdm = cdag(Cm, P.nmax);
   const dim = 2 * P.nmax;
 
+  // Free-evolution operator between pulses:
+  // U_free = exp(-i ωm a†a Tsep) = diag(exp(-i 2π n Tsep/Tm))
+  // When t_sep_factor = 1: U_free = I (stroboscopic condition)
+  // When t_sep_factor ≠ 1: nontrivial phase rotation
+  const needFreeEvol = Math.abs(P.t_sep_factor - 1.0) > 1e-6;
+  let Ufree = null;
+  if (needFreeEvol) {
+    // Build as dim×dim diagonal matrix in spin⊗motion space
+    Ufree = czeros(dim);
+    const phase_per_n = 2 * Math.PI * P.t_sep_factor; // ωm Tsep = 2π × (Tsep/Tm)
+    for (let n = 0; n < P.nmax; n++) {
+      const phi = -n * phase_per_n;
+      const cr = Math.cos(phi), ci = Math.sin(phi);
+      // ↓ block
+      Ufree[ix(dim, n, n)] = cr;
+      Ufree[ix(dim, n, n) + 1] = ci;
+      // ↑ block
+      Ufree[ix(dim, P.nmax + n, P.nmax + n)] = cr;
+      Ufree[ix(dim, P.nmax + n, P.nmax + n) + 1] = ci;
+    }
+  }
+
   const R = {
     detuning: new Float64Array(P.npts),
     sigma_x: new Float64Array(P.npts), sigma_y: new Float64Array(P.npts), sigma_z: new Float64Array(P.npts),
     coherence: new Float64Array(P.npts), entropy: new Float64Array(P.npts),
+    nbar: new Float64Array(P.npts), mot_purity: new Float64Array(P.npts), mot_fidelity: new Float64Array(P.npts),
     noisy_sigma_x: new Float64Array(P.npts), noisy_sigma_y: new Float64Array(P.npts), noisy_sigma_z: new Float64Array(P.npts),
     err_sigma_x: new Float64Array(P.npts), err_sigma_y: new Float64Array(P.npts), err_sigma_z: new Float64Array(P.npts),
     max_leakage: 0,
@@ -646,9 +738,9 @@ async function runSim() {
     const U = await cexpmG(cscl(H, 0, -dt), dim);
 
     let ax = 0, ay = 0, az = 0, ac = 0, ae = 0;
+    let a_nbar = 0, a_pur = 0, a_fid = 0;
 
     for (let tt = 0; tt < nThermTraj; tt++) {
-      // Prepare motional state (samples thermal Fock if n_thermal>0)
       const psi_m = await prepareMotional(P);
       const psi0 = tensorSpinMotion(P.theta_deg, P.phi_deg, psi_m, P.nmax);
 
@@ -656,12 +748,18 @@ async function runSim() {
         let psi = new Float64Array(psi0);
         for (let p = 0; p < P.n_pulses; p++) {
           psi = cmv(U, psi, dim);
-          if (useDeco && p < P.n_pulses - 1)
-            psi = collapse(psi, P.nmax, Tm, g1, gp, gh);
+          if (p < P.n_pulses - 1) {
+            // Free evolution between pulses
+            if (needFreeEvol) psi = cmv(Ufree, psi, dim);
+            // Decoherence collapse
+            if (useDeco) psi = collapse(psi, P.nmax, Tsep, g1, gp, gh);
+          }
         }
         const ob = compObs(psi, P.nmax);
         ax += ob.sigma_x; ay += ob.sigma_y; az += ob.sigma_z;
         ac += ob.coherence; ae += ob.entropy;
+        a_nbar += ob.nbar; a_pur += ob.motional_purity;
+        a_fid += motionalFidelity(psi, psi_m, P.nmax);
         const lk = fockLeak(psi, P.nmax);
         if (lk > maxLk) maxLk = lk;
         wd++;
@@ -672,6 +770,7 @@ async function runSim() {
     R.detuning[i] = dets[i];
     R.sigma_x[i] = ax / nt; R.sigma_y[i] = ay / nt; R.sigma_z[i] = az / nt;
     R.coherence[i] = ac / nt; R.entropy[i] = ae / nt;
+    R.nbar[i] = a_nbar / nt; R.mot_purity[i] = a_pur / nt; R.mot_fidelity[i] = a_fid / nt;
 
     if (P.n_rep > 0) {
       const nx = qpn(R.sigma_x[i], P.n_rep);
@@ -764,13 +863,34 @@ function doPlot(res) {
       xaxis: { ...LB.xaxis, title: { text: 'Detuning  δ₀ / ωₘ', font: { size: 12 } } },
       height: 170, showlegend: false, margin: { l: 56, r: 20, t: 4, b: 40 } },
     { responsive: true, displayModeBar: false });
+
+  // Third panel: motional observables
+  const md = document.getElementById('pl-m'); if (md) { md.innerHTML = '';
+  const mtr = [];
+  if (obs.nbar) mtr.push({ x: xs, y: Array.from(D.nbar), name: '⟨n⟩',
+    mode: 'lines', line: { color: '#3a7a3a', width: 1.3 }, yaxis: 'y' });
+  if (obs.mot_purity) mtr.push({ x: xs, y: Array.from(D.mot_purity), name: 'Tr(ρ_m²)',
+    mode: 'lines', line: { color: '#8a5a3a', width: 1.1, dash: 'dash' }, yaxis: 'y2' });
+  if (obs.mot_fidelity) mtr.push({ x: xs, y: Array.from(D.mot_fidelity), name: 'F(ρ_m,ψ₀)',
+    mode: 'lines', line: { color: '#3a5a8a', width: 1.1, dash: 'dot' }, yaxis: 'y2' });
+  if (mtr.length > 0) Plotly.newPlot(md, mtr, { ...LB,
+    yaxis: { ...LB.yaxis, title: { text: '⟨n⟩', font: { size: 12 } }, rangemode: 'tozero', side: 'left' },
+    yaxis2: { overlaying: 'y', side: 'right', title: { text: 'Purity / Fidelity', font: { size: 11 } },
+      range: [0, 1.05], gridcolor: 'transparent', tickfont: { size: 10, color: PAL.text_muted } },
+    xaxis: { ...LB.xaxis, title: { text: 'Detuning  δ₀ / ωₘ', font: { size: 12 } } },
+    height: 200, margin: { l: 56, r: 56, t: 4, b: 40 },
+    legend: { ...LB.legend, y: 0.95 } },
+    { responsive: true, displayModeBar: false });
+  }
 }
 
 function showMeta(P, lk) {
   const d = document.getElementById('meta');
   const it = [['α', P.alpha], ['θ_α', P.alpha_phase_deg + '°'],
     ['η', P.eta], ['ωₘ/(2π)', P.omega_m + ' MHz'], ['Ω/(2π)', P.omega_r + ' MHz'],
-    ['N_max', P.nmax], ['N_p', P.n_pulses], ['Leak', (lk * 100).toFixed(4) + '%']];
+    ['N_max', P.nmax], ['N_p', P.n_pulses],
+    ['T_sep/T_m', P.t_sep_factor.toFixed(3)],
+    ['Leak', (lk * 100).toFixed(4) + '%']];
   if (P.squeeze_r > 0) it.push(['r_sq', P.squeeze_r]);
   if (P.n_thermal > 0) it.push(['n̄_th', P.n_thermal]);
   if (P.theta_deg !== 0) it.push(['θ_spin', P.theta_deg + '°']);
@@ -885,3 +1005,152 @@ document.getElementById('dl-man').addEventListener('click', () => {
   if (!lastResult) return;
   dlF('manifest.json', JSON.stringify(bm(), null, 2), 'application/json');
 });
+
+// ═══════════════════════════════════════════════════════════
+// BLOCH SPHERE (live SVG)
+// ═══════════════════════════════════════════════════════════
+function drawBloch() {
+  const el = document.getElementById('bloch-svg');
+  if (!el) return;
+  const theta = parseFloat(document.getElementById('p-theta').value) * Math.PI / 180;
+  const phi = parseFloat(document.getElementById('p-phi').value) * Math.PI / 180;
+
+  // Bloch vector components
+  const bx = Math.sin(theta) * Math.cos(phi);
+  const by = Math.sin(theta) * Math.sin(phi);
+  const bz = Math.cos(theta);
+
+  // Simple orthographic projection with slight tilt
+  const tilt = 0.3; // viewing angle from z-axis
+  const w = 180, h = 180, cx = w / 2, cy = h / 2, R = 65;
+
+  // Project 3D → 2D (tilted view: x→right, y→into screen, z→up, slight y-tilt)
+  const px = cx + R * (bx * 0.95 + by * 0.15);
+  const py = cy - R * (bz * 0.9 - by * tilt);
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="max-width:180px;">`;
+  // Sphere outline
+  svg += `<ellipse cx="${cx}" cy="${cy}" rx="${R}" ry="${R}" fill="none" stroke="#ccc" stroke-width="0.8"/>`;
+  // Equator ellipse (tilted)
+  svg += `<ellipse cx="${cx}" cy="${cy + R * tilt * 0.4}" rx="${R}" ry="${R * 0.35}" fill="none" stroke="#ddd" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+  // Axes
+  svg += `<line x1="${cx}" y1="${cy + R + 5}" x2="${cx}" y2="${cy - R - 5}" stroke="#ccc" stroke-width="0.5"/>`;
+  svg += `<line x1="${cx - R - 5}" y1="${cy + R * tilt * 0.4}" x2="${cx + R + 5}" y2="${cy + R * tilt * 0.4}" stroke="#ccc" stroke-width="0.5"/>`;
+  // Labels
+  svg += `<text x="${cx}" y="${cy - R - 8}" font-size="9" fill="#888" text-anchor="middle">|↑⟩</text>`;
+  svg += `<text x="${cx}" y="${cy + R + 14}" font-size="9" fill="#888" text-anchor="middle">|↓⟩</text>`;
+  // Bloch vector (arrow from origin to tip)
+  svg += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#8b4a3a" stroke-width="2" stroke-linecap="round"/>`;
+  // Tip dot
+  svg += `<circle cx="${px}" cy="${py}" r="4" fill="#8b4a3a"/>`;
+  // Shadow on equator
+  const sx = cx + R * (bx * 0.95 + by * 0.15);
+  const sy = cy + R * tilt * 0.4;
+  svg += `<line x1="${cx}" y1="${cy + R * tilt * 0.4}" x2="${sx}" y2="${sy}" stroke="#ddd" stroke-width="1" stroke-dasharray="2,2"/>`;
+  svg += `<circle cx="${sx}" cy="${sy}" r="2" fill="#ccc"/>`;
+  // Info text
+  const tdeg = (theta * 180 / Math.PI).toFixed(0);
+  const pdeg = (phi * 180 / Math.PI).toFixed(0);
+  svg += `<text x="${w - 4}" y="${h - 4}" font-size="8" font-family="JetBrains Mono,monospace" fill="#aaa" text-anchor="end">θ=${tdeg}° φ=${pdeg}°</text>`;
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+
+// Wire Bloch sphere to spin sliders
+['p-theta', 'p-phi'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', drawBloch);
+});
+drawBloch();
+
+// ═══════════════════════════════════════════════════════════
+// WIGNER FUNCTION (analytic, live Plotly heatmap)
+//
+// For a displaced squeezed thermal state:
+//   W(x,p) = (1/π) * 1/√det(V) * exp(-½ ξᵀ V⁻¹ ξ)
+// where ξ = (x - x₀, p - p₀)ᵀ, V is the covariance matrix:
+//   V = S(r,φ) · diag(n̄+½, n̄+½) · S(r,φ)ᵀ
+//   S(r,φ) = [[cosh(r)+cos(2φ)sinh(r), sin(2φ)sinh(r)],
+//             [sin(2φ)sinh(r), cosh(r)-cos(2φ)sinh(r)]]
+// x₀ = √2 Re(α), p₀ = √2 Im(α)
+// ═══════════════════════════════════════════════════════════
+function drawWigner() {
+  const el = document.getElementById('wigner-plot');
+  if (!el) return;
+
+  const alpha = parseFloat(document.getElementById('p-alpha').value);
+  const alpha_phase = parseFloat(document.getElementById('p-alpha-phase').value) * Math.PI / 180;
+  const nth = parseFloat(document.getElementById('p-nth').value);
+  const r = parseFloat(document.getElementById('p-squeeze-r').value);
+  const sphi = parseFloat(document.getElementById('p-squeeze-phi').value) * Math.PI / 180;
+
+  // Displacement in phase space
+  const x0 = Math.SQRT2 * alpha * Math.cos(alpha_phase);
+  const p0 = Math.SQRT2 * alpha * Math.sin(alpha_phase);
+
+  // Covariance matrix of squeezed thermal state
+  const nbar = nth + 0.5; // total variance per quadrature for thermal
+  const ch = Math.cosh(r), sh = Math.sinh(r);
+  const c2p = Math.cos(2 * sphi), s2p = Math.sin(2 * sphi);
+  // V = nbar * S·Sᵀ where S is the symplectic squeeze matrix
+  const V11 = nbar * (ch * ch + sh * sh + 2 * ch * sh * c2p); // = nbar * (cosh(2r) + sinh(2r)cos(2φ))
+  const V22 = nbar * (ch * ch + sh * sh - 2 * ch * sh * c2p); // = nbar * (cosh(2r) - sinh(2r)cos(2φ))
+  const V12 = nbar * (2 * ch * sh * s2p); // = nbar * sinh(2r) * sin(2φ)
+
+  const detV = V11 * V22 - V12 * V12;
+  const invV11 = V22 / detV, invV22 = V11 / detV, invV12 = -V12 / detV;
+
+  // Grid
+  const extent = Math.max(3, alpha * 1.5 + 2 * Math.exp(r) + 2);
+  const N = 80;
+  const dx = 2 * extent / (N - 1);
+  const xs = [], ps = [];
+  for (let i = 0; i < N; i++) {
+    xs.push(-extent + i * dx);
+    ps.push(-extent + i * dx);
+  }
+
+  const W = [];
+  for (let j = 0; j < N; j++) {
+    const row = [];
+    for (let i = 0; i < N; i++) {
+      const xi = xs[i] - x0, pi = ps[j] - p0;
+      const exponent = -0.5 * (invV11 * xi * xi + 2 * invV12 * xi * pi + invV22 * pi * pi);
+      row.push((1 / Math.PI) * (1 / Math.sqrt(detV)) * Math.exp(exponent));
+    }
+    W.push(row);
+  }
+
+  const trace = {
+    z: W, x: xs, y: ps, type: 'heatmap',
+    colorscale: [
+      [0, '#1a237e'], [0.15, '#283593'], [0.3, '#5c6bc0'],
+      [0.45, '#e8eaf6'], [0.5, '#fff'], [0.55, '#fce4ec'],
+      [0.7, '#ef5350'], [0.85, '#c62828'], [1, '#b71c1c']
+    ],
+    showscale: false, hoverinfo: 'skip',
+  };
+
+  const layout = {
+    paper_bgcolor: 'transparent', plot_bgcolor: '#fafaf8',
+    font: { family: 'JetBrains Mono, monospace', size: 10, color: '#888' },
+    margin: { l: 40, r: 10, t: 22, b: 36 },
+    xaxis: { title: 'x', gridcolor: '#e8e8e6', zeroline: true, zerolinecolor: '#ccc' },
+    yaxis: { title: 'p', gridcolor: '#e8e8e6', zeroline: true, zerolinecolor: '#ccc', scaleanchor: 'x' },
+    title: { text: 'W(x, p) — initial motional state', font: { size: 11, color: '#888' } },
+    width: null, height: 270,
+  };
+
+  Plotly.react(el, [trace], layout, { responsive: true, displayModeBar: false });
+}
+
+// Wire Wigner to motional state sliders
+['p-alpha', 'p-alpha-phase', 'p-nth', 'p-squeeze-r', 'p-squeeze-phi'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', drawWigner);
+});
+
+// Debounced initial draw (wait for Plotly to be ready)
+setTimeout(drawWigner, 300);
+setTimeout(drawBloch, 100);
+
