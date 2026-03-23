@@ -42,7 +42,7 @@ DEFAULTS = dict(
     aom_setup="fast",
     pulse_duration_us=0.04,
     duty_cycle=0.052,
-    n_pulses=326,
+    n_pulses=22,           # v0.7 fix: was 326 (numerical time steps, not laser pulses)
     strobo_pi2_us=17.0,
 )
 
@@ -110,7 +110,7 @@ def export_learner(learner, alpha, outdir="data",
         f.attrs['duty_cycle']        = cfg['duty_cycle']
         f.attrs['n_pulses']          = cfg['n_pulses']
         f.attrs['strobo_pi2_us']     = cfg['strobo_pi2_us']
-        f.attrs['export_version']    = '0.4'
+        f.attrs['export_version']    = '0.8'
 
     print(f"  ✓  {filepath}  ({len(xs)} points, α={alpha}, C(σz)={cz:.2f})")
     return filepath

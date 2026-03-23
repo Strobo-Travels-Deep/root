@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reference — Hasse et al.</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Reference-page-specific ─── */
+.ref-entry { background: var(--bg-card); border: 1px solid var(--border-light);
+             padding: 0.9rem 1.1rem; margin: 1.2rem 0; }
+.ref-entry .ref-id { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
+                     font-weight: 600; letter-spacing: 0.04em; color: var(--accent);
+                     text-transform: uppercase; margin-bottom: 0.15rem; }
+.ref-entry .ref-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.ref-entry .ref-body { font-size: 0.88rem; color: var(--text-sec); line-height: 1.65; }
+.ref-entry .ref-body p { margin-bottom: 0.5rem; }
+.ref-entry .ref-body p:last-child { margin-bottom: 0; }
+.ref-xref { display: inline-block; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem; font-weight: 500; padding: 0.1em 0.4em;
+            border-radius: 2px; background: var(--tag-bg); color: var(--tag-text);
+            text-decoration: none; margin-right: 0.2rem; }
+.ref-xref:hover { background: var(--accent); color: #fff; }
+.paper-eq { background: var(--bg-card); border: 1px solid var(--border-light);
+            padding: 0.5rem 0.8rem; margin: 0.5rem 0; font-style: italic;
+            text-align: center; line-height: 1.8; font-size: 0.92rem; }
+.comment-block { border-left: 3px solid var(--accent-light); padding: 0.5rem 0.8rem;
+                 margin: 0.5rem 0; font-size: 0.86rem; color: var(--text-sec); }
+.comment-block strong { color: var(--text); }
+.section-ref { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+               color: var(--text-muted); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
+  <h1>Commented Reference</h1>
+  <p class="subtitle">Annotated guide to Hasse et al. with dossier cross-references</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a>
+    <a href="reference.html" aria-current="page">Reference</a>
+    <a href="getting-started.html">Start</a>
+  </nav>
+</header>
+
+<div class="meta-block">
+  <p><strong>Source paper:</strong> F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz,
+  <em>Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics,</em>
+  <a href="https://doi.org/10.1103/PhysRevA.109.053105">Phys. Rev. A <strong>109</strong>, 053105 (2024)</a>
+  · <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
+  <p><strong>Ion species:</strong> <sup>25</sup>Mg<sup>+</sup> · <strong>Endorsement Marker:</strong> Local candidate framework</p>
+  <p>This page provides a section-by-section commentary on the source paper, annotated with cross-references to the dossier's claim analysis, framework, simulation, and work packages. It is intended as a reading companion — not a substitute for the paper itself.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Paper Structure at a Glance</h2>
+
+<table class="compact-table">
+<thead><tr><th>Paper section</th><th>Content</th><th>Dossier mapping</th></tr></thead>
+<tbody>
+<tr><td class="section-ref">I</td><td>Introduction: super-resolution via travelling-wave AC Stark lattice</td><td><a href="index.html" class="ref-xref">Overview</a></td></tr>
+<tr><td class="section-ref">II</td><td>Experimental setup: four-oscillator phase lock</td><td><a href="dossier.html" class="ref-xref">L1</a> <a href="dossier.html" class="ref-xref">L8</a></td></tr>
+<tr><td class="section-ref">III</td><td>Interaction Hamiltonian and coupling operator</td><td><a href="framework.html" class="ref-xref">Framework</a> <a href="code.html" class="ref-xref">Code §2</a></td></tr>
+<tr><td class="section-ref">IV</td><td>Stroboscopic protocol and measurement</td><td><a href="code.html" class="ref-xref">Code §3</a> <a href="tutorial.html" class="ref-xref">Tutorial</a></td></tr>
+<tr><td class="section-ref">V</td><td>Results: detuning spectra at α = 0, 1, 3, 5</td><td><a href="numerics.html" class="ref-xref">Numerics</a> <a href="simulate.html" class="ref-xref">Simulate</a></td></tr>
+<tr><td class="section-ref">VI</td><td>Discussion: tomographic potential, BAE outlook</td><td><a href="dossier.html" class="ref-xref">L4–L7</a> <a href="tutorial.html" class="ref-xref">WP-C, D</a></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Section-by-Section Commentary</h2>
+
+<!-- ── Section I ──────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §I — Introduction</div>
+  <div class="ref-title">Super-resolution via travelling-wave AC Stark lattice</div>
+  <div class="ref-body">
+    <p>The paper opens with the observation that standard fluorescence imaging of trapped ions is diffraction-limited at optical wavelengths (~370 nm for <sup>25</sup>Mg<sup>+</sup>). The AC Stark lattice formed by counter-propagating Raman beams creates an effective wavelength λ<sub>eff</sub> ≈ 140 nm — below the optical diffraction limit. This is <em>geometric</em> super-resolution: engineered k<sub>eff</sub>, not dynamical squeezing or QND protocols.</p>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> The super-resolution claim is classified <a href="dossier.html" class="ref-xref">L3 COMPATIBLE</a> — it follows directly from the lattice geometry and does not depend on η, pulse duration, or motional state. This is one of the three settled claims.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section II ─────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §II — Experimental Setup</div>
+  <div class="ref-title">Four-oscillator phase lock</div>
+  <div class="ref-body">
+    <p>The experiment phase-locks four oscillators: (1) the microwave reference, (2) the optical running-wave phase of the Raman beams, (3) the spin precession, and (4) the motional oscillation of the <sup>25</sup>Mg<sup>+</sup> ion in the trap. The stroboscopic protocol requires that all four remain coherent over the ~17 μs measurement sequence (~22 motional periods).</p>
+    <p>Key experimental parameters extracted from this section:</p>
+    <div class="paper-eq">
+      ω<sub>m</sub>/(2π) = 1.30 MHz &emsp; η<sub>LF</sub> = 0.397 &emsp; Ω/(2π) = 0.300 MHz &emsp; T<sub>m</sub> = 769 ns
+    </div>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> The four-oscillator phase lock is classified <a href="dossier.html" class="ref-xref">L1 COMPATIBLE</a> — demonstrated experimentally. Phase stability over ~22 cycles is classified <a href="dossier.html" class="ref-xref">L8 COMPATIBLE</a>, though long-term drift remains uncharacterised (flagged as <a href="dossier.html" class="ref-xref">SWEEP</a>). The Sail essay (§1.5) quantifies the stability requirement as Δω<sub>m</sub>/ω<sub>m</sub> ≪ 0.7%.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section III ────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §III — Interaction Hamiltonian</div>
+  <div class="ref-title">Exponential spin–motion coupling</div>
+  <div class="ref-body">
+    <p>The central equation of the paper is the interaction Hamiltonian in the rotating frame:</p>
+    <div class="paper-eq">
+      H<sub>eff</sub> = −(δ₀/2) σ<sub>z</sub> ⊗ I + (Ω/2) [ C σ₋ + C† σ₊ ]
+      <br><br>
+      where &ensp; C = exp(iη(a + a†))
+    </div>
+    <p>The coupling operator C is the <em>exact</em> exponential of the position quadrature — not a Lamb–Dicke truncation. This is the mathematical object that generates both the power and the complications of the scheme.</p>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> This Hamiltonian is implemented exactly in the browser simulation (<a href="code.html" class="ref-xref">Code §2</a>) via matrix exponentiation of X = a + a† in the Fock basis. No sideband truncation is applied. The <a href="framework.html" class="ref-xref">Framework</a> page analyses the consequences of the exponential coupling at η ≈ 0.4: multi-sideband structure, loss of quadrature selectivity, and the 20% second-order correction (η²/2 = 0.08). The Sail essay (§1.2) provides the detailed deviation analysis.
+    </div>
+    <p>The paper notes the Debye–Waller suppression of the carrier Rabi rate:</p>
+    <div class="paper-eq">
+      Ω<sub>eff</sub> = Ω · exp(−η²/2) = 0.300 × 0.924 = 0.277 MHz
+    </div>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> Confirmed numerically. The simulation engine uses Ω<sub>eff</sub> to derive the per-pulse duration δt = π/(2 N<sub>p</sub> Ω<sub>eff</sub>) ≈ 41 ns for N<sub>p</sub> = 22 (<a href="code.html" class="ref-xref">Code §3</a>).
+    </div>
+  </div>
+</div>
+
+<!-- ── Section IV ─────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §IV — Stroboscopic Protocol</div>
+  <div class="ref-title">Pulse train, timing, and the stroboscopic condition</div>
+  <div class="ref-body">
+    <p>The measurement consists of ~22 Raman pulses, each separated by one motional period T<sub>m</sub>. Each pulse imparts a small rotation (θ ≈ 4° per pulse), and the stroboscopic synchronisation ensures all pulses sample the same motional phase. The total accumulated rotation is π/2 in ~17 μs.</p>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> The stroboscopic condition (T<sub>sep</sub> = T<sub>m</sub>) means that free evolution between pulses is the identity operator in the Fock basis: exp(−i 2πn) = 1 for all integer n. The simulation exploits this exactly (<a href="code.html" class="ref-xref">Code §3</a>). The <a href="simulate.html" class="ref-xref">Simulate</a> page also supports non-stroboscopic T<sub>sep</sub> ≠ T<sub>m</sub> for exploring departures from the ideal protocol.
+    </div>
+    <p>The paper describes two measurement channels:</p>
+    <p><strong>Position → phase shift:</strong> The travelling wave imprints a spin-dependent phase ∝ k<sub>eff</sub> · x(t). Position information appears as a fringe shift in the spin state.</p>
+    <p><strong>Velocity → Doppler detuning:</strong> A moving ion sees the analysis pulse Doppler-shifted by δ<sub>D</sub> = k<sub>eff</sub> · v. The detuning spectrum P<sub>↑</sub>(δ) encodes the velocity distribution.</p>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> The two-channel structure is the subject of <a href="dossier.html" class="ref-xref">L2</a> (UNDERDETERMINED). Clean separation holds only in the ideal limit (η|α| ≪ 1 or instantaneous pulses). At η ≈ 0.4 with 40 ns pulses, channel crosstalk must be bounded — this is the deliverable of <a href="tutorial.html" class="ref-xref">WP-A.1</a>. The Sail essay (§1.1, §1.3, §1.4) provides the deviation analysis, showing that intra-pulse phase blur reaches ~1.3 rad at α = 5.
+    </div>
+    <p>The paper emphasises that the Doppler shift exceeds the Rabi linewidth for all non-trivial motional states:</p>
+    <div class="paper-eq">
+      δ<sub>D</sub><sup>peak</sup> / Ω = 2η|α| · (ω<sub>m</sub>/Ω) = 3.5 (α=1), &ensp; 10.4 (α=3), &ensp; 17.2 (α=5)
+    </div>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> This is the basis for the dossier's primary framing: <strong>tomography, not BAE</strong>. The regime is spectroscopic — the analysis pulse functions as a narrowband frequency discriminator, not a coherent rotation gate. The <a href="tutorial.html" class="ref-xref">Tutorial</a> develops this quantitatively and the <a href="simulate.html" class="ref-xref">Simulate</a> page confirms: the coherence envelope vs. detuning directly maps the velocity distribution convolved with the Rabi instrument function.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section V ──────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §V — Results</div>
+  <div class="ref-title">Detuning spectra at α = 0, 1, 3, 5</div>
+  <div class="ref-body">
+    <p>The paper presents experimental detuning spectra (Figures 2–4) showing spin expectation values ⟨σ<sub>x</sub>⟩, ⟨σ<sub>y</sub>⟩, ⟨σ<sub>z</sub>⟩ as functions of the analysis-pulse detuning δ₀, for displaced coherent states at four amplitudes. The key observations are:</p>
+    <p>(a) Sideband structure with spacing ≈ ω<sub>m</sub>, becoming progressively more complex and asymmetric as α increases.</p>
+    <p>(b) Coherence envelope broadening from α = 0 → 5, reflecting the growing velocity distribution.</p>
+    <p>(c) σ<sub>z</sub> contrast modulation encoding the integrated Doppler response.</p>
+    <div class="comment-block">
+      <strong>Dossier comment:</strong> The <a href="numerics.html" class="ref-xref">Numerics</a> page provides interactive viewers for the simulation counterparts of these experimental figures. The default JSON runs (α = 0, 1, 3, 5 at N<sub>max</sub> = 30–40, 22 stroboscopic pulses) reproduce the qualitative features. Quantitative comparison requires attention to provenance: the simulation uses exact Fock-basis evolution; the experiment has additional noise sources (motional heating, laser intensity fluctuations, detection efficiency) not included in the unitary default runs. The <a href="simulate.html" class="ref-xref">Simulate</a> page supports decoherence and projection noise for more realistic comparison.
+    </div>
+
+    <div class="callout">
+      <div class="cl">Provenance note — contrast values</div>
+      <p style="margin-bottom:0.4rem;">Two sets of σ<sub>z</sub> contrast values exist in this dossier:</p>
+      <p style="margin-bottom:0.4rem;"><strong>HDF5 adaptive-learner data:</strong> contrast_z = 0.61 → 0.71 → 0.84 → 0.75 (α = 0, 1, 3, 5). Different simulation method; not reproducible from the 22-pulse stroboscopic browser engine.</p>
+      <p style="margin-bottom:0;"><strong>22-pulse stroboscopic JSON runs:</strong> contrast_z ≈ 0.56 (uniform across α). These are the values in the default run data and are reproducible via the <a href="simulate.html">Simulate</a> page. See <a href="tutorial.html">Tutorial</a> and README for cross-validation discussion.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Figures ────────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper Figures 1–4</div>
+  <div class="ref-title">Commented figure guide</div>
+  <div class="ref-body">
+    <p><strong>Figure 1 — Experimental schematic.</strong> Shows the AC Raman beam geometry producing λ<sub>eff</sub> ≈ 140 nm, the trap, and the phase-lock chain. The four oscillators (MW reference, optical phase, spin, motion) are the structural prerequisite for stroboscopic interrogation.</p>
+    <div class="comment-block">
+      <strong>Dossier mapping:</strong> <a href="dossier.html" class="ref-xref">L1</a> <a href="dossier.html" class="ref-xref">L3</a> <a href="dossier.html" class="ref-xref">L8</a> — all COMPATIBLE. The geometric super-resolution and phase lock are established.
+    </div>
+
+    <p><strong>Figure 2 — Ground-state detuning spectrum (α = 0).</strong> The simplest case: the ion is in the motional ground state. The spectrum shows the carrier transition at δ = 0 with weak sidebands at δ = ±ω<sub>m</sub>. Even here, the zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) is not negligible.</p>
+    <div class="comment-block">
+      <strong>Simulation comparison:</strong> <a href="numerics.html" class="ref-xref">Numerics α=0</a>. The sideband comb run (401 points, δ ∈ [−4, 4]) resolves the full structure. The carrier zoom (301 points, δ ∈ [−2, 2]) shows the central peak in detail.
+    </div>
+
+    <p><strong>Figure 3 — Displaced coherent states (α = 1, 3).</strong> As α increases, the sideband pattern becomes asymmetric and the coherence envelope broadens. At α = 3, the Doppler shift (10.4 × Ω) places the ion deeply off resonance for most of the oscillation cycle. The detuning scan functions as frequency-domain tomography of the velocity distribution.</p>
+    <div class="comment-block">
+      <strong>Simulation comparison:</strong> <a href="numerics.html" class="ref-xref">Numerics α=1, α=3</a>. The fine-grid α = 1 run (301 points) reveals sideband substructure. The <a href="tutorial.html" class="ref-xref">Tutorial</a> Doppler estimates table gives the quantitative framework.
+    </div>
+
+    <p><strong>Figure 4 — Large displacement (α = 5).</strong> At ⟨n⟩ = 25, the motional state is well outside the Lamb–Dicke regime (η√51 ≈ 2.8). The spectrum is rich and highly structured. Intra-pulse phase blur (~1.3 rad) is significant. This is the regime where the exponential coupling C = exp(iη(a+a†)) cannot be truncated — and where its nonlinearity is most valuable for tomography.</p>
+    <div class="comment-block">
+      <strong>Simulation comparison:</strong> <a href="numerics.html" class="ref-xref">Numerics α=5</a>. Fock convergence checked post-run; boundary population well below 1% — adequate. The <a href="simulate.html" class="ref-xref">Simulate</a> page flags convergence automatically.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section VI ─────────────────────────────────────────────── -->
+
+<div class="ref-entry">
+  <div class="ref-id">Paper §VI — Discussion</div>
+  <div class="ref-title">Tomographic potential and back-action evasion outlook</div>
+  <div class="ref-body">
+    <p>The paper discusses two forward-looking claims: (a) the scheme may enable motional state tomography by combining position (phase) and momentum (Doppler) readout, and (b) the coupling structure may be "compatible with" back-action evasion (BAE) in suitable parameter regimes.</p>
+    <div class="comment-block">
+      <strong>Dossier comment — tomography:</strong> The tomographic potential is the subject of <a href="dossier.html" class="ref-xref">L4</a> (decoder fidelity), <a href="dossier.html" class="ref-xref">L5</a> (backaction), and <a href="dossier.html" class="ref-xref">L7</a> (nonclassical tomography) — all UNDERDETERMINED. The dossier's primary framing is tomography: the η ≈ 0.4 nonlinearity accesses higher harmonics of the characteristic function χ(ξ), making the scheme richer than a linear probe. Whether the map ρ → (phase, Doppler spectrum) is injective and noise-stable for target states is the deliverable of <a href="tutorial.html" class="ref-xref">WP-C</a>.
+    </div>
+    <div class="comment-block">
+      <strong>Dossier comment — BAE:</strong> Classified <a href="dossier.html" class="ref-xref">L6 UNDERDETERMINED</a> by Council decision. At η ≈ 0.4, the exponential operator couples both quadratures — the structural basis for BAE (single-quadrature coupling) is absent. Whether a perturbative linear regime exists in some accessible parameter window is open but not established. <a href="tutorial.html" class="ref-xref">WP-D</a> is gated on WP-A and WP-C. The Council decision: "No rescue" — if BAE is inaccessible, the dossier does not force a positive conclusion.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Key Equations with Dossier Cross-References</h2>
+
+<table class="compact-table">
+<thead><tr><th>Equation</th><th>Content</th><th>Dossier location</th><th>Simulation</th></tr></thead>
+<tbody>
+<tr><td class="id-col">Eq. (1)</td><td>H<sub>eff</sub> with C = exp(iη(a+a†))</td><td><a href="framework.html" class="ref-xref">Framework</a> <a href="code.html" class="ref-xref">Code §2</a></td><td>Exact implementation</td></tr>
+<tr><td class="id-col">Eq. (2)</td><td>Stroboscopic propagator U<sup>N<sub>p</sub></sup></td><td><a href="code.html" class="ref-xref">Code §3</a></td><td>Exact expm</td></tr>
+<tr><td class="id-col">Eq. (3)</td><td>Coherent-state overlap ⟨α|C|α⟩</td><td><a href="framework.html" class="ref-xref">Framework</a></td><td>Analytic check</td></tr>
+<tr><td class="id-col">Eq. (4)</td><td>Debye–Waller factor exp(−η²/2)</td><td><a href="tutorial.html" class="ref-xref">Tutorial</a></td><td>0.924 confirmed</td></tr>
+<tr><td class="id-col">Eq. (5)</td><td>Sideband amplitudes from |0⟩</td><td><a href="framework.html" class="ref-xref">Framework</a></td><td>0.923, 0.369, 0.074, 0.010</td></tr>
+</tbody>
+</table>
+
+<p style="font-size:0.84rem;color:var(--text-muted);">Equation numbers are approximate references to the paper's structure. The exact numbering may vary between the arXiv preprint and the published PRA version. All equations are implemented without approximation in the <a href="simulate.html">Simulate</a> engine.</p>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Extended References</h2>
+
+<p>The dossier draws on a wider literature for context. The <a href="ideal-limit-principles.md">Sail essay</a> provides the full reference list with commentary. Key connections:</p>
+
+<div class="ref-entry">
+  <div class="ref-id">Monroe ultrafast programme</div>
+  <div class="ref-body">
+    <p>García-Ripoll, Zoller &amp; Cirac (2003); Duan (2004); Mizrahi et al. (2013, 2014); Johnson et al. (2015, 2017); Wong-Campos et al. (2017). This body of work on ultrafast spin–motion control with impulsive laser pulses provides the theoretical and experimental baseline for understanding the Hasse protocol's physics identity. The Sail essay (§2, §3) analyses the comparison in detail: the Hasse scheme is a Floquet-synchronised quadrature probe, not a slow approximation to an ultrafast kick.</p>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Back-action evasion foundations</div>
+  <div class="ref-body">
+    <p>Braginsky &amp; Vorontsov (1980); Caves, Thorne, Drever, Sandberg &amp; Zimmermann (1980). The structural prerequisites for BAE — linear single-quadrature coupling — are developed in these foundational works. The Sail essay (§1.2) shows explicitly why these prerequisites are not met at η ≈ 0.4.</p>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Trapped-ion quantum dynamics</div>
+  <div class="ref-body">
+    <p>Leibfried, Blatt, Monroe &amp; Wineland, Rev. Mod. Phys. 75, 281 (2003). The standard reference for spin–motion coupling in trapped ions, including the Lamb–Dicke regime, resolved sidebands, and motional state preparation. Essential background for the <a href="framework.html">Framework</a> page.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Open Questions Arising from the Paper</h2>
+
+<p>These are the questions that the dossier's five UNDERDETERMINED claims (L2, L4, L5, L6, L7) distil from the paper's forward-looking discussion. They are ordered by the Council's work-package sequence:</p>
+
+<table class="compact-table">
+<thead><tr><th>#</th><th>Question</th><th>Ledger</th><th>Work package</th></tr></thead>
+<tbody>
+<tr><td class="id-col">Q1</td><td>What is the backaction budget (unitary + projective) as a function of η, α, N<sub>p</sub>?</td><td><a href="dossier.html" class="ref-xref">L5</a></td><td><a href="tutorial.html" class="ref-xref">WP-A.3</a></td></tr>
+<tr><td class="id-col">Q2</td><td>Can the position (phase) and momentum (Doppler) channels be cleanly separated at η ≈ 0.4?</td><td><a href="dossier.html" class="ref-xref">L2</a></td><td><a href="tutorial.html" class="ref-xref">WP-A.1</a></td></tr>
+<tr><td class="id-col">Q3</td><td>Is the map ρ → (phase, Doppler spectrum) injective for Fock, squeezed, and cat states?</td><td><a href="dossier.html" class="ref-xref">L4</a> <a href="dossier.html" class="ref-xref">L7</a></td><td><a href="tutorial.html" class="ref-xref">WP-C</a></td></tr>
+<tr><td class="id-col">Q4</td><td>Does a perturbative linear (BAE-compatible) regime exist in any accessible parameter window?</td><td><a href="dossier.html" class="ref-xref">L6</a></td><td><a href="tutorial.html" class="ref-xref">WP-D</a></td></tr>
+<tr><td class="id-col">Q5</td><td>Is the readout best formalised as characteristic-function sampling (tomography) or phase-space estimation (metrology)?</td><td>—</td><td>Standing question</td></tr>
+</tbody>
+</table>
+
+<footer>
+  <p>Dossier v0.8 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="numerics.html">Numerics</a>
+    · <a href="simulate.html">Simulate</a>
+    · <a href="code.html">Code</a></p>
+</footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- BIBLIOGRAPHY PAGE — loads as scrollable continuation       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<div class="page-wrap" id="bibliography" style="border-top:3px solid var(--accent);padding-top:2rem;">
+
+<h1 style="margin-bottom:0.2rem;">Commented Bibliography</h1>
+<p class="subtitle">Further reading organised by theme · annotated for dossier relevance</p>
+
+<div class="meta-block">
+  <p>This bibliography extends the reference list in the <a href="ideal-limit-principles.md">Sail essay</a> with
+  additional context, thematic organisation, and reading-order guidance. Each entry carries a
+  <strong>relevance note</strong> explaining why it matters for the dossier and which claims or work
+  packages it informs. References already cited in the Sail essay are marked <span class="ref-xref">SAIL</span>.</p>
+  <p>Entries are grouped by theme, not by date or author. Within each theme, ordering reflects a
+  suggested reading path — foundational works first, then specific developments.</p>
+</div>
+
+<hr>
+
+<!-- ── Theme 1: Source paper ──────────────────────────────────── -->
+
+<h2>1. The Source Paper</h2>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Hasse2024</div>
+  <div class="ref-title">F. Hasse, D. Palani, R. Thomm, U. Warring, and T. Schaetz</div>
+  <div class="ref-body">
+    <p>"Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics,"
+    <em>Phys. Rev. A</em> <strong>109</strong>, 053105 (2024).
+    <a href="https://doi.org/10.1103/PhysRevA.109.053105">doi</a> ·
+    <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The paper under analysis. Everything in this dossier derives from or responds to this work. Read first. The arXiv version and the PRA version differ slightly in equation numbering; the dossier uses approximate references that should work for both.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 2: Trapped-ion fundamentals ─────────────────────── -->
+
+<h2>2. Trapped-Ion Physics — Foundations</h2>
+
+<p>Essential background for understanding the Hamiltonian, Lamb–Dicke parameter, sideband structure, and motional state preparation.</p>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Leibfried2003</div>
+  <div class="ref-title">D. Leibfried, R. Blatt, C. Monroe, and D. Wineland</div>
+  <div class="ref-body">
+    <p>"Quantum dynamics of single trapped ions,"
+    <em>Rev. Mod. Phys.</em> <strong>75</strong>, 281–324 (2003).
+    <a href="https://doi.org/10.1103/RevModPhys.75.281">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The standard review. Covers spin–motion coupling, the Lamb–Dicke regime (§II.D), resolved sidebands (§III), coherent states and displacement operators (§IV), and motional state diagnostics. Essential for the <a href="framework.html" class="ref-xref">Framework</a> page. Read §II.D and §III first if time is limited.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Wineland1998</div>
+  <div class="ref-title">D. J. Wineland, C. Monroe, W. M. Itano, D. Leibfried, B. E. King, and D. M. Meekhof</div>
+  <div class="ref-body">
+    <p>"Experimental issues in coherent quantum-state manipulation of trapped atomic ions,"
+    <em>J. Res. Natl. Inst. Stand. Technol.</em> <strong>103</strong>, 259–328 (1998).
+    <a href="https://doi.org/10.6028/jres.103.019">doi</a> ·
+    <a href="https://arxiv.org/abs/quant-ph/9710025">arXiv</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The longer predecessor to Leibfried2003, with more experimental detail on heating rates, decoherence mechanisms, and the transition from resolved to unresolved sideband regimes. Particularly relevant to the decoherence model in the simulation (<a href="code.html" class="ref-xref">Code §6</a>) and to understanding the heating-rate parameter dn/dt.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Monroe1996</div>
+  <div class="ref-title">C. Monroe, D. M. Meekhof, B. E. King, and D. J. Wineland</div>
+  <div class="ref-body">
+    <p>"A 'Schrödinger Cat' Superposition State of an Atom,"
+    <em>Science</em> <strong>272</strong>, 1131–1136 (1996).
+    <a href="https://doi.org/10.1126/science.272.5265.1131">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The original demonstration of coherent-state superpositions (cat states) with trapped ions. Relevant to <a href="dossier.html" class="ref-xref">L7</a> — whether the stroboscopic scheme can perform tomography on non-classical states. The state preparation methodology (displacement + conditional phase) remains the standard technique.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Meekhof1996</div>
+  <div class="ref-title">D. M. Meekhof, C. Monroe, B. E. King, W. M. Itano, and D. J. Wineland</div>
+  <div class="ref-body">
+    <p>"Generation of Nonclassical Motional States of a Trapped Atom,"
+    <em>Phys. Rev. Lett.</em> <strong>76</strong>, 1796–1799 (1996).
+    <a href="https://doi.org/10.1103/PhysRevLett.76.1796">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Experimental demonstration of Fock states, coherent states, and squeezed states of a single trapped ion. Directly relevant to the initial-state preparation options in the <a href="simulate.html" class="ref-xref">Simulate</a> page (displacement, squeeze, thermal) and to the target states for the tomographic stress-test (<a href="tutorial.html" class="ref-xref">WP-C</a>).
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 3: Ultrafast control ─────────────────────────────── -->
+
+<h2>3. Ultrafast Spin–Motion Control (Monroe Programme)</h2>
+
+<p>The experimental and theoretical baseline against which the Hasse protocol's physics identity is defined. The Sail essay (§2, §3) provides a detailed comparison. Read in the order listed.</p>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> García-Ripoll2003</div>
+  <div class="ref-title">J. J. García-Ripoll, P. Zoller, and J. I. Cirac</div>
+  <div class="ref-body">
+    <p>"Speed Optimized Two-Qubit Gates with Laser Coherent Control Techniques for Ion Trap Quantum Computing,"
+    <em>Phys. Rev. Lett.</em> <strong>91</strong>, 157901 (2003).
+    <a href="https://doi.org/10.1103/PhysRevLett.91.157901">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Foundational theory for fast gates outside the Lamb–Dicke regime. Shows that gates operating much faster than the trap period become insensitive to temperature — the key property that the Hasse stroboscopic scheme does <em>not</em> fully inherit (Sail essay §2). The displacement-operator factorisation in the impulsive limit is the theoretical reference point.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> García-Ripoll2005</div>
+  <div class="ref-title">J. J. García-Ripoll, P. Zoller, and J. I. Cirac</div>
+  <div class="ref-body">
+    <p>"Coherent control of trapped ions using off-resonant lasers,"
+    <em>Phys. Rev. A</em> <strong>71</strong>, 062309 (2005).
+    <a href="https://doi.org/10.1103/PhysRevA.71.062309">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Extended treatment of the theory in García-Ripoll2003, with detailed analysis of off-resonant laser control and the transition from impulsive to finite-duration pulses. The Magnus-expansion treatment of finite-pulse corrections is directly relevant to the deviation analysis in Sail essay §1.1.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Duan2004</div>
+  <div class="ref-title">L.-M. Duan</div>
+  <div class="ref-body">
+    <p>"Scaling Ion Trap Quantum Computation through Fast Quantum Gates,"
+    <em>Phys. Rev. Lett.</em> <strong>93</strong>, 100502 (2004).
+    <a href="https://doi.org/10.1103/PhysRevLett.93.100502">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Extends fast-gate theory to scalable architectures. The conceptual separation between "impulsive kick" and "accumulated coherent rotation" that the Sail essay (§3) develops — to distinguish the Hasse protocol from the Monroe approach — has its theoretical roots here.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Mizrahi2013</div>
+  <div class="ref-title">J. Mizrahi, C. Senko, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. W. S. Conover, and C. Monroe</div>
+  <div class="ref-body">
+    <p>"Ultrafast Spin–Motion Entanglement and Interferometry with a Single Atom,"
+    <em>Phys. Rev. Lett.</em> <strong>110</strong>, 203001 (2013).
+    <a href="https://doi.org/10.1103/PhysRevLett.110.203001">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> First experimental demonstration of ultrafast (&lt; 50 ps) spin–motion entanglement with a single trapped ion. Achieves the impulsive regime (δt/T<sub>m</sub> ~ 10⁻⁵) that the Hasse protocol does not reach (δt/T<sub>m</sub> ≈ 0.05). The comparison table in Sail essay §2 uses this as the reference point.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Mizrahi2014</div>
+  <div class="ref-title">J. Mizrahi, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. Senko, D. Hayes, and C. Monroe</div>
+  <div class="ref-body">
+    <p>"Quantum control of qubits and atomic motion using ultrafast laser pulses,"
+    <em>Appl. Phys. B</em> <strong>114</strong>, 45–61 (2014).
+    <a href="https://doi.org/10.1007/s00340-013-5717-6">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Comprehensive methods paper for the ultrafast programme. Detailed pulse characterisation, calibration procedures, and systematic error analysis. Useful as a methodological reference for understanding what "impulsive" means experimentally and where the Hasse protocol's 40 ns pulses sit relative to that standard.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Johnson2015</div>
+  <div class="ref-title">K. G. Johnson, B. Neyenhuis, J. Mizrahi, J. D. Wong-Campos, and C. Monroe</div>
+  <div class="ref-body">
+    <p>"Sensing Atomic Motion from the Zero Point to Room Temperature with Ultrafast Atom Interferometry,"
+    <em>Phys. Rev. Lett.</em> <strong>115</strong>, 213001 (2015).
+    <a href="https://doi.org/10.1103/PhysRevLett.115.213001">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Demonstrates motional sensing from the ground state to n̄ ~ 10⁴ using ultrafast kicks. The temperature independence arises from the impulsive factorisation — a property the Hasse protocol trades for phase-selective stroboscopic accumulation. Directly relevant to the question of whether the stroboscopic scheme has a comparable dynamic range.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Johnson2017</div>
+  <div class="ref-title">K. G. Johnson, J. D. Wong-Campos, B. Neyenhuis, J. Mizrahi, and C. Monroe</div>
+  <div class="ref-body">
+    <p>"Ultrafast creation of large Schrödinger cat states of an atom,"
+    <em>Nat. Commun.</em> <strong>8</strong>, 697 (2017).
+    <a href="https://doi.org/10.1038/s41467-017-00682-6">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Creates cat states with separations up to Δx ≈ 0.5 μm using sequences of impulsive kicks. Represents the most ambitious motional-state engineering in the ultrafast framework. Relevant to <a href="dossier.html" class="ref-xref">L7</a> — whether the stroboscopic measurement scheme could characterise such states.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Wong-Campos2017</div>
+  <div class="ref-title">J. D. Wong-Campos, S. A. Moses, K. G. Johnson, and C. Monroe</div>
+  <div class="ref-body">
+    <p>"Demonstration of Two-Atom Entanglement with Ultrafast Optical Pulses,"
+    <em>Phys. Rev. Lett.</em> <strong>119</strong>, 230501 (2017).
+    <a href="https://doi.org/10.1103/PhysRevLett.119.230501">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Extends the ultrafast programme to two-ion entanglement. While the Hasse protocol is currently single-ion, the multi-ion extension is a natural question. The entangling mechanism here (state-dependent kicks mediated by shared motional modes) provides a comparison point.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 4: BAE and quantum measurement ───────────────────── -->
+
+<h2>4. Back-Action Evasion and Quantum Measurement</h2>
+
+<p>Background for understanding the BAE claim (<a href="dossier.html" class="ref-xref">L6</a>) and why it is classified UNDERDETERMINED.</p>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Braginsky1980</div>
+  <div class="ref-title">V. B. Braginsky and Yu. I. Vorontsov</div>
+  <div class="ref-body">
+    <p>"Quantum-Mechanical Limitations in Macroscopic Experiments and Modern Experimental Technique,"
+    <em>Sov. Phys. Usp.</em> <strong>23</strong>, 644–650 (1980).
+    <a href="https://doi.org/10.1070/PU1980v023n11ABEH005064">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> One of the foundational papers on quantum measurement back-action and the concept of quantum non-demolition (QND) measurements. Establishes the principle that measuring one quadrature need not disturb it if the coupling is linear and single-quadrature — the structural prerequisite that fails at η ≈ 0.4 (Sail essay §1.2).
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id"><span class="ref-xref">SAIL</span> Caves1980</div>
+  <div class="ref-title">C. M. Caves, K. S. Thorne, R. W. P. Drever, V. D. Sandberg, and M. Zimmermann</div>
+  <div class="ref-body">
+    <p>"On the measurement of a weak classical force coupled to a quantum-mechanical oscillator. I. Issues of principle,"
+    <em>Rev. Mod. Phys.</em> <strong>52</strong>, 341–392 (1980).
+    <a href="https://doi.org/10.1103/RevModPhys.52.341">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The comprehensive treatment of QND measurement theory for harmonic oscillators. Sections on back-action evasion via single-quadrature readout are directly relevant to understanding why the exponential coupling C = exp(iη(a+a†)) at η ≈ 0.4 compromises BAE — the coupling is not linear in a single quadrature.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Clerk2010</div>
+  <div class="ref-title">A. A. Clerk, M. H. Devoret, S. M. Girvin, F. Marquardt, and R. J. Schoelkopf</div>
+  <div class="ref-body">
+    <p>"Introduction to quantum noise, measurement, and amplification,"
+    <em>Rev. Mod. Phys.</em> <strong>82</strong>, 1155–1208 (2010).
+    <a href="https://doi.org/10.1103/RevModPhys.82.1155">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Modern review of quantum measurement theory, covering the standard quantum limit, back-action, and measurement imprecision. Written in the context of circuit QED and optomechanics, but the measurement-theory framework is universal. Helpful for formalising the backaction budget in <a href="tutorial.html" class="ref-xref">WP-A.3</a> — particularly the distinction between unitary (reversible entanglement) and projective (irreversible collapse) backaction identified in the Sail essay §1.6.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 5: Motional state tomography ─────────────────────── -->
+
+<h2>5. Motional State Tomography and Reconstruction</h2>
+
+<p>The dossier's primary framing is tomography. These references provide the theoretical and experimental context for the work packages <a href="tutorial.html" class="ref-xref">WP-C</a> and <a href="tutorial.html" class="ref-xref">WP-D</a>.</p>
+
+<div class="ref-entry">
+  <div class="ref-id">Leibfried1996</div>
+  <div class="ref-title">D. Leibfried, D. M. Meekhof, B. E. King, C. Monroe, W. M. Itano, and D. J. Wineland</div>
+  <div class="ref-body">
+    <p>"Experimental Determination of the Motional Quantum State of a Trapped Atom,"
+    <em>Phys. Rev. Lett.</em> <strong>77</strong>, 4281–4285 (1996).
+    <a href="https://doi.org/10.1103/PhysRevLett.77.4281">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> First experimental reconstruction of the motional Wigner function of a trapped ion, using the Jaynes–Cummings interaction in the resolved-sideband regime. The measurement protocol (displacement followed by ground-state probability readout) provides the standard against which the Hasse stroboscopic scheme's tomographic potential should be compared. Key question: can the phase+Doppler readout achieve comparable or complementary reconstruction fidelity?
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Lutterbach1997</div>
+  <div class="ref-title">L. G. Lutterbach and L. Davidovich</div>
+  <div class="ref-body">
+    <p>"Method for Direct Measurement of the Wigner Function in Cavity QED and Ion Traps,"
+    <em>Phys. Rev. Lett.</em> <strong>78</strong>, 2547–2550 (1997).
+    <a href="https://doi.org/10.1103/PhysRevLett.78.2547">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Proposes direct Wigner-function measurement via displacement and parity detection. The characteristic-function formalism χ(ξ) = Tr[ρ exp(iξx̂/x₀)] mentioned in the <a href="framework.html" class="ref-xref">Framework</a> page is closely related. The Hasse scheme's exponential coupling C = exp(iη(a+a†)) samples χ at discrete ξ-values — whether this is sufficient for reconstruction is the question of <a href="dossier.html" class="ref-xref">L7</a>.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Deleglise2008</div>
+  <div class="ref-title">S. Deléglise, I. Dotsenko, C. Sayrin, J. Bernu, M. Brune, J.-M. Raimond, and S. Haroche</div>
+  <div class="ref-body">
+    <p>"Reconstruction of non-classical cavity field states with snapshots of their decoherence,"
+    <em>Nature</em> <strong>455</strong>, 510–514 (2008).
+    <a href="https://doi.org/10.1038/nature07288">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Full Wigner-function reconstruction of cavity field states (Fock, coherent, cat) using dispersive atom–field coupling in cavity QED. The measurement coupling — an atom traversing a cavity — is structurally analogous to the stroboscopic spin–motion coupling, with the cavity mode replacing the motional mode. The reconstruction methods and fidelity metrics used here are directly applicable to <a href="tutorial.html" class="ref-xref">WP-C</a>.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Fluhmann2019</div>
+  <div class="ref-title">C. Flühmann, T. L. Nguyen, M. Marinelli, V. Negnevitsky, K. Mehta, and J. P. Home</div>
+  <div class="ref-body">
+    <p>"Encoding a qubit in a trapped-ion mechanical oscillator,"
+    <em>Nature</em> <strong>566</strong>, 513–517 (2019).
+    <a href="https://doi.org/10.1038/s41586-019-0960-6">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Demonstrates full quantum control and tomography of GKP (Gottesman–Kitaev–Preskill) states in a trapped-ion motional mode, using displacement-based characteristic-function sampling. This is the state-of-the-art for trapped-ion motional-state tomography and provides the most direct comparison point for evaluating whether the Hasse stroboscopic scheme adds tomographic capability beyond existing methods.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 6: AC Stark and optical lattice physics ──────────── -->
+
+<h2>6. AC Stark Lattices and Optical Forces on Trapped Ions</h2>
+
+<p>Background for the engineered effective wavelength λ<sub>eff</sub> ≈ 140 nm and the AC Raman coupling.</p>
+
+<div class="ref-entry">
+  <div class="ref-id">Schmiegelow2016</div>
+  <div class="ref-title">C. T. Schmiegelow, J. Schulz, H. Kaufmann, T. Ruster, U. G. Poschinger, and F. Schmidt-Kaler</div>
+  <div class="ref-body">
+    <p>"Transfer of optical orbital angular momentum to a bound electron,"
+    <em>Nat. Commun.</em> <strong>7</strong>, 12998 (2016).
+    <a href="https://doi.org/10.1038/ncomms12998">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Demonstrates structured light fields interacting with trapped ions. While the physics is different (OAM transfer vs. AC Stark lattice), the experimental methodology of engineering sub-wavelength light patterns for ion manipulation is closely related. Provides context for the λ<sub>eff</sub> engineering in the Hasse experiment.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Karpa2013</div>
+  <div class="ref-title">L. Karpa, A. Bylinskii, D. Gangloff, M. Cetina, and V. Vuletić</div>
+  <div class="ref-body">
+    <p>"Suppression of Ion Transport due to Long-Lived Subwavelength Localization by an Optical Lattice,"
+    <em>Phys. Rev. Lett.</em> <strong>111</strong>, 163002 (2013).
+    <a href="https://doi.org/10.1103/PhysRevLett.111.163002">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Trapped ions in optical lattices with sub-wavelength structure. The interplay between the trap potential and the optical lattice potential parallels the interplay between the harmonic confinement and the AC Stark lattice in the Hasse experiment. Relevant background for understanding the geometric super-resolution (<a href="dossier.html" class="ref-xref">L3</a>).
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 7: Phase-space methods ───────────────────────────── -->
+
+<h2>7. Phase-Space Methods and Characteristic Functions</h2>
+
+<p>Mathematical framework for the tomographic interpretation central to the dossier.</p>
+
+<div class="ref-entry">
+  <div class="ref-id">Cahill1969</div>
+  <div class="ref-title">K. E. Cahill and R. J. Glauber</div>
+  <div class="ref-body">
+    <p>"Ordered Expansions in Boson Amplitude Operators,"
+    <em>Phys. Rev.</em> <strong>177</strong>, 1857–1881 (1969); and
+    "Density Operators and Quasiprobability Distributions,"
+    <em>Phys. Rev.</em> <strong>177</strong>, 1882–1902 (1969).
+    <a href="https://doi.org/10.1103/PhysRev.177.1857">doi (I)</a> ·
+    <a href="https://doi.org/10.1103/PhysRev.177.1882">doi (II)</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The foundational treatment of quasiprobability distributions (Wigner, Husimi, Glauber–Sudarshan) and their characteristic functions. The dossier's tomographic framing rests on the observation that C = exp(iη(a+a†)) samples the characteristic function χ(ξ) at ξ = 2η. These papers provide the mathematical infrastructure.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Leonhardt1997</div>
+  <div class="ref-title">U. Leonhardt</div>
+  <div class="ref-body">
+    <p><em>Measuring the Quantum State of Light</em> (Cambridge University Press, 1997).
+    <a href="https://doi.org/10.1017/CBO9780511544989">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Textbook treatment of quantum state tomography, including homodyne tomography, pattern functions, and the relationship between characteristic functions and Wigner functions. The formalism translates directly from optical to motional states. Essential mathematical background for <a href="tutorial.html" class="ref-xref">WP-C</a>. Chapter 5 (quantum state sampling) is particularly relevant.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Theme 8: Numerical methods ─────────────────────────────── -->
+
+<h2>8. Numerical Methods</h2>
+
+<p>Technical references for the simulation engine and its validation.</p>
+
+<div class="ref-entry">
+  <div class="ref-id">Johansson2012</div>
+  <div class="ref-title">J. R. Johansson, P. D. Nation, and F. Nori</div>
+  <div class="ref-body">
+    <p>"QuTiP: An open-source Python framework for the dynamics of open quantum systems,"
+    <em>Comp. Phys. Commun.</em> <strong>183</strong>, 1760–1772 (2012).
+    <a href="https://doi.org/10.1016/j.cpc.2012.02.021">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The reference Python/QuTiP script downloadable from the <a href="simulate.html" class="ref-xref">Simulate</a> page uses QuTiP for cross-validation. QuTiP's <code>mesolve</code> and <code>mcsolve</code> routines implement the same Lindblad channels (T₁, T₂, heating) as the browser engine's quantum trajectory method (<a href="code.html" class="ref-xref">Code §6</a>).
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Dalibard1992</div>
+  <div class="ref-title">J. Dalibard, Y. Castin, and K. Mølmer</div>
+  <div class="ref-body">
+    <p>"Wave-function approach to dissipative processes in quantum optics,"
+    <em>Phys. Rev. Lett.</em> <strong>68</strong>, 580–583 (1992).
+    <a href="https://doi.org/10.1103/PhysRevLett.68.580">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> Introduces the quantum trajectory (Monte Carlo wavefunction) method used by the browser simulation engine for decoherence (<a href="code.html" class="ref-xref">Code §6</a>). The collapse/no-jump branching, the non-Hermitian effective Hamiltonian, and the trajectory-averaging prescription are all from this paper.
+    </div>
+  </div>
+</div>
+
+<div class="ref-entry">
+  <div class="ref-id">Moler2003</div>
+  <div class="ref-title">C. Moler and C. Van Loan</div>
+  <div class="ref-body">
+    <p>"Nineteen Dubious Ways to Compute the Exponential of a Matrix, Twenty-Five Years Later,"
+    <em>SIAM Rev.</em> <strong>45</strong>, 3–49 (2003).
+    <a href="https://doi.org/10.1137/S00361445024180">doi</a></p>
+    <div class="comment-block">
+      <strong>Relevance:</strong> The browser simulation computes matrix exponentials via Taylor(12) with scaling and squaring (<a href="code.html" class="ref-xref">Code §2</a>). This review is the standard reference for understanding the numerical properties, error bounds, and alternatives. Relevant for assessing the precision of the GPU (Float32) vs. CPU (Float64) paths.
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ── Reading order guidance ─────────────────────────────────── -->
+
+<h2>Suggested Reading Paths</h2>
+
+<div class="callout">
+  <div class="cl">For a new reader</div>
+  <p style="margin-bottom:0;">Hasse2024 (the paper) → Leibfried2003 §II.D, §III (trapped-ion background) → this dossier's <a href="framework.html">Framework</a> and <a href="tutorial.html">Tutorial</a> → Sail essay §1–§3 (deviation analysis) → Mizrahi2013 + Johnson2015 (Monroe comparison).</p>
+</div>
+
+<div class="callout">
+  <div class="cl">For the tomography question (WP-C)</div>
+  <p style="margin-bottom:0;">Cahill &amp; Glauber 1969 (characteristic functions) → Lutterbach &amp; Davidovich 1997 (direct Wigner measurement) → Leibfried1996 (trapped-ion Wigner reconstruction) → Flühmann2019 (state-of-the-art GKP tomography) → Leonhardt1997 Ch. 5 (sampling theory).</p>
+</div>
+
+<div class="callout">
+  <div class="cl">For the BAE question (WP-D)</div>
+  <p style="margin-bottom:0;">Braginsky &amp; Vorontsov 1980 → Caves et al. 1980 §III–IV → Clerk et al. 2010 §II–III → Sail essay §1.2, §1.6 (deviation analysis at η ≈ 0.4).</p>
+</div>
+
+<div class="callout">
+  <div class="cl">For the numerical implementation</div>
+  <p style="margin-bottom:0;">Dalibard, Castin &amp; Mølmer 1992 (trajectory method) → Johansson et al. 2012 (QuTiP) → Moler &amp; Van Loan 2003 (matrix exponential) → <a href="code.html">Code</a> page (full engine documentation).</p>
+</div>
+
+<footer>
+  <p>Dossier v0.8 · Breakwater Layer · <a href="dossier.html">Claim Ledger</a> · <a href="reference.html#bibliography">Back to top</a></p>
+</footer>
+
+</div>
+</body>
+</html>

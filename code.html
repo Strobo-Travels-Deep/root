@@ -21,16 +21,16 @@
     <a href="numerics.html">Numerics</a>
     <a href="simulate.html">Simulate</a>
     <a href="code.html" aria-current="page">Code</a>
+    <a href="reference.html">Reference</a>
+    <a href="getting-started.html">Start</a>
   </nav>
 </header>
 
 <div class="meta-block">
   <p><strong>Source:</strong> F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz · <a href="https://doi.org/10.1103/PhysRevA.109.053105">Phys. Rev. A <strong>109</strong>, 053105 (2024)</a></p>
   <p><strong>Endorsement Marker:</strong> Local candidate framework (no parity implied with externally validated laws)</p>
-  <p><strong>Implementation:</strong> Browser JavaScript (simulate.html) with WebGPU acceleration. Reference Python/QuTiP script in downloads.</p>
+  <p><strong>Implementation:</strong> Python/scipy sweep engine (<code>scripts/stroboscopic_sweep.py</code>, Float64). Browser JavaScript engine is part of the architecture but not included in this packaged snapshot (see <a href="REBUILD.md">REBUILD.md</a>).</p>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>1. Hilbert Space</h2>
 
@@ -52,8 +52,6 @@
   <p style="margin-bottom:0.3rem;"><strong>Amber (Marginal):</strong> 0.01–1% — possible truncation artefacts.</p>
   <p style="margin-bottom:0;"><strong>Red (Unreliable):</strong> &gt; 1% — results not converged. Recommended N<sub>max</sub> ≥ ⟨n⟩ + 5√⟨n⟩ + 10.</p>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>2. Hamiltonian</h2>
 
@@ -84,8 +82,6 @@
 <tr><td>↑↓ (σ₊)</td><td>N…2N−1</td><td>0…N−1</td><td>(Ω/2) · C†</td></tr>
 </tbody>
 </table>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>3. Stroboscopic Protocol</h2>
 
@@ -133,8 +129,6 @@
 </tbody>
 </table>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-
 <h2>4. Initial State</h2>
 
 <div class="formula-box">
@@ -148,8 +142,6 @@
 </div>
 
 <p>For real α (convention used throughout), all coefficients are real.</p>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>5. Observables</h2>
 
@@ -173,8 +165,6 @@
 </table>
 
 <p>where λ± = (1 ± r)/2 and r is the Bloch vector length.</p>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>6. Decoherence</h2>
 
@@ -202,8 +192,6 @@
   <p style="margin-bottom:0;">The pure dephasing rate γ<sub>φ</sub> = 1/T₂ − 1/(2T₁) is clamped to ≥ 0. If T₂ &gt; 2T₁, the pure dephasing contribution is zero — all decoherence comes from population decay.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-
 <h2>7. Quantum Projection Noise</h2>
 
 <p>When N<sub>rep</sub> &gt; 0, each spin expectation value is sampled as a Bernoulli experiment:</p>
@@ -214,8 +202,6 @@
 
 <p>The ±1σ error bar is 2√(p(1−p)/N<sub>rep</sub>). This models the quantum projection noise of a real single-ion experiment.</p>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-
 <h2>8. GPU Acceleration</h2>
 
 <p>On browsers with WebGPU support (Chrome 113+, Edge 113+), the complex matrix multiplication — the bottleneck of the Taylor-series matrix exponential — is offloaded to a GPU compute shader. The WGSL kernel dispatches 8×8 workgroups for tiled complex GEMM.</p>
@@ -224,8 +210,6 @@
   <div class="cl">Precision note</div>
   <p style="margin-bottom:0;">The GPU path converts Float64 → Float32 for the shader and back. This provides ~7 significant digits, which is adequate for η ≈ 0.4 physics (where the coupling matrix elements span ~3 orders of magnitude). The CPU fallback uses Float64 throughout. The provenance manifest records which engine was used.</p>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════ -->
 
 <h2>9. Provenance</h2>
 
@@ -242,34 +226,17 @@
 </tbody>
 </table>
 
-<p>The hash appears in every download format (JSON, CSV, Python script, manifest) and enables traceability if results are merged into the <a href="https://github.com/threehouse-plus-ec/open-research-platform">open-research-platform</a> database. Two runs with identical parameters but different random seeds (decoherence trajectories, projection noise) will produce different hashes — the hash authenticates the <em>specific</em> output, not the parameter set.</p>
-
-<!-- ══════════════════════════════════════════════════════════ -->
+<p>Manifest schema v2.0 supports three modes: <code>single_run</code>, <code>sweep_1d</code>, <code>state_comparison</code>. See <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> and <code>schemas/manifest_v2.schema.json</code>.</p>
 
 <h2>10. File Formats</h2>
 
 <h3>JSON output</h3>
 
-<p>Structure: <code>{ manifest: {...}, data: {...} }</code></p>
-
-<table class="compact-table">
-<thead><tr><th>Path</th><th>Type</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>manifest.parameters</code></td><td>Object</td><td>All input parameters</td></tr>
-<tr><td><code>manifest.convergence</code></td><td>Object</td><td>max_fock_leakage, converged (bool)</td></tr>
-<tr><td><code>manifest.provenance_hash</code></td><td>String</td><td>SHA-256 hex</td></tr>
-<tr><td><code>data.detuning</code></td><td>Array</td><td>Detuning values (units of ω<sub>m</sub>)</td></tr>
-<tr><td><code>data.sigma_x/y/z</code></td><td>Array</td><td>Spin expectation values (ideal)</td></tr>
-<tr><td><code>data.coherence</code></td><td>Array</td><td>Bloch vector length</td></tr>
-<tr><td><code>data.entropy</code></td><td>Array</td><td>Von Neumann entropy (bits)</td></tr>
-<tr><td><code>data.noisy_sigma_*</code></td><td>Array</td><td>Shot-noise sampled values (if N<sub>rep</sub> &gt; 0)</td></tr>
-<tr><td><code>data.err_sigma_*</code></td><td>Array</td><td>±1σ error bars (if N<sub>rep</sub> &gt; 0)</td></tr>
-</tbody>
-</table>
+<p>Structure: <code>{ manifest: {...}, data: {...} }</code> (v1.2) or <code>{ schema_version: "2.0", payload: {...} }</code> (v2.0)</p>
 
 <h3>Python script</h3>
 
-<p>The downloadable <code>stroboscopic_scan.py</code> is a self-contained QuTiP script that reproduces the browser simulation with identical physics. It includes all parameters from the browser session and the browser provenance hash for cross-reference.</p>
+<p>The downloadable <code>stroboscopic_sweep.py</code> is a self-contained Python/scipy engine that reproduces the browser simulation with identical physics. It supports three modes: single run, 1D parameter sweep, and state comparison. See <a href="getting-started.html">Getting Started</a> for usage.</p>
 
 <footer>
   <p>Dossier v0.8 · Breakwater Layer · <a href="simulate.html">Simulate</a> · <a href="numerics.html">Numerics</a> · <a href="dossier.html">Claim Ledger</a></p>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started — Breakwater Dossier</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.status-done { color: var(--compatible); font-weight: 600; }
+.status-infra { color: var(--text-muted); }
+.status-active { color: var(--accent); font-weight: 600; }
+.status-gated { color: var(--undetermined); }
+.task-card { background: var(--bg-card); border: 1px solid var(--border-light);
+             border-left: 4px solid var(--accent); padding: 1rem 1.2rem; margin: 1.2rem 0; }
+.task-card .tc-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
+.task-card .tc-id { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+                    font-weight: 600; color: var(--accent); }
+.task-card .tc-title { font-weight: 600; font-size: 1rem; }
+.task-card .tc-section { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+                         font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted);
+                         text-transform: uppercase; margin-top: 0.8rem; margin-bottom: 0.15rem;
+                         padding-bottom: 0.1rem; border-bottom: 1px dashed var(--border-light); }
+.task-card p { font-size: 0.88rem; margin-bottom: 0.5rem; }
+.task-card p:last-child { margin-bottom: 0; }
+.task-card ul { font-size: 0.86rem; margin: 0.3rem 0 0.5rem 1.2rem; line-height: 1.6; }
+.task-card .example-box { background: var(--bg-code); border: 1px solid var(--border-light);
+                          padding: 0.6rem 0.8rem; margin: 0.5rem 0; border-radius: 3px;
+                          font-size: 0.82rem; line-height: 1.55; }
+.task-card .example-box code { background: none; padding: 0; }
+.task-card .deliverable-fmt { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+                              color: var(--text-sec); }
+.reading-tier { display: flex; gap: 0.3rem; align-items: center; margin-bottom: 0.15rem; }
+.reading-tier .tier-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+                            font-weight: 600; padding: 0.1em 0.35em; border-radius: 2px;
+                            min-width: 3.5rem; text-align: center; }
+.tier-essential { background: #d8ead8; color: var(--compatible); }
+.tier-recommended { background: #f0e8c0; color: var(--undetermined); }
+.tier-deep { background: var(--tag-bg); color: var(--tag-text); }
+.parallel-note { background: var(--bg-card); border: 1px solid var(--border-light);
+                 padding: 0.6rem 0.8rem; margin: 0.8rem 0; font-size: 0.86rem; }
+.parallel-note strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
+  <h1>Getting Started</h1>
+  <p class="subtitle">Student onboarding · task assignments · deliverable formats</p>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="framework.html">Framework</a>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="numerics.html">Numerics</a>
+    <a href="simulate.html">Simulate</a>
+    <a href="code.html">Code</a>
+    <a href="reference.html">Reference</a>
+    <a href="getting-started.html" aria-current="page">Start</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>What Is This Project?</h2>
+
+<p>Hasse et al. (<a href="https://doi.org/10.1103/PhysRevA.109.053105">PRA 109, 053105, 2024</a>) demonstrated a stroboscopic travelling-wave measurement scheme for a single trapped <sup>25</sup>Mg<sup>+</sup> ion. A train of ~22 phase-locked Raman pulses — one per motional cycle — maps the ion's motional phase-space dynamics onto its spin state. The scheme uses an AC Stark lattice with effective wavelength λ<sub>eff</sub> ≈ 140 nm (sub-optical resolution) and a Lamb–Dicke parameter η ≈ 0.4 (outside the usual small-η regime).</p>
+
+<p>This dossier is a <strong>Breakwater Claim Analysis</strong>: it takes the paper's claims, classifies them (compatible / underdetermined / inconsistent), identifies discriminant conditions, and defines work packages to resolve the underdetermined claims. Three claims are settled. Five remain open — <strong>those are your tasks.</strong></p>
+
+<div class="callout">
+  <div class="cl">Your job in one sentence</div>
+  <p style="margin-bottom:0;">Use the simulation infrastructure, analytic estimates, and the paper's experimental data to resolve the five underdetermined claims — or to demonstrate that they cannot yet be resolved and to state precisely what additional data or theory is needed.</p>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Site Map</h2>
+
+<p>This table shows every page, what it contains, and whether it is infrastructure you use, reference you read, or a task you work on.</p>
+
+<table class="compact-table">
+<thead><tr><th>Page</th><th>Content</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><a href="index.html">Overview</a></td><td>Project summary, navigation, quick status</td><td class="status-infra">orientation</td></tr>
+<tr><td><a href="dossier.html">Dossier</a></td><td>Claim Analysis Ledger (L1–L8), Risk Register, Council Decisions</td><td class="status-done">reference ✓</td></tr>
+<tr><td><a href="framework.html">Framework</a></td><td>Hamiltonian, coupling operator, measurement channels, Lock-Key</td><td class="status-done">reference ✓</td></tr>
+<tr><td><a href="tutorial.html">Tutorial</a></td><td>Doppler mechanism, analytic estimates, work packages, starting points</td><td class="status-active">task definitions</td></tr>
+<tr><td><a href="numerics.html">Numerics</a></td><td>Interactive viewer for simulation JSON (9 default runs)</td><td class="status-infra">tool</td></tr>
+<tr><td><a href="simulate.html">Simulate</a></td><td>Simulation page (browser engine not in this snapshot)</td><td class="status-infra">stub</td></tr>
+<tr><td><a href="code.html">Code</a></td><td>Simulation engine documentation (Hilbert space, Hamiltonian, observables)</td><td class="status-done">reference ✓</td></tr>
+<tr><td><a href="reference.html">Reference</a></td><td>Commented paper walk-through + 27-entry bibliography</td><td class="status-done">reference ✓</td></tr>
+<tr><td><a href="getting-started.html">Start</a></td><td>This page — onboarding, tasks, deliverable formats</td><td class="status-infra">orientation</td></tr>
+<tr><td><a href="ideal-limit-principles.md">Sail essay</a></td><td>Ideal-limit derivation with deviation analysis (30 pp.)</td><td class="status-done">reference ✓</td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Reading Assignments</h2>
+
+<p>Read in this order. Budget approximately 4 hours for the essential tier.</p>
+
+<div class="reading-tier"><span class="tier-badge tier-essential">essential</span> <strong>Hasse et al.</strong> — the paper itself (<a href="https://arxiv.org/abs/2309.15580">arXiv</a>). Read fully before anything else.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-essential">essential</span> <a href="framework.html"><strong>Framework</strong></a> + <a href="tutorial.html"><strong>Tutorial</strong></a> — the Hamiltonian, Doppler mechanism, analytic estimates, and work packages.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-essential">essential</span> <a href="code.html"><strong>Code</strong></a> §1–§5 — Hilbert space, Hamiltonian, stroboscopic protocol, initial state, observables. This tells you exactly what the simulator computes.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-recommended">recommended</span> <a href="dossier.html"><strong>Dossier</strong></a> — the Claim Ledger, Risk Register, and Council Decisions. Understand what L1–L8 mean and why some are settled.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-recommended">recommended</span> <a href="ideal-limit-principles.md"><strong>Sail essay</strong></a> §1–§3 — the ideal-limit derivation, deviation analysis, and Monroe comparison. This is where the physics arguments live.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-recommended">recommended</span> <a href="reference.html#bibliography"><strong>Bibliography</strong></a> — Leibfried2003 §II.D, §III (trapped-ion background). Follow the "new reader" path.</div>
+
+<div class="reading-tier"><span class="tier-badge tier-deep">deep</span> Full bibliography themes 3–7 — Monroe programme, BAE, tomography, phase-space methods. Consult as needed for specific WPs.</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Tools at Your Disposal</h2>
+
+<p>You have a working quantum simulator and pre-computed reference data. Use them.</p>
+
+<div class="callout">
+  <div class="cl">Simulate page (browser engine not in this snapshot)</div>
+  <p style="margin-bottom:0.4rem;">The interactive browser simulator is part of the dossier architecture but is <strong>not included in this packaged snapshot</strong>. See <a href="REBUILD.md">REBUILD.md</a> for instructions to restore it from the source repository.</p>
+  <p style="margin-bottom:0;">For all systematic work, use the Python sweep engine below. Pre-computed data is available on the <a href="numerics.html">Numerics</a> page.</p>
+</div>
+
+<div class="callout">
+  <div class="cl">Numerics page</div>
+  <p style="margin-bottom:0;"><a href="numerics.html">numerics.html</a> displays pre-computed default runs (9 datasets at N<sub>max</sub> = 30–40). You can also upload your own JSON from the Simulate page. Use this for quick comparison and for loading reference data without re-running simulations.</p>
+</div>
+
+<div class="callout">
+  <div class="cl">Python / QuTiP</div>
+  <p style="margin-bottom:0;">The Python sweep engine (<code>scripts/stroboscopic_sweep.py</code>) is the primary tool for systematic work. It uses the same Hamiltonian as the browser engine (exact Fock-basis expm, no LD truncation) with Float64 precision throughout. Three modes: <code>single_run</code>, <code>sweep_1d</code>, <code>state_comparison</code>. See <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> for design and usage.</p>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Task Cards</h2>
+
+<p>Each task card corresponds to one work package. They are ordered by the Council's recommended sequence, but see the parallelism note below for which can run simultaneously.</p>
+
+<div class="parallel-note">
+  <strong>Parallelism:</strong> WP-A.1, WP-A.2, WP-A.3, and WP-B can all run in parallel — they have no mutual dependencies. WP-C is gated on WP-A (all three sub-packages). WP-D is gated on WP-A + WP-C. Assign WP-B to a student who wants to start immediately with the simulator. Assign WP-A.1 or WP-A.3 to a student comfortable with analytic calculations.
+</div>
+
+<!-- ── WP-B ───────────────────────────────────────────────── -->
+
+<div class="task-card" style="border-left-color:#3a7a3a;">
+  <div class="tc-head">
+    <span class="tc-id">WP-B</span>
+    <span class="tc-title">Numerical Anchoring</span>
+    <span class="tag tag-compatible" style="font-size:0.7rem;">good first task</span>
+  </div>
+  <p><strong>Goal:</strong> Confirm the analytic Doppler estimates against simulation, and explain the σ<sub>z</sub> contrast difference between the two simulation methods.</p>
+
+  <div class="tc-section">resolves</div>
+  <p>Risk R5 (Doppler dominance needs explicit confirmation).</p>
+
+  <div class="tc-section">prerequisite reading</div>
+  <p><a href="tutorial.html">Tutorial</a> — Doppler estimates table, Rabi instrument function, finite-pulse effects. <a href="code.html">Code</a> §1–§5.</p>
+
+  <div class="tc-section">tools</div>
+  <p><code>scripts/stroboscopic_sweep.py --mode single_run</code> — run detuning scans at α = 0, 1, 3, 5. <a href="numerics.html">Numerics page</a> — view and compare default runs.</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>Step 1:</strong> Run the default parameters (η = 0.397, Ω/(2π) = 0.300 MHz, ω<sub>m</sub>/(2π) = 1.30 MHz, 22 pulses, N<sub>max</sub> = 50) for α = 0, 1, 3, 5. Verify your results match the default JSON runs on the Numerics page. Record the σ<sub>z</sub> contrast (max−min)/2 for each α.</li>
+    <li><strong>Step 2:</strong> From the simulation coherence plots, measure the coherence envelope FWHM (or half-width at half-maximum) at each α. Compare against the analytic prediction: Doppler width ∝ ηω<sub>m</sub>√(2⟨n⟩ + 1).</li>
+    <li><strong>Step 3:</strong> Compute the analytic Rabi instrument function P<sub>↑</sub>(δ) = (Ω<sub>R</sub>²/Ω<sub>eff</sub>²)sin²(Ω<sub>eff</sub>τ/2) at the key detunings in the Tutorial table. Verify P<sub>↑</sub> drops to ~0.007 at δ<sub>D</sub><sup>peak</sup> for α = 1.</li>
+    <li><strong>Step 4:</strong> Investigate the contrast question: the default 22-pulse stroboscopic runs yield uniform contrast_z ≈ 0.56. The HDF5 adaptive-learner data shows 0.61 → 0.71 → 0.84 → 0.75. Propose and test an explanation for the difference (hint: consider detuning-point density near δ = 0 and the adaptive vs. uniform sampling grid).</li>
+    <li><strong>Step 5:</strong> Run a δt sweep — vary the pulse count (e.g. 10, 22, 50, 100) at fixed α = 3 and observe how the spectrum changes. Does the coherence envelope width depend on N<sub>p</sub>? It should not (total rotation is fixed at π/2), but the per-pulse Magnus correction changes.</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>Verification memo</strong> (1–3 pages, PDF or Markdown):<br>
+    — Table: α, contrast_z (sim), coherence FWHM (sim), Doppler width (analytic), ratio<br>
+    — Figure: overlay of simulation coherence envelope with analytic Doppler convolution<br>
+    — Paragraph: explanation of contrast difference between methods<br>
+    — Table: N<sub>p</sub> sweep results (contrast, coherence width, max Fock leakage)<br>
+    — All simulation JSON files attached with provenance hashes
+  </div>
+
+  <div class="tc-section">worked micro-example</div>
+  <div class="example-box">
+    For α = 0: the analytic RMS Doppler width is σ<sub>D</sub>/(2π) = ηω<sub>m</sub>/(2π) = 0.52 MHz. The ratio σ<sub>D</sub>/Ω = 1.73. From the simulation at α = 0, the coherence envelope (Bloch vector length vs. detuning) should show a central peak near δ = 0 with a width of order ~2 ω<sub>m</sub> (the carrier plus first sidebands). Measure the detuning at which coherence drops to 0.95 (from ~1.00 on resonance) and compare with δ ≈ Ω. If they match to ~20%, the Doppler model is confirmed at α = 0. Proceed to α = 1, 3, 5.
+  </div>
+</div>
+
+<!-- ── WP-A.3 ─────────────────────────────────────────────── -->
+
+<div class="task-card">
+  <div class="tc-head">
+    <span class="tc-id">WP-A.3</span>
+    <span class="tc-title">Backaction Scaling</span>
+    <span class="gate-badge">prerequisite for WP-C, D</span>
+  </div>
+  <p><strong>Goal:</strong> Quantify the measurement backaction (unitary + projective) as a function of η, α, and N<sub>p</sub>.</p>
+
+  <div class="tc-section">resolves</div>
+  <p>Claim <a href="dossier.html">L5</a> ("Backaction is small").</p>
+
+  <div class="tc-section">prerequisite reading</div>
+  <p><a href="ideal-limit-principles.md">Sail essay</a> §1.6 (two types of backaction). <a href="code.html">Code</a> §5 (observable computation — purity, fidelity). <a href="reference.html#bibliography">Bibliography</a> theme 4 (Braginsky, Caves, Clerk).</p>
+
+  <div class="tc-section">tools</div>
+  <p><code>scripts/stroboscopic_sweep.py</code> — single runs report ⟨n⟩, Tr(ρ<sub>m</sub>²), and F(ρ<sub>m</sub>, ψ₀) vs. detuning. Use <code>--mode sweep_1d</code> for systematic parameter sweeps.</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>Step 1:</strong> Run the default scan at α = 0, 1, 3, 5 and read off the motional purity and fidelity at δ = 0 (on resonance, where backaction is maximal). Record Tr(ρ<sub>m</sub>²) and F for each α.</li>
+    <li><strong>Step 2:</strong> Sweep η at fixed α = 3: run η = 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6. Plot purity and fidelity at δ = 0 vs. η. Identify the η threshold where purity drops below 0.99, 0.95, 0.90.</li>
+    <li><strong>Step 3:</strong> Sweep N<sub>p</sub> at fixed η = 0.397, α = 3: run N<sub>p</sub> = 5, 10, 22, 50, 100. The total rotation is always π/2 (per-pulse rotation adjusts). How does backaction scale with pulse count?</li>
+    <li><strong>Step 4:</strong> For α = 3 at the default parameters, compute the quadrature moments: ⟨X⟩, ⟨P⟩, Var(X), Var(P) before and after the pulse train. This requires extending the simulation output (or post-processing the final state). The quadrature disturbance ΔVar(X), ΔVar(P) is the key backaction metric.</li>
+    <li><strong>Step 5:</strong> Separate unitary and projective contributions: run the simulation without measurement (pure unitary evolution), compute motional purity. Then compute the conditional motional state after spin projection onto |↓⟩ and onto |↑⟩. The difference is the projective backaction.</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>Backaction budget table</strong> (2–4 pages):<br>
+    — Table: η, α, N<sub>p</sub>, Tr(ρ<sub>m</sub>²) at δ=0, F at δ=0, ΔVar(X), ΔVar(P)<br>
+    — Figure: purity vs. η at fixed α, with threshold lines<br>
+    — Figure: purity vs. N<sub>p</sub> at fixed η, α<br>
+    — Statement: "At the experimental parameters (η=0.397, α=3, N<sub>p</sub>=22), the unitary backaction reduces motional purity to [X] and fidelity to [Y]. Projective measurement on |↓⟩ further reduces purity to [Z]."<br>
+    — Assessment: is L5 compatible, underdetermined, or inconsistent?
+  </div>
+
+  <div class="tc-section">worked micro-example</div>
+  <div class="example-box">
+    Run α = 0, default parameters. On the Simulate page, observe the third plot panel (motional observables). At δ = 0, the motional purity should be very close to 1.0 (the ground state is barely disturbed because the α = 0 state has ⟨n⟩ = 0 and the coupling is weak at low occupation). At δ ≈ ±1 (near sidebands), purity dips — this is where spin–motion entanglement is maximal. The fidelity F(ρ<sub>m</sub>, ψ₀) gives the overlap with the initial motional state. If F > 0.99 everywhere, backaction is small for this α.
+  </div>
+</div>
+
+<!-- ── WP-A.1 ─────────────────────────────────────────────── -->
+
+<div class="task-card">
+  <div class="tc-head">
+    <span class="tc-id">WP-A.1</span>
+    <span class="tc-title">Coherent-State Signal Model</span>
+    <span class="gate-badge">prerequisite for WP-C, D</span>
+  </div>
+  <p><strong>Goal:</strong> Build an analytic model for the detuning spectrum of a coherent state |α⟩, decomposing the signal into position (phase) and momentum (Doppler) channels, and bound the crosstalk between them.</p>
+
+  <div class="tc-section">resolves</div>
+  <p>Claim <a href="dossier.html">L2</a> ("Position → phase; momentum → Doppler spectrum").</p>
+
+  <div class="tc-section">prerequisite reading</div>
+  <p><a href="tutorial.html">Tutorial</a> — Doppler mechanism, Rabi instrument function, finite-pulse effects. <a href="ideal-limit-principles.md">Sail essay</a> §1.1–§1.4 (deviation analysis). <a href="reference.html#bibliography">Bibliography</a>: Leibfried2003 §II.D.</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>Step 1:</strong> For a coherent state |α⟩ oscillating at ω<sub>m</sub>, write the time-dependent position x(t) = x₀√2 |α| cos(ω<sub>m</sub>t) and velocity v(t). At the stroboscopic sampling time (t = 0 by convention), compute the phase shift k<sub>eff</sub>·x(0) and the Doppler shift k<sub>eff</sub>·v(0) = 0 (velocity is zero at the position extremum). This is the "phase channel."</li>
+    <li><strong>Step 2:</strong> Now compute the stroboscopic average: the analysis pulse acts at t = 0, but the accumulated signal from N<sub>p</sub> pulses at different motional phases (if there is any phase slip) averages over the oscillation. At exact stroboscopic synchronisation, all pulses see the same phase — so v(0) = 0 and the Doppler channel carries only zero-point and quantum fluctuations.</li>
+    <li><strong>Step 3:</strong> Compute the full Rabi lineshape convolved with the quantum velocity distribution of |α⟩. The velocity distribution is a Gaussian centred at v = 0 (at the stroboscopic sampling point) with width set by zero-point fluctuations + coherent amplitude. Compare this convolved lineshape with the simulation coherence envelope.</li>
+    <li><strong>Step 4:</strong> Estimate the crosstalk: the position channel (phase shift) is k<sub>eff</sub>·x₀√2|α| = 2η|α|. The momentum channel (Doppler width) is ηω<sub>m</sub>√(2⟨n⟩+1). At what α does the phase shift exceed π (wrapping) and the channels become entangled?</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>Two-channel analytic model</strong> (3–5 pages):<br>
+    — Equations: P<sub>↑</sub>(δ₀; α) as convolution of Rabi lineshape with velocity distribution<br>
+    — Figure: analytic coherence envelope overlaid on simulation for α = 0, 1, 3, 5<br>
+    — Table: crosstalk bound vs. α (phase-channel leakage into Doppler, and vice versa)<br>
+    — Assessment: is L2 compatible or underdetermined at the experimental parameters?
+  </div>
+</div>
+
+<!-- ── WP-A.2 ─────────────────────────────────────────────── -->
+
+<div class="task-card">
+  <div class="tc-head">
+    <span class="tc-id">WP-A.2</span>
+    <span class="tc-title">Sideband Truncation Bounds</span>
+  </div>
+  <p><strong>Goal:</strong> Compute sideband weights to order s = 3 using the Laguerre polynomial structure of the coupling matrix elements, and identify where truncation fails.</p>
+
+  <div class="tc-section">prerequisite reading</div>
+  <p><a href="framework.html">Framework</a> — coupling structure. <a href="tutorial.html">Tutorial</a> — small-η expansion. Leibfried2003 §II.D (matrix elements of exp(iη(a+a†)) in Fock basis).</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>Step 1:</strong> Write out the matrix elements ⟨n'|exp(iη(a+a†))|n⟩ using the exact formula involving associated Laguerre polynomials. Compute numerically for n, n' = 0…10 at η = 0.397.</li>
+    <li><strong>Step 2:</strong> Truncate to s = 0 (carrier only), s = 1 (±1 sidebands), s = 2, s = 3. For each truncation, compute the approximate detuning spectrum and compare with the exact (full-matrix) simulation at α = 0 and α = 3.</li>
+    <li><strong>Step 3:</strong> Construct a "truncation validity map": for each (η, ⟨n⟩) pair, what is the maximum sideband order s needed to achieve &lt;1% error in the detuning spectrum?</li>
+    <li><strong>Step 4:</strong> Cross-reference the sideband and Doppler descriptions: show that the sideband sum and the velocity convolution give the same result for α = 1 (where both descriptions are tractable).</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>Truncation validity map</strong> (2–3 pages):<br>
+    — Table: sideband weights |⟨n'|C|n⟩|² for s = 0…4 at η = 0.397, n = 0…5<br>
+    — Figure: spectrum error vs. truncation order for α = 0, 1, 3, 5<br>
+    — Contour plot: minimum s for 1% accuracy in (η, ⟨n⟩) plane<br>
+    — Paragraph: sideband ↔ Doppler consistency check at α = 1
+  </div>
+</div>
+
+<!-- ── WP-C ───────────────────────────────────────────────── -->
+
+<div class="task-card" style="border-left-color:var(--undetermined);">
+  <div class="tc-head">
+    <span class="tc-id">WP-C</span>
+    <span class="tc-title">Tomographic Stress-Test</span>
+    <span class="gate-badge">gated on WP-A</span>
+  </div>
+  <p><strong>Goal:</strong> Test whether the combined phase + Doppler readout can reconstruct non-trivial motional states (Fock, squeezed, cat), and bound the reconstruction fidelity under realistic noise.</p>
+
+  <div class="tc-section">resolves</div>
+  <p>Claims <a href="dossier.html">L4</a> (decoder fidelity) and <a href="dossier.html">L7</a> (nonclassical tomography).</p>
+
+  <div class="tc-section">prerequisite</div>
+  <p>WP-A.1 (signal model), WP-A.2 (truncation bounds), WP-A.3 (backaction budget). All must be complete.</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>C.1:</strong> Compute the map M: ρ → (phase shift, Doppler spectrum) for Fock states |n⟩ (n = 0–5), squeezed states (r = 0.5, 1.0), and cat states (α = 2, π-phase). Use the Simulate page with the appropriate initial states.</li>
+    <li><strong>C.2:</strong> Test injectivity: are the output spectra distinguishable? Compute the trace distance or fidelity between the output spectra for pairs of input states. If two distinct input states produce the same output spectrum within noise, injectivity fails.</li>
+    <li><strong>C.3:</strong> Add noise (projection noise N<sub>rep</sub> = 100, 500, 1000; decoherence T₁ = 1000 μs, T₂ = 500 μs, heating = 10 q/ms) and repeat. At what noise level does discrimination fail?</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>Injectivity certificate + fidelity table</strong> (3–5 pages):<br>
+    — Matrix: pairwise distinguishability between target states (ideal + noisy)<br>
+    — Figure: output spectra for Fock |0⟩, |3⟩, squeezed, cat — overlaid<br>
+    — Statement: injectivity holds/fails for [which states] at [which noise level]<br>
+    — Assessment: L4 and L7 compatible / underdetermined / inconsistent
+  </div>
+</div>
+
+<!-- ── WP-D ───────────────────────────────────────────────── -->
+
+<div class="task-card" style="border-left-color:var(--undetermined);">
+  <div class="tc-head">
+    <span class="tc-id">WP-D</span>
+    <span class="tc-title">BAE Forward View</span>
+    <span class="gate-badge">gated on WP-A + WP-C</span>
+  </div>
+  <p><strong>Goal:</strong> Determine whether there exists an accessible parameter regime where the stroboscopic coupling approximates a single-quadrature (BAE-compatible) measurement. If not, archive L6 as structurally inaccessible.</p>
+
+  <div class="tc-section">resolves</div>
+  <p>Claim <a href="dossier.html">L6</a> ("Structurally compatible with BAE"). Council decision: no rescue.</p>
+
+  <div class="tc-section">prerequisite</div>
+  <p>WP-A (backaction budget, signal model), WP-C (tomographic capability established). <a href="reference.html#bibliography">Bibliography</a> theme 4 (Braginsky, Caves, Clerk).</p>
+
+  <div class="tc-section">concrete steps</div>
+  <ul>
+    <li><strong>Step 1:</strong> From the WP-A.3 η-sweep, identify the η range where backaction is predominantly single-quadrature (ΔVar(X) ≪ ΔVar(P) or vice versa). If no such range exists below η = 0.1, BAE is structurally inaccessible at this trap frequency.</li>
+    <li><strong>Step 2:</strong> If a candidate regime exists, check whether it is experimentally accessible (requires λ<sub>eff</sub> adjustment, different Raman geometry, or different trap frequency).</li>
+    <li><strong>Step 3:</strong> Write the verdict: compatible (with parameter regime specified), or archive as "structurally inaccessible at η ≈ 0.4; would require η ≲ [threshold]."</li>
+  </ul>
+
+  <div class="tc-section">deliverable format</div>
+  <div class="example-box">
+    <strong>BAE feasibility or archival</strong> (1–2 pages):<br>
+    — Statement: L6 is [compatible at η ≤ X / archived as inaccessible]<br>
+    — Evidence: η-sweep quadrature disturbance data from WP-A.3<br>
+    — If compatible: specify the parameter regime and experimental requirements<br>
+    — If archived: state the structural reason (exponential coupling at η ≈ 0.4 couples both quadratures)
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Parallelism and Sequencing</h2>
+
+<div class="formula-box" style="text-align:left;font-style:normal;font-size:0.88rem;line-height:1.8;">
+  <strong>Phase 1</strong> (parallel — assign to separate students or pairs):<br>
+  &emsp; WP-B &ensp;(numerical anchoring) — simulator-first, good for building intuition<br>
+  &emsp; WP-A.1 (signal model) — analytic + simulation comparison<br>
+  &emsp; WP-A.2 (truncation bounds) — mostly algebra + targeted simulation<br>
+  &emsp; WP-A.3 (backaction) — simulation-heavy, parameter sweeps<br><br>
+  <strong>Phase 2</strong> (gated — requires all Phase 1 complete):<br>
+  &emsp; WP-C &ensp;(tomographic stress-test)<br><br>
+  <strong>Phase 3</strong> (gated — requires Phase 1 + Phase 2):<br>
+  &emsp; WP-D &ensp;(BAE forward view)
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<h2>Conventions</h2>
+
+<h3>File naming</h3>
+<p>Name simulation outputs as <code>WP-[id]_[description]_alpha[N].json</code>, e.g. <code>WP-B_contrast_alpha3.json</code>. Include the provenance hash from the Simulate page in your write-up.</p>
+
+<h3>Units</h3>
+<p>Detuning in units of ω<sub>m</sub>. Frequencies in MHz (cyclic, i.e. /(2π)). Time in μs. Lamb–Dicke parameter η is dimensionless. Motional occupation ⟨n⟩ is dimensionless. All spin observables are expectation values in [−1, +1].</p>
+
+<h3>Provenance</h3>
+<p>Every simulation result carries a SHA-256 hash. Include the hash when citing results. If you modify the simulation engine, bump the version string and document the change.</p>
+
+<h3>Deliverables</h3>
+<p>Submit as PDF or Markdown with attached JSON data files. Use the deliverable format specified in each task card. Include figures as inline images or linked SVGs. State your conclusion on each claim (compatible / underdetermined / inconsistent) with explicit justification.</p>
+
+<h3>When in doubt</h3>
+<p>UNDERDETERMINED is an acceptable and honest conclusion. The dossier does not require you to force a positive result. If the evidence is insufficient to resolve a claim, state precisely what additional data or theory is needed. That is a deliverable.</p>
+
+<footer>
+  <p>Dossier v0.8 · Breakwater Layer · <a href="tutorial.html">Work Packages</a> · <a href="simulate.html">Simulate</a> · <a href="reference.html">Reference</a></p>
+</footer>
+
+</div>
+</body>
+</html>

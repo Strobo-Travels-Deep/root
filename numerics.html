@@ -22,6 +22,8 @@
     <a href="numerics.html" aria-current="page">Numerics</a>
     <a href="simulate.html">Simulate</a>
     <a href="code.html">Code</a>
+    <a href="reference.html">Reference</a>
+    <a href="getting-started.html">Start</a>
   </nav>
 </header>
 
@@ -36,7 +38,7 @@
     <tr><td>Eff. η</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.397</td></tr>
     <tr><td>Rabi rate Ω/(2π)</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.300 MHz</td></tr>
     <tr><td>Eff. carrier Rabi</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">0.277 MHz</td></tr>
-    <tr><td>Fock N<sub>max</sub></td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">40</td></tr>
+    <tr><td>Fock N<sub>max</sub></td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">30–40</td></tr>
     <tr><td>Stroboscopic pulses</td><td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:0.84rem;">22</td></tr>
     </tbody>
     </table>
@@ -45,7 +47,7 @@
     <div class="fig-label">Physics notes</div>
     <p style="font-size:0.84rem;color:var(--text-sec);margin:0.4rem 0;">Default runs use unitary evolution (no decoherence) and infinite statistics (no projection noise). Run your own simulation with custom parameters on the <a href="simulate.html">Simulate</a>
     <a href="code.html">Code</a> page, then view results here via Upload.</p>
-    <p style="font-size:0.84rem;color:var(--text-sec);margin:0;">α = 5 run shows 1.1% Fock leakage at N<sub>max</sub> = 40 — the convergence diagnostic flags this correctly.</p>
+    <p style="font-size:0.84rem;color:var(--text-sec);margin:0;">Default runs use N<sub>max</sub> = 30 (α = 0–3) or 40 (α = 5). All converge well below 1% Fock boundary population — well within the green (OK) threshold.</p>
   </div>
 </div>
 
@@ -62,7 +64,7 @@
 
 <!-- Runs panel -->
 <div id="panel-runs">
-  <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:0.6rem;">Displaced coherent states at α = 0, 1, 3, 5. Click to load and plot.</p>
+  <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:0.6rem;">Displaced coherent states at α = 0, 1, 3, 5, plus sideband zoom and fine-grid runs. Click to load and plot.</p>
   <div class="dataset-grid" id="grid-runs"></div>
   <div id="conv-info" style="display:none;font-family:'JetBrains Mono',monospace;font-size:0.78rem;padding:0.4rem 0.6rem;border-radius:3px;margin:0.6rem 0;"></div>
 </div>

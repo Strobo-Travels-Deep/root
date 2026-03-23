@@ -14,10 +14,9 @@ const PALETTE = {
 let runsManifest = [];
 let activeCard = null;
 
-/* ── Init ────────────────────────────────────────────────── */
 async function init() {
   try {
-    const resp = await fetch('data/runs/manifest.json');
+    const resp = await fetch('data/runs/run_index.json');
     const rm = await resp.json();
     runsManifest = rm.runs || [];
   } catch (e) {
@@ -25,8 +24,6 @@ async function init() {
     runsManifest = [];
   }
   renderGrid();
-
-  // Wire upload
   document.getElementById('finput').addEventListener('change', handleUpload);
 }
 
@@ -46,17 +43,13 @@ function renderGrid() {
   });
 }
 
-/* ── Source switching ─────────────────────────────────────── */
 window.switchSource = function(src) {
   document.getElementById('panel-runs').style.display = src === 'runs' ? 'block' : 'none';
   document.getElementById('panel-upload').style.display = src === 'upload' ? 'block' : 'none';
-  document.getElementById('tab-runs').style.borderWidth = src === 'runs' ? '2px' : '1px';
   document.getElementById('tab-runs').classList.toggle('active', src === 'runs');
-  document.getElementById('tab-upload').style.borderWidth = src === 'upload' ? '2px' : '1px';
   document.getElementById('tab-upload').classList.toggle('active', src === 'upload');
 };
 
-/* ── Run selection ───────────────────────────────────────── */
 async function selectRun(idx, card) {
   setActiveCard(card);
   const ds = runsManifest[idx];
@@ -71,7 +64,6 @@ async function selectRun(idx, card) {
   }
 }
 
-/* ── Upload ──────────────────────────────────────────────── */
 function handleUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -89,11 +81,12 @@ function handleUpload(event) {
   reader.readAsText(file);
 }
 
-/* ── Plot JSON ───────────────────────────────────────────── */
 function plotJSON(json) {
-  const d = json.data;
-  const m = json.manifest || {};
-  const p = m.parameters || {};
+  // Support both v1.2 (payload at top level) and v2.0 (payload nested)
+  const payload = json.payload || json;
+  const d = payload.data || json.data;
+  const m = payload || json.manifest || json;
+  const p = m.parameters || (payload.parameters) || {};
 
   if (!d || !d.detuning || !d.sigma_x) {
     setStatus('sigma', 'Invalid JSON: missing data arrays.');
@@ -101,15 +94,12 @@ function plotJSON(json) {
   }
 
   const hasNoise = d.noisy_sigma_x && d.noisy_sigma_x.length > 0 && (p.n_rep > 0);
-
   plotData(d, hasNoise, p.n_rep || 0);
 
-  // Convergence
-  const conv = m.convergence;
+  const conv = m.convergence || (payload.convergence);
   if (conv) showConvInfo(conv);
   else hideConvInfo();
 
-  // Metadata
   const items = [];
   if (p.alpha !== undefined) items.push(['α', p.alpha]);
   if (p.eta) items.push(['η', p.eta]);
@@ -121,15 +111,14 @@ function plotJSON(json) {
   if (p.T2 > 0) items.push(['T₂', p.T2 + ' μs']);
   if (p.heating > 0) items.push(['dn/dt', p.heating + ' q/ms']);
   if (p.n_rep > 0) items.push(['N_rep', p.n_rep]);
-  if (m.provenance_hash) items.push(['Hash', m.provenance_hash.substring(0, 12) + '…']);
+  const hash = m.provenance_hash || json.provenance_hash;
+  if (hash) items.push(['Hash', hash.substring(0, 12) + '…']);
   showMetaDirect(items);
 
-  // Download link
   const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
   showDownload(URL.createObjectURL(blob), 'simulation_results.json');
 }
 
-/* ── Convergence display ─────────────────────────────────── */
 function showConvInfo(conv) {
   const el = document.getElementById('conv-info');
   if (!el) return;
@@ -149,7 +138,6 @@ function hideConvInfo() {
   if (el) el.style.display = 'none';
 }
 
-/* ── Helpers ──────────────────────────────────────────────── */
 function setActiveCard(card) {
   if (activeCard) activeCard.classList.remove('active');
   card.classList.add('active');
@@ -161,7 +149,6 @@ function setStatus(panel, msg) {
   if (el) el.textContent = msg;
 }
 
-/* ── Plotly ───────────────────────────────────────────────── */
 const LY = {
   paper_bgcolor: PALETTE.bg_figure, plot_bgcolor: PALETTE.bg_axes,
   font: { family: 'Source Serif 4, Georgia, serif', color: PALETTE.text, size: 13 },
@@ -228,7 +215,6 @@ function plotData(data, hasNoise, nrep) {
     height: hasNoise ? 380 : 320,
   }, { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['lasso2d', 'select2d'] });
 
-  // Entropy
   const entropyDiv = document.getElementById('plot-entropy');
   entropyDiv.innerHTML = '';
   if (data.entropy) {
@@ -260,5 +246,4 @@ function showDownload(href, filename) {
   area.style.display = 'block';
 }
 
-/* ── Boot ────────────────────────────────────────────────── */
 init();

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.2",
+  "description": "Default + sideband test runs v0.8. Nmax=50, unitary.",
+  "runs": [
+    {
+      "id": "alpha_0_default",
+      "alpha": 0,
+      "label": "Ground state",
+      "nbar": 0,
+      "path": "data/runs/alpha_0_default.json"
+    },
+    {
+      "id": "alpha_1_default",
+      "alpha": 1,
+      "label": "⟨n⟩ = 1 (α = 1)",
+      "nbar": 1,
+      "path": "data/runs/alpha_1_default.json"
+    },
+    {
+      "id": "alpha_3_default",
+      "alpha": 3,
+      "label": "⟨n⟩ = 9 (α = 3)",
+      "nbar": 9,
+      "path": "data/runs/alpha_3_default.json"
+    },
+    {
+      "id": "alpha_5_default",
+      "alpha": 5,
+      "label": "⟨n⟩ = 25 (α = 5)",
+      "nbar": 25,
+      "path": "data/runs/alpha_5_default.json"
+    },
+    {
+      "id": "carrier_zoom_alpha0",
+      "alpha": 0,
+      "label": "Carrier zoom (α=0, δ∈[−2,2])",
+      "nbar": 0,
+      "path": "data/runs/carrier_zoom_alpha0.json"
+    },
+    {
+      "id": "red_sb1_alpha0",
+      "alpha": 0,
+      "label": "1st red sideband zoom (α=0)",
+      "nbar": 0,
+      "path": "data/runs/red_sb1_alpha0.json"
+    },
+    {
+      "id": "blue_sb1_alpha0",
+      "alpha": 0,
+      "label": "1st blue sideband zoom (α=0)",
+      "nbar": 0,
+      "path": "data/runs/blue_sb1_alpha0.json"
+    },
+    {
+      "id": "full_alpha1_fine",
+      "alpha": 1,
+      "label": "Full scan α=1 (fine, 301 pts)",
+      "nbar": 1,
+      "path": "data/runs/full_alpha1_fine.json"
+    },
+    {
+      "id": "sideband_comb_alpha0",
+      "alpha": 0,
+      "label": "Sideband comb (α=0, 401 pts)",
+      "nbar": 0,
+      "path": "data/runs/sideband_comb_alpha0.json"
+    }
+  ]
+}

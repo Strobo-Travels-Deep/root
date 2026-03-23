@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/threehouse-plus-ec/open-research-platform/schemas/manifest_v2.schema.json",
+  "title": "Breakwater Simulation Manifest v2.0",
+  "description": "Manifest schema for single_run, sweep_1d, and state_comparison simulation outputs.",
+  "type": "object",
+  "required": ["schema_version", "mode", "status", "code_version", "execution", "provenance_hash", "payload"],
+  "properties": {
+    "schema_version": { "const": "2.0" },
+    "mode": { "enum": ["single_run", "sweep_1d", "state_comparison"] },
+    "status": { "enum": ["exploratory", "systematic"] },
+    "code_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "repository": { "type": "string", "format": "uri" },
+    "source_paper": {
+      "type": "object",
+      "properties": {
+        "journal": { "type": "string" },
+        "doi": { "type": "string" },
+        "arxiv": { "type": "string" }
+      }
+    },
+    "endorsement_marker": { "type": "string" },
+    "execution": {
+      "type": "object",
+      "required": ["timestamp", "engine", "precision"],
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "engine": { "enum": ["browser-js", "browser-webgpu", "python-scipy", "python-qutip"] },
+        "precision": { "enum": ["float32", "float64"] },
+        "elapsed_s": { "type": "number", "minimum": 0 }
+      }
+    },
+    "provenance_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "single_run" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": ["parameters", "convergence", "data"],
+            "properties": {
+              "parameters": { "$ref": "#/$defs/parameters" },
+              "derived": { "$ref": "#/$defs/derived" },
+              "convergence": { "$ref": "#/$defs/convergence" },
+              "data": { "$ref": "#/$defs/single_run_data" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "sweep_1d" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": ["fixed_parameters", "sweep", "data"],
+            "properties": {
+              "fixed_parameters": { "$ref": "#/$defs/parameters" },
+              "sweep": { "$ref": "#/$defs/sweep_definition" },
+              "convergence_per_value": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/convergence" }
+              },
+              "data": { "$ref": "#/$defs/sweep_data" },
+              "summary": { "$ref": "#/$defs/sweep_summary" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "state_comparison" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": ["parameters", "states", "data"],
+            "properties": {
+              "parameters": { "$ref": "#/$defs/parameters" },
+              "states": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/state_definition" },
+                "minItems": 2
+              },
+              "convergence_per_state": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/convergence" }
+              },
+              "data": { "$ref": "#/$defs/comparison_data" },
+              "distinguishability": { "$ref": "#/$defs/distinguishability" }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "parameters": {
+      "type": "object",
+      "required": ["alpha", "eta", "omega_m", "omega_r", "nmax", "n_pulses"],
+      "properties": {
+        "alpha": { "type": "number", "minimum": 0 },
+        "alpha_phase_deg": { "type": "number", "default": 0 },
+        "eta": { "type": "number", "exclusiveMinimum": 0 },
+        "omega_m": { "type": "number", "exclusiveMinimum": 0, "description": "MHz" },
+        "omega_r": { "type": "number", "exclusiveMinimum": 0, "description": "MHz" },
+        "n_thermal": { "type": "number", "minimum": 0, "default": 0 },
+        "nmax": { "type": "integer", "minimum": 5 },
+        "squeeze_r": { "type": "number", "minimum": 0, "default": 0 },
+        "squeeze_phi_deg": { "type": "number", "default": 0 },
+        "theta_deg": { "type": "number", "default": 0 },
+        "phi_deg": { "type": "number", "default": 0 },
+        "det_min": { "type": "number" },
+        "det_max": { "type": "number" },
+        "npts": { "type": "integer", "minimum": 3 },
+        "n_pulses": { "type": "integer", "minimum": 1 },
+        "t_sep_factor": { "type": "number", "default": 1.0 },
+        "T1": { "type": "number", "minimum": 0, "default": 0, "description": "μs, 0=off" },
+        "T2": { "type": "number", "minimum": 0, "default": 0, "description": "μs, 0=off" },
+        "heating": { "type": "number", "minimum": 0, "default": 0, "description": "quanta/ms" },
+        "n_traj": { "type": "integer", "minimum": 1, "default": 1 },
+        "n_rep": { "type": "integer", "minimum": 0, "default": 0, "description": "0=ideal" },
+        "fock_n": { "type": "integer", "minimum": 0, "description": "For Fock initial state" }
+      }
+    },
+    "derived": {
+      "type": "object",
+      "properties": {
+        "omega_eff": { "type": "number" },
+        "debye_waller": { "type": "number" },
+        "n_mean": { "type": "number" },
+        "hilbert_dim": { "type": "integer" }
+      }
+    },
+    "convergence": {
+      "type": "object",
+      "required": ["max_fock_leakage", "converged"],
+      "properties": {
+        "max_fock_leakage": { "type": "number", "minimum": 0 },
+        "converged": { "type": "boolean" }
+      }
+    },
+    "observable_arrays": {
+      "type": "object",
+      "properties": {
+        "sigma_x": { "type": "array", "items": { "type": "number" } },
+        "sigma_y": { "type": "array", "items": { "type": "number" } },
+        "sigma_z": { "type": "array", "items": { "type": "number" } },
+        "coherence": { "type": "array", "items": { "type": "number" } },
+        "entropy": { "type": "array", "items": { "type": "number" } },
+        "nbar": { "type": "array", "items": { "type": "number" } },
+        "mot_purity": { "type": "array", "items": { "type": "number" } },
+        "mot_fidelity": { "type": "array", "items": { "type": "number" } }
+      }
+    },
+    "single_run_data": {
+      "type": "object",
+      "required": ["detuning"],
+      "properties": {
+        "detuning": { "type": "array", "items": { "type": "number" } }
+      },
+      "allOf": [{ "$ref": "#/$defs/observable_arrays" }]
+    },
+    "sweep_definition": {
+      "type": "object",
+      "required": ["parameter", "values"],
+      "properties": {
+        "parameter": { "type": "string" },
+        "values": { "type": "array", "items": { "type": "number" }, "minItems": 2 },
+        "n_values": { "type": "integer" }
+      }
+    },
+    "sweep_data": {
+      "type": "object",
+      "required": ["detuning", "runs"],
+      "properties": {
+        "detuning": { "type": "array", "items": { "type": "number" } },
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["sweep_value"],
+            "properties": {
+              "sweep_value": { "type": "number" }
+            },
+            "allOf": [{ "$ref": "#/$defs/observable_arrays" }]
+          }
+        }
+      }
+    },
+    "sweep_summary": {
+      "type": "object",
+      "properties": {
+        "contrast_z": { "type": "array", "items": { "type": "number" } },
+        "coherence_fwhm": { "type": "array", "items": { "type": "number" } },
+        "peak_purity": { "type": "array", "items": { "type": "number" } },
+        "peak_fidelity": { "type": "array", "items": { "type": "number" } }
+      }
+    },
+    "state_definition": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "alpha": { "type": "number" },
+        "alpha_phase_deg": { "type": "number" },
+        "squeeze_r": { "type": "number" },
+        "squeeze_phi_deg": { "type": "number" },
+        "n_thermal": { "type": "number" },
+        "fock_n": { "type": "integer" },
+        "theta_deg": { "type": "number" },
+        "phi_deg": { "type": "number" }
+      }
+    },
+    "comparison_data": {
+      "type": "object",
+      "required": ["detuning", "spectra"],
+      "properties": {
+        "detuning": { "type": "array", "items": { "type": "number" } },
+        "spectra": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["state_id"],
+            "properties": {
+              "state_id": { "type": "string" }
+            },
+            "allOf": [{ "$ref": "#/$defs/observable_arrays" }]
+          }
+        }
+      }
+    },
+    "distinguishability": {
+      "type": "object",
+      "required": ["metric", "matrix", "state_ids"],
+      "properties": {
+        "metric": { "type": "string" },
+        "matrix": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "number" } }
+        },
+        "state_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

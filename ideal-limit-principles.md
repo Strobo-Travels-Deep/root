@@ -2,7 +2,7 @@
 
 **Breakwater Dossier — Sail (Essay)**
 **Hasse et al., Phys. Rev. A 109, 053105 (2024)**
-**v0.2.4 · 2026-02-26**
+**v0.2.5 · 2026-03-23**
 
 -----
 
@@ -15,7 +15,7 @@ is then annotated with an explicit **⚠ Deviation** block stating *where and ho
 experimental parameters (η ≈ 0.4, δt ≈ 40 ns, ~22 pulses at 1 per motional cycle,
 Ω/(2π) = 0.3 MHz, ω_m/(2π) = 1.3 MHz) depart from the ideal, and what consequences follow.
 
-The Monroe group’s programme of ultrafast pulsed-laser control of trapped ions
+The Monroe group's programme of ultrafast pulsed-laser control of trapped ions
 [Mizrahi2013, Johnson2015, Johnson2017, Wong-Campos2017] provides the clearest
 experimental and theoretical baseline for impulsive spin-dependent kicks outside
 the Lamb–Dicke regime. The comparison is instructive — but the present protocol is
@@ -32,7 +32,7 @@ In the ideal limit, a travelling-wave laser pulse acts on a trapped ion for a du
 δt satisfying two conditions:
 
 **Condition I — frozen motion:** δt ≪ T_m = 2π/ω_m.
-The ion’s position and velocity are effectively constant during the pulse.
+The ion's position and velocity are effectively constant during the pulse.
 
 **Condition II — impulsive spin flip:** The pulse area is a well-defined fraction of π.
 The Rabi frequency Ω is large enough that Ω·δt = θ (target rotation angle) while
@@ -42,9 +42,9 @@ Under these conditions, the pulse imparts a *state-dependent momentum kick*:
 the coupling operator C = exp(iη(a + a†)) acts as a displacement in momentum
 space conditioned on the spin state [García-Ripoll2003, Duan2004].
 
-The key insight from Monroe’s ultrafast programme: if δt is short enough,
-the kick is independent of the ion’s motional state — it works from the ground state
-to room temperature [Johnson2015]. This is because the ion is “frozen” during the
+The key insight from Monroe's ultrafast programme: if δt is short enough,
+the kick is independent of the ion's motional state — it works from the ground state
+to room temperature [Johnson2015]. This is because the ion is "frozen" during the
 pulse; neither its position nor its velocity changes appreciably. The displacement
 operator factorises cleanly from free evolution.
 
@@ -115,7 +115,7 @@ operator factorises cleanly from free evolution.
 > **(B) Zero-point motion — RMS blur (radians):**
 > With RMS Doppler width σ/(2π) = 0.52 MHz:
 > Δφ_rms ≈ 2π · [σ/(2π)] · δt ≈ 0.13 rad.
-> This is not “zero,” but it is still ≪ 1 rad. Note ω_m δt ≈ 0.33 rad
+> This is not "zero," but it is still ≪ 1 rad. Note ω_m δt ≈ 0.33 rad
 > is the baseline finite-time parameter even at α = 0; the ZPM Doppler
 > contribution adds an additional ~0.13 rad RMS scale.
 > 
@@ -146,7 +146,7 @@ operator factorises cleanly from free evolution.
 > Contrast with Monroe: ultrafast pulses (10 ps) achieve θ ~ π in a single
 > shot [Mizrahi2013, Johnson2017]. Our scheme compensates with coherent
 > accumulation over 22 phase-locked pulses — one flash per motional cycle,
-> true stroboscopic illumination. The trade: Monroe’s single kicks are
+> true stroboscopic illumination. The trade: Monroe's single kicks are
 > temperature-independent by construction; our accumulated signal requires
 > stable phase lock over ~22 motional cycles (L1, L8).
 
@@ -296,7 +296,7 @@ This Rabi lineshape acts as a velocity filter with spectral resolution ~Ω.
 > velocity class with k_eff·v ≈ −δ₀ and reports its population weight
 > via P_↑.
 > 
-> The “π/2 pulse” picture is misleading for the detuning scan. The
+> The "π/2 pulse" picture is misleading for the detuning scan. The
 > accumulated rotation reaches π/2 only *on resonance* (δ = 0); at the
 > typical Doppler shifts encountered (δ/Ω ≫ 1), the effective rotation
 > is suppressed as ~(Ω/δ)². The system is performing frequency-domain
@@ -307,9 +307,20 @@ This Rabi lineshape acts as a velocity filter with spectral resolution ~Ω.
 > the Rabi instrument function. Its progressive broadening from α = 0 → 5
 > is the Doppler mechanism made visible.
 > 
-> Contrast loss (σ_z at δ = 0) is the frequency-integrated version,
-> discarding spectral information. The non-monotonic trend
-> 0.61 → 0.71 → 0.84 → 0.75 encodes velocity-distribution shape.
+> **Provenance note on contrast values.** Two sets of σ_z contrast
+> values exist in this dossier:
+>
+> - **HDF5 adaptive-learner data:** 0.61 → 0.71 → 0.84 → 0.75
+>   (α = 0, 1, 3, 5). These come from a different simulation method
+>   (adaptive detuning-point sampling) and are *not* reproducible from
+>   the 22-pulse stroboscopic browser simulation.
+> - **22-pulse stroboscopic JSON runs (v0.8):** uniform contrast_z ≈ 0.56
+>   for all α. These are the values in the default run data.
+>
+> Both datasets show velocity-distribution signatures. The quantitative
+> difference between methods is itself a diagnostic target (WP-B).
+> Contrast loss (σ_z at δ=0) is the frequency-integrated version of the
+> Doppler spectrum, discarding spectral information.
 
 ### 1.5 Stroboscopic sampling
 
@@ -326,9 +337,7 @@ frozen when the flash rate matches the oscillation.
 > 
 > The scheme uses approximately **22 laser pulses, one per motional
 > cycle**, accumulating to a stroboscopic π/2 in ~17 μs over ~22
-> oscillation periods. (The “326” in the simulation settings is the
-> number of numerical time steps, not laser flashes; 326 pulses ×
-> 0.070 rad/pulse ≈ 23 rad ≈ 7π — inconsistent with π/2.)
+> oscillation periods.
 > 
 > With 1 flash per cycle, the sampling is *sparse and synchronous* —
 > true stroboscopic illumination. Each flash catches the ion at the
@@ -337,8 +346,8 @@ frozen when the flash rate matches the oscillation.
 > phase-space point.
 > 
 > **Structural trade-off:** The stroboscopic scheme shifts the
-> impulsiveness requirement from “δt ≪ T_m” (Monroe) to “phase
-> stability over N ≈ 22 pulses.” The required phase coherence is:
+> impulsiveness requirement from "δt ≪ T_m" (Monroe) to "phase
+> stability over N ≈ 22 pulses." The required phase coherence is:
 > 
 > ```
 > Δω_m/ω_m ≪ 1/(ω_m · T_total) ≈ 0.007
@@ -402,9 +411,9 @@ and back-action evasion.
 
 -----
 
-## 2. Comparison with Monroe’s Ultrafast Programme
+## 2. Comparison with Monroe's Ultrafast Programme
 
-|Parameter           |Monroe (Yb⁺)         |Hasse (Ba⁺ AC)          |Ratio / contrast     |
+|Parameter           |Monroe (Yb⁺)         |Hasse (²⁵Mg⁺ AC)       |Ratio / contrast     |
 |--------------------|---------------------|------------------------|---------------------|
 |Pulse duration      |~10 ps               |~40 ns                  |×4000 longer         |
 |δt / T_m            |~10⁻⁵                |~0.05                   |×5000 less impulsive |
@@ -414,7 +423,7 @@ and back-action evasion.
 |Temperature range   |ZPM to ~10⁴ phonons  |ZPM to ~25 phonons      |Monroe wider         |
 |Primary application |Interferometry, gates|Phase-space spectroscopy|Different goals      |
 
-Monroe’s temperature independence arises from three properties: δt ≪ T_m,
+Monroe's temperature independence arises from three properties: δt ≪ T_m,
 displacement operator factorisation, and cancellation sequences in fast gates.
 The present protocol does not inherit this full temperature insensitivity.
 Instead it maintains **phase selectivity under moderate motional occupation**:
@@ -438,7 +447,7 @@ sequences of impulsive kicks.
 ## 3. Physics Identity: Floquet-Synchronised Quadrature Spectroscopy
 
 The preceding comparison might suggest that the present scheme is a
-“softened Monroe kick” — an impulsive protocol degraded by finite pulse
+"softened Monroe kick" — an impulsive protocol degraded by finite pulse
 duration. This framing is misleading.
 
 **The protocol is a Floquet-synchronised quadrature probe, not a slow
@@ -554,54 +563,43 @@ noise. This must be demonstrated (WP-C).
 
 ## References
 
-- **[Braginsky1980]** V. B. Braginsky and Yu. I. Vorontsov, “Quantum-Mechanical Limitations in Macroscopic Experiments and Modern Experimental Technique,” Sov. Phys. Usp. **23**, 644 (1980).
-- **[Caves1980]** C. M. Caves, K. S. Thorne, R. W. P. Drever, V. D. Sandberg, and M. Zimmermann, “On the measurement of a weak classical force coupled to a quantum-mechanical oscillator,” Rev. Mod. Phys. **52**, 341 (1980).
-- **[Duan2004]** L.-M. Duan, “Scaling Ion Trap Quantum Computation through Fast Quantum Gates,” Phys. Rev. Lett. **93**, 100502 (2004).
-- **[García-Ripoll2003]** J. J. García-Ripoll, P. Zoller, and J. I. Cirac, “Speed Optimized Two-Qubit Gates with Laser Coherent Control Techniques for Ion Trap Quantum Computing,” Phys. Rev. Lett. **91**, 157901 (2003).
-- **[García-Ripoll2005]** J. J. García-Ripoll, P. Zoller, and J. I. Cirac, “Coherent control of trapped ions using off-resonant lasers,” Phys. Rev. A **71**, 062309 (2005).
-- **[Hasse2024]** F. Hasse, D. Palani, R. Thomm, U. Warring, and T. Schaetz, “Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics,” Phys. Rev. A **109**, 053105 (2024); arXiv: 2309.15580.
-- **[Johnson2015]** K. G. Johnson, B. Neyenhuis, J. Mizrahi, J. D. Wong-Campos, and C. Monroe, “Sensing Atomic Motion from the Zero Point to Room Temperature with Ultrafast Atom Interferometry,” Phys. Rev. Lett. **115**, 213001 (2015).
-- **[Johnson2017]** K. G. Johnson, J. D. Wong-Campos, B. Neyenhuis, J. Mizrahi, and C. Monroe, “Ultrafast creation of large Schrödinger cat states of an atom,” Nat. Commun. **8**, 697 (2017).
-- **[Leibfried2003]** D. Leibfried, R. Blatt, C. Monroe, and D. Wineland, “Quantum dynamics of single trapped ions,” Rev. Mod. Phys. **75**, 281 (2003).
-- **[Mizrahi2013]** J. Mizrahi, C. Senko, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. W. S. Conover, and C. Monroe, “Ultrafast Spin–Motion Entanglement and Interferometry with a Single Atom,” Phys. Rev. Lett. **110**, 203001 (2013).
-- **[Mizrahi2014]** J. Mizrahi, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. Senko, D. Hayes, and C. Monroe, “Quantum control of qubits and atomic motion using ultrafast laser pulses,” Appl. Phys. B **114**, 45–61 (2014).
-- **[Monroe1996]** C. Monroe, D. M. Meekhof, B. E. King, and D. J. Wineland, “A ‘Schrödinger Cat’ Superposition State of an Atom,” Science **272**, 1131 (1996).
-- **[Wong-Campos2017]** J. D. Wong-Campos, S. A. Moses, K. G. Johnson, and C. Monroe, “Demonstration of Two-Atom Entanglement with Ultrafast Optical Pulses,” Phys. Rev. Lett. **119**, 230501 (2017).
+- **[Braginsky1980]** V. B. Braginsky and Yu. I. Vorontsov, "Quantum-Mechanical Limitations in Macroscopic Experiments and Modern Experimental Technique," Sov. Phys. Usp. **23**, 644 (1980).
+- **[Caves1980]** C. M. Caves, K. S. Thorne, R. W. P. Drever, V. D. Sandberg, and M. Zimmermann, "On the measurement of a weak classical force coupled to a quantum-mechanical oscillator," Rev. Mod. Phys. **52**, 341 (1980).
+- **[Duan2004]** L.-M. Duan, "Scaling Ion Trap Quantum Computation through Fast Quantum Gates," Phys. Rev. Lett. **93**, 100502 (2004).
+- **[García-Ripoll2003]** J. J. García-Ripoll, P. Zoller, and J. I. Cirac, "Speed Optimized Two-Qubit Gates with Laser Coherent Control Techniques for Ion Trap Quantum Computing," Phys. Rev. Lett. **91**, 157901 (2003).
+- **[García-Ripoll2005]** J. J. García-Ripoll, P. Zoller, and J. I. Cirac, "Coherent control of trapped ions using off-resonant lasers," Phys. Rev. A **71**, 062309 (2005).
+- **[Hasse2024]** F. Hasse, D. Palani, R. Thomm, U. Warring, and T. Schaetz, "Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics," Phys. Rev. A **109**, 053105 (2024); arXiv: 2309.15580.
+- **[Johnson2015]** K. G. Johnson, B. Neyenhuis, J. Mizrahi, J. D. Wong-Campos, and C. Monroe, "Sensing Atomic Motion from the Zero Point to Room Temperature with Ultrafast Atom Interferometry," Phys. Rev. Lett. **115**, 213001 (2015).
+- **[Johnson2017]** K. G. Johnson, J. D. Wong-Campos, B. Neyenhuis, J. Mizrahi, and C. Monroe, "Ultrafast creation of large Schrödinger cat states of an atom," Nat. Commun. **8**, 697 (2017).
+- **[Leibfried2003]** D. Leibfried, R. Blatt, C. Monroe, and D. Wineland, "Quantum dynamics of single trapped ions," Rev. Mod. Phys. **75**, 281 (2003).
+- **[Mizrahi2013]** J. Mizrahi, C. Senko, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. W. S. Conover, and C. Monroe, "Ultrafast Spin–Motion Entanglement and Interferometry with a Single Atom," Phys. Rev. Lett. **110**, 203001 (2013).
+- **[Mizrahi2014]** J. Mizrahi, B. Neyenhuis, K. G. Johnson, W. C. Campbell, C. Senko, D. Hayes, and C. Monroe, "Quantum control of qubits and atomic motion using ultrafast laser pulses," Appl. Phys. B **114**, 45–61 (2014).
+- **[Monroe1996]** C. Monroe, D. M. Meekhof, B. E. King, and D. J. Wineland, "A 'Schrödinger Cat' Superposition State of an Atom," Science **272**, 1131 (1996).
+- **[Wong-Campos2017]** J. D. Wong-Campos, S. A. Moses, K. G. Johnson, and C. Monroe, "Demonstration of Two-Atom Entanglement with Ultrafast Optical Pulses," Phys. Rev. Lett. **119**, 230501 (2017).
 
 -----
 
 *Changelog is cumulative.*
 
-*v0.2 changelog: Corrected pulse count from 326 → ~22 (1 per motional cycle).
-Incorporated Guardian tightening: Magnus correction explicit in §1.1,
-quadrature selectivity loss in §1.2, spectroscopic regime in §1.4,
-unitary vs. projective backaction in §1.6, Floquet identity in §3,
-temperature-independence caveat in §2. Added §6 corrected parameter table.*
-
-*v0.2.1 changelog: Fixed missing 2π factor in phase-blur table (§1.1).
-Old values (0.04, 0.12, 0.21 rad) were δ_D/(2π)·δt, not δ_D·δt —
-off by factor 2π ≈ 6.28. Corrected: 0.26, 0.78, 1.30 rad. Separated
-coherent peak blur from ZPM RMS blur (0.13 rad). Updated §1.3 cross-
-reference. Added commutator non-commutativity statement after Magnus
-introduction.*
-
-*v0.2.2 changelog: Notational tightening. Table header formula now reads
-Δφ_peak = 2π·[δ_D^peak/(2π)]·δt to prevent misreading with the cyclic-
-frequency column. Same for RMS line. “Order-unity blur” anchored as
-“~1 rad, i.e. tens of degrees.” Commutator line names H_m (harmonic
-motional) and H_int(t) (laser interaction) for readability.*
-
-*v0.2.3 changelog: Physics-precision tightening of §1.1 blur block.
-(A) Δφ identified as heuristic; finite-δt effects split into geometric
-phase averaging (ω_m δt) and Doppler-detuning Rabi distortion (δ_D/Ω).
-(B) Velocity convention pinned: v_peak = ω_m x₀ √2 |α|. (C) ZPM RMS
-blur (0.13 rad) placed against ω_m δt ≈ 0.33 rad baseline. (D) Magnus
-averaging statement softened: “replaces” → “acts similarly to replacing
-… pulse-envelope-weighted average.”*
+*v0.2.5 changelog: Provenance note added to §1.4 Deviation block,
+distinguishing HDF5 adaptive-learner contrast values (0.61→0.71→0.84→0.75)
+from 22-pulse stroboscopic JSON runs (uniform ≈ 0.56). Removed bare
+"non-monotonic trend" claim without method context. Removed stale "326"
+reference from §1.5 Deviation block. Corrected ion species in §2 Monroe
+comparison table: Ba⁺ → ²⁵Mg⁺. Bumped version to v0.2.5.*
 
 *v0.2.4 changelog: Final precision pass on §1.1. (1) Geometric averaging
 now correctly attributed to k_eff·x(t) variation (both ω_m δt and k_eff v δt,
 state-dependent), not ω_m δt alone. (2) Doppler distortion control parameter
-specified as δ_D/Ω_eff (not bare Ω). (3) σ labelled “RMS Doppler width.”
-(4) Envelope-averaging qualifier: “to leading order, for a smooth pulse
-envelope.”*
+specified as δ_D/Ω_eff (not bare Ω). (3) σ labelled "RMS Doppler width."
+(4) Envelope-averaging qualifier: "to leading order, for a smooth pulse
+envelope."*
+
+*v0.2.3 changelog: Physics-precision tightening of §1.1 blur block.*
+
+*v0.2.2 changelog: Notational tightening.*
+
+*v0.2.1 changelog: Fixed missing 2π factor in phase-blur table (§1.1).*
+
+*v0.2 changelog: Corrected pulse count from 326 → ~22 (1 per motional cycle).
+Incorporated Guardian tightening.*

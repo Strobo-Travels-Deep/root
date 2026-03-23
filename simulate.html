@@ -7,211 +7,69 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js" charset="utf-8"></script>
 <link rel="stylesheet" href="style.css">
-<style>
-/* ── Simulate-page-specific styles ─── */
-.pg { display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin:0.6rem 0 0.8rem; }
-@media(max-width:600px){ .pg{grid-template-columns:1fr;} }
-.pc { background:var(--bg-card); border:1px solid var(--border-light); border-radius:4px; padding:0.7rem 0.9rem; }
-.pc .lbl { font-size:0.78rem; font-family:'JetBrains Mono',monospace; font-weight:500;
-           letter-spacing:0.02em; color:var(--accent); margin-bottom:0.25rem; }
-.pc .pr { display:flex; align-items:center; gap:0.4rem; }
-.pc input[type="range"] { flex:1; accent-color:var(--accent); height:5px; }
-.pc .pv { font-family:'JetBrains Mono',monospace; font-size:0.86rem; font-weight:500;
-          min-width:4rem; text-align:right; }
-.pc .ph { font-size:0.73rem; color:var(--text-muted); margin-top:0.15rem; }
-.pc input[type="number"], .pc select {
-  width:100%; padding:0.3rem 0.4rem; font-family:'JetBrains Mono',monospace; font-size:0.86rem;
-  border:1px solid var(--border-light); border-radius:3px; background:#fff; color:var(--text); }
-.pc input[type="number"]:focus, .pc select:focus { border-color:var(--accent); outline:none; }
-.sl { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600;
-      letter-spacing:0.04em; color:var(--text-muted); margin:1.2rem 0 0.2rem;
-      padding-bottom:0.15rem; border-bottom:1px dashed var(--border-light); }
-h2 .n { display:inline-flex; align-items:center; justify-content:center;
-        width:1.4rem; height:1.4rem; border-radius:50%; background:var(--accent); color:#fff;
-        font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:700; }
-.og { display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.5rem 0 0.8rem; }
-.ot { display:flex; align-items:center; gap:0.35rem; cursor:pointer;
-      padding:0.3rem 0.55rem; border-radius:3px; border:1px solid var(--border-light);
-      background:var(--bg-card); font-size:0.8rem; font-family:'JetBrains Mono',monospace; user-select:none; }
-.ot:hover { border-color:var(--accent); }
-.ot.ac { border-color:var(--accent); background:var(--tag-bg); }
-.ot .sw { width:9px; height:9px; border-radius:2px; } .ot input { display:none; }
-.rr { display:flex; align-items:center; gap:0.8rem; margin:1rem 0; flex-wrap:wrap; }
-#rbtn { font-family:'JetBrains Mono',monospace; font-size:0.86rem; font-weight:600;
-        padding:0.5rem 1.4rem; border:2px solid #3a7a3a; border-radius:4px;
-        background:#e8f4e8; color:#3a7a3a; cursor:pointer; }
-#rbtn:hover { background:#3a7a3a; color:#fff; }
-#rbtn:disabled { opacity:0.4; cursor:wait; }
-#rstat { font-size:0.82rem; color:var(--text-muted); font-style:italic; }
-.pw { width:100%; height:3px; background:var(--border-light); border-radius:2px;
-      margin:0.3rem 0 0.6rem; overflow:hidden; display:none; }
-.pw.vis { display:block; }
-.pb { height:100%; background:var(--accent); width:0%; transition:width 0.1s; }
-.cb { display:none; padding:0.5rem 0.8rem; border-radius:3px; margin:0.6rem 0;
-      font-size:0.78rem; font-family:'JetBrains Mono',monospace; line-height:1.4; border:1px solid; }
-.cb.ok { background:#e8f4e8; border-color:#aad4aa; color:#3a7a3a; }
-.cb.wn { background:#fdf8e0; border-color:#e0d080; color:#a08000; }
-.cb.fl { background:#fce8e8; border-color:#e0a0a0; color:#a03030; }
-.plc { background:var(--bg-card); border:1px solid var(--border-light); border-radius:4px;
-       padding:0.5rem; margin:0.8rem 0; min-height:320px; }
-.sm { font-size:0.84rem; color:var(--text-muted); text-align:center; padding:2rem 1rem; font-style:italic; }
-.mr { display:flex; flex-wrap:wrap; gap:0.8rem; margin:0.6rem 0; font-size:0.8rem; color:var(--text-sec); }
-.mi { display:flex; gap:0.2rem; } .mk { font-weight:600; color:var(--text-muted); }
-.ds { background:var(--bg-card); border:1px solid var(--border-light); border-radius:4px;
-      padding:0.8rem 1rem; margin:1rem 0; }
-.hd { font-family:'JetBrains Mono',monospace; font-size:0.7rem; word-break:break-all;
-      background:var(--bg-code); padding:0.35rem 0.5rem; border-radius:2px; margin:0.3rem 0; color:var(--text-sec); }
-.hl { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600;
-      color:var(--accent); letter-spacing:0.03em; }
-.dbs { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem; }
-.db { font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:500;
-      padding:0.35rem 0.7rem; border:1px solid var(--border); border-radius:3px;
-      background:var(--bg-main); color:var(--link); cursor:pointer; }
-.db:hover { border-color:var(--accent); color:var(--accent); }
-.gpu-badge { display:inline-block; font-family:'JetBrains Mono',monospace;
-  font-size:0.68rem; font-weight:600; padding:0.12em 0.4em; border-radius:3px; margin-left:0.3rem; }
-.gpu-badge.on { background:#d4e6d4; color:#3a6a3a; }
-.gpu-badge.off { background:var(--bg-code); color:var(--text-muted); }
-.warn-inline { font-size:0.73rem; color:#a03030; font-family:'JetBrains Mono',monospace; margin-top:0.1rem; }
-.pulse-svg { background:var(--bg-card); border:1px solid var(--border-light); border-radius:4px;
-             padding:0.3rem; margin:0.6rem 0; text-align:center; }
-</style>
 </head>
 <body>
 <div class="page-wrap">
 
 <header>
   <div class="site-id">ROCKET SCIENCE · OPEN RESEARCH PLATFORM</div>
-  <h1>Simulate: Stroboscopic Detuning Scan <span class="gpu-badge off" id="gpu-badge">CPU</span></h1>
-  <p class="subtitle">In-browser quantum simulation · Hasse et al., PRA 109, 053105 (2024)</p>
+  <h1>Simulate: Stroboscopic Detuning Scan</h1>
+  <p class="subtitle">Simulation page (browser engine not in this snapshot) · Hasse et al., PRA 109, 053105 (2024)</p>
   <nav>
     <a href="index.html">Overview</a> <a href="dossier.html">Dossier</a>
     <a href="framework.html">Framework</a> <a href="tutorial.html">Tutorial</a>
     <a href="numerics.html">Numerics</a>
     <a href="simulate.html" aria-current="page">Simulate</a>
     <a href="code.html">Code</a>
+    <a href="reference.html">Reference</a>
+    <a href="getting-started.html">Start</a>
   </nav>
 </header>
 
 <div class="meta-block">
   <strong>Endorsement Marker:</strong> Local candidate framework.<br>
-  <strong>Provenance:</strong> SHA-256 hash covers all parameters, code version, and output arrays.
+  <strong>Provenance:</strong> SHA-256 hash covers all parameters, code version, and output arrays.<br>
+  <strong>Status:</strong> Browser output is labelled <code>exploratory</code>. For systematic surveys, use
+  <code>scripts/stroboscopic_sweep.py</code> (labelled <code>systematic</code>, Float64).
 </div>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-<h2><span class="n">1</span> Parameters</h2>
-
-<div class="sl">HAMILTONIAN</div>
-<div class="pg">
-  <div class="pc"><div class="lbl">Lamb–Dicke η</div><div class="pr"><input type="range" id="p-eta" min="0.05" max="0.8" step="0.01" value="0.397"><span class="pv" id="v-eta"></span></div><div class="ph">Debye–Waller: <span id="h-dw"></span></div></div>
-  <div class="pc"><div class="lbl">Mode freq. ω<sub>m</sub>/(2π) [MHz]</div><div class="pr"><input type="range" id="p-omega-m" min="0.3" max="4.0" step="0.05" value="1.30"><span class="pv" id="v-omega-m"></span></div></div>
-  <div class="pc"><div class="lbl">Rabi rate Ω/(2π) [MHz]</div><div class="pr"><input type="range" id="p-omega-r" min="0.05" max="1.0" step="0.01" value="0.30"><span class="pv" id="v-omega-r"></span></div><div class="ph">Eff. carrier Ω<sub>eff</sub>/(2π): <span id="h-eff"></span> MHz</div></div>
-  <div class="pc"><div class="lbl">Fock truncation N<sub>max</sub></div><div class="pr"><input type="range" id="p-nmax" min="10" max="80" step="5" value="40"><span class="pv" id="v-nmax"></span></div><div class="ph">Convergence checked post-run</div></div>
+<div class="callout">
+  <div class="cl">Rebuild required</div>
+  <p>The interactive browser simulation requires <code>js/simulate-engine.js</code> from the
+  original repository. See <a href="REBUILD.md">REBUILD.md</a> for patching instructions.</p>
+  <p style="margin-bottom:0;">In the meantime, use the <strong>Python sweep engine</strong> for all systematic work:</p>
 </div>
 
-<div class="sl">INITIAL MOTIONAL STATE</div>
-<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.3rem">|ψ<sub>mot</sub>⟩ = S(r, φ<sub>s</sub>) D(α e<sup>iθ<sub>α</sub></sup>) |thermal, n̄<sub>th</sub>⟩. Squeeze and displacement applied to a thermal or ground state. Pulse train starts at t=0 (motional phase origin).</p>
-<div class="pg">
-  <div class="pc"><div class="lbl">Displacement |α|</div><div class="pr"><input type="range" id="p-alpha" min="0" max="8" step="0.5" value="3"><span class="pv" id="v-alpha"></span></div><div class="ph">⟨n⟩<sub>coh</sub> = <span id="h-nbar"></span></div></div>
-  <div class="pc"><div class="lbl">Displacement phase θ<sub>α</sub> [deg]</div><div class="pr"><input type="range" id="p-alpha-phase" min="0" max="360" step="1" value="0"><span class="pv" id="v-alpha-phase"></span></div><div class="ph">Phase of coherent amplitude in phase space</div></div>
-  <div class="pc"><div class="lbl">Thermal ⟨n⟩<sub>th</sub></div><div class="pr"><input type="range" id="p-nth" min="0" max="5.0" step="0.1" value="0"><span class="pv" id="v-nth"></span></div><div class="ph">0 = ground state. &gt;0: trajectory-averaged thermal mixture.</div></div>
-  <div class="pc"><div class="lbl">Thermal trajectories</div><div class="pr"><input type="range" id="p-nth-traj" min="1" max="30" step="1" value="10"><span class="pv" id="v-nth-traj"></span></div><div class="ph">Fock sampling for thermal state (only if ⟨n⟩<sub>th</sub> &gt; 0)</div></div>
-  <div class="pc"><div class="lbl">Squeeze amplitude r</div><div class="pr"><input type="range" id="p-squeeze-r" min="0" max="2.0" step="0.05" value="0"><span class="pv" id="v-squeeze-r"></span></div><div class="ph">r = 0: no squeezing. Squeeze ≈ 2r × 4.34 dB</div></div>
-  <div class="pc"><div class="lbl">Squeeze angle φ<sub>s</sub> [deg]</div><div class="pr"><input type="range" id="p-squeeze-phi" min="0" max="180" step="1" value="0"><span class="pv" id="v-squeeze-phi"></span></div><div class="ph">0° squeezes x-quadrature, 90° squeezes p</div></div>
-</div>
-<!-- Wigner function live preview -->
-<div id="wigner-plot" style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:4px;padding:0.3rem;margin:0.6rem 0;height:280px;"></div>
+<h2>Python Sweep Engine (Systematic)</h2>
 
-<div class="sl">INITIAL SPIN STATE</div>
-<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.3rem">|ψ<sub>spin</sub>⟩ = cos(θ/2)|↓⟩ + e<sup>iφ</sup>sin(θ/2)|↑⟩</p>
-<div class="pg">
-  <div class="pc"><div class="lbl">θ [deg]</div><div class="pr"><input type="range" id="p-theta" min="0" max="180" step="1" value="0"><span class="pv" id="v-theta"></span></div><div class="ph">0° = |↓⟩, 90° = equator, 180° = |↑⟩</div></div>
-  <div class="pc"><div class="lbl">φ [deg]</div><div class="pr"><input type="range" id="p-phi" min="0" max="360" step="1" value="0"><span class="pv" id="v-phi"></span></div></div>
-</div>
-<!-- Bloch sphere live preview -->
-<div id="bloch-svg" style="text-align:center;margin:0.4rem 0;"></div>
-
-<div class="sl">PULSE TRAIN</div>
-<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.3rem">N<sub>p</sub> pulses of duration δt, separated by one motional period T<sub>m</sub> = 1/ν<sub>m</sub>. Total rotation fixed at π/2.</p>
-<div class="pg">
-  <div class="pc"><div class="lbl">Pulses N<sub>p</sub></div><input type="number" id="p-npulses" value="22" min="1" max="200" step="1">
-    <div class="ph" id="h-timing"></div>
-    <div class="warn-inline" id="duty-warn" style="display:none"></div>
-  </div>
-  <div class="pc"><div class="lbl">Pulse separation T<sub>sep</sub>/T<sub>m</sub></div><div class="pr"><input type="range" id="p-tsep" min="0.5" max="2.0" step="0.001" value="1.000"><span class="pv" id="v-tsep"></span></div><div class="ph">1.000 = stroboscopic (T<sub>sep</sub> = T<sub>m</sub>). ≠1 breaks stroboscopic condition.</div></div>
-  <div class="pc"><div class="lbl">Scan range δ<sub>min</sub> / ω<sub>m</sub></div><input type="number" id="p-dmin" value="-6.0" step="0.5"></div>
-  <div class="pc"><div class="lbl">Scan range δ<sub>max</sub> / ω<sub>m</sub></div><input type="number" id="p-dmax" value="6.0" step="0.5"></div>
-  <div class="pc"><div class="lbl">Points</div><input type="number" id="p-npts" value="201" min="21" max="801" step="10"></div>
+<div class="formula-box" style="text-align:left;font-style:normal;font-size:0.86rem;line-height:1.9;">
+<code>pip install numpy scipy</code><br><br>
+<code>python scripts/stroboscopic_sweep.py --mode single_run --alpha 3</code><br>
+<code>python scripts/stroboscopic_sweep.py --mode sweep_1d --sweep-param n_pulses --sweep-values 5,10,22,50</code><br>
+<code>python scripts/stroboscopic_sweep.py --mode state_comparison</code>
 </div>
 
-<!-- Pulse train SVG illustration -->
-<div class="pulse-svg" id="pulse-svg"></div>
+<p>The Python engine uses the same Hamiltonian and exact Fock-basis matrix exponentiation as the browser engine.
+Float64 throughout. Output follows manifest schema v2.0 with provenance hashing.
+See <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> for the three-mode design.</p>
 
-<div class="sl">DECOHERENCE</div>
-<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.3rem">0 = off (unitary). Non-zero activates quantum trajectories.</p>
-<div class="pg">
-  <div class="pc"><div class="lbl">Spin T₁ [μs]</div><div class="pr"><input type="range" id="p-T1" min="0" max="5000" step="50" value="0"><span class="pv" id="v-T1"></span></div></div>
-  <div class="pc"><div class="lbl">Spin T₂ [μs]</div><div class="pr"><input type="range" id="p-T2" min="0" max="1000" step="10" value="0"><span class="pv" id="v-T2"></span></div><div class="ph">∞ to 1000 μs. γ<sub>φ</sub> = 1/T₂ − 1/(2T₁)</div></div>
-  <div class="pc"><div class="lbl">Heating dn/dt [quanta/ms]</div><div class="pr"><input type="range" id="p-heat" min="0" max="500" step="5" value="0"><span class="pv" id="v-heat"></span></div></div>
-  <div class="pc"><div class="lbl">Decoherence N<sub>traj</sub></div><div class="pr"><input type="range" id="p-ntraj" min="1" max="50" step="1" value="10"><span class="pv" id="v-ntraj"></span></div></div>
-</div>
+<h2>Pre-computed Data</h2>
 
-<div class="sl">MEASUREMENT</div>
-<div class="pg">
-  <div class="pc"><div class="lbl">N<sub>rep</sub> (shots per point)</div><div class="pr"><input type="range" id="p-nrep" min="0" max="1000" step="10" value="0"><span class="pv" id="v-nrep"></span></div><div class="ph">0 = ideal. Binomial sampling with ±1σ error bars.</div></div>
-</div>
+<p>9 default runs are available on the <a href="numerics.html">Numerics</a> page (α = 0, 1, 3, 5 default scans,
+carrier zoom, red/blue sideband zooms, fine α=1, sideband comb). All generated with N<sub>max</sub> = 30–40,
+201–401 points, 22 stroboscopic pulses.</p>
 
-<hr>
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<h2><span class="n">2</span> Observables</h2>
-<div class="og" id="obs">
-  <label class="ot ac" data-k="sigma_x"><input type="checkbox" checked><span class="sw" style="background:var(--trace-sx)"></span>⟨σ<sub>x</sub>⟩</label>
-  <label class="ot ac" data-k="sigma_y"><input type="checkbox" checked><span class="sw" style="background:var(--trace-sy)"></span>⟨σ<sub>y</sub>⟩</label>
-  <label class="ot ac" data-k="sigma_z"><input type="checkbox" checked><span class="sw" style="background:var(--trace-sz)"></span>⟨σ<sub>z</sub>⟩</label>
-  <label class="ot ac" data-k="coherence"><input type="checkbox" checked><span class="sw" style="background:var(--trace-coh)"></span>Coherence</label>
-  <label class="ot ac" data-k="entropy"><input type="checkbox" checked><span class="sw" style="background:#666"></span>Entropy</label>
-  <label class="ot ac" data-k="nbar"><input type="checkbox" checked><span class="sw" style="background:#3a7a3a"></span>⟨n⟩</label>
-  <label class="ot ac" data-k="mot_purity"><input type="checkbox" checked><span class="sw" style="background:#8a5a3a"></span>Purity</label>
-  <label class="ot ac" data-k="mot_fidelity"><input type="checkbox" checked><span class="sw" style="background:#3a5a8a"></span>Fidelity</label>
-</div>
-
-<hr>
-
-<h2><span class="n">3</span> Run</h2>
-<div class="rr"><button id="rbtn">▶ Run</button><span id="rstat">Ready.</span></div>
-<div class="pw" id="pw"><div class="pb" id="pb"></div></div>
-<div class="cb" id="cb"></div>
-<div id="pl-s" class="plc"><p class="sm">Set parameters, then press Run.</p></div>
-<div id="pl-e" class="plc" style="min-height:170px"><p class="sm">&nbsp;</p></div>
-<div id="pl-m" class="plc" style="min-height:200px"><p class="sm">Motional observables: ⟨n⟩, purity Tr(ρ_m²), fidelity F(ρ_m, ψ₀)</p></div>
-<div id="meta" class="mr" style="display:none"></div>
-
-<hr>
-
-<h2><span class="n">4</span> Download</h2>
-<div class="ds" id="dlsec" style="display:none">
-  <div class="hl">SHA-256 provenance hash</div>
-  <div class="hd" id="hashd">—</div>
-  <div class="dbs">
-    <button class="db" id="dl-json">↓ JSON</button>
-    <button class="db" id="dl-csv">↓ CSV</button>
-    <button class="db" id="dl-py">↓ Python</button>
-    <button class="db" id="dl-man">↓ Manifest</button>
-  </div>
-</div>
-<div id="nodl" style="font-size:0.84rem;color:var(--text-muted);font-style:italic">Run a simulation first.</div>
-
-<hr>
 <h2>Method</h2>
-<p>Full documentation: <a href="code.html">Code</a> page. Initial motional state prepared as S(r,φ<sub>s</sub>)D(α e<sup>iθ<sub>α</sub></sup>)|n⟩, with thermal averaging over Fock states when ⟨n⟩<sub>th</sub> &gt; 0. Squeeze operator built exactly via matrix exponentiation of (r/2)(e<sup>−2iφ</sup>a² − e<sup>2iφ</sup>a†²). Sidebands at δ₀ = ±s·ω<sub>m</sub> emerge naturally from the exact exp(iη(a+a†)) coupling.</p>
+
+<p>Full documentation: <a href="code.html">Code</a> page. Initial motional state prepared as
+S(r,φ<sub>s</sub>)D(α e<sup>iθ<sub>α</sub></sup>)|n⟩, with thermal averaging over Fock states when
+⟨n⟩<sub>th</sub> &gt; 0. Squeeze operator built exactly via matrix exponentiation. Sidebands at
+δ₀ = ±s·ω<sub>m</sub> emerge naturally from the exact exp(iη(a+a†)) coupling.</p>
 
 <footer>
   <p>v0.8 · Breakwater · <a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> ·
   Hasse et al., <a href="https://doi.org/10.1103/PhysRevA.109.053105">PRA 109, 053105 (2024)</a></p>
 </footer>
 </div>
-
-<script src="js/simulate-engine.js"></script>
 </body>
 </html>

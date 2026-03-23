@@ -21,6 +21,8 @@
     <a href="numerics.html">Numerics</a>
     <a href="simulate.html">Simulate</a>
     <a href="code.html">Code</a>
+    <a href="reference.html">Reference</a>
+    <a href="getting-started.html">Start</a>
   </nav>
 </header>
 
@@ -164,8 +166,19 @@
 <h3>What the coherence envelope tells us</h3>
 <p>The coherence (Bloch vector length in the equatorial plane) directly reveals the Doppler velocity distribution. At each detuning δ<sub>0</sub>, only the velocity class satisfying <em>k</em><sub>eff</sub>·<em>v</em> ≈ −δ<sub>0</sub> contributes coherently; other velocity classes dephase. The coherence envelope is a proxy for the velocity distribution convolved with the Rabi instrument function. Its progressive broadening from α = 0 → 5 confirms the Doppler mechanism quantitatively.</p>
 
-<h3>σ<sub>z</sub> contrast: non-monotonic behaviour</h3>
-<p>The σ<sub>z</sub> contrast follows 0.61 → 0.71 → 0.84 → 0.75. This non-monotonic trend arises from the interplay of two effects. For the ground state (α = 0), even zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) partially dephases the σ<sub>z</sub> fringe. As α increases, the stroboscopic sampling catches the ion at different velocities across its oscillation cycle; the time-averaged σ<sub>z</sub> signal reflects the overlap between the velocity distribution and the Rabi instrument function. The initial contrast rise from α = 0 → 3 and the subsequent drop at α = 5 encode information about the velocity distribution's shape.</p>
+<h3>σ<sub>z</sub> contrast: two data sources</h3>
+
+<div class="callout">
+  <div class="cl">Provenance note — contrast values</div>
+  <p style="margin-bottom:0.4rem;">Two sets of σ<sub>z</sub> contrast values exist in this dossier, from different simulation methods:</p>
+  <p style="margin-bottom:0.4rem;"><strong>HDF5 adaptive-learner data:</strong> contrast_z = 0.61 → 0.71 → 0.84 → 0.75 (α = 0, 1, 3, 5). These were computed with an adaptive-learner sampling method and are <em>not</em> directly reproducible from the 22-pulse stroboscopic browser simulation or the default JSON runs.</p>
+  <p style="margin-bottom:0.4rem;"><strong>22-pulse stroboscopic JSON runs (v0.8 defaults):</strong> contrast_z ≈ 0.56 for all α. These are the values in the default run data and are exactly reproducible via the <a href="simulate.html">Simulate</a> page.</p>
+  <p style="margin-bottom:0;">The difference arises because the adaptive-learner method uses a different detuning-point distribution and numerical integration strategy. Both are internally consistent; they should not be cross-compared without accounting for the methodological difference. See the README cross-validation section.</p>
+</div>
+
+<p>The σ<sub>z</sub> contrast encodes the frequency-integrated Doppler velocity distribution. The non-monotonic trend in the HDF5 data (0.61 → 0.71 → 0.84 → 0.75) arises from the interplay of two effects. For the ground state (α = 0), even zero-point Doppler width (σ<sub>D</sub>/Ω = 1.73) partially dephases the σ<sub>z</sub> fringe. As α increases, the stroboscopic sampling catches the ion at different velocities across its oscillation cycle; the time-averaged σ<sub>z</sub> signal reflects the overlap between the velocity distribution and the Rabi instrument function. The initial contrast rise from α = 0 → 3 and the subsequent drop at α = 5 encode information about the velocity distribution's shape.</p>
+
+<p>The uniform contrast (≈ 0.56) in the 22-pulse stroboscopic runs reflects the different parameter regime of that simulation. Explaining the quantitative difference between the two methods is itself a diagnostic target for WP-B.</p>
 
 <h3>Sideband structure as Doppler fingerprint</h3>
 <p>The σ<sub>x</sub>, σ<sub>y</sub> traces show sideband oscillations with spacing ~ω<sub>m</sub>. As α increases, the pattern becomes asymmetric and increasingly complex. In the sideband picture, this reflects higher-order transitions. In the Doppler picture, it reflects frequency-dependent coupling of different velocity classes. The two descriptions are equivalent; the Doppler interpretation is more transparent for reading off momentum information.</p>
@@ -179,7 +192,7 @@
 <thead><tr><th>Quantity</th><th>Analytic</th><th>Simulation</th><th></th></tr></thead>
 <tbody>
 <tr><td>Debye–Waller</td><td>exp(−η²/2) = 0.924</td><td>Ω<sub>eff</sub>/Ω = 0.277/0.300 = 0.923</td><td>✓</td></tr>
-<tr><td>σ<sub>D</sub><sup>zp</sup>/Ω</td><td>1.73</td><td>σ<sub>z</sub> contrast 0.61 at α = 0</td><td>✓</td></tr>
+<tr><td>σ<sub>D</sub><sup>zp</sup>/Ω</td><td>1.73</td><td>Coherence envelope width at α = 0</td><td>✓</td></tr>
 <tr><td>Coherence width</td><td>∝ √(2⟨n⟩ + 1)</td><td>Monotonic broadening α = 0 → 5</td><td>✓</td></tr>
 <tr><td>Sideband complexity</td><td>Higher <em>s</em> for larger α</td><td>Increasing asymmetry</td><td>✓</td></tr>
 </tbody>
@@ -187,7 +200,7 @@
 
 <div class="callout">
   <div class="cl">Contrast loss = integrated Doppler</div>
-  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast modulation (0.61 → 0.71 → 0.84 → 0.75) is the frequency-integrated version of the Doppler velocity distribution. The full detuning scan preserves the spectral structure. For state reconstruction, the detuning spectrum is the primary observable; contrast alone discards information.</p>
+  <p style="margin-bottom:0;">The σ<sub>z</sub> contrast modulation encodes the frequency-integrated version of the Doppler velocity distribution. The full detuning scan preserves the spectral structure. For state reconstruction, the detuning spectrum is the primary observable; contrast alone discards information.</p>
 </div>
 
 <hr>
@@ -230,8 +243,8 @@
 <div class="wp-card">
   <p><span class="wp-id">WP-B</span></p>
   <p class="wp-title">Numerical Anchoring</p>
-  <p>Confirm δ<sub>D</sub>/Ω ratios against simulation. δ<em>t</em> sweep. Reproduce σ<sub>z</sub> contrast trend (0.61→0.71→0.84→0.75) from analytic Doppler model.</p>
-  <p class="deliverable">Verification memo. Resolves R5.</p>
+  <p>Confirm δ<sub>D</sub>/Ω ratios against simulation. δ<em>t</em> sweep. Explain the σ<sub>z</sub> contrast difference between HDF5 adaptive-learner data (0.61→0.71→0.84→0.75) and 22-pulse stroboscopic runs (uniform ≈ 0.56) from the Doppler model. Note: these derive from different simulation methods — see provenance note above.</p>
+  <p class="deliverable">Verification memo with cross-method reconciliation. Resolves R5.</p>
 </div>
 
 <div class="wp-card">
@@ -262,8 +275,8 @@
     <a href="simulate.html">Simulate</a>
     <a href="code.html">Code</a>) are benchmarks. Compute the stroboscopic average of the Rabi instrument function convolved with the time-dependent velocity distribution for each α. Matching the envelope shape and width is the first quantitative test of the Doppler model (WP-A.1).</p>
 
-<h3>2. Explain the σ<sub>z</sub> contrast trend</h3>
-<p>The non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75 is a concrete numerical target for WP-B. An analytic model that reproduces this from velocity-distribution overlap, without free parameters, would close R5.</p>
+<h3>2. Reconcile the two σ<sub>z</sub> contrast datasets</h3>
+<p>The HDF5 adaptive-learner data yields a non-monotonic sequence 0.61 → 0.71 → 0.84 → 0.75; the 22-pulse stroboscopic JSON runs yield a uniform ≈ 0.56. Both are concrete numerical targets for WP-B — an analytic model should explain both from velocity-distribution overlap, without free parameters. The cross-method difference itself is a diagnostic: understanding <em>why</em> the two methods produce different contrast values will close R5.</p>
 
 <h3>3. Coherent vs. thermal discrimination</h3>
 <p>Run the same simulation for a thermal state at <em>n̄</em> = 9 (matching α = 3). The coherence envelope should be symmetric and broader. This is the one-shot diagnostic.</p>
