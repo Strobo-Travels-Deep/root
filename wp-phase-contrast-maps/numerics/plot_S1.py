@@ -212,9 +212,9 @@ def plot_phase_maps(d):
     fig, axes = plt.subplots(2, 2, figsize=(11, 7))
     extent = [det[0], det[-1], -0.5, len(alpha) - 0.5]
 
-    for ax, M, title in [
-        (axes[0,0], af_m, r'$\arg C_{\rm full}$ (deg)'),
-        (axes[0,1], ar_m, r'$\arg C_{R1}$ (deg)'),
+    for ax, M, title, is_full in [
+        (axes[0,0], af_m, r'$\arg C_{\rm full}$ (deg)', True),
+        (axes[0,1], ar_m, r'$\arg C_{R1}$ (deg)', False),
     ]:
         im = ax.imshow(M, aspect='auto', origin='lower', extent=extent,
                        cmap='hsv', vmin=-180, vmax=180)
@@ -224,6 +224,15 @@ def plot_phase_maps(d):
         ax.set_ylabel(r'$|\alpha|$')
         ax.set_title(title + fr'  (masked at $|C| < {PHASE_MASK_THRESHOLD}$)')
         plt.colorbar(im, ax=ax, fraction=0.05, label='deg')
+        # Wrap-rate annotation (Guardian flag — full panel only)
+        if is_full:
+            ax.text(0.02, 0.97,
+                    r'wrap rate $\approx 2\pi / 1.5$ MHz at $|\alpha|=3$' '\n'
+                    r'(η-dressed position phase, not aliasing;' '\n'
+                    r' $\sim 15$ grid pts per wrap)',
+                    transform=ax.transAxes, va='top', ha='left', fontsize=7,
+                    bbox=dict(facecolor='white', edgecolor='gray', alpha=0.85,
+                              pad=2))
 
     # Phase line cuts at carrier zoom
     for ax, A, C, title in [
@@ -301,20 +310,24 @@ def plot_eta_residuals(d):
     ax.axhline(0, color='k', lw=0.5)
     ax.legend(fontsize=8); ax.grid(alpha=0.3)
 
-    # Carrier slice: Δ|C|(δ=0) and Δarg(δ=0) vs α
+    # Carrier slice — Δ_η arg C only (Δ_η|C| is constant; suppress
+    # the auto-zoom artefact noted by Guardian).
     i0 = int(np.argmin(np.abs(det)))
     ax = axes[1,1]
-    ax2 = ax.twinx()
-    ax.plot(alpha, Delta_C[:, i0], 'o-', color='C0', label=r'$\Delta_\eta\,|C|$ (left)')
-    ax2.plot(alpha, wrap_deg(Delta_arg_m[:, i0]), 's-', color='C3',
-             label=r'$\Delta_\eta\,\arg C$ (right)')
+    ax.plot(alpha, wrap_deg(Delta_arg_m[:, i0]), 'o-', color='C3', lw=1.5)
     ax.set_xlabel(r'$|\alpha|$')
-    ax.set_ylabel(r'$\Delta_\eta\,|C|$ at $\delta_0 = 0$', color='C0')
-    ax2.set_ylabel(r'$\Delta_\eta\,\arg C$  (deg)', color='C3')
-    ax.tick_params(axis='y', colors='C0')
-    ax2.tick_params(axis='y', colors='C3')
-    ax.set_title(r'Carrier slice — $\Delta_\eta$ vs $|\alpha|$')
+    ax.set_ylabel(r'$\Delta_\eta\,\arg C$  (deg)')
+    ax.set_title(r'Carrier slice — $\Delta_\eta\,\arg C$ vs $|\alpha|$')
+    ax.set_ylim(-200, 200)
+    ax.axhline(0, color='k', lw=0.5)
     ax.grid(alpha=0.3)
+    constant_dC = float(Delta_C[:, i0].mean())
+    ax.text(0.04, 0.05,
+            fr'$\Delta_\eta\,|C|(\delta_0=0) = {constant_dC:+.4f}$,' '\n'
+            r'constant in $|\alpha|$ to numerical precision'
+            ' (omitted from plot).',
+            transform=ax.transAxes, va='bottom', ha='left', fontsize=8,
+            bbox=dict(facecolor='white', edgecolor='gray', alpha=0.85, pad=2))
 
     fig.suptitle(r'WP-E S1 — η-nonlinearity residuals  $\Delta_\eta = $ full − R1')
     fig.tight_layout()

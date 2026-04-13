@@ -170,6 +170,80 @@ def execute_S1(out_path, alphas=(0.0, 1.0, 3.0, 5.0), n_det=121,
 
 
 # ═══════════════════════════════════════════════════════════════
+# S2 — (δ₀, φ_α) at fixed |α|
+# ═══════════════════════════════════════════════════════════════
+
+def execute_S2_sheet(out_path, alpha, n_phi=64, n_det=121,
+                     det_rel_max=6.0/1.3, eta_full=0.397, eta_R1=R1_ETA):
+    """
+    Run one S2 sheet: (δ₀, φ_α) at fixed |α|.
+    φ_α grid: 0 to 2π exclusive of the endpoint (n_phi points), to avoid
+    duplicate sampling at φ_α = 2π ≡ 0.
+    """
+    det_rel = np.linspace(-det_rel_max, +det_rel_max, n_det)
+    phi_deg = np.linspace(0.0, 360.0, n_phi, endpoint=False)
+    nm = nmax_for_alpha(alpha)
+
+    arrays = {}
+    for tag in ('full', 'R1'):
+        arrays[tag] = {
+            'sigma_x': np.zeros((n_phi, n_det)),
+            'sigma_y': np.zeros((n_phi, n_det)),
+            'sigma_z': np.zeros((n_phi, n_det)),
+            'max_fock_leakage': np.zeros(n_phi),
+        }
+
+    timing = {'full': 0.0, 'R1': 0.0}
+
+    for tag, eta in (('full', eta_full), ('R1', eta_R1)):
+        print(f'\n=== S2 / |α|={alpha} / {tag}  (η = {eta}, nmax = {nm}) ===')
+        for j, phi in enumerate(phi_deg):
+            d, conv, dt = run_one_alpha(alpha, det_rel, eta=eta,
+                                        alpha_phase_deg=float(phi))
+            arrays[tag]['sigma_x'][j] = d['sigma_x']
+            arrays[tag]['sigma_y'][j] = d['sigma_y']
+            arrays[tag]['sigma_z'][j] = d['sigma_z']
+            arrays[tag]['max_fock_leakage'][j] = conv['max_fock_leakage']
+            timing[tag] += dt
+        worst_leak = float(arrays[tag]['max_fock_leakage'].max())
+        print(f'  total time {timing[tag]:.1f}s  worst leak {worst_leak:.2e}')
+
+    # Derived
+    for tag in ('full', 'R1'):
+        sx = arrays[tag]['sigma_x']; sy = arrays[tag]['sigma_y']
+        arrays[tag]['C_abs'] = np.sqrt(sx**2 + sy**2)
+        arrays[tag]['C_arg_deg'] = np.degrees(np.arctan2(sy, sx))
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with h5py.File(out_path, 'w') as f:
+        f.create_dataset('detuning_rel', data=det_rel)
+        f.create_dataset('detuning_MHz_over_2pi',
+                         data=det_rel * NOMINAL['omega_m'])
+        f.create_dataset('phi_alpha_deg', data=phi_deg)
+        for tag in ('full', 'R1'):
+            g = f.create_group(tag)
+            for k, v in arrays[tag].items():
+                g.create_dataset(k, data=v)
+        f.attrs['slice'] = 'S2'
+        f.attrs['alpha'] = float(alpha)
+        f.attrs['nmax'] = nm
+        f.attrs['code_version'] = ss.CODE_VERSION
+        f.attrs['eta_full'] = eta_full
+        f.attrs['eta_R1'] = eta_R1
+        f.attrs['n_pulses'] = NOMINAL['n_pulses']
+        f.attrs['omega_m'] = NOMINAL['omega_m']
+        f.attrs['omega_r'] = NOMINAL['omega_r']
+        f.attrs['datetime'] = datetime.now(timezone.utc).isoformat()
+        f.attrs['git_commit'] = git_commit_hash()
+        f.attrs['driver'] = 'wp-phase-contrast-maps/numerics/run_slices.py'
+        f.attrs['timing_full_s'] = timing['full']
+        f.attrs['timing_R1_s'] = timing['R1']
+
+    print(f'\nWrote {out_path}')
+    return out_path
+
+
+# ═══════════════════════════════════════════════════════════════
 # R1 convergence cross-check (Guardian flag 1)
 # ═══════════════════════════════════════════════════════════════
 
@@ -216,18 +290,26 @@ def execute_R1_convergence(out_path, alphas=(0.0, 3.0), n_det=41,
 if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument('--slice', choices=['S1', 'R1conv'], default='S1')
+    ap.add_argument('--slice', choices=['S1', 'S2', 'R1conv'], default='S1')
     ap.add_argument('--out', default=None)
     ap.add_argument('--n-det', type=int, default=121)
+    ap.add_argument('--n-phi', type=int, default=64,
+                    help='φ_α grid size for S2 (default 64; minimum 48)')
+    ap.add_argument('--alpha', type=float, default=3.0,
+                    help='|α| value for S2 sheet (default 3.0)')
     args = ap.parse_args()
 
     DEFAULT_OUT = {
         'S1': os.path.join(SCRIPT_DIR, 'S1_delta_alpha.h5'),
+        'S2': os.path.join(SCRIPT_DIR, f'S2_delta_phi_alpha{args.alpha:g}.h5'),
         'R1conv': os.path.join(SCRIPT_DIR, 'R1_convergence.h5'),
     }
     out = args.out or DEFAULT_OUT[args.slice]
 
     if args.slice == 'S1':
         execute_S1(out, n_det=args.n_det)
+    elif args.slice == 'S2':
+        execute_S2_sheet(out, alpha=args.alpha,
+                         n_phi=args.n_phi, n_det=args.n_det)
     elif args.slice == 'R1conv':
         execute_R1_convergence(out)
