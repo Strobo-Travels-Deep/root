@@ -36,7 +36,7 @@ from pathlib import Path
 import numpy as np
 from scipy.linalg import expm
 
-CODE_VERSION = "0.9.0"
+CODE_VERSION = "0.9.1"
 REPO = "https://github.com/threehouse-plus-ec/open-research-platform"
 SOURCE_PAPER = {
     "journal": "Phys. Rev. A 109, 053105 (2024)",
@@ -97,6 +97,15 @@ DEFAULTS = dict(
     delta_t_us=None,         # override the auto-derived δt = π/(2N·Ω_eff).
                              # Per-pulse rotation θ_pulse = Ω_eff·δt is then
                              # whatever the chosen δt produces. None ⇒ auto.
+    center_pulses_at_phase=False,
+                             # if True, shift the prepared motional phase by
+                             # +ω_m·δt/2 so that each pulse of duration δt is
+                             # centered on alpha_phase_deg (rather than
+                             # starting at it). Only observable when
+                             # intra_pulse_motion=True, since the v0.8 frozen-
+                             # motion approximation is insensitive to the
+                             # intra-pulse phase reference. Default False
+                             # preserves v0.9 "start-of-pulse" convention.
 )
 
 
@@ -443,6 +452,13 @@ def run_single(params, verbose=True):
     ac_phase_rad = np.radians(p["ac_phase_deg"])
     intra_motion = bool(p["intra_pulse_motion"])
     mw_phase = p.get("mw_pi2_phase_deg")
+
+    # Pulse-centering convention: shift preparation phase by +ω_m·δt/2 so that
+    # pulse 1 (and every stroboscopically-synchronous pulse) is centered on
+    # alpha_phase_deg rather than starting at it. See engine v0.9.1 notes.
+    if bool(p.get("center_pulses_at_phase", False)):
+        phase_shift_rad = 0.5 * p["omega_m"] * dt
+        p["alpha_phase_deg"] = float(p["alpha_phase_deg"]) + float(np.degrees(phase_shift_rad))
 
     # Decoherence rates
     gamma1 = 1.0 / p["T1"] if p["T1"] > 0 else 0.0
