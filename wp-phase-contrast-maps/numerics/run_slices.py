@@ -35,6 +35,7 @@ import os, sys, time, json, subprocess
 from datetime import datetime, timezone
 import numpy as np
 import h5py
+from scipy.linalg import expm
 
 # Engine import
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -244,6 +245,194 @@ def execute_S2_sheet(out_path, alpha, n_phi=64, n_det=121,
 
 
 # ═══════════════════════════════════════════════════════════════
+# R2 — Instantaneous-pulse reference (Monroe-like idealisation)
+# ═══════════════════════════════════════════════════════════════
+#
+# δt → 0 kick with explicit inter-pulse spin free evolution of duration
+# T_m at detuning δ. In the δt → 0 limit at fixed pulse area Ω·δt, the
+# detuning term drops out of the pulse Hamiltonian; the δ-dependence
+# enters through free evolution in the gaps between pulses. Motion is
+# identity during the gap at strobe condition.
+#
+# This corresponds to the "resolved-sideband" / Monroe regime of dossier
+# §1. It differs structurally from the full engine, which effectively
+# treats δ as a pulse-only quantity and omits inter-pulse evolution
+# entirely.
+
+def run_R2_single(alpha, alpha_phase_deg, eta, det_rel_grid,
+                  n_pulses=22, nmax=None, omega_m=None, omega_r=None):
+    if nmax is None:   nmax = nmax_for_alpha(alpha)
+    if omega_m is None: omega_m = NOMINAL['omega_m']
+    if omega_r is None: omega_r = NOMINAL['omega_r']
+    dim = 2 * nmax
+
+    _, _, X = ss.build_operators(nmax)
+    C = ss.build_coupling(eta, nmax, X); Cdag = C.conj().T
+
+    # Impulsive kick: Ω·δt with δt = π/(2·N·Ω_eff), Ω_eff = Ω·exp(−η²/2)
+    omega_eff = omega_r * np.exp(-eta**2 / 2)
+    pulse_area = omega_r * np.pi / (2 * n_pulses * omega_eff)
+    K_gen = np.zeros((dim, dim), dtype=complex)
+    K_gen[:nmax, nmax:] = C
+    K_gen[nmax:, :nmax] = Cdag
+    K = expm(-1j * (pulse_area / 2) * K_gen)
+
+    # State prep (use engine's DEFAULTS to include all keys prepare_motional expects)
+    p_prep = dict(ss.DEFAULTS)
+    p_prep.update(alpha=float(alpha), alpha_phase_deg=float(alpha_phase_deg),
+                  eta=float(eta), nmax=nmax)
+    p_prep = ss._enforce_types(p_prep)
+    psi_m = ss.prepare_motional(p_prep)
+    psi0 = ss.tensor_spin_motion(0.0, 0.0, psi_m, nmax)
+
+    Tm = 2 * np.pi / omega_m
+    n_det = len(det_rel_grid)
+    sx = np.zeros(n_det); sy = np.zeros(n_det); sz = np.zeros(n_det)
+
+    for i, d_rel in enumerate(det_rel_grid):
+        delta = d_rel * omega_m
+        ph_d = np.exp(+1j * delta / 2 * Tm)   # |↓⟩ block phase
+        ph_u = np.exp(-1j * delta / 2 * Tm)   # |↑⟩ block phase
+        # free evolution between pulses (identity on motion, σ_z-phase on spin)
+        Ufree = np.zeros((dim, dim), dtype=complex)
+        for n in range(nmax):
+            Ufree[n, n] = ph_d
+            Ufree[nmax + n, nmax + n] = ph_u
+
+        psi = psi0.copy()
+        for p in range(n_pulses):
+            psi = K @ psi
+            if p < n_pulses - 1:
+                psi = Ufree @ psi
+        obs = ss.compute_observables(psi, nmax)
+        sx[i] = obs['sigma_x']; sy[i] = obs['sigma_y']; sz[i] = obs['sigma_z']
+    return dict(sigma_x=sx, sigma_y=sy, sigma_z=sz)
+
+
+def execute_R2(out_path, alphas=(0.0, 1.0, 3.0, 5.0), n_det=121,
+               det_rel_max=6.0/1.3, eta=0.397, eta_R12=R1_ETA):
+    """
+    R2 main dataset: instantaneous-pulse engine at η = 0.397 (primary)
+    and η = R1_ETA = 0.04 (R12 composite: η → 0, δt → 0) on same grid.
+    """
+    det_rel = np.linspace(-det_rel_max, +det_rel_max, n_det)
+    n_alpha = len(alphas)
+
+    arrays = {}
+    for tag in ('R2', 'R12'):
+        arrays[tag] = {
+            'sigma_x': np.zeros((n_alpha, n_det)),
+            'sigma_y': np.zeros((n_alpha, n_det)),
+            'sigma_z': np.zeros((n_alpha, n_det)),
+        }
+
+    import time as _t
+    for tag, eta_this in (('R2', eta), ('R12', eta_R12)):
+        print(f'\n=== {tag}  (η = {eta_this}) ===')
+        t0 = _t.time()
+        for i, a in enumerate(alphas):
+            d = run_R2_single(a, 0.0, eta_this, det_rel)
+            arrays[tag]['sigma_x'][i] = d['sigma_x']
+            arrays[tag]['sigma_y'][i] = d['sigma_y']
+            arrays[tag]['sigma_z'][i] = d['sigma_z']
+            print(f'  |α| = {a}  nmax = {nmax_for_alpha(a)}')
+        print(f'  total wall {_t.time()-t0:.1f}s')
+
+    for tag in ('R2', 'R12'):
+        sx = arrays[tag]['sigma_x']; sy = arrays[tag]['sigma_y']
+        arrays[tag]['C_abs'] = np.sqrt(sx**2 + sy**2)
+        arrays[tag]['C_arg_deg'] = np.degrees(np.arctan2(sy, sx))
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with h5py.File(out_path, 'w') as f:
+        f.create_dataset('detuning_rel', data=det_rel)
+        f.create_dataset('detuning_MHz_over_2pi',
+                         data=det_rel * NOMINAL['omega_m'])
+        f.create_dataset('alpha', data=np.array(alphas))
+        for tag in ('R2', 'R12'):
+            g = f.create_group(tag)
+            for k, v in arrays[tag].items():
+                g.create_dataset(k, data=v)
+        f.attrs['slice'] = 'R2+R12'
+        f.attrs['eta_R2'] = eta
+        f.attrs['eta_R12'] = eta_R12
+        f.attrs['phi_alpha_deg'] = 0.0
+        f.attrs['n_pulses'] = NOMINAL['n_pulses']
+        f.attrs['omega_m'] = NOMINAL['omega_m']
+        f.attrs['omega_r'] = NOMINAL['omega_r']
+        f.attrs['datetime'] = datetime.now(timezone.utc).isoformat()
+        f.attrs['git_commit'] = git_commit_hash()
+        f.attrs['driver'] = 'wp-phase-contrast-maps/numerics/run_slices.py'
+        f.attrs['description'] = ('R2: impulsive pulses + inter-pulse spin '
+                                  'free evolution of duration T_m at detuning δ')
+    print(f'\nWrote {out_path}')
+    return out_path
+
+
+# ═══════════════════════════════════════════════════════════════
+# H1 — Floquet lock-tolerance (t_sep_factor sweep)
+# ═══════════════════════════════════════════════════════════════
+
+def execute_H1(out_path, alphas=(0.0, 3.0), n_eps=81, eps_max=0.025,
+               eta=0.397):
+    """
+    H1 stretch deliverable (v0.3 §4.6). Scan ε in ω_pulse = ω_m(1+ε)
+    via t_sep_factor = 1+ε. Measure |C|(δ₀=0) as a function of ε, at
+    (|α| ∈ {0, 3}, φ_α = 0). Directly tests the Δω_m/ω_m ≲ 0.7 %
+    lock-tolerance target of [Hasse2024].
+    """
+    eps = np.linspace(-eps_max, +eps_max, n_eps)
+    n_alpha = len(alphas)
+    out = {
+        'C_abs':    np.zeros((n_alpha, n_eps)),
+        'sigma_x':  np.zeros((n_alpha, n_eps)),
+        'sigma_y':  np.zeros((n_alpha, n_eps)),
+        'sigma_z':  np.zeros((n_alpha, n_eps)),
+    }
+
+    print(f'\n=== H1 Floquet lock-tolerance sweep (η = {eta}) ===')
+    t_tot = 0.0
+    for i, a in enumerate(alphas):
+        nm = nmax_for_alpha(a)
+        print(f'  |α| = {a}, nmax = {nm}, n_eps = {n_eps}')
+        for j, e in enumerate(eps):
+            p = dict(NOMINAL)
+            p.update(dict(
+                alpha=float(a), alpha_phase_deg=0.0, eta=float(eta),
+                nmax=nm, det_min=-1e-4, det_max=+1e-4, npts=3,
+                t_sep_factor=float(1.0 + e),
+            ))
+            import time as _t
+            t0 = _t.time()
+            data, conv = ss.run_single(p, verbose=False)
+            t_tot += _t.time() - t0
+            k0 = 1  # middle of 3-pt grid
+            sx, sy, sz = data['sigma_x'][k0], data['sigma_y'][k0], data['sigma_z'][k0]
+            out['sigma_x'][i, j] = sx
+            out['sigma_y'][i, j] = sy
+            out['sigma_z'][i, j] = sz
+            out['C_abs'][i, j]  = (sx**2 + sy**2) ** 0.5
+    print(f'  total wall {t_tot:.1f}s')
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with h5py.File(out_path, 'w') as f:
+        f.create_dataset('epsilon', data=eps)
+        f.create_dataset('alpha', data=np.array(alphas))
+        for k, v in out.items():
+            f.create_dataset(k, data=v)
+        f.attrs['slice'] = 'H1'
+        f.attrs['eta'] = eta
+        f.attrs['purpose'] = 'Floquet lock-tolerance: |C| vs epsilon (t_sep_factor=1+eps)'
+        f.attrs['omega_m'] = NOMINAL['omega_m']
+        f.attrs['n_pulses'] = NOMINAL['n_pulses']
+        f.attrs['code_version'] = ss.CODE_VERSION
+        f.attrs['datetime'] = datetime.now(timezone.utc).isoformat()
+        f.attrs['git_commit'] = git_commit_hash()
+    print(f'Wrote {out_path}')
+    return out_path
+
+
+# ═══════════════════════════════════════════════════════════════
 # R1 convergence cross-check (Guardian flag 1)
 # ═══════════════════════════════════════════════════════════════
 
@@ -290,7 +479,7 @@ def execute_R1_convergence(out_path, alphas=(0.0, 3.0), n_det=41,
 if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument('--slice', choices=['S1', 'S2', 'R1conv'], default='S1')
+    ap.add_argument('--slice', choices=['S1', 'S2', 'H1', 'R2', 'R1conv'], default='S1')
     ap.add_argument('--out', default=None)
     ap.add_argument('--n-det', type=int, default=121)
     ap.add_argument('--n-phi', type=int, default=64,
@@ -302,6 +491,8 @@ if __name__ == '__main__':
     DEFAULT_OUT = {
         'S1': os.path.join(SCRIPT_DIR, 'S1_delta_alpha.h5'),
         'S2': os.path.join(SCRIPT_DIR, f'S2_delta_phi_alpha{args.alpha:g}.h5'),
+        'H1': os.path.join(SCRIPT_DIR, 'H1_lock_tolerance.h5'),
+        'R2': os.path.join(SCRIPT_DIR, 'R2_delta_alpha.h5'),
         'R1conv': os.path.join(SCRIPT_DIR, 'R1_convergence.h5'),
     }
     out = args.out or DEFAULT_OUT[args.slice]
@@ -311,5 +502,9 @@ if __name__ == '__main__':
     elif args.slice == 'S2':
         execute_S2_sheet(out, alpha=args.alpha,
                          n_phi=args.n_phi, n_det=args.n_det)
+    elif args.slice == 'H1':
+        execute_H1(out)
+    elif args.slice == 'R2':
+        execute_R2(out, n_det=args.n_det)
     elif args.slice == 'R1conv':
         execute_R1_convergence(out)
