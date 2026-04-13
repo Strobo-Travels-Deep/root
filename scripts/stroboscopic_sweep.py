@@ -36,7 +36,7 @@ from pathlib import Path
 import numpy as np
 from scipy.linalg import expm
 
-CODE_VERSION = "0.8.0"
+CODE_VERSION = "0.9.0"
 REPO = "https://github.com/threehouse-plus-ec/open-research-platform"
 SOURCE_PAPER = {
     "journal": "Phys. Rev. A 109, 053105 (2024)",
@@ -47,13 +47,23 @@ SOURCE_PAPER = {
 # ═══════════════════════════════════════════════════════════════
 # Default parameters
 # ═══════════════════════════════════════════════════════════════
+#
+# Frequency-unit convention (clarified in v0.9.0):
+#   omega_m, omega_r are ANGULAR frequencies in rad / (engine time unit).
+#   The propagator U = expm(-i H dt) requires H·dt in radians, so a value
+#   omega_m = 1.3 means ω_m = 1.3 rad / (engine time unit), i.e. ω_m/(2π) ≈
+#   0.207 cycles / (engine time unit). To match Hasse's literal cyclic
+#   1.3 MHz with engine time in μs, set omega_m = 2π·1.3 ≈ 8.17. All
+#   dimensionless dynamics depend only on η, Ω/ω_m, N, t_sep_factor and
+#   are unaffected by absolute time scale; cyclic-MHz equivalents are
+#   reported in `compute_derived`.
 
 DEFAULTS = dict(
     alpha=3.0,
     alpha_phase_deg=0.0,
     eta=0.397,
-    omega_m=1.3,        # MHz (cyclic, i.e. /(2π))
-    omega_r=0.300,       # MHz
+    omega_m=1.3,         # angular: rad/(engine time unit). See header.
+    omega_r=0.300,       # angular: rad/(engine time unit). See header.
     n_thermal=0.0,
     n_thermal_traj=1,
     nmax=50,
@@ -72,6 +82,21 @@ DEFAULTS = dict(
     n_traj=1,
     n_rep=0,             # 0 = ideal (no projection noise)
     fock_n=None,         # if set, use Fock |n⟩ instead of coherent state
+    # ── Hasse-protocol toggles (v0.9.0; defaults preserve v0.8 behaviour) ──
+    mw_pi2_phase_deg=None,   # if set, apply MW π/2 about (cosφ x̂ + sinφ ŷ)
+                             # to the spin AFTER state prep, BEFORE AC train.
+                             # None ⇒ no MW pulse (v0.8 behaviour).
+    ac_phase_deg=0.0,        # global AC analysis phase ϕ added to every
+                             # pulse of the train: C → e^{iϕ}C in σ_- block,
+                             # e^{-iϕ}C† in σ_+ block. 0.0 ⇒ v0.8 behaviour.
+    intra_pulse_motion=False,# if True, include ω_m·a†a in per-pulse H so
+                             # the motional state rotates during δt, and
+                             # apply ω_m·a†a·(T_sep − δt) free evolution
+                             # between pulses. False ⇒ v0.8 behaviour
+                             # (motion frozen during pulse).
+    delta_t_us=None,         # override the auto-derived δt = π/(2N·Ω_eff).
+                             # Per-pulse rotation θ_pulse = Ω_eff·δt is then
+                             # whatever the chosen δt produces. None ⇒ auto.
 )
 
 
@@ -185,19 +210,56 @@ def tensor_spin_motion(theta_deg, phi_deg, psi_m, nmax):
     return psi
 
 
-def build_hamiltonian(eta, omega_r, delta, nmax, C, Cdag):
-    """Build H_eff in the 2*nmax spin⊗motion basis."""
+def build_hamiltonian(eta, omega_r, delta, nmax, C, Cdag,
+                      ac_phase_rad=0.0, omega_m=0.0, intra_pulse_motion=False):
+    """Build H_eff in the 2*nmax spin⊗motion basis.
+
+    Coupling-block convention (D4 in WP-V engine audit): this engine
+    places C with σ₋ and C† with σ₊, i.e.
+
+        H_eng = (Ω/2) [ C ⊗ σ₋  +  C† ⊗ σ₊ ]
+
+    Hasse Eq. C1 has the swap (C† with σ₋, C with σ₊). Both are
+    Hermitian and give identical η-symmetric observables (⟨n⟩, |C|,
+    σ_z²). The η-asymmetric quantities (sign of ⟨X̂⟩, sign of arg C)
+    differ by η → −η. WP-V Fig 8a slope sign is consistent with Hasse;
+    that sets the empirical convention check.
+
+    Parameters
+    ----------
+    ac_phase_rad : float
+        Global AC analysis phase ϕ added to every pulse, dressing
+        C → e^{iϕ}·C in the σ₋ block and C† → e^{-iϕ}·C† in σ₊.
+        Implements Hasse's analysis-phase axis as a real per-pulse
+        phase (D2 fix), not a post-hoc basis rotation.
+    omega_m : float
+        Motional angular frequency. Only used if `intra_pulse_motion=True`.
+    intra_pulse_motion : bool
+        If True, include ω_m·a†a ⊗ I in H so the motional state rotates
+        during each pulse (D1 fix). If False, drop it (v0.8 behaviour).
+    """
     dim = 2 * nmax
     H = np.zeros((dim, dim), dtype=complex)
 
-    # Detuning: -δ/2 on ↓↓, +δ/2 on ↑↑
+    # Spin: detuning −δ/2 on |↓⟩, +δ/2 on |↑⟩
     for n in range(nmax):
         H[n, n] = -delta / 2
         H[nmax + n, nmax + n] = delta / 2
 
-    # Coupling: (Ω/2)(C ⊗ σ₋ + C† ⊗ σ₊)
-    H[:nmax, nmax:] = (omega_r / 2) * C        # ↓↑ block (σ₋)
-    H[nmax:, :nmax] = (omega_r / 2) * Cdag     # ↑↓ block (σ₊)
+    # Motional: ω_m·a†a ⊗ I, only if intra_pulse_motion enabled
+    if intra_pulse_motion and omega_m != 0.0:
+        for n in range(nmax):
+            H[n, n] += omega_m * n
+            H[nmax + n, nmax + n] += omega_m * n
+
+    # Coupling: (Ω/2) [ e^{iϕ}·C ⊗ σ₋ + e^{-iϕ}·C† ⊗ σ₊ ]
+    if ac_phase_rad == 0.0:
+        H[:nmax, nmax:] = (omega_r / 2) * C
+        H[nmax:, :nmax] = (omega_r / 2) * Cdag
+    else:
+        ph = np.exp(1j * ac_phase_rad)
+        H[:nmax, nmax:] = (omega_r / 2) * ph * C
+        H[nmax:, :nmax] = (omega_r / 2) * np.conj(ph) * Cdag
 
     return H
 
@@ -350,6 +412,23 @@ def _enforce_types(params):
 # Single-run engine
 # ═══════════════════════════════════════════════════════════════
 
+def _mw_pi2_apply(psi, mw_phase_deg, nmax):
+    """Apply MW π/2 about axis (cos φ x̂ + sin φ ŷ) to spin only.
+
+    U_MW = (1/√2) [[1, -i e^{-iφ}], [-i e^{iφ}, 1]]
+    """
+    phi = np.radians(mw_phase_deg)
+    inv_sqrt2 = 1.0 / np.sqrt(2.0)
+    e_minus = np.exp(-1j * phi)
+    e_plus  = np.exp(+1j * phi)
+    down = psi[:nmax].copy()
+    up   = psi[nmax:].copy()
+    out = np.empty_like(psi)
+    out[:nmax] = inv_sqrt2 * (down - 1j * e_minus * up)
+    out[nmax:] = inv_sqrt2 * (-1j * e_plus * down + up)
+    return out
+
+
 def run_single(params, verbose=True):
     """Execute one detuning scan. Returns (data_dict, convergence_dict)."""
     p = _enforce_types({**DEFAULTS, **params})
@@ -357,9 +436,13 @@ def run_single(params, verbose=True):
     dim = 2 * nmax
 
     omega_eff = p["omega_r"] * np.exp(-p["eta"] ** 2 / 2)
-    dt = np.pi / (2 * p["n_pulses"] * omega_eff)
+    dt_auto = np.pi / (2 * p["n_pulses"] * omega_eff)
+    dt = float(p["delta_t_us"]) if p.get("delta_t_us") else dt_auto
     Tm = 2 * np.pi / p["omega_m"]
     Tsep = Tm * p["t_sep_factor"]
+    ac_phase_rad = np.radians(p["ac_phase_deg"])
+    intra_motion = bool(p["intra_pulse_motion"])
+    mw_phase = p.get("mw_pi2_phase_deg")
 
     # Decoherence rates
     gamma1 = 1.0 / p["T1"] if p["T1"] > 0 else 0.0
@@ -378,17 +461,36 @@ def run_single(params, verbose=True):
     C = build_coupling(p["eta"], nmax, X)
     Cdag = C.conj().T
 
-    # Free evolution operator (non-stroboscopic case)
-    need_free = abs(p["t_sep_factor"] - 1.0) > 1e-6
-    if need_free:
-        phase_per_n = 2 * np.pi * p["t_sep_factor"]
-        Ufree = np.zeros((dim, dim), dtype=complex)
-        for n in range(nmax):
-            ph = np.exp(-1j * n * phase_per_n)
-            Ufree[n, n] = ph
-            Ufree[nmax + n, nmax + n] = ph
+    # Free evolution operator. Two cases:
+    #   - intra_pulse_motion=False (v0.8): only needed when t_sep_factor ≠ 1,
+    #     applied for the full inter-pulse interval Tsep.
+    #   - intra_pulse_motion=True  (D1):   needed always (provided Tsep > dt),
+    #     applied for the gap (Tsep − dt) since dt is now consumed by H_pulse
+    #     which already contains ω_m·a†a.
+    if intra_motion:
+        gap = Tsep - dt
+        if gap > 1e-12:
+            phase_per_n_gap = p["omega_m"] * gap
+            Ufree = np.zeros((dim, dim), dtype=complex)
+            for n in range(nmax):
+                ph = np.exp(-1j * n * phase_per_n_gap)
+                Ufree[n, n] = ph
+                Ufree[nmax + n, nmax + n] = ph
+            need_free = True
+        else:
+            Ufree = None
+            need_free = False
     else:
-        Ufree = None
+        need_free = abs(p["t_sep_factor"] - 1.0) > 1e-6
+        if need_free:
+            phase_per_n = 2 * np.pi * p["t_sep_factor"]
+            Ufree = np.zeros((dim, dim), dtype=complex)
+            for n in range(nmax):
+                ph = np.exp(-1j * n * phase_per_n)
+                Ufree[n, n] = ph
+                Ufree[nmax + n, nmax + n] = ph
+        else:
+            Ufree = None
 
     # Detuning grid
     dets = np.linspace(p["det_min"], p["det_max"], p["npts"])
@@ -408,7 +510,12 @@ def run_single(params, verbose=True):
 
     for i, det_rel in enumerate(dets):
         delta = det_rel * p["omega_m"]
-        H = build_hamiltonian(p["eta"], p["omega_r"], delta, nmax, C, Cdag)
+        H = build_hamiltonian(
+            p["eta"], p["omega_r"], delta, nmax, C, Cdag,
+            ac_phase_rad=ac_phase_rad,
+            omega_m=p["omega_m"],
+            intra_pulse_motion=intra_motion,
+        )
         U = expm(-1j * H * dt)
 
         accum = {k: 0.0 for k in keys}
@@ -416,6 +523,8 @@ def run_single(params, verbose=True):
         for _ in range(n_th_traj):
             psi_m = prepare_motional(p)
             psi0 = tensor_spin_motion(p["theta_deg"], p["phi_deg"], psi_m, nmax)
+            if mw_phase is not None:
+                psi0 = _mw_pi2_apply(psi0, float(mw_phase), nmax)
 
             for _ in range(n_deco_traj):
                 psi = psi0.copy()
@@ -472,11 +581,20 @@ def compute_derived(params):
     """Compute derived quantities from parameters."""
     p = {**DEFAULTS, **params}
     omega_eff = p["omega_r"] * np.exp(-p["eta"] ** 2 / 2)
+    Tm = 2 * np.pi / p["omega_m"]
+    dt_auto = np.pi / (2 * p["n_pulses"] * omega_eff)
     return {
         "omega_eff": omega_eff,
         "debye_waller": np.exp(-p["eta"] ** 2 / 2),
         "n_mean": p["alpha"] ** 2,
         "hilbert_dim": 2 * p["nmax"],
+        # Cyclic-MHz equivalents (engine treats omega_m, omega_r as angular):
+        "omega_m_cyclic": p["omega_m"] / (2 * np.pi),
+        "omega_r_cyclic": p["omega_r"] / (2 * np.pi),
+        "omega_eff_cyclic": omega_eff / (2 * np.pi),
+        "T_m": Tm,
+        "dt_auto": dt_auto,
+        "delta_t_used": float(p["delta_t_us"]) if p.get("delta_t_us") else dt_auto,
     }
 
 
