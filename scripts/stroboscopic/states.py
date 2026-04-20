@@ -91,3 +91,21 @@ def tensor_spin_motion(theta_deg: float, phi_deg: float, psi_m, nmax: int):
     c_down = _np.cos(theta / 2)
     c_up = _np.sin(theta / 2) * _np.exp(1j * phi)
     return xp().concatenate([c_down * psi_m, c_up * psi_m])
+
+
+def apply_mw_pi2(psi, mw_phase_deg: float, nmax: int):
+    """MW π/2 pulse about axis (cos φ x̂ + sin φ ŷ), acting on spin only.
+
+    U_MW = (1/√2) [[1, -i e^{-iφ}], [-i e^{iφ}, 1]]
+
+    Applied to the (↓ block, ↑ block) structured state of length 2·nmax.
+    """
+    phi = _np.radians(float(mw_phase_deg))
+    inv_sqrt2 = 1.0 / _np.sqrt(2.0)
+    e_minus = _np.exp(-1j * phi)
+    e_plus = _np.exp(+1j * phi)
+    down = psi[:nmax]
+    up = psi[nmax:]
+    new_down = inv_sqrt2 * (down - 1j * e_minus * up)
+    new_up = inv_sqrt2 * (-1j * e_plus * down + up)
+    return xp().concatenate([new_down, new_up])

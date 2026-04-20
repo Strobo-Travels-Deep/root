@@ -50,6 +50,10 @@ class HilbertSpace:
             psi_m, self.nmax,
         )
 
+    def apply_mw_pi2(self, psi, mw_phase_deg: float):
+        """MW π/2 pulse about (cos φ x̂ + sin φ ŷ) on spin only."""
+        return _states.apply_mw_pi2(psi, mw_phase_deg, self.nmax)
+
     def observables(self, psi) -> dict:
         return _obs.compute(psi, self.nmax)
 
