@@ -151,9 +151,11 @@ wp-strobo-2p0/
 1. **Companion Δt = T_m run.** Exact stroboscopic-resonance sheet to
    isolate the Δt/T_m − 1 = 0.56 % slip contribution to the ±3 ω_m
    feature and the δ⟨n⟩ asymmetry.
-2. **Analysis-phase slice.** At one informative (δ₀, ϑ₀), run a full
-   8–16 point φ_laser scan to make a Hasse-Fig.-6-style (φ, ϑ₀) sheet
-   for comparison.
+2. **Analysis-phase slice.** *Done 2026-04-21, see
+   [2026-04-21-hasse-fig6-slice.md](2026-04-21-hasse-fig6-slice.md)*
+   — (φ, ϑ₀) sheets at δ₀ = 0 for both trains at |α| ∈ {3, 4.5},
+   reproduced Hasse Fig. 6 diagonal-V in σ_z and four-lobe sign
+   pattern in δ⟨n⟩ to machine precision on the symmetry checks.
 3. **Rabi-rate reconciliation.** See
    [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md)
    for the read-off protocol; re-run the sweep at the measured Ω if
