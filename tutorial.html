@@ -50,6 +50,7 @@
   <tr><td><strong>V</strong> — tooth visibility</td><td>V = 1 − min<sub>ϑ</sub>|<em>C</em>|(ϑ₀, δ = 0). Measures how strongly the readout tracks the motional phase on resonance. V = 0 means "readout independent of ϑ₀" (no information); V → 1 means "maximum contrast between motional-phase values". The primary figure of merit.</td></tr>
   <tr><td><strong><em>P</em></strong> — off-tooth coherence</td><td><em>P</em> = ⟨|<em>C</em>|(ϑ₀, δ = ½ω<sub>m</sub>)⟩<sub>ϑ₀</sub>. Sampled <em>between</em> two motional teeth. High <em>P</em> = the gap between teeth is clean (teeth resolved); low <em>P</em> = teeth have merged.</td></tr>
   <tr><td>V<sub>imp</sub></td><td>Value of V in the limit of vanishing pulse duration. Set by the <strong>Debye–Waller factor</strong> exp(−η²(2⟨<em>n</em>⟩+1)/2) and computes to ≈ 0.865 here — independent of <em>N</em> and |α|.</td></tr>
+  <tr><td>Strobe-gap lock</td><td>The gap between consecutive pulses is held at exactly <em>T</em><sub>m</sub>. Together with the π/2 net-rotation constraint, this makes the train a <em>stroboscopic heterodyne</em> that cancels Doppler broadening of individual pulses to all orders in η|α|.</td></tr>
   </tbody>
   </table>
 </div>
@@ -124,6 +125,12 @@
   <li>
     <strong>Engine-validity is controlled by the drive Lamb–Dicke ratio only.</strong>
     The simulator stores the spin–motion coupling as the exact matrix exponential exp[iη(<em>a</em> + <em>a</em><sup>†</sup>)] with no small-η expansion, so it remains numerically valid even when the motional <em>LD</em> parameter η√(⟨<em>n</em>⟩+1) exceeds 1 (at |α| = 3 it is 1.26; at |α| = 5, 2.03). What <em>is</em> required is that the rotating-wave approximation on the drive hold — encoded as Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3. Motional-<em>LD</em> breaches therefore show up as a physical-picture caveat (the discrete-sideband <em>interpretation</em> may not apply), not an engine error, and are rendered as a distinguishable hatching on WP-C heatmaps.
+  </li>
+  <li>
+    <strong>Doppler merging is structurally unreachable — a strong negative result.</strong>
+    The v0.1 sweep measured the off-tooth coherence <em>P</em> at one detuning only (δ = ½ω<sub>m</sub>). The <a href="wp-strong-weak-coastline/logbook/2026-04-21-doppler-probe.md">follow-up Doppler probe</a> extended it to seven detunings spanning δ ∈ {0, ¼, ½, ¾, 1, 1½, 2}ω<sub>m</sub> — covering on-sideband, mid-sideband, and second-sideband points where any Doppler broadening would necessarily show up. Across the full 6×6 × 4|α| × 7-detuning grid (≈ 65 k evolutions), the worst-case <em>P</em><sub>mid,min</sub> ≥ 0.999 in every cell where the drive-<em>LD</em> ceiling is respected. Only drive-<em>LD</em>-breach cells (small <em>N</em>, small δ<em>t</em>) dip below <em>P</em> = 1, and those drops are signatures of the RWA failing, not of Doppler merging.<br><br>
+    <em>Why this happens:</em> the strobe gap between pulses is locked to exactly one motional period <em>T</em><sub>m</sub>. At the start of every pulse the coherent-state phase has advanced by 2π — so <em>N</em>-fold sampling at this period averages the intra-pulse Doppler phase away to all orders in η|α|. We call this the <strong>stroboscopic heterodyne</strong>: whatever Doppler broadening a single pulse might experience during its δ<em>t</em> window, the full train cancels it coherently. The stroboscopic protocol's robustness to Doppler broadening of individual pulses — a robustness the Hasse 2024 scheme implicitly relies on — is now a <em>quantitatively tested</em> property rather than an assumption.<br><br>
+    The immediate consequence for the rubric: the fourth row (Doppler merging) is <em>not</em> a regime this protocol can occupy under the recalibrated-Ω calibration; it would only re-emerge if we broke the strobe-gap lock or abandoned the π/2 net-rotation pin.
   </li>
 </ol>
 

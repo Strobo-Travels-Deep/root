@@ -45,8 +45,9 @@
     <li>The tooth-visibility figure of merit, V (see panel below), is <strong>non-monotone in the coherent-state amplitude |α|</strong>: at long pulses we see min V ≈ 0.10 at |α| ≈ 3, local max V ≈ 0.40 at |α| ≈ 4.75. A smooth single-cycle oscillation robust under pulse-number changes.</li>
     <li>The <strong>impulsive-kick limit</strong> (infinitely short pulses) sits at V ≈ 0.865 for all pulse numbers and all coherent-state amplitudes — a clean analytic floor set only by the Lamb–Dicke parameter η.</li>
     <li>The engine is valid wherever the <strong>effective drive</strong> stays well below the motional frequency (Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3). A second, stricter Lamb–Dicke condition (η√⟨<em>n</em>⟩ ≲ 1) bounds only the interpretive <em>picture</em>, not the numerics.</li>
+    <li><strong>Strong negative result — Doppler merging is structurally unreachable.</strong> Extending the detuning ladder to seven points between δ = 0 and δ = 2·ω<sub>m</sub> and scanning the full 6×6 grid at four |α| values gives off-tooth coherence <em>P</em><sub>mid,min</sub> ≥ 0.999 in every engine-valid cell. The (V low, <em>P</em> low) corner of the V/<em>P</em> rubric is empty. <em>Why:</em> when the strobe gap is locked to the motional period <em>T</em><sub>m</sub> and the total rotation is held at π/2, the N-fold sampling acts as a <strong>stroboscopic heterodyne</strong> that averages Doppler phases to all orders in η|α|. This quantitatively validates a robustness claim the Hasse 2024 scheme relies on implicitly — and had not been tested until now.</li>
   </ul>
-  <p style="margin-bottom:0;">Full council memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21</a>. Follow-up α-recovery probe (commit <code>e0718a2</code>): <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">alpha-recovery logbook</a>.</p>
+  <p style="margin-bottom:0;">Full council memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21</a>. Follow-up probes: <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">α-recovery</a>, <a href="wp-strong-weak-coastline/logbook/2026-04-21-doppler-probe.md">Doppler probe</a> (commit <code>67177a6</code>).</p>
 </div>
 
 <h2>Structure</h2>
@@ -133,6 +134,7 @@
   <tr><td><strong><em>P</em></strong> (off-tooth coherence)</td><td>Companion figure of merit. <em>P</em> = ⟨|<em>C</em>|⟩ averaged over motional phase at δ = ½ω<sub>m</sub> (<em>between</em> teeth). Low <em>P</em> = Doppler merging; high <em>P</em> = teeth still distinguishable.</td></tr>
   <tr><td>V<sub>imp</sub></td><td>The value of V in the limit of infinitely short pulses (δ<em>t</em> → 0). Set by the <strong>Debye–Waller factor</strong> exp(−η²⟨2<em>n</em>+1⟩/2); ≈ 0.865 at η = 0.397 across all <em>N</em> and |α|.</td></tr>
   <tr><td>Recalibration<br>("option (a)")</td><td>Throughout this scan we re-tune the Rabi drive Ω per cell so that <em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2. This holds the <em>total</em> spin rotation fixed at π/2 regardless of how many pulses we use, so the scan tests only the resolvedness axis — not power-broadening artefacts.</td></tr>
+  <tr><td>Strobe-gap lock</td><td>The gap between pulses is held at exactly one motional period <em>T</em><sub>m</sub>. Combined with the recalibration above, this makes the train a <em>stroboscopic heterodyne</em>: Doppler broadening of individual pulses cancels to all orders in η|α| — the mechanism behind the "Doppler merging unreachable" row of the rubric below.</td></tr>
   </tbody>
   </table>
 </div>
@@ -160,7 +162,7 @@
 <tr><td>Strong-binding</td><td>high (≈ 0.9)</td><td>high (≈ 1)</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≤ 0.2 at |α| ∈ {0, 1}; and the impulsive edge</td></tr>
 <tr><td>Pulse-broadening</td><td>low</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≥ 0.4 at |α| ≥ 3 — where Hasse's α = 3 baseline would land under extended pulses</td></tr>
 <tr class="hl"><td>Encoder-sensitivity revival <span style="font-size:0.74rem;color:var(--text-muted);">(new row, 2026-04-21)</span></td><td>low</td><td>high</td><td>A finite-δ<em>t</em>, |α|-dependent "blind spot" where |<em>C</em>| is almost independent of the motional phase — not Doppler washout. Cause of the V minimum at |α| ≈ 3 identified in the α-recovery probe.</td></tr>
-<tr><td>Doppler merging</td><td>low</td><td>low</td><td>Not reached at the δ = ½ω<sub>m</sub> sampled here; would require probing detuning inside the Doppler-broadened sideband (v0.2 scope).</td></tr>
+<tr><td>Doppler merging</td><td>low</td><td>low</td><td><strong>Structurally empty</strong> under the recalibrated-Ω protocol (verified across detunings δ ∈ {0, ¼, ½, ¾, 1, 1½, 2} ω<sub>m</sub> on the full grid). The strobe-gap lock at <em>T</em><sub>m</sub> turns the train into a <em>stroboscopic heterodyne</em> that cancels Doppler broadening to all orders in η|α|. Only drive-LD-breach corner cells dip below <em>P</em> = 1 — and those are RWA artefacts, not Doppler signals.</td></tr>
 </tbody>
 </table>
 
