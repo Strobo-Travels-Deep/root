@@ -118,11 +118,10 @@ Nothing unexpected in the physics. Three bookkeeping notes:
   the modest asymmetry of the δ⟨n⟩ maps about δ₀ = 0 visible at
   |α| = 4.5. A companion run at Δt = T_m exactly would quantify the
   slip contribution but is not required for this WP's first report.
-- **Rabi-rate reconciliation.** Kickoff §9 Q1 still open: the
-  original "t_π = 1.122 µs" statement is inconsistent with the
-  confirmed Ω/(2π) = 0.178 MHz used here. Not relevant to this
-  dataset's internal consistency, but worth resolving before
-  comparing to lab results.
+- **Rabi-rate reconciliation.** Scoped in the companion memo
+  [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md).
+  Not relevant to this dataset's internal consistency, but gates lab
+  comparison. Resolvable by one carrier measurement on T2.
 
 ## 6. Output files
 
@@ -155,9 +154,10 @@ wp-strobo-2p0/
 2. **Analysis-phase slice.** At one informative (δ₀, ϑ₀), run a full
    8–16 point φ_laser scan to make a Hasse-Fig.-6-style (φ, ϑ₀) sheet
    for comparison.
-3. **Rabi-rate reconciliation.** Resolve the t_π = 1.122 µs vs
-   Ω/(2π) = 0.178 MHz mismatch with the experimental team; re-run if
-   the value needs updating.
+3. **Rabi-rate reconciliation.** See
+   [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md)
+   for the read-off protocol; re-run the sweep at the measured Ω if
+   it differs from 0.178 MHz (one script edit, ~100 s).
 4. **Thermal-background admixture.** Currently pure coherent state.
    If the measured ion has ⟨n⟩_th ≈ 0.2 (Hasse text), admixing via the
    engine's `n_thermal` parameter (20 trajectories) costs 20 × 101 s =
