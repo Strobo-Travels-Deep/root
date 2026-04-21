@@ -1,7 +1,8 @@
 # Council Memo — Proposed WP: Strong/Weak-Binding Coastline Map
 
-**Council Memo · pre-WP draft · v0.3 · 2026-04-21**
-**Status:** Findings + locked-decisions package for final Integrator pass, pending one open item (§5.1). Guardian-synthesised, Architect- and Scout-reviewed; Integrator stance not yet registered.
+**Council Memo · post-execution fold-in · v0.4 · 2026-04-21**
+**Status:** v0.1.1 of the scoped WP is executed, plotted, and committed at [wp-strong-weak-coastline/](wp-strong-weak-coastline/) (commit `528267b`). The memo's locked decisions survived execution; §5.1 was resolved by co-lock (lemma inlined in the WP README §2). This v0.4 folds the v0.1 outcomes back into the memo and retargets §9 as a forward-looking ask for WP-C v0.2. Planning text from v0.2/v0.3 preserved verbatim below for provenance; post-execution material lives in new §2.6, §5.3, and §9 rewrite.
+**Status (pre-execution legacy):** Findings + locked-decisions package for final Integrator pass, pending one open item (§5.1). Guardian-synthesised, Architect- and Scout-reviewed; Integrator stance not yet registered.
 **Origin:** Follow-up to the §3.3 tutorial section of
 [notebooks/00_tutorial_pulse_train.ipynb](notebooks/00_tutorial_pulse_train.ipynb)
 and the drive-strength scan of
@@ -58,9 +59,25 @@ and names the Doppler halfwidth $\eta|\alpha|\,\omega_m$ as the broad-line scale
 
 A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\eta\sqrt{\langle n\rangle + 1}$ is already $\approx 1.26$ at the WP-V baseline ($\eta=0.397$, $|\alpha|=3$), exceeding 1. Neither WP-V nor WP-E explicitly audited this. Both WPs rely on an engine that retains the full coupling operator $C = e^{i\eta(a+a^\dagger)}$ rather than a low-order expansion in $\eta$. The engine may therefore remain valid beyond the naive motional-LD bound, but that validity must now be specified explicitly. The *drive-strength LD* parameter $\Omega_\text{eff}/\omega_m \approx 0.21$ is comfortably $< 1$ at the baseline. A formal specification of which LD inequality the engine's approximations actually require is the single open item in §5.1; it conditions the $|\alpha|=5$ row of §4.4.
 
+### 2.6 Post-execution fold-in (v0.4, 2026-04-21)
+
+WP-C v0.1.1 is executed: [wp-strong-weak-coastline/](wp-strong-weak-coastline/), results at [logbook/2026-04-21-results.md](wp-strong-weak-coastline/logbook/2026-04-21-results.md). Total wall time 15.5 s — well under the ≤ 2 min memo budget. Headline findings reshape what the memo had anticipated:
+
+- **N-degeneracy under option (a) recalibration.** $V$ varies by $\leq 0.005$ across $N \in \{3,6,12,24,48,96\}$ at every $(|\alpha|, \delta t/T_m)$ slice. The coastline collapses to a **1D curve in $\delta t/T_m$ alone** once $\Omega$ is recalibrated per cell. The memo's §2 premise that $(N, \delta t/T_m)$ were two *independent* missing axes is thereby refuted for this calibration scheme. N only re-emerges as load-bearing in the option-(b) control slice, where it parameterises the Rabi envelope (memo §4.1 Guardian-2 D9 caveat: *power-broadening artefacts*).
+- **$\chi$-collapse falsified — positive result per §3.4 / §4.5.** Cells at matched $\chi \approx 1.2$ carry $V$ spanning $0.10$ ($|\alpha|=3$) to $0.85$ ($|\alpha|=1$); the root-sum-square composition of train-length, pulse-bandwidth, and Doppler widths does not reproduce the scan data. Each individual width acts monotonically within its row, but the three widths do *not* combine in quadrature.
+- **Doppler-merging regime not reached** at $\delta = 0.5\,\omega_m$. $P \approx 1.00$ across the grid except in drive-LD-breach cells. The two-map rubric therefore discriminates *pulse-broadening* (low $V$, high $P$) from *strong-binding* (high both) cleanly but never observes *Doppler merging* (low both). This is a v0.2 scope item: probe $P$ at a detuning $\delta \sim \eta|\alpha|\,\omega_m$ that lands inside the Doppler-broadened sideband.
+- **Non-monotonic $\alpha$ at $\delta t/T_m = 0.80$.** $V$ is $\{0.998, 0.760, 0.101, 0.377\}$ for $|\alpha| \in \{0,1,3,5\}$. The $\alpha=5$ *recovery* from the $\alpha=3$ trough is genuinely finite-$\delta t$ physics: the impulsive-limit reference $V_\text{imp} \approx 0.865$ is **uniform** across all $N$ and all $|\alpha|$ (limited by the Debye–Waller factor alone), so all finite-$\delta t$ curves head to the same limit. A probe at $|\alpha| \in \{3.5, 4.0, 4.5, 5.5\}$ at $\delta t/T_m = 0.80$ is flagged in the results logbook §4.1.
+- **§5.1 lemma resolution.** Engine retains the full coupling $C = \exp[i\eta(a+a^\dagger)]$ as a matrix exponential ([scripts/stroboscopic/operators.py:23](scripts/stroboscopic/operators.py#L23)); motional-LD inequality $\eta\sqrt{\langle n\rangle + 1} \lesssim 1$ bounds the physical-picture interpretability, **not** engine validity. Engine validity is governed by drive-LD $\Omega_\text{eff}/\omega_m \leq 0.3$ alone (§4.1 ceiling). $|\alpha|=5$ therefore admitted; motional-LD breaches rendered as a distinguishable hatching layer rather than exclusion. v0.1.1 pre-audit confirmed NMAX 60 safe for $|\alpha| \in \{0,1,3\}$, NMAX 80 required for $|\alpha|=5$.
+- **§4.2 grid geometry validated.** The 6×6 geometric grid executes in 15.5 s for four $|\alpha|$ values; no re-deliberation required. The option-(b) control slice at $\delta t/T_m = 0.13$ recovers the expected Rabi-envelope structure, confirming Guardian-2 D9 inline.
+- **Floquet-synchronisation promotion criterion (§8) — not met.** Memo §8 required observable structure tracking $N$-phase rather than $N$-bandwidth. Under recalibrated $\Omega$, $V(N) \approx$ const, so no such structure exists in the v0.1 data. Floquet framing remains commentary-level; revisit only if a v0.2 finds $N$-phase-tracking structure.
+
+Two findings are new information the memo could not have anticipated: the $N$-degeneracy (it weakens the scope that the memo argued for) and the uniform impulsive floor (it provides a cleaner analytic anchor than memo §4.5 proposed). Neither invalidates the WP; both reshape what v0.2 should ask.
+
 -----
 
 ## 3. What is *not* yet mapped
+
+**Post-execution (v0.4):** Items (1)–(4) below are now *mapped* in WP-C v0.1.1 as scoped. See §2.6 for the re-framing of what remains unmapped after that execution — chiefly the Doppler-merging quadrant and the $|\alpha|$-recovery mechanism. The enumeration below is preserved verbatim as the v0.3 pre-execution snapshot.
 
 1. **The 2D plane $(N,\ \delta t/T_m)$** with other parameters held at Hasse values. Prior work samples exactly one point of this plane: $(30,\ 0.13)$.
 2. **Coastline metrics** — the relation between observables we already compute ($|C|$, $\langle\sigma_z\rangle$, $\delta\langle n\rangle$) and a one-scalar "resolvedness" quantifier that flags the crossover.
@@ -74,6 +91,8 @@ A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\e
 ## 4. Locked decisions (with one open item parked in §5)
 
 §4 is now *decisions*, not questions. Each subsection names the locked choice, the stance(s) endorsing it, and any caveats that must appear inline in downstream artifacts.
+
+**Post-execution annotations (v0.4):** All §4 decisions survived execution. §4.1 (Ω ceiling) held — 10 of 36 cells breached as predicted and were hatched rather than excluded. §4.2 (6×6 geometric grid) executed in 15.5 s and produced the N-degeneracy finding (§2.6). §4.3 (two-map V/P rubric) discriminated pulse-broadening from strong-binding cleanly; Doppler merging was not reached at $\delta=0.5\,\omega_m$ and is deferred to v0.2. §4.4 (|α| baseline + stretch) ran all four values; §5.1 lemma resolution admitted $|\alpha|=5$ without downgrade. §4.5 impulsive overlay rendered on the primary V maps per §4.5 intent (not secondary, as a typo in the README §5 bullet 8 briefly suggested).
 
 ### 4.1 Calibration of $\Omega$ across the grid — LOCKED
 
@@ -144,6 +163,12 @@ Scout rationale adopted: without this overlay the weak-$\delta t$ boundary is *u
 
 ## 5. Open questions (load-bearing before scope-lock)
 
+### 5.0 Resolution status (v0.4)
+
+- **§5.1 — RESOLVED by co-lock.** Lemma inlined in [wp-strong-weak-coastline/README.md §2](wp-strong-weak-coastline/README.md). Drive-LD ceiling $\Omega_\text{eff}/\omega_m \leq 0.3$ is the single engine-validity inequality (§2.1). Motional-LD ($\eta\sqrt{\langle n\rangle+1} > 1$) is a physical-picture-interpretability flag, rendered as a distinct per-cell hatching layer but not engine-invalidating because the coupling $C = \exp[i\eta(a+a^\dagger)]$ is stored as the exact matrix exponential without $\eta$-truncation.
+- **§5.2 — RESOLVED.** $|\alpha|=5$ admissible under §5.1's resolution; pre-audit confirmed NMAX 80 safe (top-5 leakage 3 × 10⁻¹³). Executed.
+- **§5.3 — NEW OPEN ITEM (post-execution).** *Why does $V(|\alpha|)$ turn non-monotone at $\delta t/T_m = 0.80$?* Observed: $V$ = 0.998 → 0.760 → 0.101 → 0.377 for $|\alpha| \in \{0,1,3,5\}$, with the same impulsive-limit floor $V_\text{imp} \approx 0.865$ for all four. Hypotheses to discriminate: (i) a Jaynes–Cummings-like revival at large $\eta\sqrt{\langle n\rangle+1}$, (ii) Debye–Waller higher-order structure in the finite-$\delta t$ propagator, (iii) genuine physics of the motional-LD-breaching regime. Minimal probe: $|\alpha| \in \{3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.25, 5.5\}$ at $\delta t/T_m = 0.80$, $N = 48$ — twenty-ish evolutions, ≲ 1 s compute. **Recommended as the first WP-C v0.2 task.**
+
 ### 5.1 Lamb–Dicke threshold specification (Architect-originated)
 
 Architect asks: *What specific mathematical threshold should we encode into the engine to define "out of bounds" LD validity?*
@@ -200,18 +225,23 @@ The coastline WP closes the $(N, \delta t/T_m)$ axis pair; other axes (envelope 
 
 -----
 
-## 9. Ask of the council
+## 9. Ask of the council (retargeted for WP-C v0.2)
 
-Decisions remaining before scope-lock:
+v0.3 asks are closed: §5.1 resolved by co-lock (item 2, 4), §4.2 grid geometry and §4.4 |α| set confirmed by execution without objection (item 3), and the Integrator review of item 1 is effectively granted by the clean run and the intact locked decisions — but is formally noted here for the record. What remains for the council is a **v0.2 scope decision**:
 
-1. **Integrator stance review** of this v0.3 memo. No Integrator review has been registered in this cycle; flow/synthesis veto authority therefore uninvoked. v0.3 is provisional until Integrator clears.
-2. **§5.1 resolution** — the LD-threshold lemma. Load-bearing for §4.4 and §5.2.
-3. **Confirm or object** to §4.2 grid geometry (geometric 6×6 replaces the v0.1 7×6 proposal) and §4.4 $|\alpha|$ set. A single veto from Guardian, Architect, or Integrator on these items re-opens the corresponding subsection for one re-deliberation round; Scout and Advisory flags do not re-open but require Integrator acknowledgement.
-4. **Integrator pronouncement on lemma timing.** The §5.1 lemma can be scoped as either pre-lock (v0.3 gates on it) or co-lock (v0.3 ships with §5.1 as open; lemma becomes the first content item of the WP README on scaffolding). Guardian recommendation is co-lock; Integrator's call.
+1. **WP-C v0.2 — Doppler-merging probe.** Re-run the (N, δt/T_m) grid with $\delta$ scaled per cell to land inside the Doppler-broadened sideband, e.g. $\delta = \eta|\alpha|\,\omega_m$ for the P observable. This is the only way to exercise the (V low, P low) quadrant of the §4.3 rubric. Compute cost: one additional pass of the driver at ≈ 30 s per |α|. Not scope-creep — it is the gap-closing follow-up to the rubric that v0.1 under-discriminated.
+2. **§5.3 — α-recovery probe.** Run the dense |α| scan at $\delta t/T_m = 0.80$, $N = 48$ specified in §5.3. ≲ 1 s compute. This decides between physics and engine artefact; if physics, the observed $V(|\alpha|)$ shape is itself a result worth naming.
+3. **Memo disposition.** Two options:
+   - **(A) Close this memo at v0.4** and start a new pre-WP memo for WP-C v0.2 covering items (1) and (2) as a coherent scope. Cleaner provenance, matches the memo-per-WP pattern established by `council-memo-2026-04-21-strong-weak-coastline.md` itself.
+   - **(B) Iterate this memo to v0.5** with items (1) and (2) folded in. Preserves all prior deliberation in one file; risks bloat.
+   Guardian recommendation: **(A)** — this memo has served its pre-WP function and is now a results-archival artefact. The v0.2 scope is narrow enough that it does not need the full pre-deliberation cycle of a new memo; a short "WP-C v0.2 plan" note would suffice.
+4. **Integrator pronouncement.** Item 3 disposition, and whether items (1) and (2) should be sequenced (α-recovery first to resolve §5.3 before committing to the larger Doppler probe) or parallelised.
 
-Items 1, 2, and 4 are load-bearing. Item 3 is a re-opening vote only if a stance objects.
+Items 1 and 2 are numerical follow-ups any stance can authorise; item 3 is the only council-level decision remaining.
 
 -----
+
+*v0.4 (2026-04-21, post-execution): header status rewritten to reflect that WP-C v0.1.1 is executed (commit `528267b`); §2.6 added summarising the six principal findings of the run ($N$-degeneracy, $\chi$-collapse falsified, Doppler-merging regime not reached, non-monotone $\alpha$, uniform impulsive floor, §5.1 lemma resolution, Floquet §8 promotion criterion unmet); §3 prefaced with a post-execution note pointing to §2.6; §4 preamble annotated with per-subsection execution outcomes; §5 prefixed with a §5.0 resolution-status block that closes §5.1 and §5.2 and opens §5.3 (α-recovery mechanism); §9 rewritten from pre-execution ask to forward-looking WP-C v0.2 ask with memo-disposition choice. v0.3 body preserved verbatim below §2.6 for provenance. v0.3 superseded.*
 
 *v0.3 (2026-04-21): $\chi$-collapse ansatz corrected for pulse-bandwidth sign/monotonicity; §4.2 relabelled provisionally locked and augmented with 0.13 control-slice row; §4.4 scientific baseline demoted to $\{0,1,3\}$ with $|\alpha|=5$ contingent on §5.1; §2.2 softened; §2.5 split for readability; §4.3 rubric-defending sentence added; §5.1 motional-LD-form specification burden noted; §6 plots bullet split to distinguish drive-LD from motional-LD hatching; §9 re-opening threshold and lemma-timing ask added; compute estimate reconciled. v0.2 superseded.*
 
