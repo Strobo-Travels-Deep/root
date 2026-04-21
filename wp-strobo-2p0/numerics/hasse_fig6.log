@@ -1,19 +1,12 @@
-strobo 2.0  —  Hasse-Fig-6 (phi, theta_0) slice
+strobo 2.0  —  Hasse-Fig-6 (phi, theta_0) slice (pi/2-calibrated)
   delta_0 = 0,  alphas = [3.0, 4.5]
+  T1: N=3, dt=100 ns  ->  Omega/(2pi) = 0.9009 MHz
+  T2: N=7, dt=50 ns  ->  Omega/(2pi) = 0.7722 MHz
   grid = 32 phi x 64 theta_0 = 2048 cells per sheet
   sheets = 2 alpha x 2 trains = 4 total
 
-[T1_alpha3]  N=3  dt=100 ns  |alpha|=3.0
-    phi  4/32  (12.5 %)   elapsed   0.5s   ETA   3.8s
-    phi  8/32  (25.0 %)   elapsed   1.1s   ETA   3.2s
-    phi 12/32  (37.5 %)   elapsed   1.6s   ETA   2.7s
-    phi 16/32  (50.0 %)   elapsed   2.1s   ETA   2.1s
-    phi 20/32  (62.5 %)   elapsed   2.7s   ETA   1.6s
-    phi 24/32  (75.0 %)   elapsed   3.2s   ETA   1.1s
-    phi 28/32  (87.5 %)   elapsed   3.8s   ETA   0.5s
-    phi 32/32  (100.0 %)   elapsed   4.3s   ETA   0.0s
-[T2_alpha3]  N=7  dt=50 ns  |alpha|=3.0
-    phi  4/32  (12.5 %)   elapsed   0.5s   ETA   3.8s
+[T1_alpha3]  N=3  dt=100 ns  |alpha|=3.0  Omega/(2pi)=0.9009 MHz
+    phi  4/32  (12.5 %)   elapsed   0.6s   ETA   3.9s
     phi  8/32  (25.0 %)   elapsed   1.1s   ETA   3.3s
     phi 12/32  (37.5 %)   elapsed   1.6s   ETA   2.7s
     phi 16/32  (50.0 %)   elapsed   2.2s   ETA   2.2s
@@ -21,24 +14,33 @@ strobo 2.0  —  Hasse-Fig-6 (phi, theta_0) slice
     phi 24/32  (75.0 %)   elapsed   3.3s   ETA   1.1s
     phi 28/32  (87.5 %)   elapsed   3.8s   ETA   0.5s
     phi 32/32  (100.0 %)   elapsed   4.4s   ETA   0.0s
-[T1_alpha4p5]  N=3  dt=100 ns  |alpha|=4.5
-    phi  4/32  (12.5 %)   elapsed   0.5s   ETA   3.7s
-    phi  8/32  (25.0 %)   elapsed   1.1s   ETA   3.2s
-    phi 12/32  (37.5 %)   elapsed   1.6s   ETA   2.7s
-    phi 16/32  (50.0 %)   elapsed   2.1s   ETA   2.1s
-    phi 20/32  (62.5 %)   elapsed   2.7s   ETA   1.6s
-    phi 24/32  (75.0 %)   elapsed   3.2s   ETA   1.1s
-    phi 28/32  (87.5 %)   elapsed   3.7s   ETA   0.5s
-    phi 32/32  (100.0 %)   elapsed   4.3s   ETA   0.0s
-[T2_alpha4p5]  N=7  dt=50 ns  |alpha|=4.5
+[T2_alpha3]  N=7  dt=50 ns  |alpha|=3.0  Omega/(2pi)=0.7722 MHz
     phi  4/32  (12.5 %)   elapsed   0.5s   ETA   3.8s
-    phi  8/32  (25.0 %)   elapsed   1.1s   ETA   3.2s
+    phi  8/32  (25.0 %)   elapsed   1.2s   ETA   3.6s
+    phi 12/32  (37.5 %)   elapsed   1.7s   ETA   2.9s
+    phi 16/32  (50.0 %)   elapsed   2.3s   ETA   2.3s
+    phi 20/32  (62.5 %)   elapsed   2.9s   ETA   1.7s
+    phi 24/32  (75.0 %)   elapsed   3.5s   ETA   1.2s
+    phi 28/32  (87.5 %)   elapsed   4.1s   ETA   0.6s
+    phi 32/32  (100.0 %)   elapsed   4.7s   ETA   0.0s
+[T1_alpha4p5]  N=3  dt=100 ns  |alpha|=4.5  Omega/(2pi)=0.9009 MHz
+    phi  4/32  (12.5 %)   elapsed   0.6s   ETA   3.9s
+    phi  8/32  (25.0 %)   elapsed   1.1s   ETA   3.3s
     phi 12/32  (37.5 %)   elapsed   1.6s   ETA   2.7s
     phi 16/32  (50.0 %)   elapsed   2.2s   ETA   2.2s
-    phi 20/32  (62.5 %)   elapsed   2.7s   ETA   1.6s
-    phi 24/32  (75.0 %)   elapsed   3.3s   ETA   1.1s
-    phi 28/32  (87.5 %)   elapsed   3.8s   ETA   0.5s
-    phi 32/32  (100.0 %)   elapsed   4.4s   ETA   0.0s
+    phi 20/32  (62.5 %)   elapsed   2.8s   ETA   1.7s
+    phi 24/32  (75.0 %)   elapsed   3.4s   ETA   1.1s
+    phi 28/32  (87.5 %)   elapsed   3.9s   ETA   0.6s
+    phi 32/32  (100.0 %)   elapsed   4.5s   ETA   0.0s
+[T2_alpha4p5]  N=7  dt=50 ns  |alpha|=4.5  Omega/(2pi)=0.7722 MHz
+    phi  4/32  (12.5 %)   elapsed   0.6s   ETA   3.9s
+    phi  8/32  (25.0 %)   elapsed   1.3s   ETA   3.9s
+    phi 12/32  (37.5 %)   elapsed   1.9s   ETA   3.2s
+    phi 16/32  (50.0 %)   elapsed   2.6s   ETA   2.6s
+    phi 20/32  (62.5 %)   elapsed   3.1s   ETA   1.9s
+    phi 24/32  (75.0 %)   elapsed   3.7s   ETA   1.2s
+    phi 28/32  (87.5 %)   elapsed   4.2s   ETA   0.6s
+    phi 32/32  (100.0 %)   elapsed   4.8s   ETA   0.0s
 
-Saved: wp-strobo-2p0/numerics/hasse_fig6_slice.npz  (139 KB)
-Total wall time: 17.3 s
+Saved: wp-strobo-2p0/numerics/hasse_fig6_slice.npz  (140 KB)
+Total wall time: 18.3 s

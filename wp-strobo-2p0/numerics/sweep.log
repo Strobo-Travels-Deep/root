@@ -1,73 +1,74 @@
-strobo 2.0 main sweep
-  omega_m/(2pi) = 1.306 MHz
-  omega_r/(2pi) = 0.178 MHz   eta = 0.395
-  Delta t       = 0.77 us   t_sep_factor = 1.00562
+strobo 2.0 main sweep (pi/2-calibrated, v0.3)
+  omega_m/(2pi) = 1.306 MHz   eta = 0.395
+  Delta t       = 0.77 us     t_sep_factor = 1.00562
   Nmax          = 60
+  T1: N=3, dt=100 ns  ->  Omega/(2pi) = 0.9009 MHz,  theta_pulse = 0.5236 rad,  N*theta = 1.5708 rad (target pi/2 = 1.5708)
+  T2: N=7, dt=50 ns  ->  Omega/(2pi) = 0.7722 MHz,  theta_pulse = 0.2244 rad,  N*theta = 1.5708 rad (target pi/2 = 1.5708)
   Grid          = 81 detunings x 64 theta_0  x 3 alpha x 2 trains
-  Total cells   = 31104
-  Total runs    = 768  (2 init spins per cell)
+  Grid cells    = 31104
+  Engine calls  = 768  (2 initial-spin runs per (theta_0, alpha, train); each sweeps 81 detunings internally)
 
-[T1_alpha1] N=3  dt=100 ns  |alpha|=1.0
-    theta_0  8/64  (12.5 %)   elapsed   2.8s   ETA  19.6s
-    theta_0 16/64  (25.0 %)   elapsed   5.0s   ETA  15.1s
-    theta_0 24/64  (37.5 %)   elapsed   7.1s   ETA  11.9s
-    theta_0 32/64  (50.0 %)   elapsed   9.6s   ETA   9.6s
-    theta_0 40/64  (62.5 %)   elapsed  11.7s   ETA   7.0s
-    theta_0 48/64  (75.0 %)   elapsed  13.7s   ETA   4.6s
-    theta_0 56/64  (87.5 %)   elapsed  15.8s   ETA   2.3s
-    theta_0 64/64  (100.0 %)   elapsed  17.8s   ETA   0.0s
-
-[T1_alpha3] N=3  dt=100 ns  |alpha|=3.0
-    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.5s
-    theta_0 16/64  (25.0 %)   elapsed   4.1s   ETA  12.4s
-    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.3s
-    theta_0 32/64  (50.0 %)   elapsed   8.2s   ETA   8.2s
-    theta_0 40/64  (62.5 %)   elapsed  10.3s   ETA   6.2s
-    theta_0 48/64  (75.0 %)   elapsed  12.3s   ETA   4.1s
-    theta_0 56/64  (87.5 %)   elapsed  14.4s   ETA   2.1s
-    theta_0 64/64  (100.0 %)   elapsed  16.4s   ETA   0.0s
-
-[T1_alpha4p5] N=3  dt=100 ns  |alpha|=4.5
-    theta_0  8/64  (12.5 %)   elapsed   2.0s   ETA  14.2s
-    theta_0 16/64  (25.0 %)   elapsed   4.0s   ETA  12.1s
-    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.3s
-    theta_0 32/64  (50.0 %)   elapsed   8.2s   ETA   8.2s
+[T1_alpha1] N=3  dt=100 ns  |alpha|=1.0  Omega/(2pi)=0.9009 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.7s
+    theta_0 16/64  (25.0 %)   elapsed   4.2s   ETA  12.5s
+    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.4s
+    theta_0 32/64  (50.0 %)   elapsed   8.3s   ETA   8.3s
     theta_0 40/64  (62.5 %)   elapsed  10.3s   ETA   6.2s
     theta_0 48/64  (75.0 %)   elapsed  12.4s   ETA   4.1s
     theta_0 56/64  (87.5 %)   elapsed  14.4s   ETA   2.1s
     theta_0 64/64  (100.0 %)   elapsed  16.5s   ETA   0.0s
 
-[T2_alpha1] N=7  dt=50 ns  |alpha|=1.0
-    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.6s
-    theta_0 16/64  (25.0 %)   elapsed   4.2s   ETA  12.5s
-    theta_0 24/64  (37.5 %)   elapsed   6.3s   ETA  10.4s
-    theta_0 32/64  (50.0 %)   elapsed   8.3s   ETA   8.3s
+[T1_alpha3] N=3  dt=100 ns  |alpha|=3.0  Omega/(2pi)=0.9009 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.0s   ETA  14.3s
+    theta_0 16/64  (25.0 %)   elapsed   4.1s   ETA  12.3s
+    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.3s
+    theta_0 32/64  (50.0 %)   elapsed   8.4s   ETA   8.4s
     theta_0 40/64  (62.5 %)   elapsed  10.4s   ETA   6.3s
-    theta_0 48/64  (75.0 %)   elapsed  12.6s   ETA   4.2s
-    theta_0 56/64  (87.5 %)   elapsed  14.7s   ETA   2.1s
-    theta_0 64/64  (100.0 %)   elapsed  16.7s   ETA   0.0s
-
-[T2_alpha3] N=7  dt=50 ns  |alpha|=3.0
-    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.5s
-    theta_0 16/64  (25.0 %)   elapsed   4.1s   ETA  12.4s
-    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.4s
-    theta_0 32/64  (50.0 %)   elapsed   8.3s   ETA   8.3s
-    theta_0 40/64  (62.5 %)   elapsed  10.4s   ETA   6.2s
-    theta_0 48/64  (75.0 %)   elapsed  12.4s   ETA   4.1s
-    theta_0 56/64  (87.5 %)   elapsed  14.5s   ETA   2.1s
-    theta_0 64/64  (100.0 %)   elapsed  16.6s   ETA   0.0s
-
-[T2_alpha4p5] N=7  dt=50 ns  |alpha|=4.5
-    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.7s
-    theta_0 16/64  (25.0 %)   elapsed   4.2s   ETA  12.5s
-    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.4s
-    theta_0 32/64  (50.0 %)   elapsed   8.3s   ETA   8.3s
-    theta_0 40/64  (62.5 %)   elapsed  10.4s   ETA   6.2s
     theta_0 48/64  (75.0 %)   elapsed  12.5s   ETA   4.2s
     theta_0 56/64  (87.5 %)   elapsed  14.5s   ETA   2.1s
     theta_0 64/64  (100.0 %)   elapsed  16.6s   ETA   0.0s
 
-Saved: /Users/uwarring/Documents/GitHub/Strobo Travels Deep/root/wp-strobo-2p0/numerics/strobo2p0_data.npz  (1127 KB)
+[T1_alpha4p5] N=3  dt=100 ns  |alpha|=4.5  Omega/(2pi)=0.9009 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.5s
+    theta_0 16/64  (25.0 %)   elapsed   4.1s   ETA  12.4s
+    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.3s
+    theta_0 32/64  (50.0 %)   elapsed   8.4s   ETA   8.4s
+    theta_0 40/64  (62.5 %)   elapsed  10.9s   ETA   6.5s
+    theta_0 48/64  (75.0 %)   elapsed  13.3s   ETA   4.4s
+    theta_0 56/64  (87.5 %)   elapsed  15.7s   ETA   2.2s
+    theta_0 64/64  (100.0 %)   elapsed  17.8s   ETA   0.0s
+
+[T2_alpha1] N=7  dt=50 ns  |alpha|=1.0  Omega/(2pi)=0.7722 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.2s   ETA  15.6s
+    theta_0 16/64  (25.0 %)   elapsed   4.7s   ETA  14.1s
+    theta_0 24/64  (37.5 %)   elapsed   6.9s   ETA  11.5s
+    theta_0 32/64  (50.0 %)   elapsed   9.2s   ETA   9.2s
+    theta_0 40/64  (62.5 %)   elapsed  11.3s   ETA   6.8s
+    theta_0 48/64  (75.0 %)   elapsed  13.4s   ETA   4.5s
+    theta_0 56/64  (87.5 %)   elapsed  15.5s   ETA   2.2s
+    theta_0 64/64  (100.0 %)   elapsed  17.6s   ETA   0.0s
+
+[T2_alpha3] N=7  dt=50 ns  |alpha|=3.0  Omega/(2pi)=0.7722 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.4s
+    theta_0 16/64  (25.0 %)   elapsed   4.1s   ETA  12.4s
+    theta_0 24/64  (37.5 %)   elapsed   6.2s   ETA  10.3s
+    theta_0 32/64  (50.0 %)   elapsed   8.2s   ETA   8.2s
+    theta_0 40/64  (62.5 %)   elapsed  10.4s   ETA   6.2s
+    theta_0 48/64  (75.0 %)   elapsed  12.5s   ETA   4.2s
+    theta_0 56/64  (87.5 %)   elapsed  14.6s   ETA   2.1s
+    theta_0 64/64  (100.0 %)   elapsed  16.7s   ETA   0.0s
+
+[T2_alpha4p5] N=7  dt=50 ns  |alpha|=4.5  Omega/(2pi)=0.7722 MHz
+    theta_0  8/64  (12.5 %)   elapsed   2.1s   ETA  14.8s
+    theta_0 16/64  (25.0 %)   elapsed   4.2s   ETA  12.7s
+    theta_0 24/64  (37.5 %)   elapsed   6.5s   ETA  10.8s
+    theta_0 32/64  (50.0 %)   elapsed   8.8s   ETA   8.8s
+    theta_0 40/64  (62.5 %)   elapsed  10.9s   ETA   6.6s
+    theta_0 48/64  (75.0 %)   elapsed  13.3s   ETA   4.4s
+    theta_0 56/64  (87.5 %)   elapsed  15.4s   ETA   2.2s
+    theta_0 64/64  (100.0 %)   elapsed  17.5s   ETA   0.0s
+
+Saved: /Users/uwarring/Documents/GitHub/Strobo Travels Deep/root/wp-strobo-2p0/numerics/strobo2p0_data.npz  (1147 KB)
 Saved: /Users/uwarring/Documents/GitHub/Strobo Travels Deep/root/wp-strobo-2p0/numerics/strobo2p0_manifest.json
 
-Total wall time: 100.7 s
+Total wall time: 102.7 s

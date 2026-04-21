@@ -1,9 +1,9 @@
 {
   "code_version_engine": "0.9.1",
-  "runner_version": "0.1",
+  "runner_version": "0.3",
+  "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
   "physical_parameters": {
     "omega_m_MHz": 1.306,
-    "omega_r_MHz": 0.178,
     "eta": 0.395,
     "Delta_t_us": 0.77,
     "T_m_us": 0.7656967840735068,
@@ -28,12 +28,14 @@
       {
         "label": "T1",
         "n_pulses": 3,
-        "delta_t_pulse_us": 0.1
+        "delta_t_pulse_us": 0.1,
+        "omega_r_MHz": 0.900946810656483
       },
       {
         "label": "T2",
         "n_pulses": 7,
-        "delta_t_pulse_us": 0.05
+        "delta_t_pulse_us": 0.05,
+        "omega_r_MHz": 0.7722401234198425
       }
     ]
   },
@@ -60,5 +62,5 @@
     "T2_alpha3",
     "T2_alpha4p5"
   ],
-  "elapsed_s": 100.67
+  "elapsed_s": 102.72
 }

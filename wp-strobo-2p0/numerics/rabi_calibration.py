@@ -10,10 +10,13 @@ for both trains T1 and T2. Given a single experimental |C|_vacuum value
 for either train, Omega can be read off directly.
 
 This script:
-  1. Plots |C|_vacuum vs Omega/(2*pi) on [0, 1.0] MHz for T1 and T2.
-  2. Marks three candidate values: 0.178 MHz (strobo 2.0 sweep),
-     0.300 MHz (Hasse 2024 Table II AC), 0.446 MHz (implied by
-     t_pi = 1.122 us).
+  1. Plots |C|_vacuum vs Omega/(2*pi) on [0, 1.2] MHz for T1 and T2.
+  2. Marks four candidate values:
+       - 0.178 MHz (v0.1 pre-calibration sweep, delivered only pi/9)
+       - 0.300 MHz (Hasse 2024 Table II AC, their N=30 calibration)
+       - 0.446 MHz (implied by t_pi = 1.122 us)
+       - the pi/2-calibrated values of the current (v0.3) sweep: 0.9008
+         MHz (T1) and 0.7722 MHz (T2).  These are train-specific.
   3. Cross-checks |C|_vacuum numerically against the full engine at
      each candidate for T2 to confirm the closed form.
 """
@@ -40,10 +43,19 @@ TRAINS = [
     {"label": "T2:  N=7,  dt= 50 ns", "N": 7, "dt_us": 0.050, "color": "#d62728"},
 ]
 
+
+def omega_for_pi2(N: int, dt_us: float) -> float:
+    """Bare Omega/(2pi) [MHz] such that N*Omega*DW*dt = pi/2."""
+    return 1.0 / (4.0 * N * dt_us * DW)
+
+
+# Reference candidates (train-independent unless flagged "T1"/"T2")
 CANDIDATES = [
-    (0.178, "sweep value (strobo 2.0)"),
+    (0.178, "v0.1 pre-calibration sweep"),
     (0.300, "Hasse 2024 Table II AC"),
     (0.446, "from t_pi = 1.122 us"),
+    (omega_for_pi2(3, 0.100), "T1 pi/2-calibration (v0.3 sweep)"),
+    (omega_for_pi2(7, 0.050), "T2 pi/2-calibration (v0.3 sweep)"),
 ]
 
 
@@ -99,16 +111,28 @@ def main() -> None:
         print(f"    Omega/(2pi) = {om:.3f} MHz  closed form = {c_cf:.6f}   "
               f"engine = {c_en:.6f}   diff = {c_en - c_cf:+.2e}")
 
-    omega_grid = np.linspace(0.01, 1.0, 500)
+    omega_grid = np.linspace(0.01, 1.2, 600)
     fig, ax = plt.subplots(figsize=(8.5, 5.0), constrained_layout=True)
     for tr in TRAINS:
         c = np.array([coh_vacuum_closed_form(om, tr["N"], tr["dt_us"]) for om in omega_grid])
         ax.plot(omega_grid, c, lw=2.2, color=tr["color"], label=tr["label"])
 
+    # Vertical guide lines; pi/2-calibrated values per train get per-train colors
+    pi2_T1 = omega_for_pi2(3, 0.100)
+    pi2_T2 = omega_for_pi2(7, 0.050)
     for om, label in CANDIDATES:
-        ax.axvline(om, ls="--", color="gray", lw=0.7, alpha=0.6)
-        ax.text(om, 1.03, f"{om:.3f}", rotation=90, ha="right", va="bottom",
-                fontsize=8, color="gray")
+        if abs(om - pi2_T1) < 1e-6:
+            ax.axvline(om, ls="-", color=TRAINS[0]["color"], lw=1.4, alpha=0.7)
+            ax.text(om, 1.03, f"{om:.3f}  (T1 π/2)", rotation=90, ha="right",
+                    va="bottom", fontsize=8, color=TRAINS[0]["color"])
+        elif abs(om - pi2_T2) < 1e-6:
+            ax.axvline(om, ls="-", color=TRAINS[1]["color"], lw=1.4, alpha=0.7)
+            ax.text(om, 1.03, f"{om:.3f}  (T2 π/2)", rotation=90, ha="right",
+                    va="bottom", fontsize=8, color=TRAINS[1]["color"])
+        else:
+            ax.axvline(om, ls="--", color="gray", lw=0.7, alpha=0.5)
+            ax.text(om, 1.03, f"{om:.3f}", rotation=90, ha="right",
+                    va="bottom", fontsize=8, color="gray")
 
     ax.set_xlabel(r"$\Omega/(2\pi)$  [MHz]")
     ax.set_ylabel(r"$|C|_\mathrm{vacuum}$  at  $(\delta_0=0,\ \vartheta_0=0,\ |\alpha|=0)$")
@@ -116,8 +140,8 @@ def main() -> None:
                  r"$|C|_\mathrm{vacuum} = |\sin(N\, \Omega_\mathrm{eff}\, \delta t)|$,  "
                  r"$\Omega_\mathrm{eff} = \Omega\, e^{-\eta^2/2}$  "
                  f"($\\eta={ETA}$,  DW$=${DW:.4f})")
-    ax.set_xlim(0, 1.0)
-    ax.set_ylim(0, 1.05)
+    ax.set_xlim(0, 1.2)
+    ax.set_ylim(0, 1.08)
     ax.grid(alpha=0.3)
     ax.legend(loc="lower right")
 

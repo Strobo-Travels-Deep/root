@@ -1,30 +1,32 @@
-# 2026-04-21 — Strobo 2.0 Main Sweep Complete
+# 2026-04-21 — Strobo 2.0 Main Sweep Complete (v0.3 — π/2-calibrated)
 
 **Status:** sweep executed, plots generated, observations recorded.
 **Operator:** uwarring (with Claude)
-**Upstream log:** [2026-04-21-kickoff.md](2026-04-21-kickoff.md)
+**Upstream log:** [2026-04-21-kickoff.md](2026-04-21-kickoff.md) (v0.3
+  parameter set).
 
 -----
 
 ## 1. What was done
 
 - **Preflight** ([numerics/preflight.py](../numerics/preflight.py)).
-  Tests 1–4 passed. Test 3 invalidated the original
-  `|C| = |⟨σ_x⟩+i⟨σ_y⟩|` identity (residual 7.4 × 10⁻¹ vs ~10⁻¹⁵ for
-  the corrected sinusoidal form); kickoff logbook §4.2/§4.3/§4.4
-  updated accordingly. Test 4 confirmed the two-run extraction
-  (init |+x⟩, |+y⟩) matches the 8-point φ_laser fit to 2.4 × 10⁻⁴ and
-  |a_I| ≤ 3 × 10⁻⁴ at the spot-checked anchor.
+  All four tests pass at the π/2-calibrated values. Test 1 anchor
+  (α = 0) gives |C| = 0.922 (T1) / 0.919 (T2), about 8 % below the
+  closed-form sin(π/2) = 1 — the shortfall is the finite-pulse
+  Magnus correction captured by the engine's intra-pulse motion
+  (disabled in the closed form). Test 2 Nmax convergence at α = 4.5
+  still satisfies < 10⁻¹⁰ at Nmax = 60. Tests 3–4 still pass.
 - **Main sweep** ([numerics/run_sweep.py](../numerics/run_sweep.py)).
-  768 engine calls (= 64 ϑ₀ × 3 α × 2 trains × 2 initial spins), each
-  covering 81 detunings. Wall time 100.7 s (Nmax = 60, scipy expm).
-  Saved to [numerics/strobo2p0_data.npz](../numerics/strobo2p0_data.npz)
-  (1.1 MB) with JSON manifest.
+  768 engine calls × 81 detunings each, Nmax = 60, **102.7 s** wall
+  time (essentially same as v0.1 — grid unchanged). Saved to
+  [numerics/strobo2p0_data.npz](../numerics/strobo2p0_data.npz)
+  (1.1 MB) with JSON manifest. Per-train Rabi:
+  Ω_T1/(2π) = 0.9008 MHz, Ω_T2/(2π) = 0.7722 MHz, chosen from
+  `N·Ω·e⁻η²⁄²·δt = π/2`.
 - **Plots** ([numerics/make_plots.py](../numerics/make_plots.py)).
-  Five heatmap figures in [plots/](../plots/), each a 2 × 3 panel array
-  (rows: trains T1, T2; cols: |α| = 1, 3, 4.5):
+  Five heatmap figures regenerated:
   - [01_coherence_contrast.png](../plots/01_coherence_contrast.png) — |C|
-  - [02_arg_C.png](../plots/02_arg_C.png) — arg C in degrees
+  - [02_arg_C.png](../plots/02_arg_C.png) — arg C
   - [03_sigma_z.png](../plots/03_sigma_z.png) — ⟨σ_z⟩ at φ = 0
   - [04_delta_n_phi0.png](../plots/04_delta_n_phi0.png) — δ⟨n⟩ at φ = 0
   - [05_delta_n_phi_pi2.png](../plots/05_delta_n_phi_pi2.png) — δ⟨n⟩ at φ = π/2
@@ -33,100 +35,99 @@
 
 | Tag           | max \|C\|  | max \|σ_z\|_{φ=0} | max\|δ⟨n⟩\|_{φ=0} | max\|δ⟨n⟩\|_{φ=π/2} |
 |---------------|-----------:|------------------:|------------------:|--------------------:|
-| T1, \|α\|=1   | 0.305      | 0.280             | 0.089             | 0.119               |
-| T1, \|α\|=3   | 0.304      | 0.293             | 0.288             | 0.308               |
-| T1, \|α\|=4.5 | 0.303      | 0.258             | 0.391             | 0.394               |
-| T2, \|α\|=1   | 0.353      | 0.327             | 0.105             | 0.143               |
-| T2, \|α\|=3   | 0.353      | 0.348             | 0.366             | 0.404               |
-| T2, \|α\|=4.5 | 0.353      | 0.333             | 0.555             | 0.574               |
+| T1, \|α\|=1   | 0.943      | 0.920             | 0.376             | 0.435               |
+| T1, \|α\|=3   | 0.962      | 0.949             | 0.975             | 1.111               |
+| T1, \|α\|=4.5 | 0.960      | 0.923             | 1.481             | 1.532               |
+| T2, \|α\|=1   | 0.936      | 0.914             | 0.388             | 0.445               |
+| T2, \|α\|=3   | 0.945      | 0.937             | 1.063             | 1.160               |
+| T2, \|α\|=4.5 | 0.946      | 0.937             | 1.569             | 1.674               |
 
-### Carrier saturation: sanity check
-Weak-pulse-limit prediction: on carrier at |α| = 0, |C| = sin(N θ_pulse).
+### Saturation: sanity check
 
-- T1:  N·θ_pulse = 0.3355 rad → sin = 0.3294.  Observed 0.305 at |α|=1
-  (small but finite reduction from the coherent-state Debye-Waller-like
-  averaging over |α| > 0). ✓
-- T2:  N·θ_pulse = 0.3914 rad → sin = 0.3815.  Observed 0.353. ✓
+The closed-form weak-pulse-limit prediction on carrier at |α| = 0 is
+|C| = sin(π/2) = 1 for both trains by construction. The engine result
+of 0.92 (α = 0 anchor, preflight Test 1) is ~8 % below that limit — a
+real physical shortfall from intra-pulse motional rotation
+(ω_m·δt ≈ 0.82 rad for T1, 0.41 rad for T2). This finite-duration
+Magnus correction is absent from the closed form but present in the
+engine and therefore in the dataset.
 
-The **|C| peak is essentially |α|-independent** across |α| ∈ {1, 3, 4.5}
-(relative scatter < 0.5 %). This is the expected stroboscopic-sync
-signature: for pulses arriving at the same motional phase of a coherent
-state, the coherent-amplitude dependence cancels in the carrier
-response at leading order in η·α. The weak |α|-modulation visible in
-the off-carrier regions is the η-nonlinearity of the coupling.
+The **|C| peak is still essentially |α|-independent** across
+|α| ∈ {1, 3, 4.5}, within ~2 % (for T1 the α-scatter is larger than
+v0.1, because at the strong-drive calibration the η·|α| nonlinearity
+feeds back into the carrier amplitude; for T2 the weaker per-pulse
+rotation suppresses this and the scatter is ~1 %).
 
-## 3. Three qualitative observations
+## 3. Three qualitative observations (v0.3)
 
-### 3.1 Stroboscopic carrier dominates; off-carrier peaks are much weaker
+### 3.1 Carrier saturates + high-order sidebands visible
 
-The ϑ₀-averaged |C| shows a sharp carrier feature at δ₀ = 0 and only a
-faint feature near δ₀ ≈ ±4 MHz ≈ ±3 ω_m (at |α| = 3, T2 train,
-|C|_avg = 0.074 vs 0.344 on carrier). No clear ±ω_m, ±2ω_m sidebands.
-This is consistent with the stroboscopic lock: because Δt ≈ T_m
-(within 0.56 %), pulses arrive at the same motional phase, and
-sidebands at integer multiples of the pulse rate 1/Δt ≈ ω_m interfere
-such that the carrier is the only surviving resonance. The faint
-±3 ω_m feature is likely the beating between the 0.56 % pulse-spacing
-slip and the third-order η³ coupling.
+Unlike v0.1 (where only the carrier and a faint ±3 ω_m feature
+survived), the π/2-calibrated sweep shows a **broad carrier** plus a
+rich sideband comb. ϑ₀-averaged |C| on T2, α = 3 drops to ≲ 0.05 at
+|δ₀|/(2π) ≈ 5.75 and ≈ 8.5 MHz — i.e. between sideband peaks. This
+is the regime where the pulse train resolves individual sidebands
+(Ω_eff/ω_m ≈ 0.55–0.64, large enough for the drive to populate
+k-th-order sidebands via η^k coupling, but still well below the
+fully-broadened strong-drive limit).
 
-### 3.2 δ⟨n⟩ has π-periodicity in ϑ₀ at the carrier (four-lobe pattern)
+### 3.2 δ⟨n⟩ amplitude scales with N·θ·α·η; exact φ-antiperiodicity
 
-Explicit check at (δ₀ = 0, |α| = 3, T2): correlation between δ⟨n⟩(ϑ₀)
-and δ⟨n⟩(ϑ₀ + π) is 1.0000 to four decimals, with maximum absolute
-difference < 10⁻⁴. This reproduces the four-lobe quadrant pattern of
-**Hasse 2024 Fig. 6(b)** with the amplitude scaling
-max|δ⟨n⟩| ∝ η·|α| · sin(N·θ_pulse). Sign structure: δ⟨n⟩_A and
-δ⟨n⟩_B are π/2 out of phase in ϑ₀, consistent with the cos/sin
-decomposition of the analysis-phase axis.
+Peak back-action at |α| = 4.5: **|δ⟨n⟩| ≈ 1.57 quanta** (T1) /
+**1.67 quanta** (T2) — roughly 3× the v0.1 value, matching the
+3-4× increase in per-pulse rotation. The φ-antiperiodicity
+δ⟨n⟩(φ + π, ϑ₀) = −δ⟨n⟩(φ, ϑ₀) is preserved to correlation
+−0.9996 (vs −1.0000 at weak drive) — the tiny deviation is a
+finite-pulse correction, not a breakdown. The four-lobe quadrant
+sign pattern (+, −, −, +) of Hasse Fig. 6(b) is reproduced at
+|α| = 3 (see [2026-04-21-hasse-fig6-slice.md](2026-04-21-hasse-fig6-slice.md)).
 
-### 3.3 T1 vs T2 differ in detuning-width, not in maximum
+### 3.3 T1 vs T2: same peak amplitude, different detuning widths
 
-T2's carrier feature is clearly narrower than T1's. Rough HWHM from
-the plots:
+Both trains reach the same saturation peak (|C| ≈ 0.94–0.96) but
+T2's carrier feature is narrower (longer total duration → tighter
+Fourier limit). Rough HWHM from the maps:
 
-- T1 (N=3, 1.84 µs total):   HWHM_δ₀/(2π) ≈ 1.2 MHz
-- T2 (N=7, 4.97 µs total):   HWHM_δ₀/(2π) ≈ 0.6 MHz
+- T1 (3 × 100 ns, total 1.84 µs): HWHM_δ₀/(2π) ≈ 1.4 MHz
+- T2 (7 × 50 ns, total 4.97 µs): HWHM_δ₀/(2π) ≈ 0.9 MHz
 
-The ratio (2×) tracks the total train duration, as expected for a
-finite-duration π/2-equivalent train (Fourier-limited linewidth).
-At |α| = 4.5 the T1 map develops stronger ϑ₀-modulation across the
-full map area than T2 — the shorter total duration of T1 has less
-motional phase averaging, so the ϑ₀ structure at finite η·|α| is
-more pronounced.
+The 1.5× ratio tracks the total-train-duration ratio as expected.
+Both are now directly comparable to the Hasse 2024 N = 30 AC
+analysis-pulse width (≈ 0.2 MHz, from their 23.1 µs total duration)
+— strobo 2.0's trains are 2–6× broader, as befits their ~4-10×
+shorter total duration.
 
 ## 4. arg C — structure and wrap-ups
 
-[02_arg_C.png](../plots/02_arg_C.png) shows a slanted-stripe pattern:
-arg C increases approximately linearly in (δ₀ − offset)·ϑ₀-dependent
-slope. The slopes are steeper for T2 than T1 (longer train →
-more accumulated phase per unit detuning). The slope flips sign at
-ϑ₀ ≈ 0 and ϑ₀ ≈ π, consistent with the ϑ₀-π reflection symmetry of
-the coherent-state trajectory. The pattern wraps (modulo 2π) into the
-twilight-colormap stripes seen in the figure.
+[02_arg_C.png](../plots/02_arg_C.png) shows slanted-stripe patterns
+similar to v0.1 but with **steeper slopes** and more visible
+wrap-arounds — as expected at the stronger drive, the accumulated
+phase arg C varies more rapidly with both δ₀ and ϑ₀. The slope sign
+still flips at ϑ₀ ≈ 0 and ϑ₀ ≈ π.
 
-## 5. Anomaly/ambiguity tracker
+## 5. Anomaly / ambiguity tracker
 
-Nothing unexpected in the physics. Three bookkeeping notes:
+Three bookkeeping notes:
 
-- **a_I offset.** Spot-checked at (|α|=3, δ₀=0, ϑ₀=0, T2) and bounded
-  to 3 × 10⁻⁴. Not verified at every cell. If a future re-analysis
-  depends on an absolute σ_z offset to < 1 %, re-run the full sweep
-  with the three-run-per-cell protocol (spins at |+x⟩, |+y⟩, |−x⟩).
-- **Δt = 0.77 µs vs T_m = 0.7657 µs.** Flagged in the kickoff as a
-  deliberate 0.56 % super-stroboscopic slip. Its main footprint in
-  this dataset is: (i) the weak δ₀ ≈ ±4 MHz feature in |C|, and (ii)
-  the modest asymmetry of the δ⟨n⟩ maps about δ₀ = 0 visible at
-  |α| = 4.5. A companion run at Δt = T_m exactly would quantify the
-  slip contribution but is not required for this WP's first report.
-- **Rabi-rate reconciliation.** Scoped in the companion memo
-  [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md).
-  Not relevant to this dataset's internal consistency, but gates lab
-  comparison. Resolvable by one carrier measurement on T2.
+- **a_I offset.** Spot-checked at (|α|=3, δ₀=0, ϑ₀=0, T2) to
+  4 × 10⁻³ — ~10× larger than in v0.1, because the stronger drive
+  breaks the approximate σ_z mean-zero symmetry of the weak-probe
+  regime. Still small enough for the two-run-per-cell protocol
+  (|a_I|/|C| ≈ 0.4 %), but worth flagging if an absolute σ_z offset
+  below 1 % ever matters. A 4-run-per-cell evaluation (spins at
+  {+x, +y, −x, −y}) would remove the ambiguity.
+- **Δt = 0.77 µs vs T_m = 0.7657 µs (+0.56 % slip).** Same as v0.1
+  — footprint in this dataset is the modest asymmetry of δ⟨n⟩
+  maps about δ₀ = 0 at |α| = 4.5.
+- **π/2 shortfall at α = 0.** ~8 % below sin(π/2) = 1 from
+  intra-pulse Magnus correction. This is intrinsic to the
+  strong-drive regime of short trains — reported as a physical
+  feature, not a calibration error.
 
 ## 6. Output files (artifacts produced by this log)
 
 This entry produced six artifacts — the main-sweep dataset, its
-manifest, and its five figures:
+manifest, and its five figures (re-run from v0.1 layout):
 
 - [numerics/preflight.py](../numerics/preflight.py)
 - [numerics/run_sweep.py](../numerics/run_sweep.py)
@@ -140,42 +141,48 @@ manifest, and its five figures:
 - [plots/04_delta_n_phi0.png](../plots/04_delta_n_phi0.png)
 - [plots/05_delta_n_phi_pi2.png](../plots/05_delta_n_phi_pi2.png)
 
-Later follow-ups added to the WP are recorded in their own logs:
+Follow-ups added in their own logs:
 
 - [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md)
-  (+ [numerics/rabi_calibration.py](../numerics/rabi_calibration.py),
-  [plots/00_rabi_calibration.png](../plots/00_rabi_calibration.png))
+  (now resolved: each train is π/2-calibrated, no single Ω).
 - [2026-04-21-hasse-fig6-slice.md](2026-04-21-hasse-fig6-slice.md)
-  (+ [numerics/hasse_fig6_slice.py](../numerics/hasse_fig6_slice.py),
-  [numerics/make_fig6_plots.py](../numerics/make_fig6_plots.py),
-  [numerics/hasse_fig6_slice.npz](../numerics/hasse_fig6_slice.npz),
-  [plots/06_hasse_fig6_alpha3.png](../plots/06_hasse_fig6_alpha3.png),
-  [plots/07_hasse_fig6_alpha4p5.png](../plots/07_hasse_fig6_alpha4p5.png)).
+  (re-run at v0.3 to match the new saturation regime).
 
 The [README](../README.md) has the complete up-to-date folder tree.
 
 ## 7. Next steps (not gated; for discussion)
 
-1. **Companion Δt = T_m run.** Exact stroboscopic-resonance sheet to
-   isolate the Δt/T_m − 1 = 0.56 % slip contribution to the ±3 ω_m
-   feature and the δ⟨n⟩ asymmetry.
+1. **Companion Δt = T_m run.** Still un-done; isolates the 0.56 %
+   slip contribution (now to the broader sideband comb visible in
+   v0.3).
 2. **Analysis-phase slice.** *Done 2026-04-21, see
    [2026-04-21-hasse-fig6-slice.md](2026-04-21-hasse-fig6-slice.md)*
-   — (φ, ϑ₀) sheets at δ₀ = 0 for both trains at |α| ∈ {3, 4.5},
-   reproduced Hasse Fig. 6 diagonal-V in σ_z and four-lobe sign
-   pattern in δ⟨n⟩ to machine precision on the symmetry checks.
-3. **Rabi-rate reconciliation.** See
-   [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md)
-   for the read-off protocol; re-run the sweep at the measured Ω if
-   it differs from 0.178 MHz (one script edit, ~100 s).
-4. **Thermal-background admixture.** Currently pure coherent state.
-   If the measured ion has ⟨n⟩_th ≈ 0.2 (Hasse text), admixing via the
-   engine's `n_thermal` parameter (20 trajectories) costs 20 × 101 s =
-   34 min for the full sweep — still tractable.
+   — v0.3 update reproduces Hasse Fig. 6 amplitudes within a few
+   percent.
+3. **Rabi-rate reconciliation.** *Resolved 2026-04-21 (v0.3)*: each
+   train is calibrated separately to deliver π/2 on ground motion,
+   as in Hasse 2024 App. D. See
+   [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md).
+4. **Thermal-background admixture.** Still un-done; more relevant
+   now that the peak amplitudes approach the Hasse experimental
+   scale.
+
+## 8. History
+
+- **v0.1 (superseded, 2026-04-21 earlier today).** Single Ω/(2π) =
+  0.178 MHz used for both trains; per-train rotation N·θ_pulse ≈
+  π/9 (weak probe); peak |C| ≈ 0.35. Flagged in the preflight that
+  this was a pre-calibration value, not a π/2 analysis.
+- **v0.3 (this log).** Per-train Ω chosen so that each train
+  delivers a full π/2 analysis rotation, matching the Hasse 2024
+  App. D convention. Peak |C| ≈ 0.94 (saturation, ~8 % below 1 by
+  Magnus correction).
 
 -----
 
-*v0.1 2026-04-21 — initial post-sweep record.*
-*v0.2 2026-04-21 — editorial pass: version reference to the kickoff log
-updated (v0.1 → v0.2), "One bookkeeping note" → "Three bookkeeping
-notes" to match the bullet count.*
+*v0.1 2026-04-21 — weak-probe, single-Ω record.*
+*v0.2 2026-04-21 — editorial pass.*
+*v0.3 2026-04-21 — π/2-calibrated per train; numbers, findings,
+history updated. Earlier v0.1/v0.2 descriptions of the dataset are
+retained as the "History" section; the dataset itself is now the
+π/2-calibrated run.*

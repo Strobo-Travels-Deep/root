@@ -40,20 +40,27 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from stroboscopic_sweep import run_single, DEFAULTS  # noqa: E402
 
 OMEGA_M_MHZ = 1.306
-OMEGA_R_MHZ = 0.178
 ETA = 0.395
 DELTA_T_US = 0.77
 T_M_US = 1.0 / OMEGA_M_MHZ  # cyclic period
 T_SEP_FACTOR = DELTA_T_US / T_M_US
 
+_DW = float(np.exp(-ETA ** 2 / 2))
+
+
+def omega_for_pi2(n_pulses: int, delta_t_pulse_us: float) -> float:
+    """Bare Omega/(2pi) [MHz] such that N*Omega*DW*dt = pi/2."""
+    return 1.0 / (4.0 * n_pulses * delta_t_pulse_us * _DW)
+
 
 def base_params(n_pulses: int, delta_t_pulse_us: float, nmax: int = 70) -> dict:
+    omega_r_MHz = omega_for_pi2(n_pulses, delta_t_pulse_us)
     return dict(
         alpha=0.0,
         alpha_phase_deg=0.0,
         eta=ETA,
         omega_m=2 * np.pi * OMEGA_M_MHZ,
-        omega_r=2 * np.pi * OMEGA_R_MHZ,
+        omega_r=2 * np.pi * omega_r_MHz,
         nmax=nmax,
         theta_deg=90.0,
         phi_deg=0.0,
@@ -91,14 +98,16 @@ def run_two(p: dict) -> tuple[float, float, float, float, dict, dict]:
 def test_1_anchor() -> None:
     print_header("TEST 1  Cross-check anchor (delta=0, theta_0=0, alpha=0)")
     for label, N, dt in [("T1: N=3, dt=100 ns", 3, 0.100), ("T2: N=7, dt= 50 ns", 7, 0.050)]:
-        theta_pulse = 2 * np.pi * OMEGA_R_MHZ * dt  # Omega * dt in rad
-        coh_pred = np.sin(N * theta_pulse)
+        omega_r_MHz = omega_for_pi2(N, dt)
+        theta_pulse = 2 * np.pi * omega_r_MHz * _DW * dt   # Omega_eff * dt in rad
+        coh_pred = np.sin(N * theta_pulse)                  # = sin(pi/2) = 1
         p = base_params(N, dt)
         (sz_A, sz_B, n_A, n_B, conv_A, _), dA = run_two(p)
         coh = np.hypot(sz_A, sz_B)
-        print(f"  {label}    N*theta_pulse = {N * theta_pulse:.4f} rad")
+        print(f"  {label}    Omega/(2pi) = {omega_r_MHz:.4f} MHz")
+        print(f"    N*theta_pulse (eff) = {N * theta_pulse:.4f} rad   target pi/2 = {np.pi/2:.4f}")
         print(f"    Two-run |C| = sqrt(sz_A^2 + sz_B^2) = {coh:.6f}")
-        print(f"    Weak-pulse prediction sin(N*theta_pulse) = {coh_pred:.6f}")
+        print(f"    pi/2-calibration prediction sin(N*theta_eff) = {coh_pred:.6f}")
         print(f"    |C| - prediction = {coh - coh_pred:+.2e}")
         print(f"    Run A: sz_A = {sz_A:+.6f}   <n>_fin_A = {n_A:.6f}  (delta<n>_A = {n_A:.2e})")
         print(f"    Run B: sz_B = {sz_B:+.6f}   <n>_fin_B = {n_B:.6f}  (delta<n>_B = {n_B:.2e})")
@@ -208,10 +217,13 @@ def test_4_two_run_equivalence() -> None:
 
 
 if __name__ == "__main__":
-    print("strobo 2.0 preflight")
+    print("strobo 2.0 preflight (pi/2-calibrated per train, v0.3)")
     print(f"  omega_m/(2pi) = {OMEGA_M_MHZ} MHz   T_m = {T_M_US:.4f} us")
-    print(f"  omega_r/(2pi) = {OMEGA_R_MHZ} MHz   eta = {ETA}")
+    print(f"  eta = {ETA}   DW = exp(-eta^2/2) = {_DW:.4f}")
     print(f"  Delta t = {DELTA_T_US} us   t_sep_factor = {T_SEP_FACTOR:.5f}")
+    print(f"  Per-train Omega such that N*Omega*DW*dt = pi/2:")
+    for lbl, N, dt in [("T1", 3, 0.100), ("T2", 7, 0.050)]:
+        print(f"    {lbl} (N={N}, dt={dt*1e3:.0f} ns):  Omega/(2pi) = {omega_for_pi2(N, dt):.4f} MHz")
     t_total = time.time()
     test_1_anchor()
     test_2_nmax_convergence()

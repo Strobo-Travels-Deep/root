@@ -24,12 +24,20 @@ from stroboscopic_sweep import run_single, CODE_VERSION  # noqa: E402
 
 # ─────────── physical parameters ───────────
 OMEGA_M_MHZ = 1.306
-OMEGA_R_MHZ = 0.178
 ETA = 0.395
 DELTA_T_US = 0.77
 T_M_US = 1.0 / OMEGA_M_MHZ
 T_SEP_FACTOR = DELTA_T_US / T_M_US
 NMAX = 60
+
+# Debye-Waller factor used by the pi/2 calibration.
+_DW = float(np.exp(-ETA ** 2 / 2))
+
+
+def omega_for_pi2(n_pulses: int, delta_t_pulse_us: float) -> float:
+    """Bare Omega/(2pi) [MHz] such that N*Omega*DW*dt = pi/2."""
+    return 1.0 / (4.0 * n_pulses * delta_t_pulse_us * _DW)
+
 
 # ─────────── scan grid ───────────
 DET_MHZ_MIN = -10.0
@@ -45,14 +53,19 @@ TRAINS = [
     {"label": "T1", "n_pulses": 3, "delta_t_pulse_us": 0.100},
     {"label": "T2", "n_pulses": 7, "delta_t_pulse_us": 0.050},
 ]
+# Pre-compute per-train Omega to hit a pi/2 analysis rotation.
+for _t in TRAINS:
+    _t["omega_r_MHz"] = omega_for_pi2(_t["n_pulses"], _t["delta_t_pulse_us"])
 
 
-def base_params(n_pulses: int, delta_t_pulse_us: float, alpha: float) -> dict:
+def base_params(
+    n_pulses: int, delta_t_pulse_us: float, alpha: float, omega_r_MHz: float
+) -> dict:
     return dict(
         alpha=alpha,
         eta=ETA,
         omega_m=2 * np.pi * OMEGA_M_MHZ,
-        omega_r=2 * np.pi * OMEGA_R_MHZ,
+        omega_r=2 * np.pi * omega_r_MHz,
         nmax=NMAX,
         theta_deg=90.0,
         phi_deg=0.0,
@@ -70,7 +83,9 @@ def base_params(n_pulses: int, delta_t_pulse_us: float, alpha: float) -> dict:
     )
 
 
-def run_one_sheet(n_pulses: int, delta_t_pulse_us: float, alpha: float) -> dict:
+def run_one_sheet(
+    n_pulses: int, delta_t_pulse_us: float, alpha: float, omega_r_MHz: float
+) -> dict:
     """Run a (theta_0, detuning) sheet for one (train, alpha). Two runs per cell."""
     sz_A = np.zeros((N_THETA, N_DET))
     sz_B = np.zeros((N_THETA, N_DET))
@@ -79,7 +94,7 @@ def run_one_sheet(n_pulses: int, delta_t_pulse_us: float, alpha: float) -> dict:
     sx_A = np.zeros((N_THETA, N_DET))
     sy_A = np.zeros((N_THETA, N_DET))
 
-    base = base_params(n_pulses, delta_t_pulse_us, alpha)
+    base = base_params(n_pulses, delta_t_pulse_us, alpha, omega_r_MHz)
 
     t0 = time.time()
     for i, theta0 in enumerate(THETA0_DEG):
@@ -113,11 +128,15 @@ def run_one_sheet(n_pulses: int, delta_t_pulse_us: float, alpha: float) -> dict:
 
 
 def main() -> None:
-    print("strobo 2.0 main sweep")
-    print(f"  omega_m/(2pi) = {OMEGA_M_MHZ} MHz")
-    print(f"  omega_r/(2pi) = {OMEGA_R_MHZ} MHz   eta = {ETA}")
-    print(f"  Delta t       = {DELTA_T_US} us   t_sep_factor = {T_SEP_FACTOR:.5f}")
+    print("strobo 2.0 main sweep (pi/2-calibrated, v0.3)")
+    print(f"  omega_m/(2pi) = {OMEGA_M_MHZ} MHz   eta = {ETA}")
+    print(f"  Delta t       = {DELTA_T_US} us     t_sep_factor = {T_SEP_FACTOR:.5f}")
     print(f"  Nmax          = {NMAX}")
+    for t in TRAINS:
+        theta_pulse = 2 * np.pi * t["omega_r_MHz"] * _DW * t["delta_t_pulse_us"]
+        print(f"  {t['label']}: N={t['n_pulses']}, dt={t['delta_t_pulse_us']*1e3:.0f} ns  ->  "
+              f"Omega/(2pi) = {t['omega_r_MHz']:.4f} MHz,  theta_pulse = {theta_pulse:.4f} rad,  "
+              f"N*theta = {t['n_pulses']*theta_pulse:.4f} rad (target pi/2 = {np.pi/2:.4f})")
     print(f"  Grid          = {N_DET} detunings x {N_THETA} theta_0  x {len(ALPHAS)} alpha x {len(TRAINS)} trains")
     print(f"  Grid cells    = {N_DET * N_THETA * len(ALPHAS) * len(TRAINS)}")
     print(f"  Engine calls  = {N_THETA * len(ALPHAS) * len(TRAINS) * 2}  "
@@ -130,8 +149,12 @@ def main() -> None:
     for train in TRAINS:
         for alpha in ALPHAS:
             tag = f"{train['label']}_alpha{alpha:g}".replace(".", "p")
-            print(f"\n[{tag}] N={train['n_pulses']}  dt={train['delta_t_pulse_us']*1e3:.0f} ns  |alpha|={alpha}")
-            sheet = run_one_sheet(train["n_pulses"], train["delta_t_pulse_us"], alpha)
+            print(f"\n[{tag}] N={train['n_pulses']}  dt={train['delta_t_pulse_us']*1e3:.0f} ns  "
+                  f"|alpha|={alpha}  Omega/(2pi)={train['omega_r_MHz']:.4f} MHz")
+            sheet = run_one_sheet(
+                train["n_pulses"], train["delta_t_pulse_us"], alpha,
+                train["omega_r_MHz"],
+            )
             for k, v in sheet.items():
                 out[f"{tag}_{k}"] = v
             out_keys.append(tag)
@@ -148,10 +171,10 @@ def main() -> None:
 
     manifest = {
         "code_version_engine": CODE_VERSION,
-        "runner_version": "0.1",
+        "runner_version": "0.3",
+        "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
         "physical_parameters": {
             "omega_m_MHz": OMEGA_M_MHZ,
-            "omega_r_MHz": OMEGA_R_MHZ,
             "eta": ETA,
             "Delta_t_us": DELTA_T_US,
             "T_m_us": T_M_US,
@@ -166,7 +189,8 @@ def main() -> None:
             "theta0_range_deg": [0.0, 360.0],
             "alphas": ALPHAS,
             "trains": [{"label": t["label"], "n_pulses": t["n_pulses"],
-                        "delta_t_pulse_us": t["delta_t_pulse_us"]} for t in TRAINS],
+                        "delta_t_pulse_us": t["delta_t_pulse_us"],
+                        "omega_r_MHz": t["omega_r_MHz"]} for t in TRAINS],
         },
         "observables_per_cell": {
             "sz_A": "sigma_z after train, init spin |+x>",
