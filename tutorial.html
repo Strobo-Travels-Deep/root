@@ -32,22 +32,50 @@
 
 <h2>Strong vs. Weak Binding: Two Limiting Perspectives</h2>
 
-<p>The stroboscopic measurement can be read in two complementary ways. Which description is closer to quantitative truth depends on three dimensionless ratios: train length 1/<em>N</em>, pulse bandwidth 1/(ω<sub>m</sub>δ<em>t</em>), and Doppler halfwidth η|α|. The <a href="wp-strong-weak-coastline/">WP-Coastline</a> map quantifies where each description applies.</p>
+<p>The stroboscopic protocol fires <em>N</em> short laser pulses at the ion, one per motional period. What the resulting spin state tells us depends on how the pulse duration compares with the motion: if the ion moves very little during a pulse, the measurement reads out discrete motional-frequency components; if the ion moves appreciably, it reads out a Doppler-like velocity distribution. We call these the <strong>strong-binding</strong> and <strong>weak-binding</strong> limits. The <a href="wp-strong-weak-coastline/">WP-C (Coastline)</a> numerical study maps the boundary between them along the natural axes <em>N</em> (number of pulses) and δ<em>t</em>/<em>T</em><sub>m</sub> (pulse duration in units of the motional period <em>T</em><sub>m</sub> = 2π/ω<sub>m</sub>).</p>
+
+<div class="fig-panel" style="padding:1rem 1.2rem;margin:1rem 0;">
+  <div class="fig-label">Notation used in this section</div>
+  <table class="compact-table" style="margin:0.4rem 0 0;font-size:0.86rem;">
+  <tbody>
+  <tr><td><em>N</em></td><td>Number of pulses in the stroboscopic train.</td></tr>
+  <tr><td>δ<em>t</em></td><td>Duration of a single pulse.</td></tr>
+  <tr><td><em>T</em><sub>m</sub>, ω<sub>m</sub></td><td>Motional period and angular frequency (ω<sub>m</sub> <em>T</em><sub>m</sub> = 2π). Physical anchor: ω<sub>m</sub>/(2π) = 1.3 MHz.</td></tr>
+  <tr><td>η</td><td><strong>Lamb–Dicke parameter</strong> — ratio of zero-point motional amplitude to the optical wavelength. Sets the strength of light–motion coupling. Here η = 0.397.</td></tr>
+  <tr><td>|α|</td><td>Coherent-state amplitude; mean phonon number ⟨<em>n</em>⟩ = |α|². Scanned values: 0, 1, 3, 5.</td></tr>
+  <tr><td>Ω, Ω<sub>eff</sub></td><td>Bare and Debye–Waller-reduced Rabi frequency (Ω<sub>eff</sub> = Ω·exp(−η²/2)). Sets the per-pulse rotation rate.</td></tr>
+  <tr><td>δ</td><td>Detuning of the analysis pulse from the carrier.</td></tr>
+  <tr><td>ϑ₀</td><td>Initial motional phase of the coherent state. The quantity the measurement is meant to read out.</td></tr>
+  <tr><td><em>C</em>(ϑ₀, δ)</td><td>Spin coherence magnitude after the pulse train — what the experiment actually records.</td></tr>
+  <tr><td><strong>V</strong> — tooth visibility</td><td>V = 1 − min<sub>ϑ</sub>|<em>C</em>|(ϑ₀, δ = 0). Measures how strongly the readout tracks the motional phase on resonance. V = 0 means "readout independent of ϑ₀" (no information); V → 1 means "maximum contrast between motional-phase values". The primary figure of merit.</td></tr>
+  <tr><td><strong><em>P</em></strong> — off-tooth coherence</td><td><em>P</em> = ⟨|<em>C</em>|(ϑ₀, δ = ½ω<sub>m</sub>)⟩<sub>ϑ₀</sub>. Sampled <em>between</em> two motional teeth. High <em>P</em> = the gap between teeth is clean (teeth resolved); low <em>P</em> = teeth have merged.</td></tr>
+  <tr><td>V<sub>imp</sub></td><td>Value of V in the limit of vanishing pulse duration. Set by the <strong>Debye–Waller factor</strong> exp(−η²(2⟨<em>n</em>⟩+1)/2) and computes to ≈ 0.865 here — independent of <em>N</em> and |α|.</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<p>From these we build three dimensionless ratios whose relative sizes select the applicable limit:</p>
+
+<ul style="margin:0 0 1rem 1.2rem;">
+  <li><strong>Train bandwidth</strong> 1/<em>N</em>: width of each comb tooth. Long trains (large <em>N</em>) have sharp teeth.</li>
+  <li><strong>Pulse bandwidth</strong> 1/(ω<sub>m</sub>δ<em>t</em>): spectral width of a single pulse envelope. Short pulses are broadband.</li>
+  <li><strong>Doppler halfwidth</strong> η|α|: how much the ion's coherent motion Doppler-broadens each tooth. Grows with motional amplitude.</li>
+</ul>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0 1.4rem;">
 
   <div class="callout" style="margin:0;">
     <div class="cl">Strong-binding (resolved-sideband) picture</div>
-    <p style="margin-bottom:0.4rem;"><strong>Framing:</strong> the <em>N</em>-pulse train acts as a narrowband filter. Its frequency response is a comb at δ = <em>k</em>ω<sub>m</sub>, <em>k</em> ∈ ℤ, with tooth width 1/<em>N</em>. Each tooth carries ϑ₀-dependent spin coherence that encodes the motional phase.</p>
-    <p style="margin-bottom:0.4rem;"><strong>Applicable when:</strong> 1/<em>N</em> ≪ 1, δ<em>t</em>/<em>T</em><sub>m</sub> ≪ 1, <em>and</em> η|α| ≲ 1. The pulse is effectively impulsive; the ion is effectively localised on the δ<em>t</em> scale.</p>
-    <p style="margin-bottom:0;"><strong>What V reports:</strong> tooth visibility V = 1 − min<sub>ϑ</sub>|<em>C</em>| approaches the Debye–Waller floor V<sub>imp</sub>(η) = 1 − exp(−η²(2<em>n̄</em>+1)/2); for η = 0.397 this gives V<sub>imp</sub> ≈ 0.865 independent of <em>N</em> and |α|. The v0.1.1 overlay confirms this uniformity.</p>
+    <p style="margin-bottom:0.4rem;"><strong>Framing.</strong> Pulses are much shorter than the motional period, and there are many of them. The pulse train acts as a narrowband filter with a comb of response peaks at δ = <em>k</em>ω<sub>m</sub> (<em>k</em> integer — the "motional sidebands"). Each tooth is narrow enough that the ion's motional phase ϑ₀ can be read off cleanly from the on-resonance spin coherence.</p>
+    <p style="margin-bottom:0.4rem;"><strong>When it applies.</strong> 1/<em>N</em> ≪ 1 <em>and</em> δ<em>t</em>/<em>T</em><sub>m</sub> ≪ 1 <em>and</em> η|α| ≲ 1. In words: many pulses, each short compared to a motional cycle, modest motional amplitude.</p>
+    <p style="margin-bottom:0;"><strong>What V reports.</strong> V approaches V<sub>imp</sub> ≈ 0.865 — the Debye–Waller floor. This is the maximum readout contrast the protocol can achieve with η = 0.397; it cannot be beaten by using longer or shorter trains.</p>
   </div>
 
   <div class="callout" style="margin:0;">
     <div class="cl">Weak-binding (Doppler-merged) picture</div>
-    <p style="margin-bottom:0.4rem;"><strong>Framing:</strong> bandwidths exceed tooth spacing, so the comb merges into a Doppler-broadened continuum. The detuning spectrum is a velocity filter sampled against a coherent-state momentum distribution of halfwidth η|α|·ω<sub>m</sub>.</p>
-    <p style="margin-bottom:0.4rem;"><strong>Applicable when:</strong> <em>any</em> of 1/<em>N</em> ≳ 1, δ<em>t</em>/<em>T</em><sub>m</sub> ≳ 0.3, or η|α| ≳ 1. The <a href="#" onclick="return false;" style="text-decoration:none;cursor:default;color:inherit;"><em>η|α| scaling sets the spectral width</em></a>; train/pulse bandwidths set how many teeth are merged.</p>
-    <p style="margin-bottom:0;"><strong>What V reports:</strong> V drops below V<sub>imp</sub> by an amount controlled by δ<em>t</em>; off-tooth coherence <em>P</em> at δ = ½ω<sub>m</sub> distinguishes pulse-broadening (<em>P</em> high) from Doppler merging (<em>P</em> low).</p>
+    <p style="margin-bottom:0.4rem;"><strong>Framing.</strong> Spectral widths are comparable to the tooth spacing ω<sub>m</sub>, so adjacent teeth overlap. The detuning spectrum looks like a continuous velocity filter whose width is set by the Doppler halfwidth η|α|·ω<sub>m</sub>.</p>
+    <p style="margin-bottom:0.4rem;"><strong>When it applies.</strong> <em>Any</em> of: 1/<em>N</em> ∼ 1 (short trains), δ<em>t</em>/<em>T</em><sub>m</sub> ≳ 0.3 (long pulses), or η|α| ≳ 1 (large motional amplitude).</p>
+    <p style="margin-bottom:0;"><strong>What V reports.</strong> V drops below V<sub>imp</sub>. The companion observable <em>P</em> tells us <em>how</em> teeth have merged: <em>P</em> still high → only the pulse broadened the teeth (<em>pulse-broadening</em>); <em>P</em> dropped too → Doppler broadening has filled the gaps (<em>Doppler merging</em>).</p>
   </div>
 
 </div>
@@ -55,29 +83,48 @@
 <h3>Coastline criterion — which limit applies?</h3>
 
 <table class="est-table">
-<thead><tr><th>Dimensionless ratio</th><th>Strong-binding</th><th>Weak-binding</th><th>WP-V calibration</th></tr></thead>
+<caption style="caption-side:top;text-align:left;font-size:0.86rem;color:var(--text-sec);margin-bottom:0.4rem;">The three bandwidth ratios at the Hasse 2024 calibration (column "Hasse"). "<em>LD</em>" abbreviates <em>Lamb–Dicke</em>; "RWA" is the rotating-wave approximation. ≲ means "of order or below"; ≪ means "much smaller than".</caption>
+<thead><tr><th>Ratio</th><th>Meaning</th><th>Strong-binding</th><th>Weak-binding</th><th>Hasse calibration</th></tr></thead>
 <tbody>
-<tr><td>Train-length 1/<em>N</em></td><td>≪ 1</td><td>∼ 1</td><td>0.03 (<em>N</em> = 30)</td></tr>
-<tr><td>Pulse-bandwidth 1/(ω<sub>m</sub>δ<em>t</em>)</td><td>≪ 1</td><td>∼ 1</td><td><strong>1.22</strong> (δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13)</td></tr>
-<tr><td>Motional-LD η|α|</td><td>≲ 1</td><td>≳ 1</td><td><strong>1.19</strong> (|α| = 3)</td></tr>
-<tr><td>Drive-LD Ω<sub>eff</sub>/ω<sub>m</sub></td><td>≤ 0.3 (RWA)</td><td>≤ 0.3 (RWA)</td><td>0.21 ✓</td></tr>
+<tr><td>1/<em>N</em></td><td>Tooth width in units of ω<sub>m</sub></td><td>≪ 1</td><td>∼ 1</td><td>0.03 (<em>N</em> = 30) ✓</td></tr>
+<tr><td>1/(ω<sub>m</sub>δ<em>t</em>)</td><td>Pulse bandwidth in units of ω<sub>m</sub></td><td>≪ 1</td><td>∼ 1</td><td><strong>1.22</strong> (δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13)</td></tr>
+<tr><td>η|α|</td><td>Doppler halfwidth (motional <em>LD</em> parameter)</td><td>≲ 1</td><td>≳ 1</td><td><strong>1.19</strong> (|α| = 3)</td></tr>
+<tr><td>Ω<sub>eff</sub>/ω<sub>m</sub></td><td>Drive <em>LD</em> parameter (required for RWA)</td><td>≤ 0.3</td><td>≤ 0.3</td><td>0.21 ✓</td></tr>
 </tbody>
 </table>
 
 <div class="callout">
   <div class="cl">Hasse's measurement sits on the coastline</div>
-  <p style="margin-bottom:0;">Two of three bandwidth ratios are <em>order unity</em> at the WP-V anchor. The protocol is therefore genuinely between limits — which is why the strong-binding interpretation (discrete comb) and the weak-binding interpretation (Doppler filter) <em>both</em> describe the same data set and must be reconciled, not chosen between. The v0.1.1 coastline map renders this reconciliation quantitatively.</p>
+  <p style="margin-bottom:0;">Two of the three bandwidth ratios are <em>order unity</em> at the Hasse 2024 parameters. The protocol is therefore genuinely <em>between</em> limits. The strong-binding picture (discrete comb) and the weak-binding picture (Doppler filter) each describe the same data set and must be reconciled rather than chosen between. The WP-C coastline map renders that reconciliation quantitatively.</p>
 </div>
 
-<h3>Headline findings from <a href="wp-strong-weak-coastline/">WP-Coastline v0.1.1</a></h3>
+<h3 id="wp-c-findings">Headline findings from <a href="wp-strong-weak-coastline/">WP-C (Coastline)</a></h3>
 
 <ol>
-  <li><strong>(<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) collapses to δ<em>t</em>/<em>T</em><sub>m</sub> alone</strong> under per-cell Ω recalibration (<em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2). The coastline is a 1D curve, not a 2D diagram, for the recalibrated-Ω protocol — <em>N</em>-dependence only re-emerges in the fixed-Ω control slice (as Rabi-envelope artefacts).</li>
-  <li><strong>χ-collapse falsified.</strong> The root-sum-square composition χ² = (1/<em>N</em>)² + (1/(ω<sub>m</sub>δ<em>t</em>))² + (η|α|)² does not collapse V onto a single curve. At matched χ ≈ 1.2, V spans 0.10 (|α| = 3) → 0.85 (|α| = 1). The three widths do not combine in quadrature; residual structure is the physics.</li>
-  <li><strong>Non-monotone V(|α|)</strong> at the coastline corner δ<em>t</em>/<em>T</em><sub>m</sub> = 0.80 — smooth single-cycle oscillation: min V ≈ 0.10 at |α| ≈ 3.0, local max V ≈ 0.40 at |α| ≈ 4.75 (α-recovery probe, <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">logbook</a>). The oscillation is <em>N</em>-invariant to 10⁻³ — calibration-scheme-stable, not a power-Rabi artefact.</li>
-  <li><strong>Encoder-sensitivity revival</strong> refines the memo §4.3 rubric. Some (V low, <em>P</em> high) cells are <em>not</em> pulse-broadening but an |α|-dependent projection of the train kernel onto near-uniform |<em>C</em>|(ϑ₀). Confirmed by the α-recovery v2 probe (<em>P</em> ≈ 1.000 at the V minimum).</li>
-  <li><strong>Uniform impulsive floor</strong> V<sub>imp</sub> ≈ 0.865 across all <em>N</em> ∈ {3…96} and all |α| ∈ {0, 1, 3, 5} — a cleaner analytic anchor than the council memo had anticipated. All finite-δ<em>t</em> curves head to the same Debye–Waller-limited reference.</li>
-  <li><strong>LD validity.</strong> Engine validity is governed by drive-LD Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3 alone; the coupling is stored as the exact matrix exponential <em>C</em> = exp[iη(<em>a</em>+<em>a</em>†)] with no η-truncation. Motional-LD η√(⟨<em>n</em>⟩+1) > 1 bounds the <em>physical-picture</em> interpretability (at |α| = 3 it is 1.26; at |α| = 5, 2.03), but not engine numerics.</li>
+  <li>
+    <strong>The coastline is a 1D curve, not a 2D map.</strong>
+    Once we tune the drive so that the <em>total</em> spin rotation across all <em>N</em> pulses stays fixed at π/2 (<em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2 — called the "recalibrated-Ω" or "option (a)" calibration), the number of pulses <em>N</em> drops out of V to better than 0.5%. Only the pulse-duration ratio δ<em>t</em>/<em>T</em><sub>m</sub> controls where on the coastline we sit. <em>N</em>-dependence returns only if we instead hold the Rabi drive at its Hasse value and let the rotation vary (control slice), where it appears as a Rabi-envelope oscillation — a power artefact, not a coastline feature.
+  </li>
+  <li>
+    <strong>A plausible width-composition rule ("χ-collapse") is falsified.</strong>
+    We tested whether the three widths combine in a root-sum-square, χ² = (1/<em>N</em>)² + (1/(ω<sub>m</sub>δ<em>t</em>))² + (η|α|)², with V ∼ exp(−χ²). The data refute it: at χ ≈ 1.2, V ranges from 0.10 at |α| = 3 to 0.85 at |α| = 1. The three widths do <em>not</em> compose as independent Gaussian factors. What remains after the failed collapse is genuine structure, not noise — which is where the next two findings enter.
+  </li>
+  <li>
+    <strong>V oscillates in the motional amplitude |α|.</strong>
+    At the long-pulse corner δ<em>t</em>/<em>T</em><sub>m</sub> = 0.80, tooth visibility is <em>non-monotone</em>: V ≈ 0.10 at |α| ≈ 3, climbing to a local maximum V ≈ 0.40 at |α| ≈ 4.75 before falling again past |α| ≈ 6 (α-recovery probe: <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">logbook</a>). The shape is robust to within 10⁻³ across <em>N</em> ∈ {24, 48, 96}, confirming this is physics of the finite-pulse propagator, not a Rabi-envelope artefact of a particular <em>N</em>.
+  </li>
+  <li>
+    <strong>A new rubric row — "encoder-sensitivity revival" — replaces some pulse-broadening cells.</strong>
+    At the V minimum near |α| ≈ 3 we also measured <em>P</em> = 1.000 to three decimals. So those cells are <em>not</em> Doppler-broadened; the pulse train simply produces a spin coherence |<em>C</em>|(ϑ₀) that happens to be almost independent of ϑ₀ for that particular (α, δ<em>t</em>). The measurement reads out information about <em>everything</em> except the motional phase — a blind spot of the encoder map, not a loss of coherence.
+  </li>
+  <li>
+    <strong>The impulsive limit is a clean, universal floor.</strong>
+    In the vanishing-pulse-duration limit, V = V<sub>imp</sub> ≈ 0.865 <em>uniformly</em> across <em>N</em> ∈ {3…96} and |α| ∈ {0, 1, 3, 5}. V<sub>imp</sub> is set by η alone (through the Debye–Waller factor) and gives the simplest possible analytic anchor for the coastline: everywhere else, the coastline measures the δ<em>t</em>-driven <em>departure</em> from this floor.
+  </li>
+  <li>
+    <strong>Engine-validity is controlled by the drive Lamb–Dicke ratio only.</strong>
+    The simulator stores the spin–motion coupling as the exact matrix exponential exp[iη(<em>a</em> + <em>a</em><sup>†</sup>)] with no small-η expansion, so it remains numerically valid even when the motional <em>LD</em> parameter η√(⟨<em>n</em>⟩+1) exceeds 1 (at |α| = 3 it is 1.26; at |α| = 5, 2.03). What <em>is</em> required is that the rotating-wave approximation on the drive hold — encoded as Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3. Motional-<em>LD</em> breaches therefore show up as a physical-picture caveat (the discrete-sideband <em>interpretation</em> may not apply), not an engine error, and are rendered as a distinguishable hatching on WP-C heatmaps.
+  </li>
 </ol>
 
 <hr>

@@ -37,16 +37,16 @@
 
 <div class="callout" style="border-left:3px solid var(--accent);">
   <div class="cl">What's new — 2026-04-21</div>
-  <p style="margin-bottom:0.4rem;"><strong>WP-Coastline v0.1.1 executed</strong> (<a href="wp-strong-weak-coastline/">wp-strong-weak-coastline/</a>, commit <code>528267b</code>) — the first quantitative map of the strong/weak-binding boundary along (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) at four |α| values. Full run in 15.5 s wall.</p>
-  <p style="margin-bottom:0.4rem;"><strong>Main findings (see <a href="#headlines">Headlines</a> below):</strong></p>
+  <p style="margin-bottom:0.4rem;"><strong>We mapped the "coastline" of the stroboscopic measurement</strong> — the boundary between two regimes where the same apparatus reads out very different kinds of information. This is work package <strong>WP-C</strong> (<em>Coastline</em>): see <a href="wp-strong-weak-coastline/">wp-strong-weak-coastline/</a>, commit <code>528267b</code>, run time 15.5 s.</p>
+  <p style="margin-bottom:0.4rem;">The two regimes are <strong>strong binding</strong> (ion tightly confined relative to the pulse timescale — the measurement resolves discrete motional-frequency teeth) and <strong>weak binding</strong> (pulses too broad to resolve individual teeth — the measurement sees a Doppler-like continuum). See the <a href="#headlines">Headline findings</a> below for the plain-English story. The technical summary:</p>
   <ul style="margin:0 0 0.4rem 1.2rem;font-size:0.9rem;">
-    <li>Under per-cell Ω recalibration, the 2D (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) plane <strong>collapses to a 1D curve in δ<em>t</em>/<em>T</em><sub>m</sub></strong>. <em>N</em> carries no independent physics once <em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2 is enforced.</li>
-    <li>The χ-collapse conjecture (root-sum-square composition of train, pulse, and Doppler widths) is <strong>falsified</strong> — a positive result.</li>
-    <li><strong>Non-monotone V(|α|)</strong> at the coastline corner: min V ≈ 0.10 at |α| ≈ 3.0, local max V ≈ 0.40 at |α| ≈ 4.75 — smooth single-cycle oscillation, robust under <em>N</em>-variation.</li>
-    <li>Uniform impulsive-limit floor V<sub>imp</sub> ≈ 0.865 across all <em>N</em> and all |α|: the coastline measures the δ<em>t</em>-dependent <strong>departure</strong> from Debye–Waller.</li>
-    <li>LD-validity lemma resolved: engine validity is governed by drive-LD Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3 <em>alone</em>; motional-LD bounds the physical-picture interpretation only.</li>
+    <li>The boundary turns out to be a <strong>1D curve</strong>, not a 2D surface. Once we tune the drive so that <em>N</em> pulses deliver exactly a π/2 net rotation per cell, the number of pulses <em>N</em> drops out — only pulse duration δ<em>t</em> relative to the motional period <em>T</em><sub>m</sub> matters.</li>
+    <li>A simple conjecture — that three independent spectral widths (train length, pulse duration, Doppler) combine as a root-sum-square (<strong>χ-collapse</strong>) — is <strong>falsified</strong>. What the data show instead is physics worth naming.</li>
+    <li>The tooth-visibility figure of merit, V (see panel below), is <strong>non-monotone in the coherent-state amplitude |α|</strong>: at long pulses we see min V ≈ 0.10 at |α| ≈ 3, local max V ≈ 0.40 at |α| ≈ 4.75. A smooth single-cycle oscillation robust under pulse-number changes.</li>
+    <li>The <strong>impulsive-kick limit</strong> (infinitely short pulses) sits at V ≈ 0.865 for all pulse numbers and all coherent-state amplitudes — a clean analytic floor set only by the Lamb–Dicke parameter η.</li>
+    <li>The engine is valid wherever the <strong>effective drive</strong> stays well below the motional frequency (Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3). A second, stricter Lamb–Dicke condition (η√⟨<em>n</em>⟩ ≲ 1) bounds only the interpretive <em>picture</em>, not the numerics.</li>
   </ul>
-  <p style="margin-bottom:0;">Full memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21-strong-weak-coastline.md</a>. Follow-up α-recovery probe (commit <code>e0718a2</code>): <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">alpha-recovery logbook</a> — confirms the oscillation is calibration-scheme-stable; memo §5.3 promoted to PARTIALLY RESOLVED.</p>
+  <p style="margin-bottom:0;">Full council memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21</a>. Follow-up α-recovery probe (commit <code>e0718a2</code>): <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">alpha-recovery logbook</a>.</p>
 </div>
 
 <h2>Structure</h2>
@@ -117,37 +117,56 @@
 
 <h2 id="headlines">Headline findings — strong / weak binding</h2>
 
-<p>The stroboscopic protocol sits near the boundary between two limits, distinguished by whether pulse bandwidth and train length resolve the motional comb at δ = <em>k</em>ω<sub>m</sub>. WP-Coastline v0.1.1 maps that boundary quantitatively.</p>
+<p>The stroboscopic measurement fires a train of short laser pulses at the ion, once per motional period, and reads out the resulting spin state. How we <em>interpret</em> that readout depends on a competition of timescales. If the ion's confinement is stiff enough that its motion is fast compared to the pulse duration (<strong>strong binding</strong>), the measurement acts as a frequency filter with a discrete comb of narrow teeth spaced by the motional frequency ω<sub>m</sub>. If confinement is softer (<strong>weak binding</strong>), the teeth merge and the measurement reads out a Doppler-like velocity distribution. <a href="wp-strong-weak-coastline/">WP-C</a> maps the boundary — the "coastline" — along the two natural axes: the number of pulses <em>N</em> and the pulse duration δ<em>t</em> (reported as the dimensionless ratio δ<em>t</em>/<em>T</em><sub>m</sub>, where <em>T</em><sub>m</sub> = 2π/ω<sub>m</sub> is one motional period).</p>
+
+<div class="fig-panel" style="padding:1rem 1.2rem;margin:1rem 0;">
+  <div class="fig-label">Symbols at a glance</div>
+  <table class="compact-table" style="margin:0.4rem 0 0;font-size:0.86rem;">
+  <tbody>
+  <tr><td><em>N</em></td><td>Number of pulses in the stroboscopic train (3 – 96 in this scan).</td></tr>
+  <tr><td>δ<em>t</em>/<em>T</em><sub>m</sub></td><td>Pulse duration as a fraction of the motional period. Small → impulsive kicks; large → finite-duration pulses blur over the motion.</td></tr>
+  <tr><td>|α|</td><td>Amplitude of the ion's coherent motional state (0, 1, 3, 5 in this scan). Roughly: √⟨<em>n</em>⟩ phonons.</td></tr>
+  <tr><td>η</td><td><strong>Lamb–Dicke parameter</strong> — ratio of zero-point motion to the laser wavelength (η = 0.397 here). The dimensionless coupling strength between light and motion.</td></tr>
+  <tr><td>η|α|</td><td>Doppler halfwidth (in units of ω<sub>m</sub>) for a coherent state of amplitude |α|. Scales the velocity spread seen by the laser.</td></tr>
+  <tr><td>Ω, Ω<sub>eff</sub></td><td>Bare Rabi frequency and its Debye–Waller-reduced effective value, Ω<sub>eff</sub> = Ω·exp(−η²/2). Sets how fast each pulse rotates the spin.</td></tr>
+  <tr><td><strong>V</strong> (tooth visibility)</td><td>Primary figure of merit. V = 1 − min<sub>ϑ</sub>|<em>C</em>| measures how strongly the spin coherence |<em>C</em>| depends on the motional phase ϑ₀ at δ = 0. V = 0 means "no motional-phase readout"; V → 1 means "maximum readout contrast".</td></tr>
+  <tr><td><strong><em>P</em></strong> (off-tooth coherence)</td><td>Companion figure of merit. <em>P</em> = ⟨|<em>C</em>|⟩ averaged over motional phase at δ = ½ω<sub>m</sub> (<em>between</em> teeth). Low <em>P</em> = Doppler merging; high <em>P</em> = teeth still distinguishable.</td></tr>
+  <tr><td>V<sub>imp</sub></td><td>The value of V in the limit of infinitely short pulses (δ<em>t</em> → 0). Set by the <strong>Debye–Waller factor</strong> exp(−η²⟨2<em>n</em>+1⟩/2); ≈ 0.865 at η = 0.397 across all <em>N</em> and |α|.</td></tr>
+  <tr><td>Recalibration<br>("option (a)")</td><td>Throughout this scan we re-tune the Rabi drive Ω per cell so that <em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2. This holds the <em>total</em> spin rotation fixed at π/2 regardless of how many pulses we use, so the scan tests only the resolvedness axis — not power-broadening artefacts.</td></tr>
+  </tbody>
+  </table>
+</div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0 1.4rem;">
 
   <div class="callout" style="margin:0;">
-    <div class="cl">Strong-binding / resolved-sideband limit</div>
-    <p style="margin-bottom:0.4rem;"><strong>Criterion:</strong> 1/<em>N</em> ≪ 1 <em>and</em> δ<em>t</em>/<em>T</em><sub>m</sub> ≪ 1 <em>and</em> η|α| < 1. Discrete comb at δ = <em>k</em>ω<sub>m</sub> is resolved; each tooth carries ϑ₀-dependent spin coherence.</p>
-    <p style="margin-bottom:0;"><strong>Observable signature:</strong> tooth visibility V = 1 − min<sub>ϑ</sub>|<em>C</em>| approaches its Debye–Waller floor (V<sub>imp</sub> ≈ 0.865 at η = 0.397). Hasse regime (<em>N</em> = 30, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, |α| ≤ 1) sits here.</p>
+    <div class="cl">Strong-binding (resolved-sideband) limit</div>
+    <p style="margin-bottom:0.4rem;"><strong>When it applies:</strong> many pulses (1/<em>N</em> small), short pulses compared to a motional period (δ<em>t</em>/<em>T</em><sub>m</sub> small), and modest coherent amplitude (η|α| below 1). In this limit the pulse train is a narrowband filter whose frequency response is a comb of teeth at multiples of ω<sub>m</sub>.</p>
+    <p style="margin-bottom:0;"><strong>What we see:</strong> V reaches its <em>Debye–Waller floor</em> V<sub>imp</sub> ≈ 0.865, independent of <em>N</em> and |α|. Each tooth cleanly encodes the motional phase ϑ₀. The original Hasse experiment (<em>N</em> = 30, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, |α| ≤ 1) sits here.</p>
   </div>
 
   <div class="callout" style="margin:0;">
-    <div class="cl">Weak-binding / Doppler-merged limit</div>
-    <p style="margin-bottom:0.4rem;"><strong>Criterion:</strong> pulse bandwidth 1/(ω<sub>m</sub>δ<em>t</em>) or train bandwidth 1/<em>N</em> comparable to ω<sub>m</sub>, or Doppler halfwidth η|α|·ω<sub>m</sub> comparable to tooth spacing. Adjacent teeth merge into a Doppler-like continuum.</p>
-    <p style="margin-bottom:0;"><strong>Observable signature:</strong> V collapses while off-tooth coherence <em>P</em>(δ = ½ω<sub>m</sub>) stays ≈ 1 (<em>pulse-broadening</em>) — or both drop (<em>Doppler merging</em>, not reached at this detuning). Discriminated by the two-map V/P rubric.</p>
+    <div class="cl">Weak-binding (Doppler-merged) limit</div>
+    <p style="margin-bottom:0.4rem;"><strong>When it applies:</strong> any one of (i) short train (1/<em>N</em> → 1), (ii) long pulses (δ<em>t</em>/<em>T</em><sub>m</sub> → 1, so pulse bandwidth 1/(ω<sub>m</sub>δ<em>t</em>) merges teeth), or (iii) large motional amplitude (η|α| ≳ 1, Doppler-broadening each tooth into its neighbours). Adjacent teeth blur into a continuum.</p>
+    <p style="margin-bottom:0;"><strong>What we see:</strong> V drops. If off-tooth coherence <em>P</em> stays ≈ 1 we call it <em>pulse-broadening</em>; if <em>P</em> also drops, it is <em>Doppler merging</em>. The two-map V/<em>P</em> rubric below distinguishes them.</p>
   </div>
 
 </div>
 
 <table class="est-table">
-<thead><tr><th>Regime</th><th>V</th><th><em>P</em></th><th>Occupies which cells</th></tr></thead>
+<caption style="caption-side:top;text-align:left;font-size:0.86rem;color:var(--text-sec);margin-bottom:0.4rem;">Failure-mode rubric. V and <em>P</em> are defined in the symbols panel above; "cells" refers to points on the (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) grid.</caption>
+<thead><tr><th>Regime</th><th>V (tooth)</th><th><em>P</em> (off-tooth)</th><th>Where on the grid</th></tr></thead>
 <tbody>
-<tr><td>Strong-binding</td><td>high</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≤ 0.2 at |α| ∈ {0, 1}; impulsive edge</td></tr>
-<tr><td>Pulse-broadening</td><td>low</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≥ 0.4 at |α| ≥ 3 — where WP-V's α = 3 baseline lands under extended pulses</td></tr>
-<tr class="hl"><td>Encoder-sensitivity revival</td><td>low</td><td>high</td><td>finite-δ<em>t</em> |α|-dependent projection onto near-uniform |<em>C</em>|(ϑ₀). <strong>New rubric row</strong> confirmed by v2 α-probe — source of the V minimum at |α| ≈ 3</td></tr>
-<tr><td>Doppler merging</td><td>low</td><td>low</td><td>not observed at δ = ½ω<sub>m</sub>; requires δ inside the broadened sideband (v0.2 scope)</td></tr>
+<tr><td>Strong-binding</td><td>high (≈ 0.9)</td><td>high (≈ 1)</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≤ 0.2 at |α| ∈ {0, 1}; and the impulsive edge</td></tr>
+<tr><td>Pulse-broadening</td><td>low</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≥ 0.4 at |α| ≥ 3 — where Hasse's α = 3 baseline would land under extended pulses</td></tr>
+<tr class="hl"><td>Encoder-sensitivity revival <span style="font-size:0.74rem;color:var(--text-muted);">(new row, 2026-04-21)</span></td><td>low</td><td>high</td><td>A finite-δ<em>t</em>, |α|-dependent "blind spot" where |<em>C</em>| is almost independent of the motional phase — not Doppler washout. Cause of the V minimum at |α| ≈ 3 identified in the α-recovery probe.</td></tr>
+<tr><td>Doppler merging</td><td>low</td><td>low</td><td>Not reached at the δ = ½ω<sub>m</sub> sampled here; would require probing detuning inside the Doppler-broadened sideband (v0.2 scope).</td></tr>
 </tbody>
 </table>
 
 <div class="callout">
   <div class="cl">Hasse's measurement sits on the coastline</div>
-  <p style="margin-bottom:0;">At the WP-V calibration (<em>N</em> = 30, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, η = 0.397, |α| = 3) the three bandwidth ratios are comparable — 1/<em>N</em> ≈ 0.03, 1/(ω<sub>m</sub>δ<em>t</em>) ≈ 1.22, η|α| ≈ 1.19. The protocol is <em>neither</em> impulsive <em>nor</em> deeply resolved, which is why a quantitative coastline was worth producing rather than assumed.</p>
+  <p style="margin-bottom:0;">At the original Hasse parameters (<em>N</em> = 30 pulses, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, η = 0.397, |α| = 3), two of the three dimensionless ratios are order unity: pulse bandwidth 1/(ω<sub>m</sub>δ<em>t</em>) ≈ 1.22 and Doppler halfwidth η|α| ≈ 1.19, while train bandwidth 1/<em>N</em> ≈ 0.03 is small. The protocol is <em>neither</em> deeply impulsive <em>nor</em> deeply resolved. That is precisely why a quantitative coastline is worth mapping rather than assuming.</p>
 </div>
 
 <hr>
@@ -156,7 +175,7 @@
 
 <p><strong>Primary framing: Tomography.</strong> The η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. The Doppler detuning spectrum — not contrast loss — is the primary momentum readout: δ<sub>D</sub>/Ω ≫ 1 for all α ≥ 1.</p>
 
-<p><strong>Status:</strong> WP-V (Hasse reproduction, 5% tolerance) <em>complete</em>; WP-E (forward map) <em>active</em>; WP-C (strong/weak-binding coastline) <em>v0.1.1 executed</em> — 1D δ<em>t</em>/<em>T</em><sub>m</sub> coastline, χ-collapse falsified, α-revival identified. Work package sequence: A.3 (backaction) → A.1 (signal model) → A.2 (truncation) → B (numerics) → C (tomography) → D (BAE forward view).</p>
+<p><strong>Status of the work-package (WP) streams:</strong> <a href="wp-hasse-reproduction/"><strong>WP-V</strong></a> (Validation — reproducing the Hasse 2024 experiment in simulation, within 5%) <em>complete</em>; <a href="wp-phase-contrast-maps/"><strong>WP-E</strong></a> (Extension — forward map over coherent-state parameters) <em>active</em>; <a href="wp-strong-weak-coastline/"><strong>WP-C</strong></a> (Coastline — strong/weak-binding boundary map) <em>v0.1.1 executed</em>, with the three main findings listed above. The theoretical work-package sequence A → B → C → D on the <a href="tutorial.html">Tutorial</a> page is a <em>separate</em> labelling scheme for analytical sub-tasks (A: signal model, B: numerics, C: tomography, D: BAE); do not confuse WP-V/E/C (numerical work streams) with WP-A/B/C/D (theoretical sub-tasks).</p>
 
 <footer>
   <p>Dossier v0.9 · Council-4 ADM-EC · Guardian / Scout / Architect / Integrator convergent.<br>
