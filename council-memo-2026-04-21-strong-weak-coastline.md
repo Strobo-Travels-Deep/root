@@ -1,6 +1,6 @@
 # Council Memo — Proposed WP: Strong/Weak-Binding Coastline Map
 
-**Council Memo · post-execution fold-in · v0.4 · 2026-04-21**
+**Council Memo · post-execution fold-in · v0.4.1 · 2026-04-21**
 **Status:** v0.1.1 of the scoped WP is executed, plotted, and committed at [wp-strong-weak-coastline/](wp-strong-weak-coastline/) (commit `528267b`). The memo's locked decisions survived execution; §5.1 was resolved by co-lock (lemma inlined in the WP README §2). This v0.4 folds the v0.1 outcomes back into the memo and retargets §9 as a forward-looking ask for WP-C v0.2. Planning text from v0.2/v0.3 preserved verbatim below for provenance; post-execution material lives in new §2.6, §5.3, and §9 rewrite.
 **Status (pre-execution legacy):** Findings + locked-decisions package for final Integrator pass, pending one open item (§5.1). Guardian-synthesised, Architect- and Scout-reviewed; Integrator stance not yet registered.
 **Origin:** Follow-up to the §3.3 tutorial section of
@@ -98,7 +98,7 @@ Two findings are new information the memo could not have anticipated: the $N$-de
 
 **Decision:** Option (a) **recalibrated $\Omega$** as primary — at each $(N, \delta t)$, set $\Omega$ so that $N\cdot\Omega_\text{eff}\cdot\delta t = \pi/2$. Option (b) **fixed $\Omega = \Omega_\text{Hasse}$** retained as a single-row control slice at $\delta t/T_m = 0.13$. Three-stance convergent (Guardian-1, Guardian-2, Architect).
 
-**Hard ceiling:** $\Omega_\text{eff}/\omega_m \leq 0.3$, pre-declared and engine-enforced. Cells breaching the ceiling are **logged and rendered as hatched overlays** on all primary heatmaps — *not* excluded, *not* cropped, *not* silently filtered. This is the single most important Clarity commitment in the WP; §6 enforces its propagation into h5 attributes and plot legends.
+**Hard ceiling:** $\Omega_\text{eff}/\omega_m \leq 0.3$, pre-declared and engine-enforced. Cells breaching the ceiling are **logged and rendered as hatched overlays** on all primary heatmaps — *not* excluded, *not* cropped, *not* silently filtered. This is the single most important Clarity commitment in the WP; §6 enforces its propagation into the h5 per-cell diagnostics and plot legends. *(v0.4 correction: the executed WP stores the breach as a per-cell (nN, ndt) boolean dataset `ld_flag_drive`, not as a scalar attribute; see [wp-strong-weak-coastline/README.md §5](wp-strong-weak-coastline/README.md) for the on-disk schema.)*
 
 **Memo-level footnote:** Under option (a) with the §4.2 geometric grid, approximately **10 of 36 cells** breach the ceiling, concentrated in the small-$N$ / small-$\delta t$ corner. This is diagnostic data, not a defect.
 
@@ -190,7 +190,9 @@ If the §5.1 lemma establishes that the engine is valid only under motional-LD �
 
 -----
 
-## 6. Deliverables shape (v0.1)
+## 6. Deliverables shape (v0.1) — LEGACY PRE-EXECUTION PLAN
+
+**v0.4 note:** §6 below is the pre-execution planning shape. The executed WP diverged in two places — validity diagnostics are stored as per-cell *datasets* (not attributes; see the v0.4 edit on line 201) and the impulsive overlay was placed on the primary V maps (not secondary). The **authoritative on-disk schema and artefact list** is [wp-strong-weak-coastline/README.md §5](wp-strong-weak-coastline/README.md); the text below is preserved for provenance.
 
 Conditional on §5.1 resolution and Integrator non-objection. Lean v0.1 comprises:
 
@@ -198,8 +200,8 @@ Conditional on §5.1 resolution and Integrator non-objection. Lean v0.1 comprise
 - `wp-strong-weak-coastline/README.md` — council-cleared scope with §5.1 lemma inlined, hatching/LD-legend conventions declared, rubric table from §4.3 included, $\chi$-collapse conjecture from §3.4 declared as *testable hypothesis, not backbone*.
 - `wp-strong-weak-coastline/numerics/run_coastline_v1.py` — driver over the 6×6 $(N, \delta t/T_m)$ grid × 3 $\delta$ × 4 $|\alpha|$ values (or 3 pending §5.2), at the §4.1 calibration, with:
   - Per-cell worst-case Fock-leakage audit at NMAX $\geq 60$, run first at the $|\alpha|\times\delta t/T_m$ extremes before the full grid sweep (§2.3).
-  - Per-cell drive-LD and motional-LD diagnostics, stored as h5 dataset attributes.
-- `wp-strong-weak-coastline/numerics/coastline_v1.h5` — $V$, $P$, diamond-amplitude, $|\delta\langle n\rangle|_\text{peak}$ per $(N, \delta t/T_m, |\alpha|, \delta)$ cell. **Data-ledger protocol:** constraint-selection rules declared as dataset attributes (`omega_eff_ceiling`, `ld_flag_drive`, `ld_flag_motional`, `fock_leakage_top5`), *not* bled into the observable fields themselves. Observables remain the raw engine output; hatching/exclusion logic is a downstream rendering concern that consumes the flags.
+  - Per-cell drive-LD and motional-LD diagnostics, stored as h5 dataset attributes. *(v0.4 correction: stored as per-cell (nN, ndt) datasets — `ld_flag_drive`, `ld_flag_motional`, `omega_eff_over_omega_m`, `ld_motional_param`, `fock_leakage_top5`, `nmax_used` — not scalar attributes, because they vary per cell.)*
+- `wp-strong-weak-coastline/numerics/coastline_v1.h5` — $V$, $P$, diamond-amplitude, $|\delta\langle n\rangle|_\text{peak}$ per $(N, \delta t/T_m, |\alpha|, \delta)$ cell. **Data-ledger protocol:** constraint-selection rules declared as dataset attributes (`omega_eff_ceiling`, `ld_flag_drive`, `ld_flag_motional`, `fock_leakage_top5`), *not* bled into the observable fields themselves. Observables remain the raw engine output; hatching/exclusion logic is a downstream rendering concern that consumes the flags. *(v0.4 correction: ceiling scalars like `omega_eff_ceiling` and `motional_ld_threshold` are indeed root-level h5 attributes in the executed file; the per-cell flag arrays are sibling datasets inside each `/alpha_{X}pY/` group. The data-ledger protocol — flags separate from observables — is preserved, just with the storage type corrected.)*
 - **Primary heatmaps** — two maps ($V$, $P$) per $|\alpha|$, with drive-LD-ceiling breaches (§4.1) hatched in one convention. Optional diamond-amplitude panel where discriminatory; 1D cut along $\delta t/T_m = 0.13$ showing $N$-dependence; tertiary $V/P$ covariance panel (§4.3); analytic impulsive overlay on the $\delta t/T_m \to 0$ edge (§4.5).
 - **Motional-LD diagnostic overlays** — per-cell motional-LD-breach indicator from §5.1, hatched in a *distinguishable* convention from the drive-LD hatching. Legend must make provenance unambiguous: drive-LD is §4.1's ceiling; motional-LD is §5.1's per-cell diagnostic pending the lemma.
 - `wp-strong-weak-coastline/logbook/2026-04-XX-kickoff.md` + results entry tracking the §3.4 conjecture's fate.
@@ -229,7 +231,7 @@ The coastline WP closes the $(N, \delta t/T_m)$ axis pair; other axes (envelope 
 
 v0.3 asks are closed: §5.1 resolved by co-lock (item 2, 4), §4.2 grid geometry and §4.4 |α| set confirmed by execution without objection (item 3), and the Integrator review of item 1 is effectively granted by the clean run and the intact locked decisions — but is formally noted here for the record. What remains for the council is a **v0.2 scope decision**:
 
-1. **WP-C v0.2 — Doppler-merging probe.** Re-run the (N, δt/T_m) grid with $\delta$ scaled per cell to land inside the Doppler-broadened sideband, e.g. $\delta = \eta|\alpha|\,\omega_m$ for the P observable. This is the only way to exercise the (V low, P low) quadrant of the §4.3 rubric. Compute cost: one additional pass of the driver at ≈ 30 s per |α|. Not scope-creep — it is the gap-closing follow-up to the rubric that v0.1 under-discriminated.
+1. **WP-C v0.2 — Doppler-merging probe.** Re-run the (N, δt/T_m) grid with $\delta$ scaled per cell to land inside the Doppler-broadened sideband, e.g. $\delta = \eta|\alpha|\,\omega_m$ for the P observable. This is the only way to exercise the (V low, P low) quadrant of the §4.3 rubric. Compute cost: one additional pass of the driver, extrapolating from the v0.1.1 execution budget (15.5 s wall for the four-|α| set, i.e. ≈ 4 s per |α|) to roughly **≈ 15–20 s total** for the equivalent v0.2 sweep. Not scope-creep — it is the gap-closing follow-up to the rubric that v0.1 under-discriminated.
 2. **§5.3 — α-recovery probe.** Run the dense |α| scan at $\delta t/T_m = 0.80$, $N = 48$ specified in §5.3. ≲ 1 s compute. This decides between physics and engine artefact; if physics, the observed $V(|\alpha|)$ shape is itself a result worth naming.
 3. **Memo disposition.** Two options:
    - **(A) Close this memo at v0.4** and start a new pre-WP memo for WP-C v0.2 covering items (1) and (2) as a coherent scope. Cleaner provenance, matches the memo-per-WP pattern established by `council-memo-2026-04-21-strong-weak-coastline.md` itself.
@@ -240,6 +242,8 @@ v0.3 asks are closed: §5.1 resolved by co-lock (item 2, 4), §4.2 grid geometry
 Items 1 and 2 are numerical follow-ups any stance can authorise; item 3 is the only council-level decision remaining.
 
 -----
+
+*v0.4.1 (2026-04-21, post-execution wording clean-up): §4.1 "h5 attributes" and §6 "h5 dataset attributes" inline-corrected to point at the per-cell datasets actually written; §6 header relabelled "LEGACY PRE-EXECUTION PLAN" with a pointer to the authoritative WP README §5 schema; §9.1 v0.2 Doppler-probe cost estimate updated from the stale ≈ 30 s/|α| figure to ≈ 4 s/|α| extrapolated from the executed 15.5 s four-|α| wall time. No content reshape — v0.4 structure preserved.*
 
 *v0.4 (2026-04-21, post-execution): header status rewritten to reflect that WP-C v0.1.1 is executed (commit `528267b`); §2.6 added summarising the six principal findings of the run ($N$-degeneracy, $\chi$-collapse falsified, Doppler-merging regime not reached, non-monotone $\alpha$, uniform impulsive floor, §5.1 lemma resolution, Floquet §8 promotion criterion unmet); §3 prefaced with a post-execution note pointing to §2.6; §4 preamble annotated with per-subsection execution outcomes; §5 prefixed with a §5.0 resolution-status block that closes §5.1 and §5.2 and opens §5.3 (α-recovery mechanism); §9 rewritten from pre-execution ask to forward-looking WP-C v0.2 ask with memo-disposition choice. v0.3 body preserved verbatim below §2.6 for provenance. v0.3 superseded.*
 
