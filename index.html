@@ -24,6 +24,7 @@
     <a href="reference.html">Reference</a>
     <a href="wp-phase-contrast-maps/">WP-E</a>
     <a href="wp-strong-weak-coastline/">WP-C</a>
+    <a href="wp-strobo-2p0/">Strobo 2.0</a>
     <a href="getting-started.html">Start</a>
   </nav>
 </header>
@@ -55,6 +56,25 @@
   </ul>
 
   <p style="margin-bottom:0;">Full council memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21</a> (v0.4.7 — walked back from v0.4.6 after reviewer caught overclaims in the Lemma-A SP formulation and the Lemma-B corollary). Probes: <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">α-recovery</a>, <a href="wp-strong-weak-coastline/logbook/2026-04-21-doppler-probe.md">Doppler</a>, <a href="wp-strong-weak-coastline/logbook/2026-04-21-analytic.md">analytic</a>.</p>
+</div>
+
+<div class="callout" style="border-left:3px solid var(--accent);">
+  <div class="cl">Also new — 2026-04-21 — Strobo 2.0</div>
+  <p style="margin-bottom:0.4rem;"><strong>A short-train variant of the Hasse protocol, mapped end-to-end in a single day.</strong> Two pulse-train configurations — <em>N</em> = 3 × 100 ns and <em>N</em> = 7 × 50 ns — at Δ<em>t</em> = 0.77 µs ≈ <em>T</em><sub>m</sub> (near-stroboscopic, +0.56 % slip), swept over train detuning δ<sub>0</sub>/(2π) ∈ [−10, +10] MHz and initial motional phase ϑ<sub>0</sub> ∈ [0, 2π) at |α| ∈ {1, 3, 4.5}. <strong>31 104 grid cells, 768 engine calls, ~100 s wall time.</strong> See <a href="wp-strobo-2p0/">Strobo 2.0 progress mirror</a>, commit <code>6e74da9</code>.</p>
+  <p style="margin-bottom:0.4rem;">Five observables reported per cell (logbook <a href="wp-strobo-2p0/logbook/2026-04-21-kickoff.md">kickoff §4</a>):</p>
+  <ul style="margin:0 0 0.4rem 1.2rem;font-size:0.9rem;">
+    <li><strong>Hasse-style coherence contrast</strong> |<em>C</em>| = √(<em>a</em><sub><em>x</em></sub>² + <em>a</em><sub><em>y</em></sub>²) — amplitude of the σ<sub>z</sub> fringe under scanning analysis phase φ, extracted from two runs per cell (initial spin |+<em>x</em>⟩ and |+<em>y</em>⟩). This is the "0.76(3)" metric of Hasse 2024 Fig. 2(b).</li>
+    <li><strong>Analysis phase</strong> arg <em>C</em> = atan2(<em>a</em><sub><em>y</em></sub>, <em>a</em><sub><em>x</em></sub>) — the φ that maximises σ<sub>z</sub>.</li>
+    <li><strong>Spin polarisation</strong> ⟨σ<sub>z</sub>⟩ at φ = 0.</li>
+    <li><strong>Stroboscopic back-action</strong> δ⟨<em>n</em>⟩ = ⟨<em>n</em>⟩<sub>fin</sub> − |α|² at φ ∈ {0, π/2} (Hasse 2024 Fig. 6(b) definition).</li>
+  </ul>
+  <p style="margin-bottom:0.4rem;">Three qualitative findings survive the open Rabi-rate question (see below):</p>
+  <ul style="margin:0 0 0.4rem 1.2rem;font-size:0.9rem;">
+    <li><strong>Stroboscopic carrier dominates.</strong> Only δ<sub>0</sub> = 0 plus a faint δ<sub>0</sub> ≈ ±3 ω<sub>m</sub> feature survive. No clear ±ω<sub>m</sub> or ±2 ω<sub>m</sub> sidebands — pulse-to-pulse interference at Δ<em>t</em> ≈ <em>T</em><sub>m</sub> collapses them, with the faint ±3 ω<sub>m</sub> leakage traced to the +0.56 % slip.</li>
+    <li><strong>|<em>C</em>| peak is essentially |α|-independent</strong> (scatter &lt; 0.5 % across |α| ∈ {1, 3, 4.5}). Both trains reach exactly sin(<em>N</em>·θ<sub>pulse</sub>·<em>e</em><sup>−η²/2</sup>) at the carrier — the Debye–Waller-suppressed weak-pulse limit.</li>
+    <li><strong>Hasse Fig. 6 geometry reproduced to machine precision.</strong> At δ<sub>0</sub> = 0 the (φ, ϑ<sub>0</sub>) slice gives the characteristic diagonal-V in ⟨σ<sub>z</sub>⟩ and four-lobe (+,−,−,+) quadrant pattern in δ⟨<em>n</em>⟩, with exact symmetries δ⟨<em>n</em>⟩(φ+π) = −δ⟨<em>n</em>⟩(φ) and δ⟨<em>n</em>⟩(0, ϑ<sub>0</sub>+π) = δ⟨<em>n</em>⟩(0, ϑ<sub>0</sub>) (correlations ±1.0000 across all four sheets). See <a href="wp-strobo-2p0/logbook/2026-04-21-hasse-fig6-slice.md">2026-04-21-hasse-fig6-slice.md</a>.</li>
+  </ul>
+  <p style="margin-bottom:0;"><strong>One gating open question.</strong> Three Rabi-rate values are on record — Ω/(2π) = 0.178 MHz (used here), 0.300 MHz (Hasse Table II), 0.446 MHz (from <em>t</em><sub>π</sub> = 1.122 µs). They predict well-separated T2 carrier contrasts (|<em>C</em>|<sub>vac</sub> = 0.35 / 0.57 / 0.79), so a single lab carrier measurement picks the correct one. Protocol + read-off reference: <a href="wp-strobo-2p0/logbook/2026-04-21-rabi-reconciliation.md">2026-04-21-rabi-reconciliation.md</a>. Sweep is parametric in Ω — ~100 s to re-run if the value changes.</p>
 </div>
 
 <h2>Structure</h2>
@@ -116,6 +136,13 @@
     <div class="wp-card" style="cursor:pointer;border-left:3px solid var(--accent);">
       <p class="wp-title" style="color:var(--accent);">Coastline (WP-C) <span style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);">· new</span></p>
       <p>Strong/weak-binding boundary map on the (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) plane at |α| ∈ {0, 1, 3, 5}. V/P heatmaps, χ-collapse test, α-recovery probe.</p>
+    </div>
+  </a>
+
+  <a href="wp-strobo-2p0/" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;border-left:3px solid var(--accent);">
+      <p class="wp-title" style="color:var(--accent);">Strobo 2.0 <span style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);">· new</span></p>
+      <p>Short-train probe: detuning (±10 MHz) × motional-phase (0 → 2π) maps of coherence, ⟨σ<sub>z</sub>⟩, and Hasse-style back-action δ⟨<em>n</em>⟩ at |α| ∈ {1, 3, 4.5}, for <em>N</em> = 3 × 100 ns and <em>N</em> = 7 × 50 ns. Includes (φ, ϑ<sub>0</sub>) slice reproducing Hasse 2024 Fig. 6 + Rabi-rate calibration reference.</p>
     </div>
   </a>
 
@@ -184,11 +211,11 @@
 
 <p><strong>Primary framing: Tomography.</strong> The η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. The Doppler detuning spectrum — not contrast loss — is the primary momentum readout: δ<sub>D</sub>/Ω ≫ 1 for all α ≥ 1.</p>
 
-<p><strong>Status of the work-package (WP) streams:</strong> <a href="wp-hasse-reproduction/"><strong>WP-V</strong></a> (Validation — reproducing the Hasse 2024 experiment in simulation, within 5%) <em>complete</em>; <a href="wp-phase-contrast-maps/"><strong>WP-E</strong></a> (Extension — forward map over coherent-state parameters) <em>active</em>; <a href="wp-strong-weak-coastline/"><strong>WP-C</strong></a> (Coastline — strong/weak-binding boundary map) <em>v0.1.1 executed</em>, with the three main findings listed above. The theoretical work-package sequence A → B → C → D on the <a href="tutorial.html">Tutorial</a> page is a <em>separate</em> labelling scheme for analytical sub-tasks (A: signal model, B: numerics, C: tomography, D: BAE); do not confuse WP-V/E/C (numerical work streams) with WP-A/B/C/D (theoretical sub-tasks).</p>
+<p><strong>Status of the work-package (WP) streams:</strong> <a href="wp-hasse-reproduction/"><strong>WP-V</strong></a> (Validation — reproducing the Hasse 2024 experiment in simulation, within 5%) <em>complete</em>; <a href="wp-phase-contrast-maps/"><strong>WP-E</strong></a> (Extension — forward map over coherent-state parameters) <em>active</em>; <a href="wp-strong-weak-coastline/"><strong>WP-C</strong></a> (Coastline — strong/weak-binding boundary map) <em>v0.1.1 executed</em>; <a href="wp-strobo-2p0/"><strong>Strobo 2.0</strong></a> (short-train detuning × motional-phase maps, Hasse Fig. 6 reproduction) <em>v0.1 executed, awaiting Rabi-rate reconciliation</em>. The theoretical work-package sequence A → B → C → D on the <a href="tutorial.html">Tutorial</a> page is a <em>separate</em> labelling scheme for analytical sub-tasks (A: signal model, B: numerics, C: tomography, D: BAE); do not confuse WP-V/E/C/Strobo-2 (numerical work streams) with WP-A/B/C/D (theoretical sub-tasks).</p>
 
 <footer>
   <p>Dossier v0.9 · Council-4 ADM-EC · Guardian / Scout / Architect / Integrator convergent.<br>
-  Open Science Harbour · Breakwater Layer · WP-V complete · WP-E + WP-C active.</p>
+  Open Science Harbour · Breakwater Layer · WP-V complete · WP-E + WP-C + Strobo 2.0 active.</p>
 </footer>
 
 </div>

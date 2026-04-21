@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
-Build the static website plus an auto-generated progress section for
-`wp-phase-contrast-maps/`.
+Build the static website plus auto-generated progress mirrors for each
+registered work-package directory.
 
-The generated site keeps the hand-authored root pages intact and adds a
-mirrored subtree at `wp-phase-contrast-maps/` with:
-  - markdown converted to HTML
+The generated site keeps the hand-authored root pages intact and adds
+one mirrored subtree per WP (declared in ``WP_CONFIGS`` below). Each
+mirror includes:
+  - markdown files converted to HTML
   - raw files copied through for download
-  - directory indexes for logbook, numerics, and plots
+  - directory indexes for logbook, plots, and numerics
+
+To register a new WP, append a ``WPConfig`` entry to ``WP_CONFIGS`` —
+no other changes to this file should be necessary.
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ import html
 import os
 import re
 import shutil
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Iterable
@@ -26,10 +31,56 @@ import markdown
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WP_ROOT = ROOT / "wp-phase-contrast-maps"
 STATIC_DIRS = ("js", "data", "scripts", "schemas")
 STATIC_FILE_SUFFIXES = {".html", ".css", ".md"}
 SKIP_DIR_NAMES = {".git", ".github", "__pycache__"}
+
+
+# ---------------------------------------------------------------------------
+# WP registry
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class WPConfig:
+    dir_name: str          # e.g. "wp-phase-contrast-maps"
+    nav_label: str         # short label shown in site nav, e.g. "WP-E"
+    nav_key: str           # stable identifier, e.g. "progress_e"
+    progress_title: str    # e.g. "WP-E Progress"
+    progress_subtitle: str # e.g. "Forward map and observability work package mirror"
+    dossier_version: str   # footer: "Dossier vX · <this-label> progress mirror"
+    numerics_suffixes: tuple[str, ...] = (".h5", ".npz", ".json")
+
+    @property
+    def root(self) -> Path:
+        return ROOT / self.dir_name
+
+
+WP_CONFIGS: list[WPConfig] = [
+    WPConfig(
+        dir_name="wp-phase-contrast-maps",
+        nav_label="WP-E",
+        nav_key="progress_e",
+        progress_title="WP-E Progress",
+        progress_subtitle="Forward map and observability work package mirror",
+        dossier_version="Dossier v0.8",
+        numerics_suffixes=(".h5", ".json"),
+    ),
+    WPConfig(
+        dir_name="wp-strobo-2p0",
+        nav_label="Strobo 2.0",
+        nav_key="progress_s2",
+        progress_title="Strobo 2.0 Progress",
+        progress_subtitle="Detuning × motional-phase maps for short pulse trains",
+        dossier_version="Dossier v0.9",
+        numerics_suffixes=(".npz", ".json", ".log"),
+    ),
+]
+
+
+# ---------------------------------------------------------------------------
+# Filesystem helpers
+# ---------------------------------------------------------------------------
 
 
 def ensure_clean_dir(path: Path) -> None:
@@ -54,12 +105,12 @@ def copy_root_site(output_dir: Path) -> None:
             )
 
 
-def copy_wp_assets(output_dir: Path) -> None:
-    dest_root = output_dir / WP_ROOT.name
-    for src in WP_ROOT.rglob("*"):
+def copy_wp_assets(wp: WPConfig, output_dir: Path) -> None:
+    dest_root = output_dir / wp.dir_name
+    for src in wp.root.rglob("*"):
         if any(part in SKIP_DIR_NAMES for part in src.parts):
             continue
-        rel = src.relative_to(WP_ROOT)
+        rel = src.relative_to(wp.root)
         dest = dest_root / rel
         if src.is_dir():
             dest.mkdir(parents=True, exist_ok=True)
@@ -68,11 +119,11 @@ def copy_wp_assets(output_dir: Path) -> None:
         shutil.copy2(src, dest)
 
 
-def md_destination(source_md: Path, output_dir: Path) -> Path:
-    rel = source_md.relative_to(WP_ROOT)
+def md_destination(wp: WPConfig, source_md: Path, output_dir: Path) -> Path:
+    rel = source_md.relative_to(wp.root)
     if rel.name.lower() == "readme.md":
-        return output_dir / WP_ROOT.name / rel.parent / "index.html"
-    return output_dir / WP_ROOT.name / rel.with_suffix(".html")
+        return output_dir / wp.dir_name / rel.parent / "index.html"
+    return output_dir / wp.dir_name / rel.with_suffix(".html")
 
 
 def first_heading(markdown_text: str, fallback: str) -> str:
@@ -118,8 +169,14 @@ def rel_to_root_asset(from_page: Path, relative_to_root: str, output_dir: Path) 
     return rel_href(from_page, output_dir / relative_to_root)
 
 
-def rewrite_markdown_links(markdown_text: str, source_md: Path) -> str:
+# ---------------------------------------------------------------------------
+# Markdown pipeline
+# ---------------------------------------------------------------------------
+
+
+def rewrite_markdown_links(markdown_text: str, wp: WPConfig, source_md: Path) -> str:
     pattern = re.compile(r"(!?\[[^\]]*\]\()([^)]+)(\))")
+    wp_root_resolved = wp.root.resolve()
 
     def replace(match: re.Match[str]) -> str:
         prefix, target, suffix = match.groups()
@@ -128,7 +185,7 @@ def rewrite_markdown_links(markdown_text: str, source_md: Path) -> str:
             return match.group(0)
         path = PurePosixPath(parsed.path)
         resolved = (source_md.parent / Path(path.as_posix())).resolve()
-        if path.suffix.lower() == ".md" and resolved.is_relative_to(WP_ROOT.resolve()):
+        if path.suffix.lower() == ".md" and resolved.is_relative_to(wp_root_resolved):
             if path.name.lower() == "readme.md":
                 path = path.with_name("index.html")
             else:
@@ -168,8 +225,18 @@ def markdown_to_html(markdown_text: str) -> str:
     return renderer.convert(markdown_text)
 
 
-def nav_markup(current_page: Path, output_dir: Path, current_key: str) -> str:
-    items = [
+# ---------------------------------------------------------------------------
+# Page shell (nav + breadcrumbs)
+# ---------------------------------------------------------------------------
+
+
+def nav_markup(
+    current_page: Path,
+    output_dir: Path,
+    current_key: str,
+    wps: list[WPConfig],
+) -> str:
+    items: list[tuple[str, str, Path]] = [
         ("overview", "Overview", output_dir / "index.html"),
         ("dossier", "Dossier", output_dir / "dossier.html"),
         ("framework", "Framework", output_dir / "framework.html"),
@@ -179,8 +246,10 @@ def nav_markup(current_page: Path, output_dir: Path, current_key: str) -> str:
         ("code", "Code", output_dir / "code.html"),
         ("reference", "Reference", output_dir / "reference.html"),
         ("start", "Start", output_dir / "getting-started.html"),
-        ("progress", "Progress", output_dir / WP_ROOT.name / "index.html"),
     ]
+    for wp in wps:
+        items.append((wp.nav_key, wp.nav_label, output_dir / wp.dir_name / "index.html"))
+
     links = []
     for key, label, target in items:
         aria = ' aria-current="page"' if key == current_key else ""
@@ -189,13 +258,13 @@ def nav_markup(current_page: Path, output_dir: Path, current_key: str) -> str:
     return "<nav>\n" + "\n".join(links) + "\n  </nav>"
 
 
-def breadcrumbs_markup(current_page: Path, output_dir: Path) -> str:
-    progress_root = output_dir / WP_ROOT.name / "index.html"
-    rel = current_page.relative_to(output_dir / WP_ROOT.name)
-    crumbs = [f'<a href="{rel_href(current_page, progress_root)}">WP-E Progress</a>']
+def breadcrumbs_markup(wp: WPConfig, current_page: Path, output_dir: Path) -> str:
+    progress_root = output_dir / wp.dir_name / "index.html"
+    rel = current_page.relative_to(output_dir / wp.dir_name)
+    crumbs = [f'<a href="{rel_href(current_page, progress_root)}">{html.escape(wp.progress_title)}</a>']
 
     if rel.parent != Path("."):
-        accum = output_dir / WP_ROOT.name
+        accum = output_dir / wp.dir_name
         for part in rel.parent.parts:
             accum = accum / part
             crumbs.append(
@@ -210,17 +279,22 @@ def breadcrumbs_markup(current_page: Path, output_dir: Path) -> str:
 
 def page_shell(
     *,
+    wp: WPConfig,
     title: str,
     subtitle: str,
     current_page: Path,
     output_dir: Path,
     body_html: str,
+    wps: list[WPConfig],
     source_file: Path | None = None,
 ) -> str:
     style_href = rel_to_root_asset(current_page, "style.css", output_dir)
     source_note = ""
     if source_file is not None:
-        source_href = rel_href(current_page, output_dir / WP_ROOT.name / source_file.relative_to(WP_ROOT))
+        source_href = rel_href(
+            current_page,
+            output_dir / wp.dir_name / source_file.relative_to(wp.root),
+        )
         source_note = (
             '<div class="meta-block">'
             f'<p><strong>Source:</strong> <a href="{source_href}">{html.escape(source_file.relative_to(ROOT).as_posix())}</a></p>'
@@ -233,7 +307,7 @@ def page_shell(
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(title)} — WP-E Progress</title>
+<title>{html.escape(title)} — {html.escape(wp.progress_title)}</title>
 <link rel="stylesheet" href="{style_href}">
 </head>
 <body>
@@ -243,10 +317,10 @@ def page_shell(
   <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
   <h1>{html.escape(title)}</h1>
   <p class="subtitle">{html.escape(subtitle)}</p>
-{nav_markup(current_page, output_dir, "progress")}
+{nav_markup(current_page, output_dir, wp.nav_key, wps)}
 </header>
 
-{breadcrumbs_markup(current_page, output_dir)}
+{breadcrumbs_markup(wp, current_page, output_dir)}
 {source_note}
 
 <div class="prose">
@@ -254,7 +328,7 @@ def page_shell(
 </div>
 
 <footer>
-  <p>Dossier v0.8 · WP-E progress mirror · generated from <code>{html.escape(WP_ROOT.name)}</code></p>
+  <p>{html.escape(wp.dossier_version)} · {html.escape(wp.progress_title)} mirror · generated from <code>{html.escape(wp.dir_name)}</code></p>
 </footer>
 
 </div>
@@ -268,22 +342,33 @@ def write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
-def convert_markdown_files(output_dir: Path) -> list[dict[str, object]]:
+# ---------------------------------------------------------------------------
+# WP mirror generators
+# ---------------------------------------------------------------------------
+
+
+def convert_markdown_files(
+    wp: WPConfig,
+    output_dir: Path,
+    wps: list[WPConfig],
+) -> list[dict[str, object]]:
     records: list[dict[str, object]] = []
-    for source_md in sorted(WP_ROOT.rglob("*.md")):
+    for source_md in sorted(wp.root.rglob("*.md")):
         raw = source_md.read_text(encoding="utf-8")
         normalized = normalize_markdown(raw)
-        rewritten = rewrite_markdown_links(normalized, source_md)
+        rewritten = rewrite_markdown_links(normalized, wp, source_md)
         rendered = markdown_to_html(rewritten)
-        dest = md_destination(source_md, output_dir)
+        dest = md_destination(wp, source_md, output_dir)
         title = first_heading(raw, source_md.stem)
-        subtitle = source_md.parent.relative_to(WP_ROOT).as_posix() or "Work package overview"
+        subtitle = source_md.parent.relative_to(wp.root).as_posix() or "Work package overview"
         page = page_shell(
+            wp=wp,
             title=title,
             subtitle=subtitle,
             current_page=dest,
             output_dir=output_dir,
             body_html=rendered,
+            wps=wps,
             source_file=source_md,
         )
         write_text(dest, page)
@@ -298,10 +383,14 @@ def convert_markdown_files(output_dir: Path) -> list[dict[str, object]]:
     return records
 
 
-def listing_table(current_page: Path, output_dir: Path, files: Iterable[Path]) -> str:
+def listing_table(
+    wp: WPConfig, current_page: Path, output_dir: Path, files: Iterable[Path]
+) -> str:
     rows = []
     for file_path in files:
-        rel_link = rel_href(current_page, output_dir / WP_ROOT.name / file_path.relative_to(WP_ROOT))
+        rel_link = rel_href(
+            current_page, output_dir / wp.dir_name / file_path.relative_to(wp.root)
+        )
         rows.append(
             "<tr>"
             f"<td><a href=\"{rel_link}\">{html.escape(file_path.name)}</a></td>"
@@ -319,30 +408,37 @@ def listing_table(current_page: Path, output_dir: Path, files: Iterable[Path]) -
     )
 
 
-def generate_root_index(output_dir: Path, markdown_records: list[dict[str, object]]) -> None:
-    current_page = output_dir / WP_ROOT.name / "index.html"
+def generate_root_index(
+    wp: WPConfig,
+    output_dir: Path,
+    markdown_records: list[dict[str, object]],
+    wps: list[WPConfig],
+) -> None:
+    current_page = output_dir / wp.dir_name / "index.html"
     logbook_records = [
         record for record in markdown_records if Path(record["source"]).parent.name == "logbook"
     ]
-    latest_logs = sorted(logbook_records, key=lambda record: Path(record["source"]).name, reverse=True)[:4]
-    plots = sorted((WP_ROOT / "plots").glob("*.png"))
-    numerics = sorted((WP_ROOT / "numerics").iterdir())
+    latest_logs = sorted(
+        logbook_records, key=lambda record: Path(record["source"]).name, reverse=True
+    )[:4]
+    plots = sorted((wp.root / "plots").glob("*.png")) if (wp.root / "plots").exists() else []
+    numerics = sorted((wp.root / "numerics").iterdir()) if (wp.root / "numerics").exists() else []
 
     cards = [
         (
             "Logbook",
-            "Converted research notes and run records.",
-            output_dir / WP_ROOT.name / "logbook" / "index.html",
+            "Rendered research notes and run records.",
+            output_dir / wp.dir_name / "logbook" / "index.html",
         ),
         (
             "Plots",
-            "Rendered figures copied straight from the work package.",
-            output_dir / WP_ROOT.name / "plots" / "index.html",
+            "Figures copied straight from the work package.",
+            output_dir / wp.dir_name / "plots" / "index.html",
         ),
         (
             "Numerics",
-            "Download-only HDF5 datasets and local driver scripts.",
-            output_dir / WP_ROOT.name / "numerics" / "index.html",
+            "Download-only datasets and local driver scripts.",
+            output_dir / wp.dir_name / "numerics" / "index.html",
         ),
     ]
 
@@ -367,11 +463,14 @@ def generate_root_index(output_dir: Path, markdown_records: list[dict[str, objec
     )
 
     readme_record = next(
-        record for record in markdown_records if Path(record["source"]).relative_to(WP_ROOT).as_posix() == "README.md"
+        record
+        for record in markdown_records
+        if Path(record["source"]).relative_to(wp.root).as_posix() == "README.md"
     )
     readme_html = markdown_to_html(
         rewrite_markdown_links(
             normalize_markdown(Path(readme_record["source"]).read_text(encoding="utf-8")),
+            wp,
             Path(readme_record["source"]),
         )
     )
@@ -379,7 +478,7 @@ def generate_root_index(output_dir: Path, markdown_records: list[dict[str, objec
     body_html = f"""
 <div class="callout">
   <div class="cl">Generated Section</div>
-  <p>This area mirrors the repository folder <code>{html.escape(WP_ROOT.name)}</code>. Markdown is rendered to HTML during the GitHub Pages build, plots are copied through, and numerics files remain download-only.</p>
+  <p>This area mirrors the repository folder <code>{html.escape(wp.dir_name)}</code>. Markdown is rendered to HTML during the GitHub Pages build, plots are copied through, and numerics files remain download-only.</p>
 </div>
 
 <div class="progress-grid">
@@ -404,18 +503,25 @@ def generate_root_index(output_dir: Path, markdown_records: list[dict[str, objec
 """
 
     page = page_shell(
-        title="WP-E Progress",
-        subtitle="Forward map and observability work package mirror",
+        wp=wp,
+        title=wp.progress_title,
+        subtitle=wp.progress_subtitle,
         current_page=current_page,
         output_dir=output_dir,
         body_html=body_html,
-        source_file=WP_ROOT / "README.md",
+        wps=wps,
+        source_file=wp.root / "README.md",
     )
     write_text(current_page, page)
 
 
-def generate_logbook_index(output_dir: Path, markdown_records: list[dict[str, object]]) -> None:
-    current_page = output_dir / WP_ROOT.name / "logbook" / "index.html"
+def generate_logbook_index(
+    wp: WPConfig,
+    output_dir: Path,
+    markdown_records: list[dict[str, object]],
+    wps: list[WPConfig],
+) -> None:
+    current_page = output_dir / wp.dir_name / "logbook" / "index.html"
     logbook_records = sorted(
         (
             record
@@ -426,7 +532,7 @@ def generate_logbook_index(output_dir: Path, markdown_records: list[dict[str, ob
         reverse=True,
     )
     body_html = [
-        "<p>This logbook index is generated from the markdown files in <code>wp-phase-contrast-maps/logbook/</code>.</p>",
+        f"<p>This logbook index is generated from the markdown files in <code>{html.escape(wp.dir_name)}/logbook/</code>.</p>",
         '<div class="progress-grid">',
     ]
     for record in logbook_records:
@@ -444,39 +550,52 @@ def generate_logbook_index(output_dir: Path, markdown_records: list[dict[str, ob
         )
     body_html.append("</div>")
     page = page_shell(
-        title="WP-E Logbook",
-        subtitle="Converted markdown entries",
+        wp=wp,
+        title=f"{wp.progress_title} — Logbook",
+        subtitle="Rendered markdown entries",
         current_page=current_page,
         output_dir=output_dir,
         body_html="\n".join(body_html),
+        wps=wps,
     )
     write_text(current_page, page)
 
 
-def generate_numerics_index(output_dir: Path) -> None:
-    current_page = output_dir / WP_ROOT.name / "numerics" / "index.html"
-    numerics_dir = WP_ROOT / "numerics"
-    h5_files = sorted(numerics_dir.glob("*.h5"))
+def generate_numerics_index(
+    wp: WPConfig, output_dir: Path, wps: list[WPConfig]
+) -> None:
+    numerics_dir = wp.root / "numerics"
+    if not numerics_dir.exists():
+        return
+    current_page = output_dir / wp.dir_name / "numerics" / "index.html"
+
+    dataset_suffixes = {s for s in wp.numerics_suffixes if s != ".py"}
+    dataset_files = sorted(
+        p for p in numerics_dir.iterdir()
+        if p.is_file() and p.suffix.lower() in dataset_suffixes
+    )
     script_files = sorted(numerics_dir.glob("*.py"))
 
     body_html = f"""
 <div class="callout">
   <div class="cl">Download Only</div>
-  <p>The numerics section currently exposes datasets and helper scripts as direct downloads. No browser-side HDF5 rendering is performed in this version of the site.</p>
+  <p>The numerics section exposes datasets and helper scripts as direct downloads. No browser-side rendering is performed.</p>
 </div>
 
 <h2>Datasets</h2>
-{listing_table(current_page, output_dir, h5_files)}
+{listing_table(wp, current_page, output_dir, dataset_files)}
 
 <h2>Scripts</h2>
-{listing_table(current_page, output_dir, script_files)}
+{listing_table(wp, current_page, output_dir, script_files)}
 """
     page = page_shell(
-        title="WP-E Numerics",
+        wp=wp,
+        title=f"{wp.progress_title} — Numerics",
         subtitle="Datasets and drivers",
         current_page=current_page,
         output_dir=output_dir,
         body_html=body_html,
+        wps=wps,
     )
     write_text(current_page, page)
 
@@ -485,12 +604,17 @@ def prettify_stem(name: str) -> str:
     return name.replace("_", " ").replace("-", " ")
 
 
-def generate_plots_index(output_dir: Path) -> None:
-    current_page = output_dir / WP_ROOT.name / "plots" / "index.html"
-    plot_files = sorted((WP_ROOT / "plots").glob("*.png"))
+def generate_plots_index(
+    wp: WPConfig, output_dir: Path, wps: list[WPConfig]
+) -> None:
+    plots_dir = wp.root / "plots"
+    if not plots_dir.exists():
+        return
+    current_page = output_dir / wp.dir_name / "plots" / "index.html"
+    plot_files = sorted(plots_dir.glob("*.png"))
     cards = []
     for plot in plot_files:
-        href = rel_href(current_page, output_dir / WP_ROOT.name / plot.relative_to(WP_ROOT))
+        href = rel_href(current_page, output_dir / wp.dir_name / plot.relative_to(wp.root))
         cards.append(
             '<div class="gallery-card">'
             f'<a href="{href}"><img src="{href}" alt="{html.escape(prettify_stem(plot.stem))}"></a>'
@@ -506,28 +630,46 @@ def generate_plots_index(output_dir: Path) -> None:
 </div>
 """
     page = page_shell(
-        title="WP-E Plots",
+        wp=wp,
+        title=f"{wp.progress_title} — Plots",
         subtitle="Copied figure outputs",
         current_page=current_page,
         output_dir=output_dir,
         body_html=body_html,
+        wps=wps,
     )
     write_text(current_page, page)
+
+
+def build_wp_mirror(
+    wp: WPConfig, output_dir: Path, wps: list[WPConfig]
+) -> None:
+    if not wp.root.exists():
+        return
+    copy_wp_assets(wp, output_dir)
+    markdown_records = convert_markdown_files(wp, output_dir, wps)
+    generate_root_index(wp, output_dir, markdown_records, wps)
+    generate_logbook_index(wp, output_dir, markdown_records, wps)
+    generate_numerics_index(wp, output_dir, wps)
+    generate_plots_index(wp, output_dir, wps)
+
+
+# ---------------------------------------------------------------------------
+# Entry
+# ---------------------------------------------------------------------------
 
 
 def build(output_dir: Path) -> None:
     ensure_clean_dir(output_dir)
     copy_root_site(output_dir)
-    copy_wp_assets(output_dir)
-    markdown_records = convert_markdown_files(output_dir)
-    generate_root_index(output_dir, markdown_records)
-    generate_logbook_index(output_dir, markdown_records)
-    generate_numerics_index(output_dir)
-    generate_plots_index(output_dir)
+    for wp in WP_CONFIGS:
+        build_wp_mirror(wp, output_dir, WP_CONFIGS)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build static site with WP-E progress mirror.")
+    parser = argparse.ArgumentParser(
+        description="Build static site with WP progress mirrors."
+    )
     parser.add_argument(
         "--output-dir",
         default=str(ROOT / "_site"),
