@@ -1,6 +1,6 @@
 # Council Memo — Proposed WP: Strong/Weak-Binding Coastline Map
 
-**Council Memo · pre-WP draft · v0.2 · 2026-04-21**
+**Council Memo · pre-WP draft · v0.3 · 2026-04-21**
 **Status:** Findings + locked-decisions package for final Integrator pass, pending one open item (§5.1). Guardian-synthesised, Architect- and Scout-reviewed; Integrator stance not yet registered.
 **Origin:** Follow-up to the §3.3 tutorial section of
 [notebooks/00_tutorial_pulse_train.ipynb](notebooks/00_tutorial_pulse_train.ipynb)
@@ -39,7 +39,7 @@ The 2026-04-21 follow-up ([§6](wp-hasse-reproduction/logbook/2026-04-21-coh-the
 | $|\delta\langle n\rangle|_\text{peak}$ | tracks the diamond envelope; peak value $\approx 1.20$ across the scan |
 | $\min_\vartheta |C|$ | touches zero at RABI_SCALE $\approx 1.2$ and $\approx 3.2$ |
 
-**Key takeaway for the proposed WP:** the $\Omega$-axis is a power-broadening axis, independent of the resolvedness axis. The Rabi-scan result is also the reason the §2.2 "saturation" claim was retracted in the §11 consistency patch — a reminder that envelope-oscillation effects will recur whenever we vary any axis that changes total train rotation. §4.1 locks a calibration that isolates $N$ and $\delta t$ from $\Omega$.
+**Key takeaway for the proposed WP:** the $\Omega$-axis is analytically distinct from the $(N, \delta t)$ resolvedness axis, though operational coupling reappears whenever the calibration scheme changes the total train rotation. The Rabi-scan result is also the reason the §2.2 "saturation" claim was retracted in the §11 consistency patch — a reminder that envelope-oscillation effects will recur whenever we vary any axis that changes total train rotation. §4.1 locks a calibration that isolates $N$ and $\delta t$ from $\Omega$.
 
 ### 2.3 Fock-basis truncation tolerance is known
 
@@ -56,7 +56,7 @@ and names the Doppler halfwidth $\eta|\alpha|\,\omega_m$ as the broad-line scale
 
 ### 2.5 Lamb–Dicke-validity status of prior WPs
 
-A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\eta\sqrt{\langle n\rangle + 1}$ is already $\approx 1.26$ at the WP-V baseline ($\eta=0.397$, $|\alpha|=3$), exceeding 1. Neither WP-V nor WP-E explicitly audited this; both rely on the engine's effective Hamiltonian carrying the full $C = e^{i\eta(a+a^\dagger)}$ (not a low-order expansion), so the engine may remain valid beyond naive LD. The *drive-strength LD* parameter $\Omega_\text{eff}/\omega_m \approx 0.21$ is comfortably $< 1$ at the baseline. A formal specification of which LD inequality the engine's approximations actually require is the single open item in §5.1; it conditions the $|\alpha|=5$ row of §4.4.
+A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\eta\sqrt{\langle n\rangle + 1}$ is already $\approx 1.26$ at the WP-V baseline ($\eta=0.397$, $|\alpha|=3$), exceeding 1. Neither WP-V nor WP-E explicitly audited this. Both WPs rely on an engine that retains the full coupling operator $C = e^{i\eta(a+a^\dagger)}$ rather than a low-order expansion in $\eta$. The engine may therefore remain valid beyond the naive motional-LD bound, but that validity must now be specified explicitly. The *drive-strength LD* parameter $\Omega_\text{eff}/\omega_m \approx 0.21$ is comfortably $< 1$ at the baseline. A formal specification of which LD inequality the engine's approximations actually require is the single open item in §5.1; it conditions the $|\alpha|=5$ row of §4.4.
 
 -----
 
@@ -65,9 +65,9 @@ A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\e
 1. **The 2D plane $(N,\ \delta t/T_m)$** with other parameters held at Hasse values. Prior work samples exactly one point of this plane: $(30,\ 0.13)$.
 2. **Coastline metrics** — the relation between observables we already compute ($|C|$, $\langle\sigma_z\rangle$, $\delta\langle n\rangle$) and a one-scalar "resolvedness" quantifier that flags the crossover.
 3. **The interplay with $\eta|\alpha|$** — in the weak limit the classical Doppler halfwidth $\eta|\alpha|\,\omega_m$ sets the line shape, so the coastline's position depends on $|\alpha|$. A low-$|\alpha|$ slice, a vacuum control, and a high-$|\alpha|$ slice frame this dependence (§4.4).
-4. **Candidate collapse form** — a tested conjecture, not a derivation. Hypothesis: tooth visibility $V$ collapses onto a single curve in the dimensionless parameter
-   $$\chi \;=\; \sqrt{\bigl(1/N\bigr)^2 \;+\; \bigl(\delta t/T_m\bigr)^2 \;+\; \bigl(\eta|\alpha|\bigr)^2}\,,$$
-   with $V \sim \exp[-\chi^2]$ or similar quadrature-sum ansatz combining train-length, pulse-bandwidth, and Doppler-broadening widths. The quadrature sum *presumes* incoherent-Gaussian combination of three physically distinct spectral widths; this is an empirical hypothesis the coastline is *meant to test*, not a derivation. **Falsification of the collapse is a positive result of the WP.** v0.1 plots all $(N, \delta t/T_m, |\alpha|)$ cells against $\chi$ and reports whether they collapse onto a single curve; residual structure is the physics we have learned.
+4. **Candidate collapse form** — a tested conjecture, not a derivation. Hypothesis: tooth visibility $V$ collapses onto a single curve in a dimensionless root-sum-square parameter combining train-length, pulse-bandwidth, and Doppler-broadening widths. A natural form is
+   $$\chi^2 \;=\; \bigl(1/N\bigr)^2 \;+\; \bigl(1/(\omega_m\,\delta t)\bigr)^2 \;+\; \bigl(\eta|\alpha|\bigr)^2\,,$$
+   with $V \sim \exp[-\chi^2]$ or similar. The sign convention for the pulse-bandwidth term is load-bearing: narrow bandwidth (large $\delta t$) *helps* resolvedness, so the term enters as $1/(\omega_m\,\delta t)$, not as $\delta t/T_m$. At the WP-V calibration point the three terms are comparable in order of magnitude ($1/N \approx 0.03$, $1/(\omega_m\,\delta t) \approx 1.22$, $\eta|\alpha| \approx 1.19$), which is why that point sits near the coastline. The root-sum-square combination *presumes* incoherent-Gaussian composition of three physically distinct spectral widths; this is an empirical hypothesis the coastline is *meant to test*, not a derivation. **Falsification of the collapse is a positive result of the WP.** v0.1 plots all $(N, \delta t/T_m, |\alpha|)$ cells against $\chi$ and reports whether they collapse onto a single curve; residual structure is the physics we have learned.
 
 -----
 
@@ -85,7 +85,7 @@ A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\e
 
 **Control-slice caveat:** The (b) slice at $\delta t/T_m = 0.13$ carries a caption cross-referencing [rabi_scan_v5.h5](wp-hasse-reproduction/numerics/rabi_scan_v5.h5). Features at values of $N$ where $N\cdot\Omega_\text{Hasse}\cdot\delta t$ crosses a Rabi-envelope node are power-broadening artefacts, not coastline features (Guardian-2 D9).
 
-### 4.2 Grid extent and density — LOCKED (pending Architect non-objection on spacing)
+### 4.2 Grid extent and density — PROVISIONALLY LOCKED
 
 **Decision:** 6×6 geometric grid, chosen because the coastline is a crossover phenomenon for which log-spaced axes track the dimensionless $\chi$ of §3.4:
 
@@ -94,7 +94,9 @@ A Guardian-stance audit flagged that the **motional-amplitude LD parameter** $\e
 
 Three detuning values: $\delta/\omega_m \in \{0,\ 0.25,\ 0.5\}$. The intermediate $\delta=0.25\,\omega_m$ point (Architect recommendation) guards against systematic tooth-position drift under recalibrated-$\Omega$ scaling.
 
-At each $(N, \delta t/T_m, \delta)$: 64 $\vartheta_0$ points → 36 × 3 × 64 ≈ **6900 evolutions** per $|\alpha|$ value. Compute: ≤ 10 s per $|\alpha|$; ≤ 1 min for the full §4.4 set.
+At each $(N, \delta t/T_m, \delta)$: 64 $\vartheta_0$ points → 36 × 3 × 64 ≈ **6900 evolutions** per $|\alpha|$ value. Compute budget as declared in §6 (≤ 30 s per $|\alpha|$; ≤ 2 min for the full set).
+
+In addition to the 6×6 grid, a single supplementary row at $\delta t/T_m = 0.13$ is run under option (b) fixed-$\Omega$ for the control slice defined in §4.1.
 
 Architect's original endorsement of the v0.1 7×6 grid is read as approving *scale* rather than *spacing*; if Architect objects to the geometric reparameterisation, the spacing returns to §5 as a divergence to resolve in re-deliberation.
 
@@ -114,6 +116,8 @@ Architect's original endorsement of the v0.1 7×6 grid is read as approving *sca
 | pulse-broadening | low | high |
 | Doppler merging | low | low |
 
+The two-map choice is deliberate: it preserves failure-mode discrimination that a single scalar would erase.
+
 **Secondary panels** (archived to h5, plotted if discriminatory):
 - Diamond amplitude $\frac12(\max-\min)\langle\sigma_z\rangle$ at $\delta=0$.
 - Back-action peak $|\delta\langle n\rangle|_\text{peak}$ at $\delta=0$.
@@ -122,9 +126,9 @@ Architect's original endorsement of the v0.1 7×6 grid is read as approving *sca
 
 ### 4.4 $|\alpha|$ dependence — PROVISIONALLY LOCKED pending §5.1
 
-**Decision:** Four-point set $|\alpha| \in \{0,\ 1,\ 3,\ 5\}$, each with its own 2D map, with the $|\alpha|=5$ row contingent on the §5.1 motional-LD resolution. Fallback set if $|\alpha|=5$ is pruned: $\{0,\ 1,\ 3\}$.
+**Decision:** Scientific baseline is the three-point set $|\alpha| \in \{0,\ 1,\ 3\}$, each with its own 2D map. An aspirational fourth point $|\alpha|=5$ is included as a contingent stress-test of the $\eta|\alpha|$ scaling in the Doppler-dominated regime; $|\alpha|=5$ runs only if the §5.1 lemma establishes engine validity for $\eta\sqrt{\langle n\rangle+1} \gtrsim 2$. v0.1 completeness does not require $|\alpha|=5$.
 
-Justification: $|\alpha|=0$ (vacuum) isolates comb-vs-pulse structure from Doppler broadening and acts as a strong-binding control; $|\alpha|=1$ is the LD-safe tuning; $|\alpha|=3$ matches the WP-V/WP-E baseline; $|\alpha|=5$ tests the $\eta|\alpha|$ scaling where Doppler width dominates the weak-binding response.
+Justification: $|\alpha|=0$ (vacuum) isolates comb-vs-pulse structure from Doppler broadening and acts as a strong-binding control; $|\alpha|=1$ is the LD-safe tuning; $|\alpha|=3$ matches the WP-V/WP-E baseline. $|\alpha|=5$, when admitted, stress-tests the $\eta|\alpha|$ scaling where Doppler width dominates the weak-binding response.
 
 ### 4.5 Impulsive-limit overlay — LOCKED, in scope as analytic reference
 
@@ -151,7 +155,7 @@ Architect asks: *What specific mathematical threshold should we encode into the 
 
 The motional-LD parameter is already $\gtrsim 1$ at the WP-V baseline ($|\alpha|=3$). This does not *automatically* invalidate the engine — the engine retains the full Debye–Waller factor $e^{-\eta^2/2}$ in a non-truncated coupling $C = e^{i\eta(a+a^\dagger)}$, which survives beyond naive LD — but it means the $|\alpha|=5$ addition to §4.4 carries a separate LD-validity burden from the $\Omega$-ceiling.
 
-**Guardian recommendation to the council:** Before scope-lock, a short lemma-style note (one to two paragraphs) in the forthcoming WP README specifying exactly (i) which LD expansion the engine uses, (ii) which order in $\eta$ is retained in `build_pulse_hamiltonian`, and (iii) which of (drive-strength LD / motional-amplitude LD / both) actually constrain the engine's validity. Without this, the $|\alpha|=5$ row and the small-$N$ / small-$\delta t$ corner of the grid carry *two different* validity concerns that may be conflated — a Clarity issue in its own right.
+**Guardian recommendation to the council:** Before scope-lock, a short lemma-style note (one to two paragraphs) in the forthcoming WP README specifying exactly (i) which LD expansion the engine uses, (ii) which order in $\eta$ is retained in `build_pulse_hamiltonian`, and (iii) which of (drive-strength LD / motional-amplitude LD / both) actually constrain the engine's validity. Without this, the $|\alpha|=5$ row and the small-$N$ / small-$\delta t$ corner of the grid carry *two different* validity concerns that may be conflated — a Clarity issue in its own right. The lemma must also specify whether the binding inequality takes the linear-amplitude form $\eta\sqrt{\langle n\rangle+1} \lesssim 1$ or the squared form $\eta^2(2\bar n+1) \lesssim 1$; these have different numerical thresholds and imply different $|\alpha|=5$ decisions.
 
 **Provisional answer, pending that lemma:** Enforce both inequalities as **per-cell diagnostics**. Cells breaching either are hatched with a legend that distinguishes *drive-LD breach* from *motional-LD breach*. §6 carries the implementation commitment.
 
@@ -171,7 +175,8 @@ Conditional on §5.1 resolution and Integrator non-objection. Lean v0.1 comprise
   - Per-cell worst-case Fock-leakage audit at NMAX $\geq 60$, run first at the $|\alpha|\times\delta t/T_m$ extremes before the full grid sweep (§2.3).
   - Per-cell drive-LD and motional-LD diagnostics, stored as h5 dataset attributes.
 - `wp-strong-weak-coastline/numerics/coastline_v1.h5` — $V$, $P$, diamond-amplitude, $|\delta\langle n\rangle|_\text{peak}$ per $(N, \delta t/T_m, |\alpha|, \delta)$ cell. **Data-ledger protocol:** constraint-selection rules declared as dataset attributes (`omega_eff_ceiling`, `ld_flag_drive`, `ld_flag_motional`, `fock_leakage_top5`), *not* bled into the observable fields themselves. Observables remain the raw engine output; hatching/exclusion logic is a downstream rendering concern that consumes the flags.
-- `wp-strong-weak-coastline/plots/` — two primary heatmaps ($V$, $P$) per $|\alpha|$ with drive-LD hatched and motional-LD hatched via distinguishable legends; optional diamond-amplitude panel where discriminatory; 1D cut along $\delta t/T_m = 0.13$ showing $N$-dependence; tertiary $V/P$ covariance panel (§4.3); analytic impulsive overlay on the $\delta t/T_m \to 0$ edge (§4.5).
+- **Primary heatmaps** — two maps ($V$, $P$) per $|\alpha|$, with drive-LD-ceiling breaches (§4.1) hatched in one convention. Optional diamond-amplitude panel where discriminatory; 1D cut along $\delta t/T_m = 0.13$ showing $N$-dependence; tertiary $V/P$ covariance panel (§4.3); analytic impulsive overlay on the $\delta t/T_m \to 0$ edge (§4.5).
+- **Motional-LD diagnostic overlays** — per-cell motional-LD-breach indicator from §5.1, hatched in a *distinguishable* convention from the drive-LD hatching. Legend must make provenance unambiguous: drive-LD is §4.1's ceiling; motional-LD is §5.1's per-cell diagnostic pending the lemma.
 - `wp-strong-weak-coastline/logbook/2026-04-XX-kickoff.md` + results entry tracking the §3.4 conjecture's fate.
 
 Estimated compute: ≤ 30 s wall for $|\alpha|=3$ alone; ≤ 2 min for the full four-value set.
@@ -199,12 +204,15 @@ The coastline WP closes the $(N, \delta t/T_m)$ axis pair; other axes (envelope 
 
 Decisions remaining before scope-lock:
 
-1. **Integrator stance review** of this v0.2 memo. No Integrator review has been registered in this cycle; flow/synthesis veto authority therefore uninvoked. v0.2 is provisional until Integrator clears.
+1. **Integrator stance review** of this v0.3 memo. No Integrator review has been registered in this cycle; flow/synthesis veto authority therefore uninvoked. v0.3 is provisional until Integrator clears.
 2. **§5.1 resolution** — the LD-threshold lemma. Load-bearing for §4.4 and §5.2.
-3. **Confirm or object** to §4.2 grid geometry (geometric 6×6 replaces the v0.1 7×6 proposal) and §4.4 $|\alpha|$ set.
+3. **Confirm or object** to §4.2 grid geometry (geometric 6×6 replaces the v0.1 7×6 proposal) and §4.4 $|\alpha|$ set. A single veto from Guardian, Architect, or Integrator on these items re-opens the corresponding subsection for one re-deliberation round; Scout and Advisory flags do not re-open but require Integrator acknowledgement.
+4. **Integrator pronouncement on lemma timing.** The §5.1 lemma can be scoped as either pre-lock (v0.3 gates on it) or co-lock (v0.3 ships with §5.1 as open; lemma becomes the first content item of the WP README on scaffolding). Guardian recommendation is co-lock; Integrator's call.
 
-Items 1 and 2 are load-bearing. Item 3 is a re-opening vote only if a stance objects.
+Items 1, 2, and 4 are load-bearing. Item 3 is a re-opening vote only if a stance objects.
 
 -----
+
+*v0.3 (2026-04-21): $\chi$-collapse ansatz corrected for pulse-bandwidth sign/monotonicity; §4.2 relabelled provisionally locked and augmented with 0.13 control-slice row; §4.4 scientific baseline demoted to $\{0,1,3\}$ with $|\alpha|=5$ contingent on §5.1; §2.2 softened; §2.5 split for readability; §4.3 rubric-defending sentence added; §5.1 motional-LD-form specification burden noted; §6 plots bullet split to distinguish drive-LD from motional-LD hatching; §9 re-opening threshold and lemma-timing ask added; compute estimate reconciled. v0.2 superseded.*
 
 *v0.2 (2026-04-21): demoted §4 from questions to locked decisions; added §2.5 LD-audit, §3.4 $\chi$-collapse conjecture, §5 open questions, §8 future-work parking; integrated data-ledger protocol, hatched-overlay convention, drive-LD/motional-LD per-cell diagnostics, rubric table, analytic-impulsive overlay, and Endorsement Marker. v0.1 superseded.*
