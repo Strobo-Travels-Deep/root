@@ -11,15 +11,22 @@ non-monotone V(|α|) at the coastline corner.
 - Plot: [alpha_recovery.png](../plots/alpha_recovery.png)
 
 Compute: 3.4 s wall for 15 × 3 = 45 cells at NMAX = 80. Fock-leakage
-ceiling: worst-case top-5 leakage 1.2 × 10⁻⁸ at |α| = 6.0 (marginal
-threshold from the pre-audit rubric; NMAX 80 sufficient for the scan
-range).
+trajectory across the scan: |α| ≤ 5.0 safe by the audit rubric
+(top-5 leakage < 10⁻¹⁵); |α| = 5.25 → 5.50 passes 10⁻¹³ → 10⁻¹¹;
+|α| = 6.0 reaches **1.2 × 10⁻⁸ — marginal by the audit rubric**
+of [check_fock_leakage_extremes_v1.py:160](../numerics/check_fock_leakage_extremes_v1.py#L160)
+(< 10⁻⁸ is safe; ≥ 10⁻⁸ is marginal). The V, diamond, and δ⟨n⟩ values
+at |α| = 5.75 and 6.0 should therefore be read as suggestive of the
+trend, not as audit-grade numbers; a follow-up with NMAX = 120 would
+be the right way to extend this scan past |α| ≈ 6 cleanly. The shape
+of the oscillation (§1) is fully established by the |α| ≤ 5.25 data,
+which sit well inside audit-grade leakage.
 
 -----
 
 ## 1. Result
 
-| \|α\| | V(N=24) | V(N=48) | V(N=96) | ½(max−min)⟨σ_z⟩ |
+| \|α\| | V(N=24) | V(N=48) | V(N=96) | ½(max−min)⟨σ_z⟩ (N=48; identical across N to 3 decimals) |
 |---|---|---|---|---|
 | 2.50 | 0.189 | 0.188 | 0.188 | 0.203 |
 | 2.75 | 0.123 | 0.122 | 0.122 | 0.232 |
@@ -50,40 +57,73 @@ diamond maximum.
 
 The memo listed three candidate mechanisms:
 
-| # | Mechanism | Prediction | Verdict |
+| # | Mechanism | Prediction | Evidence from this probe |
 |---|---|---|---|
-| (i) | JC-like revival at large $\eta\sqrt{\langle n\rangle+1}$ | Explicit N-dependence in V(|α|) curves (different rotation phases at different N) | **Falsified.** V values at fixed |α| agree across N ∈ {24, 48, 96} to three decimals at every single one of the 15 α points. No revival can survive that invariance. |
-| (ii) | Debye–Waller higher-order structure in the finite-δt propagator | Smooth structure controlled by $\eta^2(2\bar n + 1)$, N-independent under option-(a) recalibration | **Consistent with observation.** Smoothness, unit-amplitude structure, and N-independence all match. |
-| (iii) | Genuine physics of the motional-LD-breaching regime | Large-$\eta|\alpha|$ interference pattern surviving the full $\exp[i\eta(a+a^\dagger)]$ coupling, not captured by linear-Lamb–Dicke expansion | **Consistent with observation.** Same signatures as (ii). |
+| (i) | JC-like revival at large $\eta\sqrt{\langle n\rangle+1}$ | Residual N-dependence in V(|α|) beyond what option-(a) recalibration already enforces | **Constrained, not falsified.** V values at fixed |α| agree across N ∈ {24, 48, 96} to three decimals at every α point. |
+| (ii) | Debye–Waller higher-order structure in the finite-δt propagator | Smooth structure controlled by $\eta^2(2\bar n + 1)$, N-independent under option-(a) recalibration | Consistent with observation. |
+| (iii) | Genuine physics of the motional-LD-breaching regime | Large-$\eta|\alpha|$ interference pattern surviving the full $\exp[i\eta(a+a^\dagger)]$ coupling, not captured by linear-Lamb–Dicke expansion | Consistent with observation. |
 
-**Call:** (i) is falsified. (ii) and (iii) are compatible with each
-other — the finite-δt DW higher-order structure *is* the large-$\eta\alpha$
-regime physics; there is no operational way to separate them here.
-The observation is **physics**, not engine artefact, and is intrinsic
-to the recalibrated-Ω coastline at δt/T_m ~ 0.80.
+**What the probe actually demonstrates.** The v0.1 coastline sweep had
+already shown V(N) ≈ const under option-(a) recalibration across the
+entire 6×6 grid: once N·Ω_eff·δt = π/2 per cell, N does not carry
+independent physics. This probe extends that flatness — at three N
+values chosen deliberately far apart — to the dense α-scan at the
+coastline corner. So the finding is:
+
+> *Across N ∈ {24, 48, 96} at δt/T_m = 0.80 and recalibrated Ω, V(|α|)
+> shows no detectable N-dependence at the 10⁻³ level.*
+
+**What it does not demonstrate.** It does not falsify (i) in the
+strong sense. A JC-style revival whose N-phase is absorbed by the
+option-(a) π/2-rotation constraint would also be N-invariant on this
+grid. To falsify (i) cleanly would require a calibration that retains
+N as an independent axis — e.g. the fixed-Ω control slice of WP-C
+v0.1 — and a dense |α| scan there. In the option-(a) picture, (i),
+(ii), and (iii) are operationally degenerate: they all predict the
+same observed curve.
+
+**Call.** The observed V(|α|) oscillation is robust to the N-axis
+under this calibration; whatever the microscopic mechanism, it is
+calibration-scheme-stable rather than being a power-Rabi artefact
+that would vary with N. "Physics, not engine artefact" is therefore
+supported for the coastline-corner regime on this calibration, but a
+stronger mechanism attribution needs either the fixed-Ω reading or an
+analytic derivation (e.g. evaluating min_ϑ |C| for a coherent state
+under N impulsive kicks of amplitude π/(2N) to see whether the
+closed-form Debye–Waller expansion reproduces the oscillation). Both
+are WP-C v0.2 scope.
 
 -----
 
-## 3. Why V reads low at the minimum — a partial structural story
+## 3. What V reads at the minimum — a partial structural story (*hypothesis*)
 
 The minimum V ≈ 0.10 at |α| = 3.0 corresponds to min_ϑ |C| ≈ 0.90.
-This is *high* residual coherence, not low. What the V = 0.10 signals
-is that **the pulse train fails to encode ϑ₀ into the spin coherence
-at this particular (α, δt)** — |C| is nearly 1 independent of ϑ₀, so
-the ϑ-dependent min − max gap is small. At |α| ≈ 4.75, where V ≈ 0.40,
+This is *high* residual coherence, not low. What V = 0.10 signals is
+that **the pulse train fails to encode ϑ₀ into the spin coherence at
+this particular (α, δt)** — |C| is nearly 1 independent of ϑ₀, so the
+ϑ-dependent min − max gap is small. At |α| ≈ 4.75, where V ≈ 0.40,
 the train recovers ≈ 40% encoding contrast.
 
-So the "coastline" phrasing needs care here: this is not a Doppler
-washout of the signal (P ≈ 1 in the v0.1 sweep at δ = 0.5·ω_m
-confirms the coherence is preserved), it is an |α|-dependent loss of
-**encoder sensitivity** in the recalibrated-Ω protocol. The impulsive
-reference V_imp ≈ 0.865 shows what the protocol *would* deliver in
-the δt → 0 limit; the oscillation in V(|α|) is the finite-δt departure
-from that reference, and it is not monotonically degrading.
+**Hypothesis (not measured by this probe).** The memo §4.3 rubric
+reads (V low, P high) as "pulse-broadening". If the V(|α|) minimum
+observed here is accompanied by P ≈ 1 (off-tooth coherence preserved,
+as the v0.1 sweep found at δ = 0.5·ω_m for |α| = 3), the rubric's
+third row would need refining — some of those (V low, P high) cells
+would be an **|α|-revival of the encoder map** rather than Doppler
+washout. But this probe measured only δ = 0, so P is unmeasured here
+and the reinterpretation remains conjectural.
 
-This is physics worth naming, and it changes the memo §4.3 rubric's
-third row qualitatively: the (V low, P high) cells we see are not all
-"pulse-broadening" — some are an |α|-revival of the encoder map.
+**Minimum follow-up to demonstrate the reinterpretation.** Extend the
+driver to read P at each (|α|, N) cell — one extra detuning run per
+cell at δ = 0.5·ω_m (or δ ≈ η|α|·ω_m, per the §9.1 Doppler-probe
+scope). Adds ≈ 3 s wall time. That single datum would move this from
+"hypothesis consistent with v0.1 P-data at |α| ∈ {0,1,3,5}" to "shown
+directly at each α in the revival range."
+
+The impulsive reference V_imp ≈ 0.865 shows what the protocol *would*
+deliver in the δt → 0 limit (uniform across N and α, per the v0.1.1
+patch note); the oscillation in V(|α|) is the finite-δt departure
+from that reference, and the departure is not monotonic in |α|.
 
 -----
 
@@ -114,12 +154,16 @@ These are all **WP-C v0.2 scope**, not sub-entries of v0.1.
 
 ## 5. Memo update
 
-v0.4.1 §5.3 can be promoted to **CLOSED (physics, not artefact)** with
-the JC-revival branch falsified by N-independence and the
-DW-higher-order / motional-LD-regime branches merged. Item 2 of
-memo §9 ("§5.3 α-recovery probe") is discharged. Item 1 (Doppler-merging
-probe) still open; items (1), (2), and (3) of §4 above are the natural
-v0.2 scope.
+v0.4.1 §5.3 can be promoted from "OPEN" to **PARTIALLY RESOLVED**:
+under option-(a) recalibration the V(|α|) oscillation is
+N-independent at the 10⁻³ level at three N values, so hypotheses
+(i), (ii), (iii) are operationally degenerate on this calibration and
+the observation is calibration-scheme-stable. Mechanism attribution
+beyond that requires the fixed-Ω reading or an analytic DW
+derivation (see §4 above). Memo §9 item 2 is **discharged in the
+sense that the probe specified by the memo has been run**, with the
+result framed accordingly. Item 1 (Doppler-merging probe) still
+open; items (1), (2), and (3) of §4 above are the natural v0.2 scope.
 
 -----
 
