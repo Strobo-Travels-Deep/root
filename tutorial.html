@@ -112,15 +112,15 @@
   </li>
   <li>
     <strong>V oscillates in the motional amplitude |α|.</strong>
-    At the long-pulse corner δ<em>t</em>/<em>T</em><sub>m</sub> = 0.80, tooth visibility is <em>non-monotone</em>: V ≈ 0.10 at |α| ≈ 3, climbing to a local maximum V ≈ 0.40 at |α| ≈ 4.75 before falling again past |α| ≈ 6 (α-recovery probe: <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">logbook</a>). The shape is robust to within 10⁻³ across <em>N</em> ∈ {24, 48, 96}, confirming this is physics of the finite-pulse propagator, not a Rabi-envelope artefact of a particular <em>N</em>.
+    At the long-pulse corner δ<em>t</em>/<em>T</em><sub>m</sub> = 0.80, tooth visibility is <em>non-monotone</em>: V ≈ 0.10 at |α| ≈ 3, climbing to a local maximum V ≈ 0.40 at |α| ≈ 4.75 before falling again past |α| ≈ 6 (α-recovery probe: <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">logbook</a>). The shape is robust to within 10⁻³ across <em>N</em> ∈ {24, 48, 96}, confirming this is physics of the finite-pulse propagator, not a Rabi-envelope artefact of a particular <em>N</em>. Lemma B below (corollary) narrows the mechanism: since the impulsive limit carries <em>no</em> α-structure, this oscillation must be a Debye–Waller-class correction generated at order ω<sub>m</sub>δ<em>t</em> — a Jaynes–Cummings revival is <em>ruled out</em> in the strict sense.
   </li>
   <li>
     <strong>A new rubric row — "encoder-sensitivity revival" — replaces some pulse-broadening cells.</strong>
     At the V minimum near |α| ≈ 3 we also measured <em>P</em> = 1.000 to three decimals. So those cells are <em>not</em> Doppler-broadened; the pulse train simply produces a spin coherence |<em>C</em>|(ϑ₀) that happens to be almost independent of ϑ₀ for that particular (α, δ<em>t</em>). The measurement reads out information about <em>everything</em> except the motional phase — a blind spot of the encoder map, not a loss of coherence.
   </li>
   <li>
-    <strong>The impulsive limit is a clean, universal floor.</strong>
-    In the vanishing-pulse-duration limit, V = V<sub>imp</sub> ≈ 0.865 <em>uniformly</em> across <em>N</em> ∈ {3…96} and |α| ∈ {0, 1, 3, 5}. V<sub>imp</sub> is set by η alone (through the Debye–Waller factor) and gives the simplest possible analytic anchor for the coastline: everywhere else, the coastline measures the δ<em>t</em>-driven <em>departure</em> from this floor.
+    <strong>The impulsive limit is a clean, universal floor — now in closed form.</strong>
+    In the vanishing-pulse-duration limit, V = V<sub>imp</sub> <em>uniformly</em> across <em>N</em> and |α|. <strong>Lemma B</strong> (<a href="wp-strong-weak-coastline/notes/analytic-reference.md">analytic reference</a>) evaluates this exactly: V<sub>imp</sub> = ½(1 + exp(−2η²)), derived from (Σ<sup>†</sup>Σ = 𝟙) for the 2×2 spin block plus the standard displacement-operator overlap identities. At η = 0.397 this is 0.86482, valid for |α| ≥ π/(4η) ≈ 1.98. The numerical overlay matches the lemma to 4.4 × 10⁻¹⁶. Everywhere else on the grid, the coastline measures the δ<em>t</em>-driven <em>departure</em> from this Debye–Waller floor.
   </li>
   <li>
     <strong>Engine-validity is controlled by the drive Lamb–Dicke ratio only.</strong>
@@ -129,10 +129,23 @@
   <li>
     <strong>Doppler merging is structurally unreachable — a strong negative result.</strong>
     The v0.1 sweep measured the off-tooth coherence <em>P</em> at one detuning only (δ = ½ω<sub>m</sub>). The <a href="wp-strong-weak-coastline/logbook/2026-04-21-doppler-probe.md">follow-up Doppler probe</a> extended it to seven detunings spanning δ ∈ {0, ¼, ½, ¾, 1, 1½, 2}ω<sub>m</sub> — covering on-sideband, mid-sideband, and second-sideband points where any Doppler broadening would necessarily show up. Across the full 6×6 × 4|α| × 7-detuning grid (≈ 65 k evolutions), the worst-case <em>P</em><sub>mid,min</sub> ≥ 0.999 in every cell where the drive-<em>LD</em> ceiling is respected. Only drive-<em>LD</em>-breach cells (small <em>N</em>, small δ<em>t</em>) dip below <em>P</em> = 1, and those drops are signatures of the RWA failing, not of Doppler merging.<br><br>
-    <em>Why this happens:</em> the strobe gap between pulses is locked to exactly one motional period <em>T</em><sub>m</sub>. At the start of every pulse the coherent-state phase has advanced by 2π — so <em>N</em>-fold sampling at this period averages the intra-pulse Doppler phase away to all orders in η|α|. We call this the <strong>stroboscopic heterodyne</strong>: whatever Doppler broadening a single pulse might experience during its δ<em>t</em> window, the full train cancels it coherently. The stroboscopic protocol's robustness to Doppler broadening of individual pulses — a robustness the Hasse 2024 scheme implicitly relies on — is now a <em>quantitatively tested</em> property rather than an assumption.<br><br>
+    <em>Why this happens</em> — <strong>Lemma A</strong> (<a href="wp-strong-weak-coastline/notes/analytic-reference.md">analytic reference</a>): the gap propagator at δ = 0 is diagonal in the Fock basis with entries exp(−iω<sub>m</sub><em>n</em>·<em>T</em><sub>gap</sub>). Setting <em>T</em><sub>gap</sub> = <em>T</em><sub>m</sub> = 2π/ω<sub>m</sub> makes every phase a multiple of 2π, so the gap propagator <em>is</em> the identity on the Fock basis — exactly, to all orders in η and |α|. Numerical deviation from identity: 1.1 × 10⁻¹³ (machine precision). There is <em>nothing in the gap</em> for Doppler broadening to accumulate through; the train propagator reduces to <em>K</em><sup><em>N</em></sup>, with all α-dependence sitting inside the single-pulse kernel <em>K</em>. This elevates the negative result from numerical observation (v0.4.5) to proved impossibility (v0.4.6): the stroboscopic protocol's robustness to Doppler broadening of individual pulses — a robustness the Hasse 2024 scheme implicitly relies on — is now a <em>proved theorem</em> rather than an assumption.<br><br>
     The immediate consequence for the rubric: the fourth row (Doppler merging) is <em>not</em> a regime this protocol can occupy under the recalibrated-Ω calibration; it would only re-emerge if we broke the strobe-gap lock or abandoned the π/2 net-rotation pin.
   </li>
 </ol>
+
+<div class="callout" style="border-left:3px solid var(--accent);">
+  <div class="cl">Analytic lemmas at a glance (v0.4.6 memo update, 2026-04-21)</div>
+  <p style="margin-bottom:0.4rem;">Two closed-form results in <a href="wp-strong-weak-coastline/notes/analytic-reference.md">notes/analytic-reference.md</a>, verified numerically by <a href="wp-strong-weak-coastline/numerics/verify_analytic.py">verify_analytic.py</a> at machine precision. They promote findings 5 and 7 from numerical observations to provable statements, and they tighten the mechanism attribution for finding 3:</p>
+  <table class="est-table" style="margin:0.4rem 0;">
+  <thead><tr><th>Lemma</th><th>Statement</th><th>Consequence</th></tr></thead>
+  <tbody>
+  <tr><td><strong>A</strong> — stroboscopic motional heterodyne</td><td>At <em>T</em><sub>gap</sub> = <em>T</em><sub>m</sub> and δ = 0, the gap propagator is the identity on motion (phases exp(−i·2π<em>n</em>)). Numerical deviation 1.1 × 10⁻¹³.</td><td>Finding 7 (Doppler merging empty) elevated from numerical to theorem.</td></tr>
+  <tr><td><strong>B</strong> — impulsive V floor</td><td>V<sub>imp</sub> = ½(1 + exp(−2η²)) independent of <em>N</em>, |α| for |α| ≥ π/(4η). Matches numerics to 4.4 × 10⁻¹⁶.</td><td>Finding 5 in closed form. Corollary rules out Jaynes–Cummings revival as mechanism for finding 3 — the α-oscillation must be a finite-δ<em>t</em> Debye–Waller correction.</td></tr>
+  </tbody>
+  </table>
+  <p style="margin-bottom:0;">Remaining v0.2 analytic target: the closed-form V(|α|) curve at δ<em>t</em>/<em>T</em><sub>m</sub> = 0.80 to leading non-trivial order in ω<sub>m</sub>δ<em>t</em> — i.e. the full Debye–Waller correction to Lemma B's impulsive anchor.</p>
+</div>
 
 <hr>
 
