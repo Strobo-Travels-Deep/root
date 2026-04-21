@@ -42,56 +42,77 @@ mid-sideband points where Doppler merging would show cleanest.
 
 ## 2. Result — the (V low, P low) quadrant is empty on this grid
 
-Row-mean summary at each (|α|, N):
+Rubric-specific summary: the (V low, P low) quadrant, where "V low"
+means $V < 0.3$ (the rubric's threshold for pulse-broadening or
+encoder-revival):
 
-| |α| | V̄_{dt=0.80} | P_mid,min̄ interior* | drive-LD-breach corner cells (N ∈ {3, 6}) |
-|---|---|---|---|
-| 0 | 0.998 | **1.000** | P_mid_min ∈ [0.896, 0.960] |
-| 1 | 0.760 | **1.000** | P_mid_min ∈ [0.917, 0.964] |
-| 3 | 0.101 | **1.000** | P_mid_min ∈ [0.949, 0.971] |
-| 5 | 0.377 | **1.000** | P_mid_min ∈ [0.948, 0.977] |
+| |α| | cells with V < 0.3 (drive-LD valid) | min $P_\text{mid,min}$ in that set |
+|---|---|---|
+| 0 | 0 (V stays ≥ 0.97 everywhere) | — |
+| 1 | 0 (V stays ≥ 0.76 everywhere) | — |
+| 3 | 12 | **0.966** |
+| 5 | 0 (V stays ≥ 0.67 everywhere) | — |
 
-*interior = N ≥ 12, no drive-LD breach.
+**Primary finding.** **The (V low, P low) quadrant is empty.** In
+every cell of the grid where $V < 0.3$ (rubric "V low"),
+$P_\text{mid,min} \geq 0.966$. All observed weak-binding cells are in
+the (V low, P high) quadrant — distributed between the pulse-
+broadening and encoder-sensitivity-revival populations identified by
+α-recovery v2 Test A.
 
-**Finding.** In every cell of the 6×6 × 4 |α| × 7 detuning grid for
-which drive-LD is respected, $P_\text{mid,min} \geq 0.999$. The
-(V low, P low) rubric quadrant is **structurally empty** in this
-protocol under option-(a) recalibration. This is stronger than v0.1's
-negative result — which was at a single detuning — because it covers
-the full [0, 2·ω_m] span including mid-sideband and second-sideband
-points where any Doppler broadening would necessarily manifest.
-
-The only cells where $P_\text{mid,min} < 1$ are the drive-LD-breach
-cells at N ∈ {3, 6}. In those cells Ω_eff/ω_m is large enough that
-the RWA fails, and the observed modest P drop (to ≈ 0.90) is a
-signature of the effective Hamiltonian no longer being sideband-
-resolved, not a Doppler-merging signal.
+**Secondary finding — high-V per-pulse residual.** In small-$N$
+(N ∈ {3, 6}) high-V cells the per-cell $P_\text{mid,min}$ drops to
+**as low as 0.930** (at |α|=0, N=3, δt/T_m=0.40; see
+[verify_analytic.py](../numerics/verify_analytic.py) Check 5a). These
+cells are not drive-LD-breach; $\Omega_\text{eff}/\omega_m$ remains
+under the 0.3 ceiling. The finite-bandwidth structure of a single
+pulse at large δt can mildly reduce $P$ even when $V$ is high. This
+is the $\mathcal O(1)$ per-pulse Doppler residual that Lemma A's IP
+formulation predicts survives even after the $\mathcal O(N)$
+heterodyne cancellation — see
+[notes/analytic-reference.md](../notes/analytic-reference.md) §2. The
+v0.1 draft of this logbook characterised these small drops as "the
+drive-LD-breach RWA-failure artefact only"; that was imprecise. They
+are a genuine finite-$\delta t$ signature, just one that is small in
+absolute terms and whose cells are rubric-irrelevant (high V).
 
 -----
 
-## 3. Why — the stroboscopic heterodyne
+## 3. Why — the stroboscopic heterodyne (see
+[notes/analytic-reference.md](../notes/analytic-reference.md) Lemma A)
 
-The strobe gap T_m = 2π/ω_m is tuned to exactly one motional period.
-At the start of each pulse, the coherent-state phase has advanced by
-exactly 2π; the motional motion is therefore "stroboscopically
-frozen" on the pulse-train timescale. Whatever Doppler-broadening a
-single pulse experiences within its δt window is averaged by the
-N-fold sampling at a period that cancels the motional phase to all
-orders in η|α|. The result is that the off-tooth coherence P is a
-property of the comb-interpolation error of the train envelope, not
-of the underlying Doppler profile.
+The pulse-to-pulse period $t_\text{sep} = T_m = 2\pi/\omega_m$ is
+tuned to exactly one motional period. In the interaction picture at
+$H_0 = \omega_m a^\dagger a + (\delta/2)\sigma_z$, gaps are trivial
+(zero Hamiltonian) for any $t_\text{gap}$, and the coupling operator
+is stroboscopically stationary at pulse-start times — i.e.
+$\widetilde C(j T_m) = C$ at all integers $j$. Therefore the $N$-fold
+accumulation of Doppler-broadening that would occur in a non-
+stroboscopic protocol is replaced by a sum of $N$ copies of a single
+pulse's finite-bandwidth response with $\alpha$-independent spin-frame
+phases between them. Any Doppler residual in $P$ is therefore bounded
+by the single-pulse bandwidth, not the $N$-pulse-train bandwidth —
+a reduction from $\mathcal O(N)$ to $\mathcal O(1)$.
+
+The observed per-cell $P_\text{mid,min} \in [0.93, 1]$ is exactly
+this $\mathcal O(1)$ residual in action: the deepest dips (to 0.93)
+appear at small $N$ (fewer averaging cycles) and large $\delta t$
+(the single-pulse bandwidth is widest), but none reach the rubric's
+(V low, P low) quadrant because $V$ is high in those cells.
 
 Under **option-(b) fixed Ω**, Rabi-envelope nodes do break the
 cancellation at specific N values, which is why WP-C v0.1's
 option-(b) control slice shows a different behaviour. Under
 **option-(a) recalibrated Ω**, the net train rotation is pinned at
-π/2 by construction and the heterodyne is clean.
+π/2 by construction and the heterodyne is clean in the sense above.
 
-**This is a quantitative validation of a claim that Hasse 2024
-implicitly relies on:** the stroboscopic protocol is robust to
-Doppler broadening of individual pulses as long as the gap is locked
-to T_m and the total rotation is calibrated. No prior WP had tested
-this claim cleanly.
+**What this validates quantitatively.** The stroboscopic protocol's
+robustness against Doppler broadening is, under the assumptions
+$t_\text{sep} = T_m$ and option-(a) calibration, a reduction of the
+Doppler amplification scaling from $\mathcal O(N)$ to $\mathcal O(1)$.
+The remaining $\mathcal O(1)$ per-pulse residual is visible in the
+data (P drops to 0.93 in the worst-case per-cell sense) but is
+rubric-irrelevant because it coincides with high V.
 
 -----
 

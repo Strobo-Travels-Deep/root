@@ -1,11 +1,19 @@
 # Analytic reference — WP-Coastline
 
-**Status:** v0.1 · 2026-04-21. Two closed-form lemmas that anchor
-numerical findings of WP-C v0.1 and the subsequent α-recovery / Doppler
-probes. Verified numerically by
-[verify_analytic.py](../numerics/verify_analytic.py) against
-[coastline_v1.h5](../numerics/coastline_v1.h5) and
-[coastline_doppler_v1.h5](../numerics/coastline_doppler_v1.h5).
+**Status:** v0.2 · 2026-04-21. Two closed-form lemmas (one reformulated
+from the v0.1 draft after a reviewer found that the original Lemma A
+was stated for an idealization — $t_\text{gap} = T_m$ — that does not
+match the executed train, which uses $t_\text{gap} = T_m - \delta t$).
+Numerically verified by
+[verify_analytic.py](../numerics/verify_analytic.py), which in v0.2
+also opens [coastline_v1.h5](../numerics/coastline_v1.h5) and
+[coastline_doppler_v1.h5](../numerics/coastline_doppler_v1.h5) to
+spot-check the lemmas' downstream numerical claims.
+
+*Read as: idealised-asymptotic analytic model. The finite-$\delta t$
+train used by the WP numerics differs from the idealisation in ways
+that this note makes explicit; the v0.1 draft slipped on that point
+and over-reached in the downstream framing.*
 
 -----
 
@@ -19,203 +27,243 @@ $$
 C = \exp\!\bigl[i\eta(a + a^\dagger)\bigr] = D(i\eta),
 $$
 
-i.e. the displacement operator by a pure-imaginary amount $i\eta$. The
-per-pulse Hamiltonian as used in
+i.e. the displacement operator by a pure-imaginary amount $i\eta$.
+Per-pulse Hamiltonian as used in
 [scripts/stroboscopic/hamiltonian.py:42](../../scripts/stroboscopic/hamiltonian.py#L42)
-(at detuning $\delta = 0$, ac phase $\varphi = 0$):
+(at ac phase $\varphi = 0$, with $\text{intra\_pulse\_motion}=\text{True}$):
 
 $$
-H_\text{pulse} = \omega_m\, a^\dagger a + \tfrac{\Omega}{2}\,(C\,\sigma_- + C^\dagger\,\sigma_+).
+H_\text{pulse} = H_0 + V,
+\quad
+H_0 \equiv \omega_m\, a^\dagger a + \tfrac{\delta}{2}\sigma_z,
+\quad
+V \equiv \tfrac{\Omega}{2}\,(C\sigma_- + C^\dagger\sigma_+).
 $$
 
 The strobe train consists of $N$ pulses of duration $\delta t$
-separated by gaps of length $T_\text{gap} = T_m - \delta t$ where
-$T_m = 2\pi/\omega_m$. The coherent-state initial condition with phase
-$\vartheta_0$ is
-
-$$
-|\psi_0\rangle = |\!\downarrow\rangle\otimes|\alpha e^{i\vartheta_0}\rangle
-\quad\xrightarrow{\text{MW }\pi/2\text{ at }\phi=0}\quad
-\tfrac{1}{\sqrt 2}\bigl(|\!\downarrow\rangle + i|\!\uparrow\rangle\bigr)\otimes|\alpha e^{i\vartheta_0}\rangle.
-$$
-
-The observables are $\sigma_x, \sigma_y$, and from them
-$|C|(\vartheta_0) \equiv \sqrt{\langle\sigma_x\rangle^2 + \langle\sigma_y\rangle^2}$,
-the spin coherence after the train. The coastline observables are
-
-$$
-V = 1 - \min_{\vartheta_0} |C|(\vartheta_0),
-\qquad
-P(\delta) = \langle|C|(\vartheta_0)\rangle_{\vartheta_0}\big|_\delta.
-$$
+separated by gaps of length $T_\text{gap} = T_m - \delta t$ (with
+$T_m = 2\pi/\omega_m$), so that the pulse-to-pulse period is exactly
+$T_m$. During gaps the Hamiltonian is $H_0$ only (the coupling $V$
+vanishes).
 
 -----
 
-## 2. Lemma A — Stroboscopic motional heterodyne
+## 2. Lemma A — Stroboscopic motional heterodyne (interaction-picture
+formulation)
 
-**Claim.** For strobe-gap duration $T_\text{gap} = T_m$ (i.e.
-$t_\text{sep} = T_m$, exactly one motional period between pulses), the
-motional component of the gap propagator is the identity on the Fock
-basis. Consequently, at $\delta = 0$, the entire gap is the identity,
-and the train propagator reduces to $U_\text{train} = K^N$ where $K$
-is the single-pulse propagator. Any Doppler-broadening that a single
-pulse experiences within its own $\delta t$ window is therefore
-**not** amplified by accumulation over $N$ pulses — it is cancelled
-exactly by the motional-period sampling.
+**Statement.** In the interaction picture with respect to $H_0$ —
+i.e. in the frame rotating at $\omega_m a^\dagger a + (\delta/2)\sigma_z$:
 
-**Proof.** The gap propagator at $\delta = 0$ (see
-[scripts/stroboscopic/propagators.py:41](../../scripts/stroboscopic/propagators.py#L41))
-is diagonal in the Fock basis with entries $e^{-i\omega_m n t}$ for
-$n = 0, 1, \ldots, N_\text{max}-1$. At $t = T_\text{gap} = T_m =
-2\pi/\omega_m$, every phase equals $-2\pi n$, which is a multiple of
-$2\pi$ for all integer $n$. Hence $U_\text{gap}|_{t=T_m} = \mathbb{1}$.
-The full train is
+1. **(Exact, for any $t_\text{gap}$.)** The gap Hamiltonian in the
+   interaction picture is identically zero: $\widetilde H_\text{gap}(t) = 0$.
+   Gaps contribute the identity to $U_\text{train}^\text{IP}$.
 
-$$
-U_\text{train} = K \cdot \underbrace{\mathbb{1}}_{U_\text{gap}} \cdot K \cdot \mathbb{1} \cdots K = K^N.
-$$
+2. **(Stroboscopic-condition-dependent.)** For $t_\text{sep} = T_m =
+   2\pi/\omega_m$, the coupling operator's motional part at any
+   pulse-start time $t_j = j\,T_m$ equals its lab-frame value at
+   $t = 0$:
+   $$
+   e^{i\omega_m a^\dagger a\, t_j}\,C\,e^{-i\omega_m a^\dagger a\, t_j}
+   = \exp\!\bigl[i\eta(a\,e^{-i\omega_m t_j} + a^\dagger e^{i\omega_m t_j})\bigr]
+   = \exp\!\bigl[i\eta(a + a^\dagger)\bigr] = C,
+   $$
+   because $\omega_m t_j = 2\pi j$ is an integer multiple of $2\pi$. The motional coupling operator is therefore **stroboscopically stationary at pulse-start times** — the heterodyne.
 
-At $\delta \ne 0$, the gap propagator carries an extra spin-frame
-phase $e^{\pm i\delta T_m/2}$ on the two spin blocks — this contributes
-$(N-1)\cdot\delta T_m$ of spin rotation across the train but does **not**
-depend on $\alpha$. ∎
+3. **(Intra-pulse rotation, $\alpha$-dependent.)** Within a single
+   pulse window $[t_j, t_j + \delta t]$, the interaction-picture coupling
+   operator rotates:
+   $$
+   \widetilde C(t_j + \tau) = \exp\!\bigl[i\eta(a\,e^{-i\omega_m \tau} + a^\dagger e^{i\omega_m \tau})\bigr]
+   = D\!\bigl(i\eta\, e^{i\omega_m \tau}\bigr),
+   \quad \tau\in[0, \delta t].
+   $$
+   The direction of the displacement rotates through angle $\omega_m\,\delta t$
+   during the pulse. This is the *only* $\alpha$-sensitive structure
+   in the interaction-picture train.
 
-**Consequence for the Doppler probe.** Because $K$ itself depends on
-$\alpha$ only through the action of $C$ on the coherent state (which
-at $\delta = 0$ gives no Doppler broadening proper — see Lemma B),
-the entire $\alpha$-dependence of $V$ lives in $K^N$, and crucially
-in the **intra-pulse** structure of $K$. This is why the v0.1.1
-Doppler probe found
-$P_\text{mid,min} \geq 0.999$ everywhere: there is nothing in the
-gap to Doppler-broaden, and the off-tooth coherence at $\delta \ne 0$
-simply rotates the spin by an $\alpha$-independent amount.
+**Proof.** (1) During a gap, $H_\text{lab} = H_0$ exactly (the coupling
+$V$ vanishes). In the IP at $H_0$, the Hamiltonian is
+$\widetilde H = U_{H_0}^\dagger(t)[H_\text{lab} - H_0]U_{H_0}(t) = 0$.
+True for any $t_\text{gap}$. (2) Direct substitution of
+$\omega_m t_j = 2\pi j$ into the transformed operator. (3) Direct
+expansion of $e^{i\omega_m a^\dagger a \tau}C\,e^{-i\omega_m a^\dagger a \tau}$. ∎
+
+**What the lemma does not say.** It does **not** say the lab-frame
+gap propagator is the identity — it is not, for the executed code.
+The lab-frame gap propagator carries $\exp(-i\omega_m n\,T_\text{gap})$
+on the motional block and $\exp(\pm i\delta T_\text{gap}/2)$ on the
+spin block, with $T_\text{gap} = T_m - \delta t$; neither factor is
+unity at finite $\delta t$. The v0.1 draft of this note stated Lemma A
+for the idealised $T_\text{gap} = T_m$ case and then applied it to the
+executed train; that conflation has been corrected.
+
+**Consequence for the Doppler probe.** The IP formulation converts
+the train to a time-ordered pulse sequence with no gap-mediated
+accumulation of motional phase. The spin-detuning phase at $\delta
+\neq 0$ accumulates linearly as $(N-1)\delta T_\text{gap}/2$ on
+each spin block — $\alpha$-independent by construction. Off-tooth
+coherence $P$ at $\delta \neq 0$ can therefore only be reduced by the
+**intra-pulse** finite-$\delta t$ action of $V$ combined with the
+intra-pulse rotation of $\widetilde C(\tau)$. This reduces the
+Doppler-accumulation budget from $\mathcal O(N)$ (naive expectation)
+to $\mathcal O(1)$ per single pulse. The numerical observation
+$P_\text{mid,min} \geq 0.999$ in the Doppler probe is consistent with
+this: at the calibration-scheme-stable option-(a) point, a single
+pulse's finite bandwidth does not appreciably broaden the line, and
+the $\mathcal O(N)$ accumulation that would normally reach the
+(V low, P low) regime is absent.
+
+**What this still does not settle.** It does not prove
+$P_\text{mid,min} = 1$ identically. A finite-$\delta t$ intra-pulse
+analysis could still leave residual $\mathcal O(\delta t/T_m)$ Doppler
+signatures in $P$ at large $\alpha$; those would not show up in the
+three-decimal readouts of the v0.1.1 probes but would exist in
+principle. "Doppler-merging quadrant empty in principle" is therefore
+too strong: what is proved is **Doppler-accumulation suppression from
+$\mathcal O(N)$ to $\mathcal O(1)$** by the stroboscopic heterodyne, not
+identical vanishing of $P$-deviations.
 
 -----
 
 ## 3. Lemma B — Impulsive-limit $V$ floor
 
-**Claim.** In the exact impulsive limit $\delta t \to 0$ at fixed
-total rotation $N \cdot A = \pi/2$ (where $A$ is the dimensionless
-per-kick area), and with $t_\text{sep} = T_m$, the tooth visibility
-for a coherent state $|\alpha e^{i\vartheta_0}\rangle$ is
+**Statement.** In the **exact impulsive limit** $\delta t \to 0$ at
+fixed total rotation $N \cdot A = \pi/2$ and $t_\text{sep} = T_m$, the
+tooth visibility for a coherent state $|\alpha e^{i\vartheta_0}\rangle$
+under option-(a) calibration is
 
 $$
 V_\text{imp} \;=\; \tfrac{1}{2}\bigl(1 + e^{-2\eta^2}\bigr),
 $$
 
 **independently of $\alpha$ and $N$**, provided
-$\eta|\alpha| \gtrsim \pi/4$ so that the $\vartheta_0$ sweep covers a
+$|\alpha| \geq \pi/(4\eta)$ so that the $\vartheta_0$ sweep covers a
 full period of the interference factor.
 
-**Derivation.** In the impulsive limit $\delta t \to 0$, $\omega_m
-\delta t \to 0$, so intra-pulse motion is frozen and the per-kick
-unitary is
+**Derivation.** In the impulsive limit $\delta t \to 0$, intra-pulse
+motion is frozen (Lemma A point 3 with $\omega_m \delta t \to 0$, so
+$\widetilde C(\tau) \to C$). The per-kick unitary is then
 
 $$
-K = \exp\!\left[-i\tfrac{A}{2}\begin{pmatrix}0 & C\\ C^\dagger & 0\end{pmatrix}\right].
+K = \exp\!\left[-i\tfrac{A}{2}\Sigma\right],
+\quad
+\Sigma = \begin{pmatrix}0 & C\\ C^\dagger & 0\end{pmatrix},\quad \Sigma^2 = \mathbb{1}.
 $$
 
-Since $\bigl(\begin{smallmatrix}0 & C\\ C^\dagger & 0\end{smallmatrix}\bigr)^2 = \mathbb{1}$ (as $CC^\dagger = \mathbb{1}$), the matrix exponential evaluates exactly:
+Because the gaps are identity in the IP (Lemma A point 1) and the
+coupling is stroboscopically stationary (Lemma A point 2), the train
+propagator in the IP is $U_\text{train}^\text{IP} = K^N$. At fixed
+$NA = \pi/2$ and $A\to 0$, the per-kick generator commutes with
+itself across kicks, so
 
 $$
-K = \cos(A/2)\,\mathbb{1} - i\sin(A/2)\begin{pmatrix}0 & C\\ C^\dagger & 0\end{pmatrix}.
+U_\text{train}^\text{IP}\;\xrightarrow{A\to 0}\;
+\exp\!\left[-i\tfrac{\pi}{4}\Sigma\right]
+= \tfrac{1}{\sqrt 2}\bigl(\mathbb{1} - i\Sigma\bigr).
 $$
 
-Under Lemma A, $U_\text{train} = K^N$. At fixed $N \cdot A = \pi/2$,
-in the large-$N$ (i.e. $A \to 0$) limit, the per-kick rotation
-generator commutes with itself across kicks, so
-
-$$
-U_\text{train}\;\xrightarrow{A\to 0}\;\exp\!\left[-i\tfrac{\pi}{4}\begin{pmatrix}0 & C\\ C^\dagger & 0\end{pmatrix}\right] = \tfrac{1}{\sqrt 2}\left(\mathbb{1} - i\begin{pmatrix}0 & C\\ C^\dagger & 0\end{pmatrix}\right).
-$$
-
-Applying $U_\text{train}$ to $|\psi_0\rangle$ and projecting onto the
-spin-coherence observables yields, after a standard computation using
-the displacement-operator identities
+Applying to the initial state
+$\tfrac{1}{\sqrt 2}(|\!\downarrow\rangle + i|\!\uparrow\rangle)
+\otimes |\alpha e^{i\vartheta_0}\rangle$ and computing $\sigma_x, \sigma_y$
+via the coherent-state displacement identity
 $D(i\eta)|\beta\rangle = e^{i\eta\,\mathrm{Re}\,\beta}\,|\beta + i\eta\rangle$
-and the coherent-state overlap
-$\langle\beta|\beta'\rangle = \exp(-\tfrac{1}{2}(|\beta|^2+|\beta'|^2)+\beta^*\beta')$:
+and the overlap
+$\langle\beta|\beta'\rangle = \exp(-\tfrac{1}{2}(|\beta|^2+|\beta'|^2)+\beta^*\beta')$
+yields
 
 $$
 |C|(\vartheta_0) \;=\; \tfrac{1}{2}\sqrt{1 - 2\,e^{-2\eta^2}\cos(4\eta\alpha\cos\vartheta_0) + e^{-4\eta^2}}.
 $$
 
-**Range over $\vartheta_0$.** As $\vartheta_0$ sweeps $[0, 2\pi)$, the
-argument $4\eta\alpha\cos\vartheta_0$ ranges over
-$[-4\eta\alpha, +4\eta\alpha]$. For $4\eta\alpha \geq \pi$ (i.e.
-$|\alpha| \geq \pi/(4\eta) \approx 1.98$ at $\eta = 0.397$), the
-cosine takes every value in $[-1, +1]$, so
+For $4\eta\alpha \geq \pi$ (i.e. $|\alpha| \geq \pi/(4\eta)$), the
+cosine argument sweeps a full period and
 
 $$
 \min_{\vartheta_0}|C| = \tfrac{1}{2}\bigl(1 - e^{-2\eta^2}\bigr),
 \qquad
-\max_{\vartheta_0}|C| = \tfrac{1}{2}\bigl(1 + e^{-2\eta^2}\bigr),
+V_\text{imp} = 1 - \min|C| = \tfrac{1}{2}\bigl(1 + e^{-2\eta^2}\bigr). \qed
 $$
 
-yielding
-$V_\text{imp} = 1 - \min|C| = \tfrac{1}{2}(1 + e^{-2\eta^2})$. For
-$|\alpha| < \pi/(4\eta)$, the full cosine range is not swept and
-$V_\text{imp}$ is reduced. ∎
+**Numerical value at $\eta = 0.397$:** $V_\text{imp} = 0.86482$.
 
-**Numerical value at $\eta = 0.397$:** $V_\text{imp} = (1 +
-e^{-0.315})/2 = (1 + 0.7296)/2 = 0.8648$. This matches the numerical
-impulsive-limit overlay on the v0.1.1 primary heatmaps to the fourth
-decimal (confirmed by
-[verify_analytic.py](../numerics/verify_analytic.py)).
+**What the lemma says, strictly.** Only that the impulsive limit has
+no $\alpha$-structure and saturates at a Debye–Waller-determined floor
+above $|\alpha| \approx 1.98$. The impulsive limit is an *asymptotic
+reference*, not the finite-$\delta t$ train the WP numerics actually
+execute.
 
-**Consequence for the α-recovery attribution.** Lemma B establishes
-that the impulsive limit has no $\alpha$-structure above $|\alpha| \approx 2$.
-The V($|\alpha|$) oscillation observed in the v0.1 full grid and the
-dense α-recovery scan at $\delta t/T_m = 0.80$ is therefore a
-**finite-$\delta t$ effect**, not a feature of the impulsive reference.
-This narrows the §5.3 mechanism attribution: the oscillation is
-generated by the non-commutativity of $H_\text{coupling}$ with
-$\omega_m a^\dagger a$ inside each pulse's $\delta t$ window, which
-produces $\alpha$-dependent corrections to $K$ of order $\omega_m
-\delta t$.
+**What the lemma does not say.** It does **not** attribute the
+mechanism of the finite-$\delta t$ $V(|\alpha|)$ oscillation. The v0.1
+draft of this note claimed that because the impulsive limit has no
+$\alpha$-structure, any observed $\alpha$-structure must be a
+Debye–Waller-class finite-$\delta t$ correction, with JC-revival
+therefore ruled out. That is **too strong**:
+
+- What is rigorous: the observed $\alpha$-structure is a
+  finite-$\delta t$ effect (correct — the impulsive limit cannot
+  source it).
+- What is not rigorous: *which* finite-$\delta t$ mechanism generates
+  it. JC-style interference acts within single pulses as readily as
+  DW-class corrections do; both enter at order $\omega_m \delta t$
+  and higher. The α-recovery v2 Test B (fixed-Ω option) shows that
+  JC-style N-phase interference is a real phenomenon in this system
+  under variable rotation. Ruling it out under option-(a) specifically
+  requires the finite-$\delta t$ closed-form — not yet derived.
+
+The conservative summary is: **the observed $V(|\alpha|)$ oscillation
+is a finite-$\delta t$ correction to the Debye–Waller floor.** Whether
+the correction is best named "Debye–Waller-class" or has a JC-like
+component is unresolved. Lemma B narrows but does not close §5.3.
 
 -----
 
-## 4. Finite-$\delta t$ expansion (partial)
+## 4. Finite-$\delta t$ expansion (partial, conjectural)
 
-The next-to-leading-order correction to $K$ in $\omega_m \delta t$ is
-obtained from the symmetric Trotter split
-$K = e^{-i H_\text{pulse} \delta t}$ with $H_\text{pulse} = \omega_m
-a^\dagger a + H_\text{coupling}$:
+The next-to-leading-order correction to $K$ in $\omega_m \delta t$ can
+be organised by the symmetric Trotter split and by the exact IP
+expression
 
 $$
-K \;=\; e^{-i\omega_m a^\dagger a\, \delta t/2}\,
-e^{-i H_\text{coupling} \delta t}\,
-e^{-i\omega_m a^\dagger a\, \delta t/2}\,
-+\, \mathcal{O}((\omega_m \delta t)^3)\cdot[\text{BCH}].
+K_\text{IP} \;=\; \mathcal T \exp\!\left[-i \int_0^{\delta t}\!\! V_\text{IP}(\tau)\,d\tau\right],
+\quad
+V_\text{IP}(\tau) = \tfrac{\Omega}{2}\bigl[e^{-i\delta\tau}\widetilde C(\tau)\sigma_- + \text{h.c.}\bigr].
 $$
 
-The leading correction to the action on a coherent state at the
-motional-mode frequency is a Debye–Waller-like factor $e^{i\omega_m
-\delta t\,(a^\dagger a)/2}$ applied before and after the coupling;
-this rotates the displacement direction of $C$ by $\omega_m \delta t
-/ 2$, which at large $\alpha$ produces the encoder-sensitivity
-revival observed numerically. The closed-form evaluation — taking
-$N \to \infty$ at fixed $\delta t$ to match the option-(a) calibration
-— is more involved and is the *full* WP-C v0.2 analytic deliverable.
-This note establishes the leading-order structure and the impulsive
-anchor; the finite-$\delta t$ calculation to the first oscillation
-maximum is deferred.
+At $\delta = 0$, expanding $\widetilde C(\tau) \approx C\bigl(\mathbb{1}
++ i\omega_m\tau\,[\widetilde C(0)]^{-1}\partial_\tau\widetilde C(0) + \dots\bigr)$
+and time-ordering yields a correction to $K$ proportional to
+$\omega_m\,\delta t\,[a^\dagger a, C] / 2$. On a coherent state with
+amplitude $\alpha$, this commutator has expectation
+$\sim \eta|\alpha|$, producing an $\alpha$-scaled contribution to $V$
+at order $\omega_m\delta t \cdot \eta|\alpha|$. The sign and
+oscillatory structure of this contribution determine the shape of the
+$V(|\alpha|)$ curve but cannot be extracted without the higher-order
+time-ordered integral. The full closed-form at order
+$(\omega_m\delta t)^2$ remains a WP-C v0.2 scope item.
 
 -----
 
 ## 5. Summary of what is and is not established
 
-| Claim | Proved here? | Numerical anchor |
+| Claim | Proved here? | Precision |
 |---|---|---|
-| $V_\text{imp} = \tfrac{1}{2}(1+e^{-2\eta^2})$ independent of $N, \alpha$ for $|\alpha| \geq \pi/(4\eta)$ | **Yes** (Lemma B) | v0.1.1 impulsive overlay, $V \approx 0.865$ uniformly |
-| Gap propagator is identity on motion at $t_\text{sep} = T_m$, $\delta = 0$ | **Yes** (Lemma A) | Doppler probe $P_\text{mid,min} \geq 0.999$ everywhere |
-| Any α-structure in $V$ at finite $\delta t$ is a finite-$\delta t$ effect, not impulsive | **Yes** (Lemma B corollary) | α-recovery v1, v2 |
-| Closed-form $V(\alpha)$ curve at $\delta t/T_m = 0.80$ | Not here | α-recovery v2 numerical curves |
-| Debye–Waller vs JC-revival attribution for the finite-$\delta t$ oscillation | Not here | v0.2 scope |
+| $U_\text{gap}^\text{IP} = \mathbb{1}$ for any $t_\text{gap}$ (Lemma A.1) | Yes | exact |
+| Coupling stroboscopically stationary at $t_j = j T_m$ (Lemma A.2) | Yes | exact |
+| Intra-pulse $\widetilde C(\tau)$ rotates through $\omega_m \delta t$ (Lemma A.3) | Yes | exact |
+| $V_\text{imp} = \tfrac{1}{2}(1+e^{-2\eta^2})$ α-independent for $\|\alpha\| \geq \pi/(4\eta)$ (Lemma B) | Yes | exact |
+| Doppler accumulation suppressed from $\mathcal O(N)$ to $\mathcal O(1)$ | Yes (corollary of Lemma A) | structural |
+| (V low, P low) quadrant empty in principle | **No — too strong** | — |
+| Observed $V(\|\alpha\|)$ oscillation is a finite-$\delta t$ correction to the DW floor | Yes (corollary of Lemma B) | structural |
+| JC-revival ruled out for option-(a) | **No — too strong** | — |
+| Closed-form $V(\|\alpha\|)$ at $\delta t/T_m = 0.80$ | Not here | — |
 
 -----
 
-*v0.1 · 2026-04-21 · Written after completion of the α-recovery v1/v2
-and Doppler probes. Verified numerically — see companion
-[verify_analytic.py](../numerics/verify_analytic.py).*
+*v0.2 · 2026-04-21 · Reviewer-prompted rewrite of Lemma A into the
+interaction-picture formulation that matches the executed code, with
+downstream claims tightened accordingly. v0.1 superseded.*
+
+*v0.1 · 2026-04-21 · Initial draft. Lemma A stated for the idealisation
+$t_\text{gap} = T_m$, which does not match the code
+($t_\text{gap} = T_m - \delta t$); downstream claims over-reached as a
+result. Superseded by v0.2.*

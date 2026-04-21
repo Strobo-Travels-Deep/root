@@ -21,7 +21,7 @@ reviewer walk-back of the 2026-04-21-alpha-recovery entry:
     shape is invariant to N up to overall scaling, the oscillation is
     intrinsic to |α|, not an N-phase revival.
 
-|α| grid tightened to [2.5, 5.25] (13 points) to stay inside
+|α| grid tightened to [2.5, 5.25] (12 points) to stay inside
 audit-grade Fock leakage (< 10⁻⁸ at NMAX 80).
 
 Outputs:
