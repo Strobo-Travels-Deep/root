@@ -292,3 +292,48 @@ artifacts added to the pipeline:
 Each follow-up driver is self-contained and parametrised at the top
 of the file; further sweeps (e.g., over `RABI_SCALE` at a different
 δ, or over a different ϑ₀ density) are one-line edits.
+
+-----
+
+## 11. Patch note (2026-04-21, consistency pass)
+
+Cross-checked the text against the committed h5/driver artifacts. All
+tabulated ranges (§1, §6, §7, §9), file paths, grid shapes, and
+compute-time comments reproduce from the on-disk data. Two corrections
+to the narrative above — originals kept in place for traceability:
+
+### 11.1 Drive-budget table (§1) — units mislabelled
+
+The middle row of the §1 table reads
+
+> | Ω·δt per pulse | π/(2N) = 0.017 rad | 5π/(2N) = 0.087 rad |
+
+The values 0.017 and 0.087 are **coefficients of π**, not radians:
+π/(2·30) = 0.0524 rad and 5π/(2·30) = 0.262 rad. Separately, the row
+label "Ω·δt" names Ω, but the formula π/(2N) is Ω_eff·δt (differs by
+the Debye–Waller factor e^{−η²/2} = 0.924); the true Ω·δt at baseline
+is 0.0902 × 0.628 = 0.0567 rad. The third row `N·Ω_eff·δt = π/2 vs
+5π/2` is the physically load-bearing one and is correct as stated.
+
+### 11.2 Single-tooth symmetry claim (§7) — softer than written
+
+§7 bullet 3 asserts "ϑ₀-antisymmetry survives — the σ_z substructure
+under ϑ₀ → 2π − ϑ₀ still flips sign." Pointwise this is not what the
+h5 data shows: σ_z(ϑ₀, δ) + σ_z(2π − ϑ₀, δ) has max deviation ≈ 1.63
+on the single-tooth grid (σ_z range ≈ ±1), and the baseline
+coh_theta0_det_v5 data is similarly non-antisymmetric under this map
+(max ≈ 1.83). Rough ϑ₀ → 2π − ϑ₀ *symmetry* (not antisymmetry) holds
+on the baseline and single-tooth data with residual ≈ 0.33/0.36, and
+is partially broken at 5× across the wide ±3 δ window (residual ≈ 1.97).
+
+The qualitative point — overdrive does not obviously destroy the
+ϑ₀-structure inherited from Fig 6a — still stands visually, but the
+specific statement about antisymmetry should be read as a
+visual-pattern description of the substructure, not a pointwise
+symmetry of the full map. A proper symmetry audit against the Hasse
+argument (which invariance the theorem actually predicts, and under
+what joint ϑ₀/δ/φ_AC transformation) is a separate loose end worth
+opening before this claim is repeated.
+
+Neither correction changes the numerics or the §6/§6.2 correction of
+the "saturation" narrative.
