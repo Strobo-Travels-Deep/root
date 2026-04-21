@@ -22,7 +22,8 @@
     <a href="simulate.html">Simulate</a>
     <a href="code.html">Code</a>
     <a href="reference.html">Reference</a>
-    <a href="wp-phase-contrast-maps/">Progress</a>
+    <a href="wp-phase-contrast-maps/">WP-E</a>
+    <a href="wp-strong-weak-coastline/">WP-C</a>
     <a href="getting-started.html">Start</a>
   </nav>
 </header>
@@ -30,8 +31,22 @@
 <div class="meta-block">
   <p><strong>Source:</strong> F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz · <a href="https://doi.org/10.1103/PhysRevA.109.053105">Phys. Rev. A <strong>109</strong>, 053105 (2024)</a> · <a href="https://arxiv.org/abs/2309.15580">arXiv: 2309.15580</a></p>
   <p><strong>Endorsement Marker:</strong> Local candidate framework (no parity implied with externally validated laws)</p>
-  <p><span class="tag tag-tier">Tier 1b</span> <span class="tag tag-layer">Breakwater</span> <span class="tag tag-request">v0.8</span></p>
-  <p><strong>Stances:</strong> Guardian, Scout, Cartographer · <strong>Date:</strong> 2026-03-23</p>
+  <p><span class="tag tag-tier">Tier 1b</span> <span class="tag tag-layer">Breakwater</span> <span class="tag tag-request">v0.9</span></p>
+  <p><strong>Stances:</strong> Guardian, Scout, Cartographer, Architect, Integrator · <strong>Date:</strong> 2026-04-21</p>
+</div>
+
+<div class="callout" style="border-left:3px solid var(--accent);">
+  <div class="cl">What's new — 2026-04-21</div>
+  <p style="margin-bottom:0.4rem;"><strong>WP-Coastline v0.1.1 executed</strong> (<a href="wp-strong-weak-coastline/">wp-strong-weak-coastline/</a>, commit <code>528267b</code>) — the first quantitative map of the strong/weak-binding boundary along (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) at four |α| values. Full run in 15.5 s wall.</p>
+  <p style="margin-bottom:0.4rem;"><strong>Main findings (see <a href="#headlines">Headlines</a> below):</strong></p>
+  <ul style="margin:0 0 0.4rem 1.2rem;font-size:0.9rem;">
+    <li>Under per-cell Ω recalibration, the 2D (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) plane <strong>collapses to a 1D curve in δ<em>t</em>/<em>T</em><sub>m</sub></strong>. <em>N</em> carries no independent physics once <em>N</em>·Ω<sub>eff</sub>·δ<em>t</em> = π/2 is enforced.</li>
+    <li>The χ-collapse conjecture (root-sum-square composition of train, pulse, and Doppler widths) is <strong>falsified</strong> — a positive result.</li>
+    <li><strong>Non-monotone V(|α|)</strong> at the coastline corner: min V ≈ 0.10 at |α| ≈ 3.0, local max V ≈ 0.40 at |α| ≈ 4.75 — smooth single-cycle oscillation, robust under <em>N</em>-variation.</li>
+    <li>Uniform impulsive-limit floor V<sub>imp</sub> ≈ 0.865 across all <em>N</em> and all |α|: the coastline measures the δ<em>t</em>-dependent <strong>departure</strong> from Debye–Waller.</li>
+    <li>LD-validity lemma resolved: engine validity is governed by drive-LD Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3 <em>alone</em>; motional-LD bounds the physical-picture interpretation only.</li>
+  </ul>
+  <p style="margin-bottom:0;">Full memo: <a href="council-memo-2026-04-21-strong-weak-coastline.md">council-memo-2026-04-21-strong-weak-coastline.md</a>. Follow-up α-recovery probe (commit <code>e0718a2</code>): <a href="wp-strong-weak-coastline/logbook/2026-04-21-alpha-recovery.md">alpha-recovery logbook</a> — confirms the oscillation is calibration-scheme-stable; memo §5.3 promoted to PARTIALLY RESOLVED.</p>
 </div>
 
 <h2>Structure</h2>
@@ -84,11 +99,55 @@
 
   <a href="wp-phase-contrast-maps/" style="text-decoration:none;">
     <div class="wp-card" style="cursor:pointer;border-left:3px solid var(--accent-light);">
-      <p class="wp-title" style="color:var(--accent-light);">Progress</p>
+      <p class="wp-title" style="color:var(--accent-light);">Progress (WP-E)</p>
       <p>Auto-generated mirror of <code>wp-phase-contrast-maps</code>: rendered logbook entries, plot gallery, and downloadable simulation outputs.</p>
     </div>
   </a>
 
+  <a href="wp-strong-weak-coastline/" style="text-decoration:none;">
+    <div class="wp-card" style="cursor:pointer;border-left:3px solid var(--accent);">
+      <p class="wp-title" style="color:var(--accent);">Coastline (WP-C) <span style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);">· new</span></p>
+      <p>Strong/weak-binding boundary map on the (<em>N</em>, δ<em>t</em>/<em>T</em><sub>m</sub>) plane at |α| ∈ {0, 1, 3, 5}. V/P heatmaps, χ-collapse test, α-recovery probe.</p>
+    </div>
+  </a>
+
+</div>
+
+<hr>
+
+<h2 id="headlines">Headline findings — strong / weak binding</h2>
+
+<p>The stroboscopic protocol sits near the boundary between two limits, distinguished by whether pulse bandwidth and train length resolve the motional comb at δ = <em>k</em>ω<sub>m</sub>. WP-Coastline v0.1.1 maps that boundary quantitatively.</p>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0 1.4rem;">
+
+  <div class="callout" style="margin:0;">
+    <div class="cl">Strong-binding / resolved-sideband limit</div>
+    <p style="margin-bottom:0.4rem;"><strong>Criterion:</strong> 1/<em>N</em> ≪ 1 <em>and</em> δ<em>t</em>/<em>T</em><sub>m</sub> ≪ 1 <em>and</em> η|α| < 1. Discrete comb at δ = <em>k</em>ω<sub>m</sub> is resolved; each tooth carries ϑ₀-dependent spin coherence.</p>
+    <p style="margin-bottom:0;"><strong>Observable signature:</strong> tooth visibility V = 1 − min<sub>ϑ</sub>|<em>C</em>| approaches its Debye–Waller floor (V<sub>imp</sub> ≈ 0.865 at η = 0.397). Hasse regime (<em>N</em> = 30, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, |α| ≤ 1) sits here.</p>
+  </div>
+
+  <div class="callout" style="margin:0;">
+    <div class="cl">Weak-binding / Doppler-merged limit</div>
+    <p style="margin-bottom:0.4rem;"><strong>Criterion:</strong> pulse bandwidth 1/(ω<sub>m</sub>δ<em>t</em>) or train bandwidth 1/<em>N</em> comparable to ω<sub>m</sub>, or Doppler halfwidth η|α|·ω<sub>m</sub> comparable to tooth spacing. Adjacent teeth merge into a Doppler-like continuum.</p>
+    <p style="margin-bottom:0;"><strong>Observable signature:</strong> V collapses while off-tooth coherence <em>P</em>(δ = ½ω<sub>m</sub>) stays ≈ 1 (<em>pulse-broadening</em>) — or both drop (<em>Doppler merging</em>, not reached at this detuning). Discriminated by the two-map V/P rubric.</p>
+  </div>
+
+</div>
+
+<table class="est-table">
+<thead><tr><th>Regime</th><th>V</th><th><em>P</em></th><th>Occupies which cells</th></tr></thead>
+<tbody>
+<tr><td>Strong-binding</td><td>high</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≤ 0.2 at |α| ∈ {0, 1}; impulsive edge</td></tr>
+<tr><td>Pulse-broadening</td><td>low</td><td>high</td><td>δ<em>t</em>/<em>T</em><sub>m</sub> ≥ 0.4 at |α| ≥ 3 — where WP-V's α = 3 baseline lands under extended pulses</td></tr>
+<tr class="hl"><td>Encoder-sensitivity revival</td><td>low</td><td>high</td><td>finite-δ<em>t</em> |α|-dependent projection onto near-uniform |<em>C</em>|(ϑ₀). <strong>New rubric row</strong> confirmed by v2 α-probe — source of the V minimum at |α| ≈ 3</td></tr>
+<tr><td>Doppler merging</td><td>low</td><td>low</td><td>not observed at δ = ½ω<sub>m</sub>; requires δ inside the broadened sideband (v0.2 scope)</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <div class="cl">Hasse's measurement sits on the coastline</div>
+  <p style="margin-bottom:0;">At the WP-V calibration (<em>N</em> = 30, δ<em>t</em>/<em>T</em><sub>m</sub> = 0.13, η = 0.397, |α| = 3) the three bandwidth ratios are comparable — 1/<em>N</em> ≈ 0.03, 1/(ω<sub>m</sub>δ<em>t</em>) ≈ 1.22, η|α| ≈ 1.19. The protocol is <em>neither</em> impulsive <em>nor</em> deeply resolved, which is why a quantitative coastline was worth producing rather than assumed.</p>
 </div>
 
 <hr>
@@ -97,11 +156,11 @@
 
 <p><strong>Primary framing: Tomography.</strong> The η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. The Doppler detuning spectrum — not contrast loss — is the primary momentum readout: δ<sub>D</sub>/Ω ≫ 1 for all α ≥ 1.</p>
 
-<p><strong>Status:</strong> Five underdetermined claims in <code>hold/</code>. Work package sequence: A.3 (backaction) → A.1 (signal model) → A.2 (truncation) → B (numerics) → C (tomography) → D (BAE forward view).</p>
+<p><strong>Status:</strong> WP-V (Hasse reproduction, 5% tolerance) <em>complete</em>; WP-E (forward map) <em>active</em>; WP-C (strong/weak-binding coastline) <em>v0.1.1 executed</em> — 1D δ<em>t</em>/<em>T</em><sub>m</sub> coastline, χ-collapse falsified, α-revival identified. Work package sequence: A.3 (backaction) → A.1 (signal model) → A.2 (truncation) → B (numerics) → C (tomography) → D (BAE forward view).</p>
 
 <footer>
-  <p>Dossier v0.8 · Council-3 ADM-EC · Guardian stance with Scout, Cartographer, Supervisor inputs.<br>
-  Open Science Harbour · Breakwater Layer · <code>hold/</code> (five underdetermined claims).</p>
+  <p>Dossier v0.9 · Council-4 ADM-EC · Guardian / Scout / Architect / Integrator convergent.<br>
+  Open Science Harbour · Breakwater Layer · WP-V complete · WP-E + WP-C active.</p>
 </footer>
 
 </div>
