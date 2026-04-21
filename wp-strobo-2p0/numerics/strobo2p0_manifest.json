@@ -1,0 +1,64 @@
+{
+  "code_version_engine": "0.9.1",
+  "runner_version": "0.1",
+  "physical_parameters": {
+    "omega_m_MHz": 1.306,
+    "omega_r_MHz": 0.178,
+    "eta": 0.395,
+    "Delta_t_us": 0.77,
+    "T_m_us": 0.7656967840735068,
+    "t_sep_factor": 1.0056200000000002,
+    "N_max_fock": 60
+  },
+  "grid": {
+    "detuning_MHz_min": -10.0,
+    "detuning_MHz_max": 10.0,
+    "n_detuning": 81,
+    "n_theta0": 64,
+    "theta0_range_deg": [
+      0.0,
+      360.0
+    ],
+    "alphas": [
+      1.0,
+      3.0,
+      4.5
+    ],
+    "trains": [
+      {
+        "label": "T1",
+        "n_pulses": 3,
+        "delta_t_pulse_us": 0.1
+      },
+      {
+        "label": "T2",
+        "n_pulses": 7,
+        "delta_t_pulse_us": 0.05
+      }
+    ]
+  },
+  "observables_per_cell": {
+    "sz_A": "sigma_z after train, init spin |+x>",
+    "sz_B": "sigma_z after train, init spin |+y>",
+    "nbar_A": "<n> after train, init spin |+x>",
+    "nbar_B": "<n> after train, init spin |+y>",
+    "sx_A": "sigma_x after train, init spin |+x> (diagnostic)",
+    "sy_A": "sigma_y after train, init spin |+x> (diagnostic)"
+  },
+  "derived_observables": {
+    "|C|": "sqrt(sz_A^2 + sz_B^2)  (Hasse coherence contrast)",
+    "arg_C": "atan2(sz_B, sz_A)  (AC phase that maximises sigma_z)",
+    "sigma_z": "sz_A  (readout at canonical analysis phase phi=0)",
+    "delta_n": "nbar_A - alpha^2  (back-action at phi=0)",
+    "delta_n_pi2": "nbar_B - alpha^2  (back-action at phi=pi/2)"
+  },
+  "tags": [
+    "T1_alpha1",
+    "T1_alpha3",
+    "T1_alpha4p5",
+    "T2_alpha1",
+    "T2_alpha3",
+    "T2_alpha4p5"
+  ],
+  "elapsed_s": 100.67
+}
