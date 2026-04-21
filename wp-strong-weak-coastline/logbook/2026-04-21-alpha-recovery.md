@@ -168,3 +168,56 @@ open; items (1), (2), and (3) of §4 above are the natural v0.2 scope.
 -----
 
 *Probe complete, 2026-04-21, 3.4 s wall time. Physics confirmed.*
+
+-----
+
+## 6. Finalization probe v2 (appended 2026-04-21)
+
+Follow-up pass addressing the two open items named in §3 and §5 above:
+
+- **Test A — rubric reinterpretation.** Measure P at $\delta = 0.5\,\omega_m$ alongside V at $\delta = 0$ under option-(a) recalibration, across the dense |α| grid and all three N values.
+- **Test B — JC-revival discriminant.** Repeat the dense |α| scan under option-(b) fixed $\Omega = \Omega_\text{Hasse}$ at the same $\delta t/T_m = 0.80$. Under (b), net train rotation $N\cdot\Omega_\text{eff}\cdot\delta t$ is *not* pinned and sweeps the Rabi envelope (≈ 4.9, 9.8, 19.7 × π/2 for N = 24, 48, 96). If the V(|α|) oscillation shape is intrinsic to |α|, it should survive N-variation up to overall scaling; if it is a JC-revival projection, the shape should vary with N.
+
+Driver: [run_alpha_recovery_v2.py](../numerics/run_alpha_recovery_v2.py).
+Data: [alpha_recovery_v2.h5](../numerics/alpha_recovery_v2.h5).
+Plot: [alpha_recovery_v2.png](../plots/alpha_recovery_v2.png).
+Compute: 9.3 s for 12 × 3 cells × 2 detunings × 2 calibrations, NMAX 80. |α| tightened to [2.5, 5.25] to stay audit-grade on Fock leakage throughout (< 10⁻¹² worst case).
+
+### 6.1 Test A outcome — **rubric reinterpretation confirmed**
+
+Under option (a), **P = 1.000 at every (|α|, N) cell across the 12 × 3 grid**, to three decimals. This includes the V-minimum at |α| = 3.0 (V = 0.101, P = 1.000) and the local V-maximum at |α| = 4.75 (V = 0.395, P = 1.000). The off-tooth coherence is flat; there is no Doppler washout anywhere in the scanned region.
+
+The memo §4.3 rubric's "(V low, P high)" row therefore contains at least two physically distinct populations in the recalibrated-Ω protocol:
+1. **Pulse-broadening proper** — V low because the pulse bandwidth no longer resolves the sideband comb. Expected at large $\delta t/T_m$ for small ηα.
+2. **Encoder-sensitivity revival** — V low because the |α|-dependent train-kernel happens to project onto near-uniform |C|(ϑ₀) at this particular (α, δt). This is the mechanism responsible for the observed V minimum at |α| ≈ 3 in the recalibrated-Ω dense scan.
+
+Distinguishing them requires the ηα scaling — (1) is monotone in ηα, (2) is oscillatory. The v0.1.1 §4.3 rubric text should be refined accordingly in a v0.2 revision.
+
+### 6.2 Test B outcome — JC-style interference is real, mechanism attribution still open
+
+Under option (b), V(|α|) shows strong N-dependence in both *amplitude* and *shape*. Sample values at fixed |α|:
+
+| |α| | V(N=24) | V(N=48) | V(N=96) |
+|---|---|---|---|
+| 2.50 | 0.864 | 0.846 | 0.791 |
+| 3.00 | 0.896 | 0.934 | 0.942 |
+| 3.50 | 0.870 | 0.758 | 0.913 |
+| 4.00 | 0.912 | 0.906 | 0.895 |
+| 4.75 | 0.869 | 0.984 | 0.923 |
+| 5.25 | 0.677 | 0.845 | 0.975 |
+
+The shape-normalised panel (bottom-right of [alpha_recovery_v2.png](../plots/alpha_recovery_v2.png)) plots each N-curve rescaled to [0, 1] and overlays the option-(a) curve (N = 48, dashed black). The three option-(b) curves have **no shared structure** with each other or with option (a). This confirms JC-style interference is operationally real in the system: when the calibration allows net rotation to vary with N, the V(|α|) shape is dominated by the Rabi-envelope structure of the specific (N, Ω) combination.
+
+**What Test B does not establish.** It does not retroactively attribute the smooth option-(a) oscillation to DW-higher-order structure versus JC-projection. In option (a), net rotation is pinned to π/2 by construction, so any JC-like N-phase revival is suppressed by the same fiat that enables the scan; the residual α-structure could in principle be either (i) a JC-revival that happens to be N-invariant at fixed net π/2, or (ii) an intrinsic DW structure. The operational degeneracy flagged in §2 still stands.
+
+A clean separation would require an analytic handle: evaluate $\min_{\vartheta} |C|$ for a coherent state $|\alpha e^{i\vartheta}\rangle$ under the N-impulsive-kick train with per-kick area π/(2N) and gap $T_m$, take the $N \to \infty$ limit (where JC-revival scaling disappears explicitly), and compare to the numerical option-(a) curve at large N. If the N → ∞ analytic limit reproduces the observed oscillation, it is DW-intrinsic; if it differs, the difference *is* the JC projection. Flagged for v0.2 scope.
+
+### 6.3 Status update
+
+- Test A **DEMONSTRATES** the rubric reinterpretation (§3 above). The memo §4.3 rubric should be refined in v0.2.
+- Test B **DEMONSTRATES** JC-style N-phase interference as a real effect under fixed-Ω, without attributing the option-(a) oscillation. Mechanism attribution for the smooth recalibrated-Ω curve remains open.
+- The council memo §5.3 disposition moves from PARTIALLY RESOLVED (v0.4.3) to **RESOLVED in rubric, OPEN in attribution**.
+
+-----
+
+*v2 probe complete, 2026-04-21, 9.3 s wall time. Rubric reinterpretation confirmed; mechanism attribution still needs the analytic DW reference.*
