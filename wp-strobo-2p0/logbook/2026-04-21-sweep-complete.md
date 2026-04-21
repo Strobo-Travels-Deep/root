@@ -123,28 +123,36 @@ Nothing unexpected in the physics. Three bookkeeping notes:
   Not relevant to this dataset's internal consistency, but gates lab
   comparison. Resolvable by one carrier measurement on T2.
 
-## 6. Output files
+## 6. Output files (artifacts produced by this log)
 
-```
-wp-strobo-2p0/
-├── README.md
-├── logbook/
-│   ├── 2026-04-21-kickoff.md          (v0.2; see that file's changelog)
-│   └── 2026-04-21-sweep-complete.md   (this file)
-├── numerics/
-│   ├── preflight.py                    (4 tests, ~1 s)
-│   ├── run_sweep.py                    (main sweep, 101 s on Nmax=60)
-│   ├── make_plots.py                   (5 figures)
-│   ├── sweep.log                       (console log of the main run)
-│   ├── strobo2p0_data.npz              (all observables, 1.1 MB)
-│   └── strobo2p0_manifest.json         (parameters + schema)
-└── plots/
-    ├── 01_coherence_contrast.png
-    ├── 02_arg_C.png
-    ├── 03_sigma_z.png
-    ├── 04_delta_n_phi0.png
-    └── 05_delta_n_phi_pi2.png
-```
+This entry produced six artifacts — the main-sweep dataset, its
+manifest, and its five figures:
+
+- [numerics/preflight.py](../numerics/preflight.py)
+- [numerics/run_sweep.py](../numerics/run_sweep.py)
+- [numerics/make_plots.py](../numerics/make_plots.py)
+- [numerics/sweep.log](../numerics/sweep.log)
+- [numerics/strobo2p0_data.npz](../numerics/strobo2p0_data.npz) (1.1 MB)
+- [numerics/strobo2p0_manifest.json](../numerics/strobo2p0_manifest.json)
+- [plots/01_coherence_contrast.png](../plots/01_coherence_contrast.png)
+- [plots/02_arg_C.png](../plots/02_arg_C.png)
+- [plots/03_sigma_z.png](../plots/03_sigma_z.png)
+- [plots/04_delta_n_phi0.png](../plots/04_delta_n_phi0.png)
+- [plots/05_delta_n_phi_pi2.png](../plots/05_delta_n_phi_pi2.png)
+
+Later follow-ups added to the WP are recorded in their own logs:
+
+- [2026-04-21-rabi-reconciliation.md](2026-04-21-rabi-reconciliation.md)
+  (+ [numerics/rabi_calibration.py](../numerics/rabi_calibration.py),
+  [plots/00_rabi_calibration.png](../plots/00_rabi_calibration.png))
+- [2026-04-21-hasse-fig6-slice.md](2026-04-21-hasse-fig6-slice.md)
+  (+ [numerics/hasse_fig6_slice.py](../numerics/hasse_fig6_slice.py),
+  [numerics/make_fig6_plots.py](../numerics/make_fig6_plots.py),
+  [numerics/hasse_fig6_slice.npz](../numerics/hasse_fig6_slice.npz),
+  [plots/06_hasse_fig6_alpha3.png](../plots/06_hasse_fig6_alpha3.png),
+  [plots/07_hasse_fig6_alpha4p5.png](../plots/07_hasse_fig6_alpha4p5.png)).
+
+The [README](../README.md) has the complete up-to-date folder tree.
 
 ## 7. Next steps (not gated; for discussion)
 

@@ -21,36 +21,53 @@ pulses and near-stroboscopic-resonant inter-pulse spacing
 wp-strobo-2p0/
 ├── README.md      (this file)
 ├── logbook/
-│   ├── 2026-04-21-kickoff.md         (parameters, observables, grid)
-│   └── 2026-04-21-sweep-complete.md  (executed sweep + findings)
+│   ├── 2026-04-21-kickoff.md              (parameters, observables, grid)
+│   ├── 2026-04-21-sweep-complete.md       (executed main sweep + findings)
+│   ├── 2026-04-21-rabi-reconciliation.md  (three-candidate read-off protocol)
+│   └── 2026-04-21-hasse-fig6-slice.md     ((phi, theta_0) analogue of Hasse Fig. 6)
 ├── numerics/
-│   ├── preflight.py                   (four validation tests, ~1 s)
-│   ├── run_sweep.py                   (main sweep runner)
-│   ├── make_plots.py                  (figure generator)
-│   ├── sweep.log                      (console log from the executed run)
-│   ├── strobo2p0_data.npz             (all observables, 1.1 MB)
-│   └── strobo2p0_manifest.json        (parameters + schema)
+│   ├── preflight.py                 (four validation tests, ~1 s)
+│   ├── run_sweep.py                 (main sweep runner, ~100 s)
+│   ├── make_plots.py                (main-sweep figure generator)
+│   ├── rabi_calibration.py          (|C|_vacuum vs Omega closed form + check)
+│   ├── hasse_fig6_slice.py          ((phi, theta_0) slice at delta_0 = 0, ~17 s)
+│   ├── make_fig6_plots.py           (Fig. 6-style figure generator)
+│   ├── sweep.log                    (console log of main-sweep run)
+│   ├── hasse_fig6.log               (console log of Fig-6-slice run)
+│   ├── strobo2p0_data.npz           (main-sweep observables, 1.1 MB)
+│   ├── strobo2p0_manifest.json      (main-sweep parameters + schema)
+│   └── hasse_fig6_slice.npz         (Fig-6-slice observables, 139 KB)
 └── plots/
-    ├── 01_coherence_contrast.png
-    ├── 02_arg_C.png
-    ├── 03_sigma_z.png
-    ├── 04_delta_n_phi0.png
-    └── 05_delta_n_phi_pi2.png
+    ├── 00_rabi_calibration.png      (Omega read-off reference)
+    ├── 01_coherence_contrast.png    (|C| heatmap)
+    ├── 02_arg_C.png                 (analysis phase phi* heatmap)
+    ├── 03_sigma_z.png               (<sigma_z> at phi=0)
+    ├── 04_delta_n_phi0.png          (back-action at phi=0)
+    ├── 05_delta_n_phi_pi2.png       (back-action at phi=pi/2)
+    ├── 06_hasse_fig6_alpha3.png     (Fig-6 analogue, |alpha|=3)
+    └── 07_hasse_fig6_alpha4p5.png   (Fig-6 analogue, |alpha|=4.5)
 ```
 
 ## Quick start
 
-Reproduce the sweep from scratch (≈ 100 s on a laptop):
+Reproduce everything from scratch (≈ 2 minutes total on a laptop):
 
 ```sh
-python3 numerics/preflight.py          # optional sanity checks
-python3 numerics/run_sweep.py          # produces strobo2p0_data.npz
-python3 numerics/make_plots.py         # produces plots/*.png
+python3 numerics/preflight.py          # optional sanity checks, ~1 s
+python3 numerics/run_sweep.py          # main sweep, ~100 s
+python3 numerics/make_plots.py         # plots/01..05_*.png
+python3 numerics/rabi_calibration.py   # plots/00_rabi_calibration.png
+python3 numerics/hasse_fig6_slice.py   # (phi, theta_0) slice, ~17 s
+python3 numerics/make_fig6_plots.py    # plots/06..07_*.png
 ```
 
 ## Entry points
 
-- Parameters, observable definitions, grid, and open questions →
+- Parameters, observable definitions, grid, open questions →
   [logbook/2026-04-21-kickoff.md](logbook/2026-04-21-kickoff.md).
-- Peak values, qualitative findings, next-step candidates →
+- Main-sweep peak values, qualitative findings, next-step list →
   [logbook/2026-04-21-sweep-complete.md](logbook/2026-04-21-sweep-complete.md).
+- Rabi-rate candidates + one-measurement read-off protocol →
+  [logbook/2026-04-21-rabi-reconciliation.md](logbook/2026-04-21-rabi-reconciliation.md).
+- (φ, ϑ₀) analogue of Hasse 2024 Fig. 6 + symmetry checks →
+  [logbook/2026-04-21-hasse-fig6-slice.md](logbook/2026-04-21-hasse-fig6-slice.md).
