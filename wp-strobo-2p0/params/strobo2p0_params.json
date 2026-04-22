@@ -1,0 +1,252 @@
+{
+  "$schema": "../../schemas/experimental_params_v1.schema.json",
+  "schema_version": "1.0",
+  "document_id": "strobo-2p0-v0.3",
+  "document_title": "Strobo 2.0 — pi/2-calibrated short-train configuration",
+  "calibration_date": "2026-04-22",
+  "operator": "uwarring",
+  "apparatus_reference": "Hasse et al., Phys. Rev. A 109, 053105 (2024) — AC-beam subsystem at the Freiburg 25Mg+ trap.",
+
+  "ion": {
+    "species": "25Mg+",
+    "qubit_transition": {
+      "name": "|F=3, mF=-3> <-> |F=2, mF=-2> of 2S_{1/2}",
+      "omega_over_2pi": {
+        "value": 1.8,
+        "unit": "GHz",
+        "stderr": null,
+        "source": "design: Hasse 2024 sec. II",
+        "notes": "Approximate; set by B ~ 0.58 mT. Not used in the dimensionless simulation; recorded for provenance."
+      }
+    }
+  },
+
+  "trap": {
+    "motional_modes": {
+      "LF_axial": {
+        "description": "Axial low-frequency mode used for stroboscopic measurement in Hasse 2024.",
+        "omega_m_over_2pi": {
+          "value": 1.306,
+          "unit": "MHz",
+          "stderr": 0.001,
+          "source": "calibration: carrier+sideband spectroscopy (cf. Hasse Table II, 1.3 MHz)",
+          "notes": "Hasse 2024 quotes 1.3 MHz; 1.306 MHz is the strobo 2.0 task-assigned working value."
+        },
+        "lamb_dicke_eta": {
+          "value": 0.395,
+          "unit": "1",
+          "stderr": 0.005,
+          "source": "calibration: red-blue sideband ratio (Hasse Table II LF eta = 0.40)",
+          "notes": "0.395 is the strobo 2.0 task-assigned working value; consistent with Hasse's 0.40."
+        },
+        "thermal_occupation": {
+          "value": 0.001,
+          "unit": "quanta",
+          "stderr": null,
+          "source": "design: treat as ground state (Hasse quotes < 0.2; strobo 2.0 uses pure-state baseline)",
+          "notes": "Set to effectively zero for the v0.3 pure-unitary sweep. Promote to ~0.15 if thermal admixture becomes relevant (see sweep-complete sec. 7, next-step 4)."
+        }
+      },
+      "MF_radial": {
+        "description": "Radial mid-frequency mode (~ 2.9 MHz), documented for completeness — not used in strobo 2.0.",
+        "omega_m_over_2pi": {
+          "value": 2.9,
+          "unit": "MHz",
+          "stderr": 0.1,
+          "source": "literature: Hasse 2024 sec. II"
+        },
+        "lamb_dicke_eta": {
+          "value": 0.23,
+          "unit": "1",
+          "stderr": 0.02,
+          "source": "literature: Hasse 2024 Table II (eta_MF AC)"
+        }
+      },
+      "HF_radial": {
+        "description": "Radial high-frequency mode; not used in strobo 2.0.",
+        "omega_m_over_2pi": {
+          "value": 2.9,
+          "unit": "MHz",
+          "stderr": 0.1,
+          "source": "literature: Hasse 2024 sec. II"
+        },
+        "lamb_dicke_eta": {
+          "value": 0.18,
+          "unit": "1",
+          "stderr": 0.02,
+          "source": "literature: Hasse 2024 Table II (eta_HF AC)"
+        }
+      }
+    }
+  },
+
+  "beams": {
+    "MW": {
+      "description": "Global microwave drive on the qubit carrier (lambda_eff ~ 10 cm, eta = 0 all modes).",
+      "rabi_over_2pi": {
+        "value": 0.1,
+        "unit": "MHz",
+        "stderr": 0.01,
+        "source": "literature: Hasse 2024 Table II"
+      }
+    },
+    "CC": {
+      "description": "Collinear TPSR configuration (motion-insensitive, eta ~ 0 all modes).",
+      "rabi_over_2pi": {
+        "value": 0.5,
+        "unit": "MHz",
+        "stderr": 0.05,
+        "source": "literature: Hasse 2024 Table II"
+      }
+    },
+    "AC": {
+      "description": "Anti-parallel TPSR polarization-gradient traveling wave. Motion-sensitive (nonzero eta per mode).",
+      "rabi_over_2pi": {
+        "value": 0.300,
+        "unit": "MHz",
+        "stderr": 0.030,
+        "source": "literature: Hasse 2024 Table II",
+        "notes": "Baseline apparatus value. Strobo 2.0 v0.3 uses sequence-specific overrides (pi/2 calibration) rather than this value."
+      },
+      "wavelength_effective": {
+        "value": 140,
+        "unit": "nm",
+        "stderr": 1,
+        "source": "literature: Hasse 2024 sec. II"
+      },
+      "lamb_dicke_eta_per_mode": {
+        "LF_axial": {
+          "value": 0.395,
+          "unit": "1",
+          "stderr": 0.005,
+          "source": "calibration: red-blue sideband ratio"
+        }
+      }
+    }
+  },
+
+  "pulse_sequences": {
+    "T1_short_pi2": {
+      "description": "Short pi/2 train T1: 3 x 100 ns at 0.77 us spacing, AC beam on LF axial mode.",
+      "beam": "AC",
+      "mode": "LF_axial",
+      "n_pulses": {
+        "value": 3,
+        "source": "design: strobo 2.0 task specification"
+      },
+      "pulse_duration": {
+        "value": 0.100,
+        "unit": "us",
+        "stderr": 0.005,
+        "source": "design: strobo 2.0 task specification"
+      },
+      "inter_pulse_spacing": {
+        "value": 0.770,
+        "unit": "us",
+        "stderr": 0.010,
+        "source": "design: strobo 2.0 task specification (+0.56 % super-T_m slip by construction)"
+      },
+      "rabi_override": {
+        "value": 0.9008,
+        "unit": "MHz",
+        "stderr": null,
+        "source": "derived: N * Omega * exp(-eta^2/2) * dt = pi/2 (Hasse App. D convention)",
+        "notes": "~3x the AC baseline Omega; lab feasibility flagged in logbook/2026-04-21-rabi-reconciliation.md sec. 4."
+      },
+      "analysis_phase_deg": {
+        "value": 0.0,
+        "unit": "deg",
+        "stderr": null,
+        "source": "design: canonical phi = 0 for the sweep; phi-scan recovered via two-run extraction"
+      }
+    },
+    "T2_short_pi2": {
+      "description": "Short pi/2 train T2: 7 x 50 ns at 0.77 us spacing, AC beam on LF axial mode.",
+      "beam": "AC",
+      "mode": "LF_axial",
+      "n_pulses": {
+        "value": 7,
+        "source": "design: strobo 2.0 task specification"
+      },
+      "pulse_duration": {
+        "value": 0.050,
+        "unit": "us",
+        "stderr": 0.005,
+        "source": "design: strobo 2.0 task specification"
+      },
+      "inter_pulse_spacing": {
+        "value": 0.770,
+        "unit": "us",
+        "stderr": 0.010,
+        "source": "design: strobo 2.0 task specification"
+      },
+      "rabi_override": {
+        "value": 0.7722,
+        "unit": "MHz",
+        "stderr": null,
+        "source": "derived: N * Omega * exp(-eta^2/2) * dt = pi/2"
+      },
+      "analysis_phase_deg": {
+        "value": 0.0,
+        "unit": "deg",
+        "stderr": null,
+        "source": "design: canonical phi = 0"
+      }
+    }
+  },
+
+  "decoherence": {
+    "spin_T2_us": {
+      "value": 70.0,
+      "unit": "us",
+      "stderr": 1.0,
+      "source": "literature: Hasse 2024 Appendix A (MW Ramsey)",
+      "notes": "Not applied in the v0.3 pure-unitary sweep. Used for future noisy-dynamics companion runs."
+    },
+    "motional_heating_quanta_per_ms": {
+      "value": 0.0,
+      "unit": "quanta/ms",
+      "stderr": null,
+      "source": "design: pure-state baseline; lab heating rate not yet characterised for this config."
+    },
+    "residual_AC_phase_drift_rad_per_2s": {
+      "value": 0.206,
+      "unit": "rad",
+      "stderr": 0.009,
+      "source": "literature: Hasse 2024 Table I (AC AC, 2-s Allan deviation)",
+      "notes": "Phase jitter on the train. Ignored in v0.3 pure-unitary sweep."
+    }
+  },
+
+  "initial_state": {
+    "spin_preparation": "|+x> via MW pi/2 from |down> (absorbed into simulation state prep).",
+    "motional_preparation": "Coherent state D(alpha)|0> with |alpha| in {1, 3, 4.5} and phase theta_0 swept.",
+    "displacement_amplitudes": [
+      {
+        "value": 1.0,
+        "unit": "1",
+        "stderr": 0.05,
+        "source": "calibration: precalibrated voltage sets at six control electrodes, cf. Hasse 2024 sec. II"
+      },
+      {
+        "value": 3.0,
+        "unit": "1",
+        "stderr": 0.10,
+        "source": "calibration: Hasse 2024 Fig. 3 operating point"
+      },
+      {
+        "value": 4.5,
+        "unit": "1",
+        "stderr": 0.15,
+        "source": "calibration: strobo 2.0 task specification"
+      }
+    ]
+  },
+
+  "notes": {
+    "stroboscopic_slip": "Delta_t / T_m = 0.770 us / 0.7657 us = 1.0056 (+0.56 % super-stroboscopic). Deliberate, see logbook/2026-04-21-kickoff.md sec. 2.",
+    "rabi_history": "See logbook/2026-04-21-rabi-reconciliation.md v0.2 for the three-candidate history (0.178, 0.300, 0.446 MHz) that was replaced by the per-sequence pi/2 rabi_override.",
+    "numerical_regime": "Omega_eff / omega_m ~ 0.55-0.64 per train -> strong-drive regime; intra-pulse Magnus correction reduces peak |C| from sin(pi/2) = 1 to ~0.92.",
+    "what_is_NOT_here": "Laser-intensity noise, beam-pointing jitter, magnetic-field drift, imperfect state prep fidelity. Add if/when the pure-unitary baseline needs to be promoted to a noise model."
+  }
+}

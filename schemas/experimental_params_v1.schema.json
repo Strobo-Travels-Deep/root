@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/threehouse-plus-ec/open-research-platform/schemas/experimental_params_v1.schema.json",
+  "title": "Experimental Parameter Document v1.0",
+  "description": "Machine-readable description of the calibrated experimental apparatus consumed by the stroboscopic simulation engine. One document per lab configuration; each quantity carries value, unit, stderr, and source.",
+
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_id",
+    "calibration_date",
+    "ion",
+    "trap",
+    "beams",
+    "pulse_sequences"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "document_id": {
+      "type": "string",
+      "description": "Stable identifier, e.g. 'strobo-2p0-v0.3'."
+    },
+    "document_title": { "type": "string" },
+    "calibration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the dominant calibration was performed."
+    },
+    "operator": { "type": "string" },
+    "apparatus_reference": {
+      "type": "string",
+      "description": "Canonical paper or setup document this configuration derives from."
+    },
+    "notes": { "type": "object", "additionalProperties": true },
+
+    "ion": {
+      "type": "object",
+      "required": ["species"],
+      "properties": {
+        "species": { "type": "string" },
+        "qubit_transition": { "$ref": "#/$defs/transition" }
+      }
+    },
+
+    "trap": {
+      "type": "object",
+      "required": ["motional_modes"],
+      "properties": {
+        "motional_modes": {
+          "type": "object",
+          "description": "One entry per addressed mode; key is the mode's lab label (e.g. 'LF_axial').",
+          "additionalProperties": { "$ref": "#/$defs/motional_mode" }
+        }
+      }
+    },
+
+    "beams": {
+      "type": "object",
+      "description": "Coupling-field configurations available to the apparatus. Key is the lab label (e.g. 'MW', 'CC', 'AC').",
+      "additionalProperties": { "$ref": "#/$defs/beam" }
+    },
+
+    "pulse_sequences": {
+      "type": "object",
+      "description": "Named pulse-train configurations used by experiments. Key is the sequence label (e.g. 'T1', 'T2').",
+      "additionalProperties": { "$ref": "#/$defs/pulse_sequence" }
+    },
+
+    "decoherence": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/measured_value" }
+    },
+
+    "initial_state": {
+      "type": "object",
+      "properties": {
+        "spin_preparation": { "type": "string" },
+        "motional_preparation": { "type": "string" },
+        "displacement_amplitudes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/measured_value" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+
+    "measured_value": {
+      "type": "object",
+      "required": ["value", "unit"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": {
+          "type": "string",
+          "description": "SI or widely-used shorthand: Hz, MHz, GHz, us, ns, quanta, rad, nm, 1 (dimensionless)."
+        },
+        "stderr": {
+          "description": "Standard error on the value. null if not known; 0 if exact by construction.",
+          "anyOf": [{ "type": "number" }, { "type": "null" }]
+        },
+        "source": {
+          "type": "string",
+          "description": "How this value was fixed: 'calibration: <routine>', 'design: <reference>', 'derived: <formula>', 'literature: <citation>'."
+        },
+        "notes": { "type": "string" }
+      }
+    },
+
+    "transition": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "omega_over_2pi": { "$ref": "#/$defs/measured_value" }
+      }
+    },
+
+    "motional_mode": {
+      "type": "object",
+      "required": ["omega_m_over_2pi"],
+      "properties": {
+        "omega_m_over_2pi": { "$ref": "#/$defs/measured_value" },
+        "lamb_dicke_eta": { "$ref": "#/$defs/measured_value" },
+        "thermal_occupation": { "$ref": "#/$defs/measured_value" },
+        "description": { "type": "string" }
+      }
+    },
+
+    "beam": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "rabi_over_2pi": { "$ref": "#/$defs/measured_value" },
+        "lamb_dicke_eta_per_mode": {
+          "type": "object",
+          "description": "Lamb-Dicke parameter this beam sees per mode; key matches trap.motional_modes key.",
+          "additionalProperties": { "$ref": "#/$defs/measured_value" }
+        },
+        "wavelength_effective": { "$ref": "#/$defs/measured_value" }
+      }
+    },
+
+    "pulse_sequence": {
+      "type": "object",
+      "required": ["beam", "mode", "n_pulses", "pulse_duration", "inter_pulse_spacing"],
+      "properties": {
+        "description": { "type": "string" },
+        "beam": {
+          "type": "string",
+          "description": "References the `beams.<label>` key."
+        },
+        "mode": {
+          "type": "string",
+          "description": "References the `trap.motional_modes.<label>` key."
+        },
+        "n_pulses": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": { "type": "integer", "minimum": 1 },
+            "source": { "type": "string" }
+          }
+        },
+        "pulse_duration": { "$ref": "#/$defs/measured_value" },
+        "inter_pulse_spacing": { "$ref": "#/$defs/measured_value" },
+        "rabi_override": {
+          "description": "If present, overrides beam.rabi_over_2pi for this sequence (e.g. pi/2 calibration). Same schema as measured_value.",
+          "$ref": "#/$defs/measured_value"
+        },
+        "analysis_phase_deg": { "$ref": "#/$defs/measured_value" }
+      }
+    }
+  }
+}

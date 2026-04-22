@@ -30,7 +30,12 @@ wp-strobo-2p0/
 │   ├── 2026-04-21-kickoff.md              (parameters, observables, grid)
 │   ├── 2026-04-21-sweep-complete.md       (executed main sweep + findings)
 │   ├── 2026-04-21-rabi-reconciliation.md  (three-candidate read-off protocol)
-│   └── 2026-04-21-hasse-fig6-slice.md     ((phi, theta_0) analogue of Hasse Fig. 6)
+│   ├── 2026-04-21-hasse-fig6-slice.md     ((phi, theta_0) analogue of Hasse Fig. 6)
+│   └── 2026-04-22-params-document.md      (JSON parameter-document schema v1.0)
+├── params/
+│   ├── README.md                          (format + usage)
+│   ├── strobo2p0_params.json              (current lab-configuration document)
+│   └── load_params.py                     (loader + CLI summariser)
 ├── numerics/
 │   ├── preflight.py                 (four validation tests, ~1 s)
 │   ├── run_sweep.py                 (main sweep runner, ~100 s)
@@ -59,8 +64,14 @@ wp-strobo-2p0/
 Reproduce everything from scratch (≈ 2 minutes total on a laptop):
 
 ```sh
-python3 numerics/preflight.py          # optional sanity checks, ~1 s
-python3 numerics/run_sweep.py          # main sweep, ~100 s
+# optional: sanity-check the parameter document
+python3 params/load_params.py params/strobo2p0_params.json
+
+python3 numerics/preflight.py          # ~1 s
+python3 numerics/run_sweep.py --params params/strobo2p0_params.json
+                                       # main sweep, ~100 s. Drop --params
+                                       # to use the in-file defaults (they
+                                       # match strobo2p0_params.json).
 python3 numerics/make_plots.py         # plots/01..05_*.png
 python3 numerics/rabi_calibration.py   # plots/00_rabi_calibration.png
 python3 numerics/hasse_fig6_slice.py   # (phi, theta_0) slice, ~17 s
@@ -77,3 +88,6 @@ python3 numerics/make_fig6_plots.py    # plots/06..07_*.png
   [logbook/2026-04-21-rabi-reconciliation.md](logbook/2026-04-21-rabi-reconciliation.md).
 - (φ, ϑ₀) analogue of Hasse 2024 Fig. 6 + symmetry checks →
   [logbook/2026-04-21-hasse-fig6-slice.md](logbook/2026-04-21-hasse-fig6-slice.md).
+- Calibrated lab-parameter document (JSON schema + loader) →
+  [params/README.md](params/README.md) and
+  [logbook/2026-04-22-params-document.md](logbook/2026-04-22-params-document.md).

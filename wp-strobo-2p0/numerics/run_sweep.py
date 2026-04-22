@@ -5,11 +5,17 @@ For each (train, alpha), sweep (detuning, motional phase theta_0) on a
 81 x 64 grid, with two runs per cell (init |+x> and |+y>) to extract the
 Hasse-style coherence contrast |C| = sqrt(a_x^2 + a_y^2) and arg C.
 
+Parameters default to an in-file set matching
+../params/strobo2p0_params.json (v0.3 pi/2-calibrated). Override via
+
+    python run_sweep.py --params ../params/strobo2p0_params.json
+
 Outputs to numerics/strobo2p0_data.npz and numerics/strobo2p0_manifest.json.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import time
@@ -19,10 +25,11 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "params"))
 
 from stroboscopic_sweep import run_single, CODE_VERSION  # noqa: E402
 
-# ─────────── physical parameters ───────────
+# ─────────── default physical parameters (fallback if no params doc) ───────────
 OMEGA_M_MHZ = 1.306
 ETA = 0.395
 DELTA_T_US = 0.77
@@ -127,13 +134,78 @@ def run_one_sheet(
     )
 
 
+def _apply_params_document(path: Path) -> tuple[dict | None, list[dict]]:
+    """If `path` is given, load the experimental parameter document and
+    overwrite module-level OMEGA_M_MHZ, ETA, DELTA_T_US, T_SEP_FACTOR, and
+    the TRAINS list entries to match. Returns (doc, trains) so the
+    manifest can record provenance."""
+    global OMEGA_M_MHZ, ETA, DELTA_T_US, T_M_US, T_SEP_FACTOR
+    from load_params import load_params, engine_kwargs_for_sequence  # type: ignore
+
+    doc = load_params(path)
+    # Assume all sequences share the same mode (the mapping is general, but
+    # the strobo 2.0 sweep mixes T1 and T2 on LF_axial only).
+    first_seq_name = next(iter(doc["pulse_sequences"]))
+    first_kw = engine_kwargs_for_sequence(doc, first_seq_name)
+    OMEGA_M_MHZ = first_kw["_provenance"]["omega_m_MHz"]
+    T_M_US = 1.0 / OMEGA_M_MHZ
+
+    trains_from_doc: list[dict] = []
+    for seq_name, seq in doc["pulse_sequences"].items():
+        kw = engine_kwargs_for_sequence(doc, seq_name)
+        pr = kw["_provenance"]
+        # Heuristic: label by position (T1 for first, T2 for second) unless
+        # the sequence name starts with T1/T2.
+        label = seq_name.split("_")[0] if seq_name[:2] in ("T1", "T2") else f"S{len(trains_from_doc)+1}"
+        trains_from_doc.append({
+            "label": label,
+            "n_pulses": kw["n_pulses"],
+            "delta_t_pulse_us": kw["delta_t_us"],
+            "omega_r_MHz": pr["omega_r_MHz"],
+            "_seq_name": seq_name,
+            "_eta": pr["eta"],
+            "_t_sep_factor": pr["t_sep_factor"],
+        })
+    # All sequences in the strobo 2.0 document must agree on eta and
+    # t_sep_factor (enforced; otherwise the sweep would mix modes/spacings).
+    etas = {t["_eta"] for t in trains_from_doc}
+    tsf = {t["_t_sep_factor"] for t in trains_from_doc}
+    if len(etas) != 1 or len(tsf) != 1:
+        raise SystemExit(
+            f"Parameter document mixes eta={etas} or t_sep_factor={tsf} "
+            "across sequences — run_sweep.py assumes a single set. Split into "
+            "separate runs if needed."
+        )
+    ETA = etas.pop()
+    T_SEP_FACTOR = tsf.pop()
+    DELTA_T_US = T_SEP_FACTOR * T_M_US  # reconstruct for logging only
+    return doc, trains_from_doc
+
+
 def main() -> None:
-    print("strobo 2.0 main sweep (pi/2-calibrated, v0.3)")
-    print(f"  omega_m/(2pi) = {OMEGA_M_MHZ} MHz   eta = {ETA}")
-    print(f"  Delta t       = {DELTA_T_US} us     t_sep_factor = {T_SEP_FACTOR:.5f}")
+    parser = argparse.ArgumentParser(description="strobo 2.0 main sweep.")
+    parser.add_argument(
+        "--params", type=str, default=None,
+        help="Path to an experimental_params_v1 JSON document "
+             "(schemas/experimental_params_v1.schema.json). If omitted, "
+             "uses the in-file defaults matching params/strobo2p0_params.json.",
+    )
+    args = parser.parse_args()
+
+    global TRAINS
+    doc = None
+    if args.params is not None:
+        doc, new_trains = _apply_params_document(Path(args.params))
+        TRAINS = new_trains
+
+    print(f"strobo 2.0 main sweep (pi/2-calibrated, v0.3)  "
+          f"{'[params=' + args.params + ']' if args.params else '[defaults]'}")
+    print(f"  omega_m/(2pi) = {OMEGA_M_MHZ:.6f} MHz   eta = {ETA:.4f}")
+    print(f"  Delta t       = {DELTA_T_US:.3f} us     t_sep_factor = {T_SEP_FACTOR:.5f}")
     print(f"  Nmax          = {NMAX}")
+    dw = np.exp(-ETA ** 2 / 2)
     for t in TRAINS:
-        theta_pulse = 2 * np.pi * t["omega_r_MHz"] * _DW * t["delta_t_pulse_us"]
+        theta_pulse = 2 * np.pi * t["omega_r_MHz"] * dw * t["delta_t_pulse_us"]
         print(f"  {t['label']}: N={t['n_pulses']}, dt={t['delta_t_pulse_us']*1e3:.0f} ns  ->  "
               f"Omega/(2pi) = {t['omega_r_MHz']:.4f} MHz,  theta_pulse = {theta_pulse:.4f} rad,  "
               f"N*theta = {t['n_pulses']*theta_pulse:.4f} rad (target pi/2 = {np.pi/2:.4f})")
@@ -173,6 +245,11 @@ def main() -> None:
         "code_version_engine": CODE_VERSION,
         "runner_version": "0.3",
         "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
+        "parameter_document": (
+            {"path": args.params, "document_id": doc["document_id"],
+             "calibration_date": doc["calibration_date"]}
+            if doc is not None else None
+        ),
         "physical_parameters": {
             "omega_m_MHz": OMEGA_M_MHZ,
             "eta": ETA,
