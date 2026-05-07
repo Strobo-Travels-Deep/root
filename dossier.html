@@ -61,6 +61,13 @@
 <h2>Agreement / Mismatch Ledger</h2>
 <p style="font-size:0.88rem;color:var(--text-sec);margin-bottom:0.8rem;">Where the three lenses (Experiment, Analytical, Numerical) corroborate or diverge. A row here either certifies that a claim is well-supported across all three views, or names the specific axis on which they disagree and the WP that owns the resolution. Seeded; not auto-generated.</p>
 
+<!--
+Maintenance threshold for this table:
+  Add a row when two or more lenses produce quantitatively different
+  answers to the same question, AND the difference is not attributable
+  to known approximation order. Resolution column must point at the WP
+  tab that owns the discriminant (or "MISMATCH" if no WP claims it yet).
+-->
 <table class="ledger">
 <thead><tr><th>Topic</th><th>Experimental handle</th><th>Analytical expectation</th><th>Numerical result</th><th>Agreement</th><th>Resolution</th></tr></thead>
 <tbody>
@@ -106,7 +113,7 @@
 <p>Coherent-state baseline: exp(−η²/2)·exp(i2η Re α). Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
 
 <h3>Numerical calibration only</h3>
-<p>Full decoder for arbitrary states. Backaction beyond ⟨<em>n</em>⟩. Non-Gaussian behaviour. See <a href="numerics.html">Numerics</a> · <a href="simulate.html">Simulate</a> · <a href="code.html">Code</a> for interactive data.</p>
+<p>Full decoder for arbitrary states (<a href="wp-phase-contrast-maps/#numerical">WP-E §Num</a>). Backaction beyond ⟨<em>n</em>⟩ (<a href="wp-strobo-2p0/#numerical">Strobo&nbsp;2.0 §Num</a>). Non-Gaussian behaviour (deferred to WP-C; see <a href="wp-phase-contrast-maps/#numerical">WP-E §3.3</a>).</p>
 
 <hr>
 

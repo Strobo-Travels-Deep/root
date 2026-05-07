@@ -63,6 +63,9 @@
 
     <h3>Tomographic potential</h3>
     <p>Phase shift (position) + Doppler spectrum (momentum) together access full phase-space. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides complementary formalism.</p>
+
+    <h3 id="engine-notes">Engine implementation notes</h3>
+    <p>The Python engine implements <em>C</em> = exp[iη(<em>a</em>+<em>a</em><sup>†</sup>)] as an exact matrix exponential at the configured Fock cutoff — no LD truncation. Mode entry is <code>scripts/stroboscopic_sweep.py</code> with <code>--mode {single_run, sweep_1d, state_comparison}</code>; per-WP runners (e.g. <code>wp-strobo-2p0/numerics/run_sweep.py</code>) wrap the engine for multi-axis sweeps and emit <code>wp_manifest_v1</code> sidecars binding output bytes to the run parameters by SHA-256. Full CLI and module documentation: <a href="https://github.com/Strobo-Travels-Deep/root/blob/main/scripts/README.md"><code>scripts/README.md</code></a>.</p>
   </div>
 </details>
 

@@ -231,6 +231,10 @@ def normalize_markdown(markdown_text: str) -> str:
 
 
 def markdown_to_html(markdown_text: str) -> str:
+    # NOTE: the "toc" extension is load-bearing for build_lens_nav() — it is
+    # what slugs `## Experiment` into `id="experiment"` so the conditional
+    # three-lens jump-nav can detect which tabs to render. Removing it will
+    # silently drop the lens nav from every WP landing page.
     renderer = markdown.Markdown(
         extensions=[
             "extra",

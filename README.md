@@ -20,22 +20,19 @@ externally validated laws).
 | Page | Description |
 |------|-------------|
 | `index.html` | Overview, navigation, quick summary |
-| `dossier.html` | Claim Analysis Ledger (8 entries), Risk Register, Council Decisions |
-| `framework.html` | Interaction Hamiltonian, measurement channels, Lock-Key assignments |
-| `tutorial.html` | Doppler mechanism, analytic estimates, Work Packages A-D |
-| `numerics.html` | Viewer for simulation JSON (default runs + user uploads) |
-| `simulate.html` | Simulation page (browser engine not in this snapshot; see REBUILD.md) |
-| `code.html` | Simulation engine documentation |
+| `dossier.html` | Claim Analysis Ledger, Agreement / Mismatch Ledger, Risk Register |
+| `tutorial.html` | Synthesis: Doppler mechanism, analytic estimates, Framework recap, Work Packages A–D |
 | `reference.html` | Commented paper walk-through + annotated bibliography |
 | `getting-started.html` | Student onboarding, task cards, deliverable formats |
+| `wp-*/` | Per-work-package landing pages with three-lens (Experiment / Analytical / Numerical) jump-nav |
+| `numerics.html` | Generic JSON-run viewer (de-emphasised; per-WP §Numerical tabs are now the primary path) |
+| `framework.html`, `simulate.html`, `code.html` | Tombstone redirects → `tutorial.html` and `scripts/` (retired 2026-05-07) |
 
 ## Simulate
 
-**Browser engine:** The full interactive browser simulator (`simulate.html` +
-`js/simulate-engine.js`) is part of the dossier architecture but is **not
-included in this packaged snapshot**. It will be restored from the source
-repository in a future update. See `REBUILD.md` for patching instructions if
-you have access to the original files.
+**Browser engine:** the interactive browser simulator is not included in this
+snapshot pending restoration; see `REBUILD.md`. The `simulate.html` page is now
+a tombstone redirect to the Tutorial.
 
 **Python engine (included, primary tool):** `scripts/stroboscopic_sweep.py`
 provides the same physics (exact Fock-basis matrix exponentiation, Float64)
@@ -95,11 +92,12 @@ Manifest schema v2.0 supports three modes: `single_run`, `sweep_1d`,
 
 ## Architecture notes
 
-- `simulate.html` browser engine is not included in this snapshot (see REBUILD.md)
-- Python output is labelled `systematic` (Float64 throughout)
-- `scripts/stroboscopic_sweep.py` is the systematic survey engine (Float64)
+- The browser simulator was retired from primary navigation 2026-05-07; `simulate.html` is now a tombstone redirect (see REBUILD.md if you want to restore it).
+- Python output is labelled `systematic` (Float64 throughout).
+- `scripts/stroboscopic_sweep.py` is the systematic survey engine (Float64).
 - `scripts/` also contains legacy Python utilities (export_hdf5.py,
-  plot_detuning_harbour.py) — retained for reference
+  plot_detuning_harbour.py) — retained for reference.
+- Per-WP `numerics/` outputs carry sidecar manifests validated by `schemas/wp_manifest_v1.schema.json` (currently shipped for `wp-strobo-2p0`; the other three WPs are pending — see `schemas/README.md`).
 
 ## Citation
 
