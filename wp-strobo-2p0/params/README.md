@@ -82,8 +82,10 @@ scripts.
 **No**: derived convenience values (Ω_eff, N·θ_pulse, Δφ_strobo) —
 derive them at load time, don't store them.
 
-**No**: observables / outputs — the manifest schema
-(`schemas/manifest_v2.schema.json`) covers those.
+**No**: observables / outputs — those are described by the run-output
+manifests. WP binary outputs (`.npz`, `.h5`) carry sidecar manifests
+validated by `schemas/wp_manifest_v1.schema.json`; dossier-level JSON
+runs in `data/runs/` are validated by `schemas/manifest_v2.schema.json`.
 
 ## Adding another configuration
 

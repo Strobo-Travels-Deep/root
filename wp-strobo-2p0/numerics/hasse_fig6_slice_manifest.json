@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "strobo-2p0",
+  "code_version": "0.9.1",
+  "runner_version": "0.4",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "wp-strobo-2p0/numerics/hasse_fig6_slice.npz",
+    "format": "npz",
+    "bytes": 143378,
+    "sha256": "797dc49b52b3b972e559a02d8fe96baa332332dbadc1e1c5e21246414b1e3932"
+  },
+  "execution": {
+    "timestamp": "2026-04-21T20:48:39.646063+00:00",
+    "engine": "python-scipy",
+    "precision": "float64"
+  },
+  "provenance_hash": "c8335d9a511099eda6a029f96a6441bbca0c1d100eb77d6ed901eb0758c6b5d0",
+  "payload": {
+    "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
+    "physical_parameters": {
+      "omega_m_MHz": 1.306,
+      "eta": 0.395,
+      "Delta_t_us": 0.77,
+      "T_m_us": 0.7656967840735068,
+      "t_sep_factor": 1.0056200000000002,
+      "N_max_fock": 60
+    },
+    "grid": {
+      "delta_0_MHz": 0.0,
+      "n_phi": 32,
+      "n_theta0": 64,
+      "phi_range_deg": [
+        0.0,
+        360.0
+      ],
+      "theta0_range_deg": [
+        0.0,
+        360.0
+      ],
+      "alphas": [
+        3.0,
+        4.5
+      ],
+      "trains": [
+        {
+          "label": "T1",
+          "n_pulses": 3,
+          "delta_t_pulse_us": 0.1,
+          "omega_r_MHz": 0.900946810656483
+        },
+        {
+          "label": "T2",
+          "n_pulses": 7,
+          "delta_t_pulse_us": 0.05,
+          "omega_r_MHz": 0.7722401234198425
+        }
+      ]
+    },
+    "observables_per_cell": {
+      "sz": "sigma_z at delta=0 across (phi, theta_0)",
+      "nbar": "<n> at delta=0 across (phi, theta_0)",
+      "delta_n": "nbar - alpha^2 (Hasse back-action) at delta=0"
+    },
+    "tags": [
+      "T1_alpha3",
+      "T1_alpha4p5",
+      "T2_alpha3",
+      "T2_alpha4p5"
+    ]
+  }
+}

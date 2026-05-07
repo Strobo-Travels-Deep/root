@@ -58,7 +58,7 @@ so binds the manifest to the specific data file it describes.
 
 | WP                              | Status                            |
 |---------------------------------|-----------------------------------|
-| `wp-strobo-2p0`                 | Adopted (run_sweep.py emits v1.0) |
+| `wp-strobo-2p0`                 | Adopted — both `run_sweep.py` and `hasse_fig6_slice.py` emit v1.0 sidecars |
 | `wp-hasse-reproduction`         | Pending — `.h5` files have no sidecar manifest |
 | `wp-phase-contrast-maps`        | Pending — `.h5` files have no sidecar manifest |
 | `wp-strong-weak-coastline`      | Pending — `.h5` files have no sidecar manifest |
@@ -82,5 +82,6 @@ print('OK')
 
 ## `$id` convention
 
-Both schemas declare a `$id` rooted at the repository's GitHub URL. These
-are stable identifiers, not browse URLs — the JSON itself is authoritative.
+All three schemas declare a `$id` rooted at the repository's GitHub URL.
+These are stable identifiers, not browse URLs — the JSON itself is
+authoritative.

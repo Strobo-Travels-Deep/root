@@ -18,6 +18,9 @@ Output:
 
 from __future__ import annotations
 
+import datetime as _dt
+import hashlib
+import json
 import sys
 import time
 from pathlib import Path
@@ -27,7 +30,11 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from stroboscopic_sweep import run_single  # noqa: E402
+from stroboscopic_sweep import run_single, CODE_VERSION  # noqa: E402
+
+REPO_URL = "https://github.com/Strobo-Travels-Deep/root"
+RUNNER_VERSION = "0.4"
+WP_ID = "strobo-2p0"
 
 ETA = 0.395
 OMEGA_M_MHZ = 1.306
@@ -125,6 +132,80 @@ def main() -> None:
     np.savez_compressed(out_path, **out)
     print(f"\nSaved: {out_path.relative_to(Path(__file__).parents[2])}  "
           f"({out_path.stat().st_size / 1024:.0f} KB)")
+
+    artifact_bytes = out_path.read_bytes()
+    artifact_sha = hashlib.sha256(artifact_bytes).hexdigest()
+    elapsed = round(time.time() - t_tot, 2)
+
+    tags = sorted({f"{t['label']}_alpha{a:g}".replace(".", "p")
+                   for t in TRAINS for a in ALPHAS})
+
+    payload = {
+        "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
+        "physical_parameters": {
+            "omega_m_MHz": OMEGA_M_MHZ,
+            "eta": ETA,
+            "Delta_t_us": DELTA_T_US,
+            "T_m_us": T_M_US,
+            "t_sep_factor": T_SEP_FACTOR,
+            "N_max_fock": NMAX,
+        },
+        "grid": {
+            "delta_0_MHz": 0.0,
+            "n_phi": N_PHI,
+            "n_theta0": N_THETA,
+            "phi_range_deg": [0.0, 360.0],
+            "theta0_range_deg": [0.0, 360.0],
+            "alphas": ALPHAS,
+            "trains": [{"label": t["label"], "n_pulses": t["N"],
+                        "delta_t_pulse_us": t["dt_us"],
+                        "omega_r_MHz": t["omega_r_MHz"]} for t in TRAINS],
+        },
+        "observables_per_cell": {
+            "sz": "sigma_z at delta=0 across (phi, theta_0)",
+            "nbar": "<n> at delta=0 across (phi, theta_0)",
+            "delta_n": "nbar - alpha^2 (Hasse back-action) at delta=0",
+        },
+        "tags": tags,
+    }
+
+    envelope = {
+        "schema_version": "1.0",
+        "wp_id": WP_ID,
+        "code_version": CODE_VERSION,
+        "runner_version": RUNNER_VERSION,
+        "repository": REPO_URL,
+        "artifact": {
+            "path": str(out_path.relative_to(ROOT)),
+            "format": "npz",
+            "bytes": len(artifact_bytes),
+            "sha256": artifact_sha,
+        },
+        "execution": {
+            "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+            "engine": "python-scipy",
+            "precision": "float64",
+            "elapsed_s": elapsed,
+        },
+        "provenance_hash": "",
+        "payload": payload,
+    }
+    canon = {
+        "wp_id": envelope["wp_id"],
+        "code_version": envelope["code_version"],
+        "runner_version": envelope["runner_version"],
+        "payload": envelope["payload"],
+        "artifact_sha256": envelope["artifact"]["sha256"],
+    }
+    envelope["provenance_hash"] = hashlib.sha256(
+        json.dumps(canon, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+    manifest_path = out_path.with_name("hasse_fig6_slice_manifest.json")
+    manifest_path.write_text(json.dumps(envelope, indent=2) + "\n")
+    print(f"Saved: {manifest_path.relative_to(Path(__file__).parents[2])}")
+    print(f"  artifact sha256:   {artifact_sha}")
+    print(f"  provenance_hash:   {envelope['provenance_hash']}")
     print(f"Total wall time: {time.time() - t_tot:.1f} s")
 
 

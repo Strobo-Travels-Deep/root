@@ -9,6 +9,7 @@
     "schema_version",
     "wp_id",
     "code_version",
+    "repository",
     "execution",
     "artifact",
     "provenance_hash",
@@ -41,8 +42,8 @@
     },
     "artifact": {
       "type": "object",
-      "required": ["path", "format"],
-      "description": "The data file this manifest describes. The manifest itself is a sidecar.",
+      "required": ["path", "format", "bytes", "sha256"],
+      "description": "The data file this manifest describes. The manifest itself is a sidecar; the bytes/sha256 fields bind it to specific file content.",
       "properties": {
         "path": {
           "type": "string",
