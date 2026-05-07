@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/threehouse-plus-ec/open-research-platform/schemas/experimental_params_v1.schema.json",
+  "$id": "https://github.com/Strobo-Travels-Deep/root/schemas/experimental_params_v1.schema.json",
   "title": "Experimental Parameter Document v1.0",
   "description": "Machine-readable description of the calibrated experimental apparatus consumed by the stroboscopic simulation engine. One document per lab configuration; each quantity carries value, unit, stderr, and source.",
 

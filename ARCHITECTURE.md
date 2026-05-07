@@ -82,7 +82,7 @@ All three modes share a common envelope with mode-specific payload.
   "mode": "single_run | sweep_1d | state_comparison",
   "status": "exploratory | systematic",
   "code_version": "0.8.0",
-  "repository": "https://github.com/threehouse-plus-ec/open-research-platform",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
   "source_paper": { ... },
   "endorsement_marker": "Local candidate framework",
   "execution": {

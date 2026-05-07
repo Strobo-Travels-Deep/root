@@ -8,7 +8,7 @@
  * The Python engine uses the same physics (exact Fock-basis expm) with
  * Float64 precision throughout.
  *
- * Repository: https://github.com/threehouse-plus-ec/open-research-platform
+ * Repository: https://github.com/Strobo-Travels-Deep/root
  */
 "use strict";
 console.log("[simulate-engine] Stub loaded. See REBUILD.md to restore the full browser engine.");

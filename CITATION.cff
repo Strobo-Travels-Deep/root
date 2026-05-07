@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use this software or its bundled simulation data, please cite both this repository and the underlying experimental paper."
+title: "Strobo-Travels-Deep — Breakwater Dossier and Stroboscopic Simulation Engine"
+abstract: >-
+  Claim Analysis Ledger and reproducible simulation platform for the
+  stroboscopic phase-stable travelling-wave protocol of Hasse et al. (2024)
+  on trapped 25Mg+. Ships a Python/QuTiP sweep engine, JSON-Schema-validated
+  simulation manifests (single_run, sweep_1d, state_comparison), and an
+  interactive web dossier covering Work Packages A–E.
+type: software
+authors:
+  - family-names: Warring
+    given-names: Ulrich
+    orcid: "https://orcid.org/0000-0001-8081-9718"
+repository-code: "https://github.com/Strobo-Travels-Deep/root"
+url: "https://github.com/Strobo-Travels-Deep/root"
+license: MIT
+keywords:
+  - trapped ions
+  - stroboscopic measurement
+  - quantum optics
+  - 25Mg+
+  - reproducible research
+  - FAIR
+references:
+  - type: article
+    title: "Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics"
+    authors:
+      - family-names: Hasse
+        given-names: F.
+      - family-names: Palani
+        given-names: D.
+      - family-names: Thomm
+        given-names: R.
+      - family-names: Warring
+        given-names: U.
+        orcid: "https://orcid.org/0000-0001-8081-9718"
+      - family-names: Schaetz
+        given-names: T.
+    journal: "Physical Review A"
+    volume: 109
+    issue: 5
+    start: "053105"
+    year: 2024
+    doi: "10.1103/PhysRevA.109.053105"
+    identifiers:
+      - type: other
+        value: "arXiv:2309.15580"
+        description: "arXiv preprint"

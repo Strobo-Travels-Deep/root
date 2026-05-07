@@ -314,7 +314,7 @@ def page_shell(
 <div class="page-wrap">
 
 <header>
-  <div class="site-id"><a href="https://github.com/threehouse-plus-ec/open-research-platform">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
+  <div class="site-id"><a href="https://github.com/Strobo-Travels-Deep/root">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
   <h1>{html.escape(title)}</h1>
   <p class="subtitle">{html.escape(subtitle)}</p>
 {nav_markup(current_page, output_dir, wp.nav_key, wps)}

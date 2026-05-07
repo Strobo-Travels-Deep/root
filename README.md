@@ -71,19 +71,24 @@ Default runs use scipy expm (exact Fock-basis) with N_max=50.
 ### Cross-validation caveat
 
 The default JSON runs use 22-pulse stroboscopic evolution with uniform
-detuning grids. Earlier HDF5 data (referenced in `data/manifest.json`)
-used an adaptive-learner method with different detuning-point sampling.
-Contrast values may differ between methods:
-- **JSON runs:** contrast_z ≈ 0.56 (uniform across α)
-- **HDF5 adaptive-learner:** contrast_z = 0.61 → 0.71 → 0.84 → 0.75
+detuning grids and yield `contrast_z ≈ 0.56` uniformly across α.
 
-Both are internally consistent. See the Tutorial provenance note for details.
+An earlier HDF5 pipeline (adaptive-learner sampling) produced different
+contrast values; those `.h5` files are **not shipped** in this repository.
+The legacy index `data/manifest.json` is retained only as a provenance
+stub and is explicitly marked `ARCHIVAL — NON-SHIPPING`. See the Tutorial
+provenance note for the historical comparison.
 
 ## Provenance
 
-SHA-256 hash covers: code version, repository URL, all parameters (including
-decoherence, shot noise, GPU flag), timestamp, output fingerprints, and Fock
-convergence diagnostics.
+Each manifest carries a SHA-256 `provenance_hash` over `{code_version, mode,
+payload}`. The payload includes the parameters, derived quantities, convergence
+diagnostics, and output arrays for that mode, so the hash is sensitive to any
+change in inputs or outputs. The hash deliberately does **not** cover
+`repository`, `execution.timestamp`, or `execution.elapsed_s` — these fields
+record context but vary between otherwise-identical runs and so are kept
+outside the digest. To verify, recompute the hash over the same three keys
+of a downloaded manifest.
 
 Manifest schema v2.0 supports three modes: `single_run`, `sweep_1d`,
 `state_comparison`. See `schemas/manifest_v2.schema.json`.
@@ -96,6 +101,12 @@ Manifest schema v2.0 supports three modes: `single_run`, `sweep_1d`,
 - `scripts/` also contains legacy Python utilities (export_hdf5.py,
   plot_detuning_harbour.py) — retained for reference
 
+## Citation
+
+A machine-readable citation is provided in `CITATION.cff`. Please cite both
+this repository and the underlying experimental paper (Hasse et al., PRA 109,
+053105 (2024)) when reusing data or code.
+
 ## Licence
 
-MIT · [Open Science Harbour](https://github.com/threehouse-plus-ec/open-research-platform)
+MIT — see `LICENSE` for the full text.

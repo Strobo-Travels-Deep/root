@@ -1,0 +1,83 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Strobo-Travels-Deep — Breakwater Dossier and Stroboscopic Simulation Engine",
+  "description": "Claim Analysis Ledger and reproducible simulation platform for the stroboscopic phase-stable travelling-wave protocol of Hasse et al. (2024) on trapped 25Mg+. Ships a Python/QuTiP sweep engine, JSON-Schema-validated simulation manifests, and an interactive web dossier covering Work Packages A-E.",
+  "identifier": "https://github.com/Strobo-Travels-Deep/root",
+  "codeRepository": "https://github.com/Strobo-Travels-Deep/root",
+  "issueTracker": "https://github.com/Strobo-Travels-Deep/root/issues",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "version": "0.8.0",
+  "programmingLanguage": [
+    {
+      "@type": "ComputerLanguage",
+      "name": "Python",
+      "url": "https://www.python.org/"
+    },
+    {
+      "@type": "ComputerLanguage",
+      "name": "JavaScript"
+    }
+  ],
+  "softwareRequirements": [
+    "python>=3.10",
+    "numpy",
+    "scipy",
+    "qutip",
+    "jsonschema"
+  ],
+  "operatingSystem": ["macOS", "Linux"],
+  "keywords": [
+    "trapped ions",
+    "stroboscopic measurement",
+    "quantum optics",
+    "25Mg+",
+    "reproducible research",
+    "FAIR"
+  ],
+  "developmentStatus": "active",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Ulrich",
+      "familyName": "Warring",
+      "@id": "https://orcid.org/0000-0001-8081-9718"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Ulrich",
+      "familyName": "Warring",
+      "@id": "https://orcid.org/0000-0001-8081-9718"
+    }
+  ],
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "Phase-stable travelling waves stroboscopically matched for super-resolved observation of trapped-ion dynamics",
+    "author": [
+      { "@type": "Person", "givenName": "F.", "familyName": "Hasse" },
+      { "@type": "Person", "givenName": "D.", "familyName": "Palani" },
+      { "@type": "Person", "givenName": "R.", "familyName": "Thomm" },
+      { "@type": "Person", "givenName": "U.", "familyName": "Warring", "@id": "https://orcid.org/0000-0001-8081-9718" },
+      { "@type": "Person", "givenName": "T.", "familyName": "Schaetz" }
+    ],
+    "isPartOf": {
+      "@type": "PublicationIssue",
+      "issueNumber": 5,
+      "isPartOf": {
+        "@type": "PublicationVolume",
+        "volumeNumber": 109,
+        "isPartOf": {
+          "@type": "Periodical",
+          "name": "Physical Review A"
+        }
+      }
+    },
+    "pageStart": "053105",
+    "datePublished": "2024",
+    "identifier": "https://doi.org/10.1103/PhysRevA.109.053105",
+    "url": "https://doi.org/10.1103/PhysRevA.109.053105"
+  },
+  "schema:isAccessibleForFree": true
+}

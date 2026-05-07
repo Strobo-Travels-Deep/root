@@ -22,7 +22,7 @@ Usage:
     python stroboscopic_sweep.py --mode sweep_1d --sweep-param n_pulses --sweep-values 5,10,22,50
     python stroboscopic_sweep.py --mode state_comparison
 
-Repository: https://github.com/threehouse-plus-ec/open-research-platform
+Repository: https://github.com/Strobo-Travels-Deep/root
 """
 
 import argparse
@@ -37,7 +37,7 @@ import numpy as np
 from scipy.linalg import expm
 
 CODE_VERSION = "0.9.1"
-REPO = "https://github.com/threehouse-plus-ec/open-research-platform"
+REPO = "https://github.com/Strobo-Travels-Deep/root"
 SOURCE_PAPER = {
     "journal": "Phys. Rev. A 109, 053105 (2024)",
     "doi": "10.1103/PhysRevA.109.053105",
