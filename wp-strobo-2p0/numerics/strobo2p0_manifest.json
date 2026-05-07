@@ -1,66 +1,83 @@
 {
-  "code_version_engine": "0.9.1",
+  "schema_version": "1.0",
+  "wp_id": "strobo-2p0",
+  "code_version": "0.9.1",
   "runner_version": "0.3",
-  "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
-  "physical_parameters": {
-    "omega_m_MHz": 1.306,
-    "eta": 0.395,
-    "Delta_t_us": 0.77,
-    "T_m_us": 0.7656967840735068,
-    "t_sep_factor": 1.0056200000000002,
-    "N_max_fock": 60
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "wp-strobo-2p0/numerics/strobo2p0_data.npz",
+    "format": "npz",
+    "bytes": 1174479,
+    "sha256": "ac3bf2f563c7e42b2c7cd1f4d9faad7bf57c2dce377fabcd0e05253ec17f8a0f"
   },
-  "grid": {
-    "detuning_MHz_min": -10.0,
-    "detuning_MHz_max": 10.0,
-    "n_detuning": 81,
-    "n_theta0": 64,
-    "theta0_range_deg": [
-      0.0,
-      360.0
-    ],
-    "alphas": [
-      1.0,
-      3.0,
-      4.5
-    ],
-    "trains": [
-      {
-        "label": "T1",
-        "n_pulses": 3,
-        "delta_t_pulse_us": 0.1,
-        "omega_r_MHz": 0.900946810656483
-      },
-      {
-        "label": "T2",
-        "n_pulses": 7,
-        "delta_t_pulse_us": 0.05,
-        "omega_r_MHz": 0.7722401234198425
-      }
+  "execution": {
+    "timestamp": "2026-04-21T20:47:53.472846+00:00",
+    "engine": "python-scipy",
+    "precision": "float64",
+    "elapsed_s": 102.72
+  },
+  "provenance_hash": "15d15da6f6708cdcf7f91c5beca53197bedcce99730472233d5ab9ffe5a72c47",
+  "payload": {
+    "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
+    "physical_parameters": {
+      "omega_m_MHz": 1.306,
+      "eta": 0.395,
+      "Delta_t_us": 0.77,
+      "T_m_us": 0.7656967840735068,
+      "t_sep_factor": 1.0056200000000002,
+      "N_max_fock": 60
+    },
+    "grid": {
+      "detuning_MHz_min": -10.0,
+      "detuning_MHz_max": 10.0,
+      "n_detuning": 81,
+      "n_theta0": 64,
+      "theta0_range_deg": [
+        0.0,
+        360.0
+      ],
+      "alphas": [
+        1.0,
+        3.0,
+        4.5
+      ],
+      "trains": [
+        {
+          "label": "T1",
+          "n_pulses": 3,
+          "delta_t_pulse_us": 0.1,
+          "omega_r_MHz": 0.900946810656483
+        },
+        {
+          "label": "T2",
+          "n_pulses": 7,
+          "delta_t_pulse_us": 0.05,
+          "omega_r_MHz": 0.7722401234198425
+        }
+      ]
+    },
+    "observables_per_cell": {
+      "sz_A": "sigma_z after train, init spin |+x>",
+      "sz_B": "sigma_z after train, init spin |+y>",
+      "nbar_A": "<n> after train, init spin |+x>",
+      "nbar_B": "<n> after train, init spin |+y>",
+      "sx_A": "sigma_x after train, init spin |+x> (diagnostic)",
+      "sy_A": "sigma_y after train, init spin |+x> (diagnostic)"
+    },
+    "derived_observables": {
+      "|C|": "sqrt(sz_A^2 + sz_B^2)  (Hasse coherence contrast)",
+      "arg_C": "atan2(sz_B, sz_A)  (AC phase that maximises sigma_z)",
+      "sigma_z": "sz_A  (readout at canonical analysis phase phi=0)",
+      "delta_n": "nbar_A - alpha^2  (back-action at phi=0)",
+      "delta_n_pi2": "nbar_B - alpha^2  (back-action at phi=pi/2)"
+    },
+    "tags": [
+      "T1_alpha1",
+      "T1_alpha3",
+      "T1_alpha4p5",
+      "T2_alpha1",
+      "T2_alpha3",
+      "T2_alpha4p5"
     ]
-  },
-  "observables_per_cell": {
-    "sz_A": "sigma_z after train, init spin |+x>",
-    "sz_B": "sigma_z after train, init spin |+y>",
-    "nbar_A": "<n> after train, init spin |+x>",
-    "nbar_B": "<n> after train, init spin |+y>",
-    "sx_A": "sigma_x after train, init spin |+x> (diagnostic)",
-    "sy_A": "sigma_y after train, init spin |+x> (diagnostic)"
-  },
-  "derived_observables": {
-    "|C|": "sqrt(sz_A^2 + sz_B^2)  (Hasse coherence contrast)",
-    "arg_C": "atan2(sz_B, sz_A)  (AC phase that maximises sigma_z)",
-    "sigma_z": "sz_A  (readout at canonical analysis phase phi=0)",
-    "delta_n": "nbar_A - alpha^2  (back-action at phi=0)",
-    "delta_n_pi2": "nbar_B - alpha^2  (back-action at phi=pi/2)"
-  },
-  "tags": [
-    "T1_alpha1",
-    "T1_alpha3",
-    "T1_alpha4p5",
-    "T2_alpha1",
-    "T2_alpha3",
-    "T2_alpha4p5"
-  ],
-  "elapsed_s": 102.72
+  }
 }

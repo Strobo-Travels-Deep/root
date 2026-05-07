@@ -16,10 +16,16 @@ Outputs to numerics/strobo2p0_data.npz and numerics/strobo2p0_manifest.json.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
+import hashlib
 import json
 import sys
 import time
 from pathlib import Path
+
+REPO_URL = "https://github.com/Strobo-Travels-Deep/root"
+RUNNER_VERSION = "0.4"
+WP_ID = "strobo-2p0"
 
 import numpy as np
 
@@ -241,15 +247,11 @@ def main() -> None:
     np.savez_compressed(out_path, **out)
     print(f"\nSaved: {out_path}  ({out_path.stat().st_size / 1024:.0f} KB)")
 
-    manifest = {
-        "code_version_engine": CODE_VERSION,
-        "runner_version": "0.3",
+    artifact_bytes = out_path.read_bytes()
+    artifact_sha256 = hashlib.sha256(artifact_bytes).hexdigest()
+
+    payload = {
         "calibration": "pi/2 per-train: N*Omega*exp(-eta^2/2)*dt = pi/2",
-        "parameter_document": (
-            {"path": args.params, "document_id": doc["document_id"],
-             "calibration_date": doc["calibration_date"]}
-            if doc is not None else None
-        ),
         "physical_parameters": {
             "omega_m_MHz": OMEGA_M_MHZ,
             "eta": ETA,
@@ -285,11 +287,52 @@ def main() -> None:
             "delta_n_pi2": "nbar_B - alpha^2  (back-action at phi=pi/2)",
         },
         "tags": out_keys,
-        "elapsed_s": round(elapsed_total, 2),
     }
+
+    envelope = {
+        "schema_version": "1.0",
+        "wp_id": WP_ID,
+        "code_version": CODE_VERSION,
+        "runner_version": RUNNER_VERSION,
+        "repository": REPO_URL,
+        "artifact": {
+            "path": str(out_path.relative_to(ROOT)),
+            "format": "npz",
+            "bytes": len(artifact_bytes),
+            "sha256": artifact_sha256,
+        },
+        "execution": {
+            "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+            "engine": "python-scipy",
+            "precision": "float64",
+            "elapsed_s": round(elapsed_total, 2),
+        },
+        "provenance_hash": "",
+        "payload": payload,
+    }
+    if doc is not None:
+        envelope["parameter_document"] = {
+            "path": args.params,
+            "document_id": doc["document_id"],
+            "calibration_date": doc["calibration_date"],
+        }
+
+    canon = {
+        "wp_id": envelope["wp_id"],
+        "code_version": envelope["code_version"],
+        "runner_version": envelope["runner_version"],
+        "payload": envelope["payload"],
+        "artifact_sha256": envelope["artifact"]["sha256"],
+    }
+    envelope["provenance_hash"] = hashlib.sha256(
+        json.dumps(canon, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
     manifest_path = Path(__file__).parent / "strobo2p0_manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2))
+    manifest_path.write_text(json.dumps(envelope, indent=2) + "\n")
     print(f"Saved: {manifest_path}")
+    print(f"  artifact sha256:   {artifact_sha256}")
+    print(f"  provenance_hash:   {envelope['provenance_hash']}")
     print(f"\nTotal wall time: {elapsed_total:.1f} s")
 
 

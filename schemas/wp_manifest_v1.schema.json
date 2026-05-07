@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Strobo-Travels-Deep/root/schemas/wp_manifest_v1.schema.json",
+  "title": "Work-Package Run Manifest v1.0",
+  "description": "Provenance envelope for Work-Package-level numerics outputs (NPZ, HDF5, or JSON data files). Provides the same envelope shape as schemas/manifest_v2.schema.json (schema_version, code_version, repository, execution, provenance_hash, payload), plus a WP identifier and an artifact pointer for binary data files.",
+
+  "type": "object",
+  "required": [
+    "schema_version",
+    "wp_id",
+    "code_version",
+    "execution",
+    "artifact",
+    "provenance_hash",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "wp_id": {
+      "type": "string",
+      "description": "Stable WP identifier, e.g. 'strobo-2p0', 'phase-contrast-maps', 'strong-weak-coastline', 'hasse-reproduction'."
+    },
+    "code_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Version of the underlying simulation engine (e.g. scripts/stroboscopic_sweep.py CODE_VERSION)."
+    },
+    "runner_version": {
+      "type": "string",
+      "description": "Version of the WP-specific runner script (e.g. wp-strobo-2p0/numerics/run_sweep.py)."
+    },
+    "repository": { "type": "string", "format": "uri" },
+    "parameter_document": {
+      "type": "object",
+      "description": "Pointer to the experimental_params_v1 document this run derived from, if any.",
+      "properties": {
+        "path": { "type": "string" },
+        "document_id": { "type": "string" },
+        "calibration_date": { "type": "string", "format": "date" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path", "format"],
+      "description": "The data file this manifest describes. The manifest itself is a sidecar.",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the data file, relative to the repository root."
+        },
+        "format": { "enum": ["npz", "hdf5", "json", "csv"] },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the raw data file bytes."
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["timestamp"],
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "engine": { "enum": ["python-scipy", "python-qutip", "browser-js", "browser-webgpu"] },
+        "precision": { "enum": ["float32", "float64", "complex128"] },
+        "elapsed_s": { "type": "number", "minimum": 0 },
+        "host": { "type": "string", "description": "Optional host identifier; omit if sensitive." }
+      }
+    },
+    "provenance_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 over a canonical JSON form of {wp_id, code_version, runner_version, payload, artifact.sha256}. Verifies that the manifest's input description matches the data file."
+    },
+    "payload": {
+      "type": "object",
+      "description": "WP-specific scientific payload. Free-form, but conventionally contains physical_parameters, grid, observables_per_cell, derived_observables, tags."
+    }
+  }
+}
