@@ -3,75 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulate — Stroboscopic Detuning Scan</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.plot.ly/plotly-2.35.0.min.js" charset="utf-8"></script>
+<title>Simulate — moved — Hasse et al.</title>
 <link rel="stylesheet" href="style.css">
+<meta http-equiv="refresh" content="3; url=tutorial.html">
+<link rel="canonical" href="tutorial.html">
 </head>
 <body>
 <div class="page-wrap">
 
 <header>
-  <div class="site-id">ROCKET SCIENCE · OPEN RESEARCH PLATFORM</div>
-  <h1>Simulate: Stroboscopic Detuning Scan</h1>
-  <p class="subtitle">Simulation page (browser engine not in this snapshot) · Hasse et al., PRA 109, 053105 (2024)</p>
+  <div class="site-id"><a href="https://github.com/Strobo-Travels-Deep/root">Rocket Science</a> · Open Research Platform · Breakwater Layer</div>
+  <h1>Simulate</h1>
+  <p class="subtitle">Page tombstoned · browser engine not in this snapshot</p>
   <nav>
-    <a href="index.html">Overview</a> <a href="dossier.html">Dossier</a>
-    <a href="framework.html">Framework</a> <a href="tutorial.html">Tutorial</a>
-    <a href="numerics.html">Numerics</a>
-    <a href="simulate.html" aria-current="page">Simulate</a>
-    <a href="code.html">Code</a>
+    <a href="index.html">Overview</a>
+    <a href="dossier.html">Dossier</a>
+    <a href="tutorial.html">Tutorial</a>
     <a href="reference.html">Reference</a>
-    <a href="wp-phase-contrast-maps/">WP-E</a>
-    <a href="wp-strong-weak-coastline/">WP-C</a>
     <a href="getting-started.html">Start</a>
   </nav>
 </header>
 
-<div class="meta-block">
-  <strong>Endorsement Marker:</strong> Local candidate framework.<br>
-  <strong>Provenance:</strong> SHA-256 hash covers all parameters, code version, and output arrays.<br>
-  <strong>Status:</strong> Browser output is labelled <code>exploratory</code>. For systematic surveys, use
-  <code>scripts/stroboscopic_sweep.py</code> (labelled <code>systematic</code>, Float64).
-</div>
-
-<div class="callout">
-  <div class="cl">Rebuild required</div>
-  <p>The interactive browser simulation requires <code>js/simulate-engine.js</code> from the
-  original repository. See <a href="REBUILD.md">REBUILD.md</a> for patching instructions.</p>
-  <p style="margin-bottom:0;">In the meantime, use the <strong>Python sweep engine</strong> for all systematic work:</p>
-</div>
-
-<h2>Python Sweep Engine (Systematic)</h2>
-
-<div class="formula-box" style="text-align:left;font-style:normal;font-size:0.86rem;line-height:1.9;">
-<code>pip install numpy scipy</code><br><br>
-<code>python scripts/stroboscopic_sweep.py --mode single_run --alpha 3</code><br>
-<code>python scripts/stroboscopic_sweep.py --mode sweep_1d --sweep-param n_pulses --sweep-values 5,10,22,50</code><br>
-<code>python scripts/stroboscopic_sweep.py --mode state_comparison</code>
-</div>
-
-<p>The Python engine uses the same Hamiltonian and exact Fock-basis matrix exponentiation as the browser engine.
-Float64 throughout. Output follows manifest schema v2.0 with provenance hashing.
-See <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> for the three-mode design.</p>
-
-<h2>Pre-computed Data</h2>
-
-<p>9 default runs are available on the <a href="numerics.html">Numerics</a> page (α = 0, 1, 3, 5 default scans,
-carrier zoom, red/blue sideband zooms, fine α=1, sideband comb). All generated with N<sub>max</sub> = 30–40,
-201–401 points, 22 stroboscopic pulses.</p>
-
-<h2>Method</h2>
-
-<p>Full documentation: <a href="code.html">Code</a> page. Initial motional state prepared as
-S(r,φ<sub>s</sub>)D(α e<sup>iθ<sub>α</sub></sup>)|n⟩, with thermal averaging over Fock states when
-⟨n⟩<sub>th</sub> &gt; 0. Squeeze operator built exactly via matrix exponentiation. Sidebands at
-δ₀ = ±s·ω<sub>m</sub> emerge naturally from the exact exp(iη(a+a†)) coupling.</p>
+<aside class="callout">
+  <div class="cl">Page Tombstoned · 2026-05-07</div>
+  <p>The interactive browser simulator was removed from this snapshot pending restoration (see <a href="REBUILD.md">REBUILD.md</a>). The canonical simulation path is the Python engine:</p>
+  <ul>
+    <li><a href="scripts/stroboscopic_sweep.py">scripts/stroboscopic_sweep.py</a> — single_run, sweep_1d, state_comparison modes (see <a href="scripts/README.md">scripts/README.md</a>).</li>
+    <li>Default outputs ship in <a href="data/runs/run_index.json">data/runs/</a>.</li>
+    <li>Each WP has its own simulation runner — see the <em>Numerical</em> tab on any WP landing page (e.g. <a href="wp-strobo-2p0/#numerical">Strobo&nbsp;2.0 §Numerical</a>).</li>
+  </ul>
+  <p style="margin-bottom:0;">Redirecting to the Tutorial in a few seconds, or jump now: <a href="tutorial.html">Tutorial</a>.</p>
+</aside>
 
 <footer>
-  <p>v0.8 · Breakwater · <a href="https://github.com/Strobo-Travels-Deep/root">Rocket Science</a> ·
-  Hasse et al., <a href="https://doi.org/10.1103/PhysRevA.109.053105">PRA 109, 053105 (2024)</a></p>
+  <p>Dossier · <a href="dossier.html">Claim Ledger</a> · <a href="tutorial.html">Tutorial</a></p>
 </footer>
+
 </div>
 </body>
 </html>

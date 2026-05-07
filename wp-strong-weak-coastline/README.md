@@ -14,6 +14,74 @@ calibration point established by [WP-V](../wp-hasse-reproduction/).*
 
 -----
 
+## Experiment
+
+The apparatus anchor this map sweeps around. WP-Coastline does not
+introduce new lab calibrations; it parametrises the (N, δt/T_m) plane
+around the WP-V Hasse point.
+
+- **Anchor point**: η = 0.397, ω_m/(2π) = 1.300 MHz (Hasse 2024 LF
+  axial mode); the (N, δt/T_m, Ω, |α|) calibration of
+  [WP-V](../wp-hasse-reproduction/README.md) is the point this WP
+  varies *around*.
+- **Initial state**: pure coherent (no thermal seeding) — see [§3
+  Parameters and grid](#3-parameters-and-grid). The mismatch with
+  Hasse's experimental ⟨n⟩_thermal = 0.15 is intentional (this is a
+  numerical phase diagram, not a lab reproduction).
+- **No new procedural choices** — every per-cell Ω calibration is
+  derived (option (a)) or held at the WP-V Hasse value (option (b)
+  control slice). See [§3.1](#31-ω-calibration--option-a-primary-b-control-slice).
+
+## Analytical
+
+Lemmas, conventions, and the testable hypothesis the χ-collapse
+plot is designed to falsify.
+
+- **Lamb–Dicke validity lemma** — splits the engine-validity
+  constraint (drive-strength LD) from the physical-picture validity
+  constraint (motional-amplitude LD); both are recorded as per-cell
+  flags rather than masking data: [§2 Lamb–Dicke validity lemma](#2-lambdicke-validity-lemma-51-resolution-inlined-per-co-lock).
+- **Failure-mode rubric** — three regimes (strong-binding,
+  pulse-broadening, Doppler merging) discriminated by the (V, P)
+  pair: [§4.2 Failure-mode rubric](#42-failure-mode-rubric-plot-caption-interpretive-key).
+- **χ-collapse hypothesis** (testable, falsifiable):
+  χ² = (1/N)² + (1/(ω_m·δt))² + (η|α|)² with V ∼ exp[−χ²]. v0.1
+  reports whether all cells collapse onto a single curve;
+  **falsification is a positive result**. See [§4.5](#45-χ-collapse-candidate-34-of-the-memo-testable-hypothesis).
+- **Mechanism discriminant** (V/P ratio): distinguishes
+  pulse-bandwidth merging from train-shortness merging when both
+  primaries collapse — see [§4.4](#44-tertiary-mechanism-discriminant-scout).
+
+## Numerical
+
+The 6×6 (N, δt/T_m) grid plus control slice and Fock-leakage audit.
+*Note:* this WP predates `wp_manifest_v1`; its `.h5` artifacts do
+not yet carry sidecar manifests.
+
+- **Driver**: [numerics/run_coastline_v1.py](numerics/run_coastline_v1.py)
+  — 36-cell grid × 3 detunings × 64 ϑ₀ × 4 |α| ≈ 29 200 evolutions,
+  ≤ 2 min on a laptop.
+- **Pre-audit**: [numerics/check_fock_leakage_extremes_v1.py](numerics/check_fock_leakage_extremes_v1.py)
+  — confirms NMAX policy (60 for |α|≤3, 80 for |α|=5 stretch).
+- **Datasets**:
+  [numerics/coastline_v1.h5](numerics/coastline_v1.h5) (V, P,
+  diamond amplitude, |δ⟨n⟩|_peak per (N, δt/T_m, |α|, δ) cell with
+  per-cell validity flags), and
+  [numerics/fock_leakage_extremes_v1.h5](numerics/fock_leakage_extremes_v1.h5)
+  (extremes audit).
+- **α-recovery probe**: [numerics/alpha_recovery_v2.h5](numerics/alpha_recovery_v2.h5),
+  [numerics/run_alpha_recovery_v2.py](numerics/run_alpha_recovery_v2.py)
+  — finalisation probe per [§9.4 of the council memo](../council-memo-2026-04-21-strong-weak-coastline.md).
+- **Plots**: [plots/](plots/) — V/P heatmaps with double LD-hatching,
+  χ-collapse falsification panel, secondary observables and option-(b)
+  control slice.
+- **Schema policy**: [§5 Deliverables](#5-deliverables) lists the
+  per-cell datasets and the root-level scalar attributes (ceilings,
+  thresholds) explicitly, so consumers know what is per-cell vs.
+  per-WP.
+
+-----
+
 ## 1. Purpose
 
 Map the crossover between the **strong-binding / resolved-sideband**

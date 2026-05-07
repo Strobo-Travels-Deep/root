@@ -348,3 +348,38 @@ footer { margin-top: 3rem; padding-top: 0.8rem; border-top: 1px solid var(--bord
   .page-wrap { max-width: none; }
   nav a { color: black; }
 }
+
+/* Three-lens jump-nav for WP landing pages.
+   Auto-injected by scripts/build_site.py when a WP README declares any of
+   the #experiment / #analytical / #numerical anchors. Asymmetry is fine —
+   tabs are only rendered for anchors that actually exist. */
+.lens-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.4rem 0 1.4rem 0;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+.lens-nav .lens-label {
+  color: var(--text-muted);
+  margin-right: 0.4rem;
+  align-self: center;
+}
+.lens-nav a {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  background: transparent;
+  transition: background 0.12s ease;
+}
+.lens-nav a:hover { background: var(--border-light); }
+.lens-nav a[data-lens="experiment"] { border-color: #6b7d99; }
+.lens-nav a[data-lens="analytical"] { border-color: #94785f; }
+.lens-nav a[data-lens="numerical"]  { border-color: #5f8470; }

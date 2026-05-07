@@ -58,12 +58,30 @@ class WPConfig:
 
 WP_CONFIGS: list[WPConfig] = [
     WPConfig(
+        dir_name="wp-hasse-reproduction",
+        nav_label="WP-V",
+        nav_key="progress_v",
+        progress_title="WP-V Progress",
+        progress_subtitle="Hasse 2024 Fig 6 / Fig 8 reproduction work package mirror",
+        dossier_version="Dossier v0.8",
+        numerics_suffixes=(".h5", ".json"),
+    ),
+    WPConfig(
         dir_name="wp-phase-contrast-maps",
         nav_label="WP-E",
         nav_key="progress_e",
         progress_title="WP-E Progress",
         progress_subtitle="Forward map and observability work package mirror",
         dossier_version="Dossier v0.8",
+        numerics_suffixes=(".h5", ".json"),
+    ),
+    WPConfig(
+        dir_name="wp-strong-weak-coastline",
+        nav_label="WP-Coastline",
+        nav_key="progress_c",
+        progress_title="WP-Coastline Progress",
+        progress_subtitle="Strong / weak-binding boundary map work package mirror",
+        dossier_version="Dossier v0.9",
         numerics_suffixes=(".h5", ".json"),
     ),
     WPConfig(
@@ -223,6 +241,38 @@ def markdown_to_html(markdown_text: str) -> str:
         output_format="html5",
     )
     return renderer.convert(markdown_text)
+
+
+_LENS_LABELS: tuple[tuple[str, str], ...] = (
+    ("experiment", "Experiment"),
+    ("analytical", "Analytical"),
+    ("numerical",  "Numerical"),
+)
+
+
+def build_lens_nav(rendered_html: str) -> str:
+    """Render a three-lens jump-nav for whichever lens anchors are present.
+
+    Asymmetry is intentional: a WP that only declares two of the three lens
+    anchors gets a two-tab bar, not a placeholder for the missing one.
+    """
+    present = [
+        (slug, label)
+        for slug, label in _LENS_LABELS
+        if f'id="{slug}"' in rendered_html
+    ]
+    if not present:
+        return ""
+    tabs = "".join(
+        f'<a href="#{slug}" data-lens="{slug}">{html.escape(label)}</a>'
+        for slug, label in present
+    )
+    return (
+        '<nav class="lens-nav" aria-label="Three-lens jump navigation">'
+        '<span class="lens-label">Lenses:</span>'
+        f"{tabs}"
+        "</nav>"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -474,6 +524,7 @@ def generate_root_index(
             Path(readme_record["source"]),
         )
     )
+    lens_nav_html = build_lens_nav(readme_html)
 
     body_html = f"""
 <div class="callout">
@@ -498,7 +549,7 @@ def generate_root_index(
 </div>
 
 <hr>
-
+{lens_nav_html}
 {readme_html}
 """
 

@@ -21,6 +21,65 @@ Distinct from WP-E (Phase-Contrast Maps, N = 22 weak pulses,
 pulses and near-stroboscopic-resonant inter-pulse spacing
 (Δt = 0.77 µs ≈ T_m).
 
+-----
+
+## Experiment
+
+The apparatus side of this WP — calibrated lab values, procedural
+choices, and the lineage of every parameter back to a measurement or
+design decision.
+
+- **Parameter document** (machine-readable, schema-validated):
+  [params/strobo2p0_params.json](params/strobo2p0_params.json) +
+  [params/README.md](params/README.md). Each value carries `unit`,
+  `stderr`, and a `source:` field naming the calibration routine,
+  paper section, or derivation it came from.
+- **π/2 calibration protocol**: each train calibrated to deliver a
+  full π/2 analysis rotation on the ground motional state (Hasse
+  2024 App. D). Train-specific Rabi rates: Ω_T1/(2π) = 0.9008 MHz,
+  Ω_T2/(2π) = 0.7722 MHz.
+- **Three-candidate Rabi read-off** — one-measurement protocol for
+  pinning Ω in the lab:
+  [logbook/2026-04-21-rabi-reconciliation.md](logbook/2026-04-21-rabi-reconciliation.md).
+- **Schema documentation**:
+  [logbook/2026-04-22-params-document.md](logbook/2026-04-22-params-document.md).
+
+## Analytical
+
+The model layer — closed-form predictions, conventions, and the
+analytic baselines that the numerics are tested against.
+
+- **|C|-vacuum closed form** for the π/2 calibration:
+  [numerics/rabi_calibration.py](numerics/rabi_calibration.py)
+  derives Ω from the requirement N·Ω·exp(−η²/2)·δt = π/2 and checks
+  numerically.
+- **Hasse 2024 App. D convention** is the analytical anchor; train
+  detuning δ₀ and motional-state phase ϑ₀ are the two natural axes,
+  with the scale set by ω_m·δt = phase-per-pulse.
+- **Symmetry checks** for the (φ, ϑ₀) Fig.-6 analogue:
+  [logbook/2026-04-21-hasse-fig6-slice.md](logbook/2026-04-21-hasse-fig6-slice.md).
+
+## Numerical
+
+Simulation outputs and their provenance — the path from a parameter
+choice to a plot.
+
+- **Main sweep** (81 × 64 × 6 cells, ≈ 100 s):
+  [numerics/run_sweep.py](numerics/run_sweep.py) →
+  [numerics/strobo2p0_data.npz](numerics/strobo2p0_data.npz) +
+  [numerics/strobo2p0_manifest.json](numerics/strobo2p0_manifest.json)
+  (sidecar manifest, `wp_manifest_v1` schema).
+- **Hasse Fig.-6 slice** (32 × 64 × 4 cells, ≈ 17 s):
+  [numerics/hasse_fig6_slice.py](numerics/hasse_fig6_slice.py) →
+  [numerics/hasse_fig6_slice.npz](numerics/hasse_fig6_slice.npz) +
+  [numerics/hasse_fig6_slice_manifest.json](numerics/hasse_fig6_slice_manifest.json).
+- **Plots**: [plots/00_rabi_calibration.png](plots/00_rabi_calibration.png)
+  through [plots/07_hasse_fig6_alpha4p5.png](plots/07_hasse_fig6_alpha4p5.png).
+- **Validation**: [numerics/preflight.py](numerics/preflight.py)
+  (four checks, ≈ 1 s) before any sweep is trusted.
+
+-----
+
 ## Folder layout
 
 ```

@@ -16,13 +16,11 @@
   <nav>
     <a href="index.html">Overview</a>
     <a href="dossier.html" aria-current="page">Dossier</a>
-    <a href="framework.html">Framework</a>
     <a href="tutorial.html">Tutorial</a>
-    <a href="numerics.html">Numerics</a>
-    <a href="simulate.html">Simulate</a>
-    <a href="code.html">Code</a>
     <a href="reference.html">Reference</a>
+    <a href="wp-hasse-reproduction/">WP-V</a>
     <a href="wp-phase-contrast-maps/">WP-E</a>
+    <a href="wp-strobo-2p0/">Strobo 2.0</a>
     <a href="wp-strong-weak-coastline/">WP-C</a>
     <a href="getting-started.html">Start</a>
   </nav>
@@ -45,16 +43,51 @@
 <p style="font-size:0.88rem;color:var(--text-sec);margin-bottom:0.8rem;">Underdetermined → <code>hold/</code>. Intake: <span class="tag tag-request">REQUEST</span> unless <span class="tag tag-sweep">SWEEP</span>. The Ledger measures; it does not govern.</p>
 
 <table class="ledger">
-<thead><tr><th>#</th><th>Claim</th><th>Status</th><th>Discriminant Condition</th></tr></thead>
+<thead><tr><th>#</th><th>Claim</th><th>Status</th><th>Discriminant Condition</th><th>Anchor</th></tr></thead>
 <tbody>
-<tr><td class="id-col">L1</td><td>Four-oscillator phase lock enables stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td></tr>
-<tr><td class="id-col">L2</td><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify crosstalk vs. η, α, δ<em>t</em>.</td></tr>
-<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm.</td></tr>
-<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity + noise stability for target states.</td></tr>
-<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap.</td></tr>
-<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction.</td></tr>
-<tr><td class="id-col">L7</td><td>Nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability.</td></tr>
-<tr><td class="id-col">L8</td><td>Phase lock stable over experimental timescales.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated. Long-term diffusion uncharacterised. <span class="tag tag-sweep">SWEEP</span></td></tr>
+<tr><td class="id-col">L1</td><td>Four-oscillator phase lock enables stroboscopic interrogation.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated experimentally.</td><td><a href="wp-hasse-reproduction/#experiment">WP-V§Exp</a></td></tr>
+<tr><td class="id-col">L2</td><td>Position → phase; <em>p</em>-proxy → Doppler spectrum.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Clean separation for η|α| ≪ 1 or instantaneous pulses. Quantify crosstalk vs. η, α, δ<em>t</em>.</td><td><a href="wp-phase-contrast-maps/#analytical">WP-E§An</a></td></tr>
+<tr><td class="id-col">L3</td><td>"Super-resolution" position sensitivity.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Geometric: λ<sub>eff</sub> ≈ 140 nm.</td><td><a href="wp-hasse-reproduction/#experiment">WP-V§Exp</a></td></tr>
+<tr><td class="id-col">L4</td><td>Decoder faithfully inverts phase + detuning response.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity + noise stability for target states.</td><td><a href="wp-phase-contrast-maps/#numerical">WP-E§Num</a></td></tr>
+<tr><td class="id-col">L5</td><td>Backaction is small ("near-coherent").</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Certification: Tr(ρ²), quadrature disturbance, coherent-state overlap.</td><td><a href="wp-strobo-2p0/#numerical">Strobo&nbsp;2.0§Num</a></td></tr>
+<tr><td class="id-col">L6</td><td>"Structurally compatible with BAE."</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Exhibit regime where interaction ≈ linear single-quadrature. Bound residual backaction.</td><td><a href="wp-phase-contrast-maps/#analytical">WP-E§An</a></td></tr>
+<tr><td class="id-col">L7</td><td>Nonclassical tomography feasible.</td><td><span class="tag tag-undetermined">UNDETERMINED</span></td><td>Injectivity for Fock/squeezed/cat + noise stability.</td><td><a href="wp-phase-contrast-maps/#numerical">WP-E§Num</a></td></tr>
+<tr><td class="id-col">L8</td><td>Phase lock stable over experimental timescales.</td><td><span class="tag tag-compatible">COMPATIBLE</span></td><td>Demonstrated. Long-term diffusion uncharacterised. <span class="tag tag-sweep">SWEEP</span></td><td><a href="wp-hasse-reproduction/#experiment">WP-V§Exp</a></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>Agreement / Mismatch Ledger</h2>
+<p style="font-size:0.88rem;color:var(--text-sec);margin-bottom:0.8rem;">Where the three lenses (Experiment, Analytical, Numerical) corroborate or diverge. A row here either certifies that a claim is well-supported across all three views, or names the specific axis on which they disagree and the WP that owns the resolution. Seeded; not auto-generated.</p>
+
+<table class="ledger">
+<thead><tr><th>Topic</th><th>Experimental handle</th><th>Analytical expectation</th><th>Numerical result</th><th>Agreement</th><th>Resolution</th></tr></thead>
+<tbody>
+<tr>
+  <td>σ<sub>z</sub> contrast at the (δ=0, ϑ<sub>0</sub>=0) anchor</td>
+  <td>Hasse 2024 reports the 22-pulse train experimentally; no per-α contrast number is given for the bare anchor.</td>
+  <td>Coherent-state baseline gives uniform contrast across α at the anchor under stroboscopic synchronisation.</td>
+  <td><strong>Two methods diverge:</strong> HDF5 adaptive-learner gives 0.61 / 0.71 / 0.84 / 0.75 (α = 0, 1, 3, 5); 22-pulse JSON-uniform gives ≈ 0.56 uniformly.</td>
+  <td><span class="tag tag-undetermined">MISMATCH</span></td>
+  <td><a href="wp-phase-contrast-maps/#numerical">WP-E §Numerical</a> — preflight gate (§4a) names four candidate causes (φ<sub>α</sub> sampling, ensemble averaging, Ω vs Ω<sub>eff</sub>, integrator tolerance). HDF5 files are archival/non-shipping; canonical values are the JSON runs.</td>
+</tr>
+<tr>
+  <td>π/2 idealisation vs. accumulated rotation</td>
+  <td>Hasse 2024 calibrates the train as a "π/2 analysis pulse."</td>
+  <td>Idealised: <em>N</em> · θ<sub>pulse</sub> = π/2 = 1.571 rad.</td>
+  <td>Engine at nominal Hasse parameters (η = 0.397, Ω/(2π) = 0.300 MHz, δ<em>t</em> = 40 ns, <em>N</em> = 22): <em>N</em>·θ<sub>pulse</sub> = 1.53 rad ≈ 88°.</td>
+  <td><span class="tag tag-compatible">RESOLVED</span></td>
+  <td><a href="wp-phase-contrast-maps/#analytical">WP-E §Analytical</a> — §2.1 normalises |C| against the reference state at (α=0, δ<sub>0</sub>=0, φ<sub>α</sub>=0) rather than against an idealised π/2, so the 1.53 vs π/2 gap does not enter residuals.</td>
+</tr>
+<tr>
+  <td>Lamb–Dicke validity at high motional amplitude</td>
+  <td>Hasse 2024 operates with |α| ≤ 3 nominally; the experimental value sits below the small-η picture's threshold.</td>
+  <td>Linear LD picture requires η√(⟨n⟩+1) ≲ 1; at η = 0.397 this <em>fails</em> for |α| ≥ 3 (1.26 ✗) and |α| = 5 (2.03 ✗).</td>
+  <td>Engine uses the exact matrix exponential <em>C</em> = exp[i η (<em>a</em>+<em>a</em><sup>†</sup>)]; remains numerically valid given adequate NMAX. Top-5 Fock leakage 4×10<sup>−6</sup> at NMAX = 60.</td>
+  <td><span class="tag tag-compatible">RESOLVED</span></td>
+  <td><a href="wp-strong-weak-coastline/#analytical">WP-Coastline §Analytical</a> — the §2 lemma separates engine validity (drive-LD: Ω<sub>eff</sub>/ω<sub>m</sub> ≤ 0.3) from physical-picture validity (motional-LD). Both are flagged per cell rather than masking data.</td>
+</tr>
 </tbody>
 </table>
 

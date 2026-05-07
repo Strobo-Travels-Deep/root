@@ -7,6 +7,58 @@
 
 -----
 
+## Experiment
+
+The apparatus and paper-anchored values this reproduction is pinned to.
+
+- **Source paper**: [Hasse 2024](https://doi.org/10.1103/PhysRevA.109.053105)
+  ([local PDF](../refs/Hasse2024_PRA_109_053105.pdf)). Figs 6 and 8
+  of that paper define the targets; Fig 7 is out of scope by design
+  (it overlays experimental data, not numerics-only).
+- **Lab parameters** (²⁵Mg⁺ axial LF mode): see [§2 Nominal
+  parameters](#2-nominal-parameters). All values traced to Hasse
+  Tab II / App. D.
+- **Pass criterion** for the reproduction: ≤ 5% deviation on anchor
+  numbers C(α=0) and ϕ₀(α=3) — see [§4 Pass criterion](#deliverables).
+
+## Analytical
+
+The conventions that mediate between the engine's complex coherence
+and Hasse's analysis-phase formalism.
+
+- **Convention-mapping note** — basis rotation σ_z(ϕ) =
+  ⟨σ_x⟩ cos(ϕ) + ⟨σ_y⟩ sin(ϕ) recovers the Hasse axis from the
+  engine's fixed-frame outputs:
+  [§3.3 Convention-mapping note](#33-convention-mapping-note-read-before-interpreting-plots).
+- **Debye–Waller suppression** Ω_eff = Ω · exp(−η²/2) and the
+  per-pulse rotation that totals N·θ = π/2 on the carrier: see
+  [§2 Nominal parameters](#2-nominal-parameters).
+- **Out of scope by design**: squeezed-state validation (deferred to
+  WP-C), pulse-detuning maps (WP-E), η/N parameter sweeps (WP-A.3 /
+  WP-B). See [§3.2 Out of scope](#32-out-of-scope).
+
+## Numerical
+
+Simulation drivers, datasets, and rendered figures. *Note:* this WP
+predates `wp_manifest_v1`; its `.h5` artifacts do not yet carry
+sidecar manifests (pending — see [`schemas/README.md`](../schemas/README.md)).
+
+- **Drivers**:
+  [numerics/run_fig6.py](numerics/run_fig6.py) (Fig 6a/b at |α|=3),
+  [numerics/run_fig8.py](numerics/run_fig8.py) (Fig 8a/b sweep).
+  Versioned variants `_v2` … `_v5` retained for diagnostic
+  continuity.
+- **Datasets**: [numerics/fig6_alpha3_v5.h5](numerics/fig6_alpha3_v5.h5)
+  (final), [numerics/fig8_calibrations_v6.h5](numerics/fig8_calibrations_v6.h5)
+  (final), plus extreme-case audits
+  [numerics/fock_leakage_rabi5x_v5.h5](numerics/fock_leakage_rabi5x_v5.h5).
+- **Plots**: [plots/](plots/) — Fig 6 heatmaps + cuts, Fig 8 calibration
+  curves.
+- **Engine version**: [scripts/stroboscopic_sweep.py](../scripts/stroboscopic_sweep.py)
+  (CODE_VERSION declared in the module).
+
+-----
+
 ## 1. Purpose
 
 The systematic engine [scripts/stroboscopic_sweep.py](../scripts/stroboscopic_sweep.py)

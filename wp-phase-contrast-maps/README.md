@@ -6,6 +6,64 @@
 
 -----
 
+## Experiment
+
+The lab values and apparatus context this WP is anchored to.
+
+- **²⁵Mg⁺ AC-Raman setup** of Hasse 2024; nominal parameters of [§2](#2-notation-and-nominal-parameters)
+  (ω_m/(2π) = 1.300 MHz, η = 0.397, Ω/(2π) = 0.300 MHz, δt = 40 ns,
+  N = 22, ⟨n⟩_thermal = 0.001).
+- **Provenance discriminant** (motivation 3 of [§3.1](#31-purpose)):
+  legacy HDF5 adaptive-learner gives σ_z contrast 0.61/0.71/0.84/0.75;
+  22-pulse JSON-uniform gives ≈ 0.56. The (δ₀, |α|) surface tests
+  whether the disagreement traces to φ_α sampling, hidden ensemble
+  averaging, Ω vs Ω_eff calibration, or integrator tolerance — see
+  [§4a Preflight gate](#4a-preflight-gate-gates-the-main-sweep).
+
+## Analytical
+
+The model layer — reference predictions the maps will be compared
+against, and conventions that fix the sign of every residual.
+
+- **Three reference baselines** R1 (Lamb–Dicke linear), R2
+  (instantaneous-pulse), R12 (composite). The clean decomposition
+  Δη / Δt / cross isolates η-nonlinearity from finite-time (Magnus)
+  effects — see [§3.1](#31-purpose).
+- **Motional-phase convention**: φ_α anchored to the engine's
+  Hamiltonian at code lines 103/138, not to an abstract phase-space
+  picture — see [§2.2](#22-motional-phase-convention).
+- **Contrast normalisation** against the reference state (|α|=0,
+  δ₀=0, φ_α=0), not against an idealised π/2 rotation — see
+  [§2.1](#21-contrast-reference).
+- **Ledger principles** P1, P3, P4, P7 — what this WP contributes to
+  each: [§6 Connection to existing ledger principles](#6-connection-to-existing-ledger-principles).
+- **Background**: [ideal-limit-principles.md](../ideal-limit-principles.md)
+  develops the Floquet-synchronised quadrature spectroscopy framing.
+
+## Numerical
+
+The forward-map dataset, residual maps, and the Jacobian-based
+injectivity probe. *Note:* this WP predates `wp_manifest_v1`; its
+`.h5` artifacts do not yet carry sidecar manifests.
+
+- **Datasets** in [numerics/](numerics/): main 2D scans
+  ([scan_2d_alpha3_v2.h5](numerics/scan_2d_alpha3_v2.h5)),
+  S2 phase sweeps
+  ([S2_v09_alpha3_v2.h5](numerics/S2_v09_alpha3_v2.h5),
+  [S2_delta_phi_alpha{1,3,5}.h5](numerics/)),
+  AOM envelope diagnostics, lock-tolerance scan
+  ([H1_lock_tolerance.h5](numerics/H1_lock_tolerance.h5)),
+  R1 convergence audit ([R1_convergence.h5](numerics/R1_convergence.h5)).
+- **Plots** in [plots/](plots/): residual heatmaps (Δη, Δt, cross),
+  arg C maps, lock-tolerance and AOM-envelope panels.
+- **Preflight gate** (must pass before main sweep):
+  [§4a](#4a-preflight-gate-gates-the-main-sweep).
+- **Deliverables index**: [§4](#4-deliverables) — dataset, residual
+  plots, logbook, ≤2-page note, injectivity probe (Jacobian +
+  cond-J map), stretch Floquet lock-tolerance.
+
+-----
+
 ## 1. Introduction
 
 Stroboscopic travelling-wave control of a single trapped ion outside the

@@ -16,17 +16,55 @@
   <nav>
     <a href="index.html">Overview</a>
     <a href="dossier.html">Dossier</a>
-    <a href="framework.html">Framework</a>
     <a href="tutorial.html" aria-current="page">Tutorial</a>
-    <a href="numerics.html">Numerics</a>
-    <a href="simulate.html">Simulate</a>
-    <a href="code.html">Code</a>
     <a href="reference.html">Reference</a>
+    <a href="wp-hasse-reproduction/">WP-V</a>
     <a href="wp-phase-contrast-maps/">WP-E</a>
+    <a href="wp-strobo-2p0/">Strobo 2.0</a>
     <a href="wp-strong-weak-coastline/">WP-C</a>
     <a href="getting-started.html">Start</a>
   </nav>
 </header>
+
+<!-- ── Reading guide ──────────────────────────────────────────── -->
+<aside class="callout" style="margin-bottom:1.6rem;">
+  <div class="cl">How to read this dossier</div>
+  <p style="margin-bottom:0;">This page is the <strong>synthesis</strong> — a braided narrative across the experiment, theory, and simulation lenses. For the primary sources, each work package has three lens tabs at the top of its landing page:
+  <a href="wp-hasse-reproduction/#experiment">WP-V</a> ·
+  <a href="wp-phase-contrast-maps/#analytical">WP-E</a> ·
+  <a href="wp-strobo-2p0/#numerical">Strobo&nbsp;2.0</a> ·
+  <a href="wp-strong-weak-coastline/#analytical">WP-Coastline</a>.
+  Where the three lenses disagree, the row is recorded in the <a href="dossier.html">Agreement / Mismatch Ledger</a>.</p>
+</aside>
+
+<!-- ── Framework recap (collapsible) ──────────────────────────── -->
+<details id="framework-recap" style="margin-bottom:1.6rem;">
+  <summary style="cursor:pointer;font-weight:600;font-size:1.05rem;padding:0.4rem 0;">Framework recap (Hamiltonian, η, measurement channels) — click to expand</summary>
+  <div style="padding-top:0.6rem;">
+    <h3>Interaction Hamiltonian</h3>
+    <div class="formula-box">
+      H<sub>TI</sub> = ℏ(ω<sub>z</sub>/2)σ<sub>z</sub> + ℏω<sub>m</sub> a†a + ℏ(Ω/2)[C σ<sub>−</sub> + C† σ<sub>+</sub>]<br><br>
+      where &ensp; <strong>C(η, a, a†) = exp(iη(a + a†))</strong>
+    </div>
+    <p>Exponential coupling in the position quadrature — not truncated. Source of both power (Doppler-resolved mapping, higher sidebands) and complications (backaction, nonlinear decoding).</p>
+
+    <h3>Where η ≈ 0.4 enters</h3>
+    <p>AC Raman: λ<sub>eff</sub> ≈ 140 nm, η<sub>LF</sub> ≈ 0.40, η<sub>MF</sub> ≈ 0.23, η<sub>HF</sub> ≈ 0.18. Not in the deep Lamb–Dicke regime. Debye–Waller factor exp(−η²/2) ≈ 0.924. Sideband amplitudes from |0⟩: carrier 0.923, 1st 0.369, 2nd 0.074, 3rd 0.010.</p>
+
+    <h3>Measurement: two channels</h3>
+    <p><strong>Position → phase shift.</strong> Travelling wave imprints spin-dependent phase ∝ <em>k</em><sub>eff</sub>·<em>x</em>(<em>t</em>).</p>
+    <p><strong>Velocity → Doppler detuning.</strong> Moving ion sees δ<sub>D</sub> = <em>k</em><sub>eff</sub>·<em>v</em>. Peak Doppler shift 2η·ω<sub>m</sub>·|α| exceeds Ω for all α ≥ 1. Detuning spectrum is the primary momentum channel.</p>
+
+    <h3>Semiclassical baseline</h3>
+    <div class="formula-box">⟨α|exp(iη(a+a†))|α⟩ = exp(−η²/2) · exp(i 2η Re α)</div>
+
+    <h3>Backaction &amp; BAE</h3>
+    <p>exp(iη(a+a†)) at η ≈ 0.4 couples both quadratures. Whether a perturbative linear regime exists is open (<a href="dossier.html">L6</a>).</p>
+
+    <h3>Tomographic potential</h3>
+    <p>Phase shift (position) + Doppler spectrum (momentum) together access full phase-space. Characteristic function sampling ⟨exp(i<em>k x</em>)⟩ provides complementary formalism.</p>
+  </div>
+</details>
 
 <!-- ── Strong/weak binding limits ─────────────────────────────── -->
 
