@@ -623,7 +623,103 @@ wp-wigner-tomography/
     ...
   notes/                       # analytical derivations
     analytic_chain.md
+  refs/                        # primary literature + extractions (see §5a)
+    extractions/
+    contextual-notes.md
 ```
+
+## 5a. Conduct and FAIR conventions
+
+WP-W execution follows the project's existing conventions; this
+section codifies them so initiation does not have to re-derive
+practice from precedent.
+
+**FAIR-aligned data and provenance.**
+
+- Every numerical artefact (`.h5`, `.json`) carries a sidecar manifest
+  per [`schemas/wp_manifest_v1.schema.json`](../schemas/) — FAIR Tier 3.
+  Manifest fields: code version (git SHA), command line, input
+  parameters, output dataset names, dependencies, timestamps.
+- Reproducibility test: any §4 deliverable must be re-runnable from
+  its manifest plus the repo at the recorded SHA, with byte-for-byte
+  identical primary outputs.
+- Filenames carry the WP, version, and content (e.g.
+  `reach_ladder_ideal.h5` / `.manifest.json`) — no implicit shared
+  state between scripts.
+
+**Three-lens framing.**
+
+- Every WP iteration is structured around the Experiment / Analytical
+  / Numerical lenses (matching the WP-E precedent and this document's
+  own three-pillar lead). Each lens names its own assumptions and
+  diagnostics so the reader can read any one in isolation.
+
+**Logbook discipline (anchors §4 D5).**
+
+- One dated markdown file per substantive run or decision, in
+  `logbook/YYYY-MM-DD-{topic}.md`.
+- **Pre-register expectations *before* running.** State each
+  prediction with a quantitative target (a number, a sign, a feature
+  scale) and a flag column for the comparison pass. Anchor pattern is
+  the WP-TOM kick-off [logbook §2](../wp-analysis-train-tomography/logbook/2026-05-13-kickoff-expectations-and-run.md#2-pre-registered-expectations).
+- **Compare against expectations with explicit flags** (✓ matches,
+  ✗ deviates, ? ambiguous) and concrete numerical values. Phrases
+  like "agrees within reason" are not acceptable; quote the residual.
+- **Name surprises.** Any deviation from the pre-registered prediction
+  is the most valuable signal — flag it prominently, classify it
+  (engine bug, convention error, real physics), and propose the
+  diagnostic next step.
+
+**Tutorial notebooks (visitor onboarding).**
+
+- Each substantive numerical capability — new engine primitive, new
+  inversion algorithm, new diagnostic — pairs with a tutorial
+  notebook in the WP's `notebooks/` directory.
+- Tutorial pattern: §0 Setup; §1 Concept; §2 Code; §3 Results;
+  §4 Tie-back to the WP claim. Matches the
+  [`notebooks/00_tutorial_pulse_train.ipynb`](../notebooks/00_tutorial_pulse_train.ipynb)
+  precedent.
+- Commit both source and executed copies (`.ipynb` and
+  `.executed.ipynb`) so reviewers can see outputs without running.
+
+**Reference discipline (the §References habit).**
+
+The §References list at the end of this document is the minimum
+*citation* layer. The deeper layer — primary text, extraction,
+contextual note — is captured in `refs/`:
+
+- **Primary texts** as PDFs in `refs/` (per
+  [`refs/Hasse2024_PRA_109_053105.pdf`](../refs/Hasse2024_PRA_109_053105.pdf)),
+  one per cited work.
+- **Extractions** in `refs/extractions/` — per-paper markdown notes
+  capturing key equations, definitions, and sign conventions in
+  derived form, so the WP doesn't have to re-derive them at use
+  sites. Goal: a reader can re-derive the analytic chain from the
+  extraction without opening the PDF.
+- **Contextual notes** in `refs/contextual-notes.md` (or per-topic
+  files): the lineage — what each cited work contributes, how it
+  relates to the protocol, what's adopted vs. what's a contrast. This
+  is the layer that turns a flat bibliography into a foundation.
+
+  For WP-W's v0.4 citations: each of [CG69], [LD97], [FH20], [STO12],
+  [Hof09] should accrue an extraction + a contextual paragraph during
+  D1 (analytical note) drafting. The bibliography in §References
+  remains the index; the extractions are the working knowledge.
+
+**[TBD] Pointers needed from user.** Two named conventions were
+referenced in the v0.4-polish review but I could not locate them in
+the repository:
+
+- "*Harbor principles*" — please link the document, or indicate the
+  scope (overarching project ethic? new convention to introduce
+  alongside the Breakwater Dossier metaphor?).
+- "*DG reports*" — please link the template or define the acronym
+  (Design-Gate? Diagnostic-Group? Dispatch?) and whether DG reports
+  are part of WP-W's deliverable surface or a separate channel.
+
+These are flagged here so WP-W's conduct conventions are explicit
+about what is *not yet* anchored; the section is otherwise a
+self-contained codification of the repo's existing practice.
 
 ## 6. Connection to other WPs
 
@@ -919,6 +1015,12 @@ Outstanding non-blocking polish:
   [STO12], [Hof09], [Hasse24] populated in §References with a
   verification queue. [STO12] and [Hof09] author lists need
   confirmation at initiation.
+- ~~Conduct and FAIR conventions section~~ — *done in the v0.4-polish
+  pass (2026-05-13):* §5a codifies FAIR manifests, three-lens framing,
+  logbook discipline, tutorial notebooks, and reference-enrichment
+  practice. Two named conventions ("harbor principles", "DG reports")
+  flagged at the end of §5a as needing user pointers before they
+  become load-bearing.
 - Pulse-duration $(\delta t/T_m)$ order in the approximation hierarchy
   (§Analytical bullet 5) — still outstanding.
 
