@@ -20,9 +20,15 @@ inversion regime (see the kick-off
 WP-W picks up where that logbook ends: in the **Lamb–Dicke regime
 with an idealised pulse train**, there should exist a clean
 analytic mapping from the measured $(\delta, \varphi_\text{train})$
-data to the motional Wigner function $W(\alpha)$ — and the mapping
-should remain valid for **non-Gaussian** inputs (Fock states, cat
-states, squeezed states).
+data to the motional Wigner function $W(\alpha)$. The inversion is
+formally state-general — the symmetric characteristic function
+$\chi$ is a complete state representation [CG69] — so the chain
+applies to non-Gaussian inputs (Fock states, cat states) within the
+LD / idealised-train approximations. Squeezed states require the
+chain extended to $\mathcal O(\eta^2)$ and are deferred to v0.5 per
+§7#4. Experimental validity, separately, depends on how closely the
+native engine realises the ideal $\sigma_z$ SDF — quantified
+numerically as the §7#3 bridge residual rather than assumed.
 
 -----
 
@@ -70,20 +76,31 @@ expected to break.
   the post-train complex contrast is
   $C(\delta, \varphi_\text{train}) = \langle\sigma_x\rangle + i\langle\sigma_y\rangle \;=\; e^{-|\beta_\text{tot}|^2/2}\,\chi_{\rho_m}(\beta_\text{tot})$
   with $\chi_{\rho_m}(\beta) = \mathrm{Tr}[\rho_m\,D(\beta)]$ the
-  symmetric characteristic function. **The map is observable-equals-$\chi$
-  point-by-point.**
-- **Wigner inversion.** $W(\alpha) = \pi^{-2}\int e^{\alpha\beta^* - \alpha^*\beta}\,\chi(\beta)\,d^2\beta$.
-  The 2D FFT of $\chi(\beta)$ over the $\beta$-grid returns the
-  Wigner function on the corresponding $\alpha$-grid. With this Fourier
-  convention, finite $\beta$ support $B$ sets the raw $\alpha$ resolution
-  $\Delta\alpha \simeq \pi/(2B)$, while $\Delta\beta$ sets the alias-free
-  half-width $\alpha_\text{Nyq} \simeq \pi/(2\Delta\beta)$.
-- **Non-Gaussian validity.** The chain holds for *any* $\rho_m$ —
-  Gaussian or not, mixed or pure — because $\chi$ is a complete state
-  representation. Specific predictions: Fock $|n\rangle$ has
+  symmetric characteristic function [CG69]. **The map is observable-equals-$\chi$
+  point-by-point.** The displaced-parity origin of this measurement
+  scheme traces to Lutterbach & Davidovich [LD97]; the modern
+  trapped-ion implementation that motivates WP-W's protocol is the
+  direct characteristic-function tomography of Flühmann & Home [FH20].
+- **Wigner inversion.** $W(\alpha) = \pi^{-2}\int e^{\alpha\beta^* - \alpha^*\beta}\,\chi(\beta)\,d^2\beta$
+  is the Fourier dual of the symmetric characteristic function [CG69].
+  The 2D FFT of $\chi(\beta)$ over the $\beta$-grid therefore returns
+  the Wigner function on the corresponding $\alpha$-grid. With this
+  Fourier convention, finite $\beta$ support $B$ sets the raw $\alpha$
+  resolution $\Delta\alpha \simeq \pi/(2B)$, while $\Delta\beta$ sets
+  the alias-free half-width $\alpha_\text{Nyq} \simeq \pi/(2\Delta\beta)$.
+- **Non-Gaussian validity.** The chain is *formally* state-general:
+  $\chi_{\rho_m}$ is a complete representation of any density operator
+  $\rho_m$, Gaussian or not, pure or mixed [CG69]. Specific
+  predictions: Fock $|n\rangle$ has
   $\chi(\beta) = e^{-|\beta|^2/2}\,L_n(|\beta|^2)$ (Laguerre);
   even/odd cats have characteristic Gaussian humps at $\pm 2\alpha$
-  with interference fringes through the origin.
+  with interference fringes through the origin. The trapped-ion
+  demonstration of non-Gaussian state tomography by these means is
+  [FH20]. *Caveat:* state-general analytic validity does not imply
+  state-general experimental validity — the latter requires the
+  ideal-SDF assumptions of this chain, and any departure (LD order,
+  pulse duration, native vs. ideal coupling) is a separate numerical
+  question (§7#3).
 - **Approximation hierarchy.** v0.3 separates the hierarchy into two
   layers. The ideal-SDF inversion assumes instantaneous
   $D(\sigma_z\beta_n)$ pulses, a single selected comb tooth, and fixed
@@ -105,9 +122,15 @@ expected to break.
   $M_s \propto D(\beta_\text{tot}) + s\,e^{i\phi}D(-\beta_\text{tot})$.
   The native-engine departure from this prediction is the v0.5
   back-action diagnostic (§8).
-- **Background.** Hofheinz et al. (cQED), Flühmann et al. (trapped
-  ions, sympathetic), Lutterbach–Davidovich for the inversion. [TBD]
-  add citations.
+- **Background.** Phase-space formalism: Cahill & Glauber [CG69].
+  Displaced-parity scheme for direct Wigner measurement (originally
+  cavity QED): Lutterbach & Davidovich [LD97]. Trapped-ion
+  characteristic-function tomography: Flühmann & Home [FH20].
+  Sympathetic-readout phase-space tomography of trapped ions:
+  Casanova et al. (PRA 85, 042109, 2012; authors to be verified at
+  initiation) [STO12]. Phase-space synthesis and tomography in cQED:
+  Hofheinz et al. (Nature 2009) [Hof09]. See §References for
+  bibliographic details.
 
 ## Numerical
 
@@ -163,9 +186,11 @@ the protocol works, where its regime of validity is, or whether it
 extends to non-Gaussian inputs.
 
 WP-W reframes the same protocol as **characteristic-function
-tomography** in the spirit of Lutterbach–Davidovich, Hofheinz et al.,
-and Flühmann et al., specialised to the stroboscopic-comb forward
-map. The hypothesis is:
+tomography** in the lineage of Lutterbach–Davidovich [LD97] (the
+displaced-parity scheme, originally cavity QED), Hofheinz et al.
+[Hof09] (cQED phase-space synthesis), and Flühmann & Home [FH20]
+(direct trapped-ion implementation), specialised here to the
+stroboscopic-comb forward map. The hypothesis is:
 
 > *In the Lamb–Dicke perturbative regime with an idealised pulse
 > train, the complex contrast $C(\delta, \varphi_\text{train})$ is
@@ -888,10 +913,14 @@ per §7#6, and open the first logbook entry per D5.
 
 Outstanding non-blocking polish:
 
-- Background citations in §Analytical (Hofheinz, Flühmann,
-  Lutterbach–Davidovich, Cahill–Glauber).
+- ~~Background citations in §Analytical~~ — *done in the v0.4-polish
+  pass (2026-05-13):* inline citation hooks added at the four
+  identified spots; minimum bibliography [CG69], [LD97], [FH20],
+  [STO12], [Hof09], [Hasse24] populated in §References with a
+  verification queue. [STO12] and [Hof09] author lists need
+  confirmation at initiation.
 - Pulse-duration $(\delta t/T_m)$ order in the approximation hierarchy
-  (§Analytical bullet 5).
+  (§Analytical bullet 5) — still outstanding.
 
 **Anticipated v0.5 scope** (deferred, not blockers for v0.4 execution):
 
@@ -952,6 +981,52 @@ Outstanding non-blocking polish:
 
 ## References
 
-[TBD] — add Hofheinz, Flühmann, Lutterbach–Davidovich,
-Cahill–Glauber, plus the existing
-[Hasse 2024 PRA reference](../refs/Hasse2024_PRA_109_053105.pdf).
+Minimum bibliography for v0.4 — four pillars (phase-space formalism,
+displaced-parity scheme, trapped-ion implementation, sympathetic
+tomography precedent) plus the existing Hasse anchor and the cQED
+synthesis context.
+
+- **[CG69]** K. E. Cahill and R. J. Glauber,
+  *Density Operators and Quasiprobability Distributions*,
+  Phys. Rev. **177**, 1882 (1969).
+  DOI: [10.1103/PhysRev.177.1882](https://doi.org/10.1103/PhysRev.177.1882).
+  *Anchors:* §Analytical (bullets 2, 3, 4), §1 hypothesis.
+
+- **[LD97]** L. G. Lutterbach and L. Davidovich,
+  *Method for Direct Measurement of the Wigner Function in Cavity QED
+  and Ion Traps*,
+  Phys. Rev. Lett. **78**, 2547 (1997).
+  DOI: [10.1103/PhysRevLett.78.2547](https://doi.org/10.1103/PhysRevLett.78.2547).
+  *Anchors:* §Analytical (bullet 2 — displaced-parity origin), §1
+  (lineage statement).
+
+- **[FH20]** C. Flühmann and J. P. Home,
+  *Direct Characteristic-Function Tomography of Quantum States of the
+  Trapped-Ion Motional Mode*,
+  Phys. Rev. Lett. **125**, 043602 (2020).
+  DOI: [10.1103/PhysRevLett.125.043602](https://doi.org/10.1103/PhysRevLett.125.043602).
+  *Anchors:* §Analytical (bullet 2 — modern trapped-ion implementation;
+  bullet 4 — non-Gaussian demonstrations), §1 (lineage statement).
+
+- **[STO12]** *Sympathetic Wigner-function tomography of a dark
+  trapped ion*, Phys. Rev. A **85**, 042109 (2012).
+  DOI: [10.1103/PhysRevA.85.042109](https://doi.org/10.1103/PhysRevA.85.042109).
+  *Author list to be verified at initiation* (sympathetic ion-tomography
+  precedent). *Anchors:* §Analytical background.
+
+- **[Hof09]** M. Hofheinz et al.,
+  *Synthesizing arbitrary quantum states in a superconducting
+  resonator* (Nature 2009).
+  *cQED phase-space synthesis and tomography reference; bibliographic
+  details to verify at initiation.* *Anchors:* §1 (lineage), §Analytical
+  background.
+
+- **[Hasse24]** J. Hasse et al., Phys. Rev. A **109**, 053105 (2024).
+  Local PDF: [refs/Hasse2024_PRA_109_053105.pdf](../refs/Hasse2024_PRA_109_053105.pdf).
+  *Anchors:* §Experiment (reference platform), §7#7 (bridge anchor).
+
+*Verification queue at initiation.* Author lists for [STO12] and [Hof09]
+need confirmation against the cited DOIs; [FH20] is sometimes also
+listed with the trapped-ion group's expanded author set rather than
+Flühmann/Home alone. Add any further citations encountered when
+drafting D1 (the analytical note) to this section.
