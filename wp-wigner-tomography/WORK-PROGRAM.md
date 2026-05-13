@@ -2,9 +2,9 @@
 
 **Work Program · v0.4-accum · 2026-05-13**
 **Status:** *scaffolding — not yet execution-ready. §2, §7#1–5,
-and §7#7 are settled for the first numerical pass. Remaining
-[TBD] markers (§7#6 naming, §4 deliverable commands) are the live
-edit-surface before v0.4 closes.*
+§7#7, and §4 deliverable commands are settled for the first numerical
+pass. The only remaining [TBD] marker before v0.4 closes is §7#6
+naming.*
 **Numbering:** WP-W (provisional; to reconcile with the existing
 WP-V / WP-E letters in §6).
 
@@ -269,38 +269,235 @@ Out of scope for the v0.4 execution candidate:
 
 ## 4. Deliverables
 
-[TBD] Tighten this list once §5, §7#4, and §7#6 are settled.
+Each deliverable is a concrete artefact with a generation command, an
+output path, and a pass criterion. The P0/P1 layering of §4a is
+respected: D1–D3 are ideal-SDF layer (runnable once the runner scripts
+are written); D4 is the native-engine bridge (runnable only after the
+bridge convention of §7#3 is implemented).
 
-Provisional deliverables:
+### D1 — Analytical note
 
-1. **Analytical note** (≤ 5 pages) deriving the $(\delta, \varphi_\text{train}, N) \to \beta$
-   map, the $C = e^{-|\beta|^2/2}\chi$ equivalence, and the order in
-   $\eta$ at which each holds.
-2. **Forward-map regime sweep** (.h5 + `wp_manifest_v1`): six drive
-   strengths × $|\alpha|=1$ × the v0.2 $\beta$ grid. Plot:
-   analytic-vs-engine residual heatmap. Identifies the
-   perturbative-regime boundary.
-3. **Wigner reconstruction demo** on five input classes: vacuum,
-   coherent $|\alpha|=1.5$, thermal $\bar n = 0.5$, Fock $|1\rangle$,
-   cat at $|\alpha|=1.5$. Output: $W_\text{rec}$ vs $W_\text{true}$
-   side-by-side, fidelity numbers, L¹ error map.
-4. **WP-E / WP-TOM bridge plot.** Shared coherent anchor
-   $|\alpha=3,\theta_\alpha=0\rangle$. Panel A: native Raman
-   cross-check against WP-E at the Hasse nominal train
-   ($N=22$, $\delta t=40$ ns, $\varphi_\text{train}=0$), reporting raw
-   $(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at $\delta/\omega_m
-   \in \{-1,0,+1\}$. Panel B: inversion-side comparison between the
-   saturated WP-TOM template recovery and the perturbative ideal-SDF FFT
-   centroid for the same state. Use an $\alpha$ display window extended
-   to $[-4,4]^2$ for this bridge so the $|\alpha|=3$ Gaussian is not
-   clipped at the v0.2 demo boundary.
-5. **Logbook** with pre-registered expectations per WP-TOM
-   convention.
+**Command:** None — manual composition.
+
+**Output:** `wp-wigner-tomography/notes/analytic_chain.md` (or `.tex`
+if equation density exceeds markdown comfort).
+
+**Contents checklist:**
+- Closed-form $(\delta, \varphi_\text{train}, N) \to \beta$ map via the
+  Dirichlet kernel.
+- $C = e^{-|\beta|^2/2}\chi$ equivalence under the idealised
+  $\sigma_z$ SDF.
+- LD expansion order at which each step holds: $\mathcal O(\eta)$ for
+  the displacement, $\mathcal O(\eta^2)$ for neglected squeezing.
+- Finite-$N$ tooth-width correction: $1/N$ scaling in
+  $\delta/\omega_m$.
+- The *No limit recovers the ideal SDF* result of §7#3: why the native
+  Raman engine is structurally different.
+
+**Pass criterion:** The note is self-contained enough that a reader can
+re-derive the $\beta$-grid and the inversion formula without opening the
+code.
+
+### D2 — Forward-map regime sweep (ideal-SDF reach ladder)
+
+**Script:** `wp-wigner-tomography/numerics/run_reach_ladder.py`
+
+**Command:**
+```bash
+cd wp-wigner-tomography
+python numerics/run_reach_ladder.py \
+    --beta0 0.05 \
+    --n-values 20 40 60 80 \
+    --states vacuum coherent \
+    --alpha 1.0 \
+    --grid-size 81 \
+    --output numerics/reach_ladder_ideal.h5
+```
+
+**What it does:** For each $N \in \{20,40,60,80\}$, builds the
+Cartesian $\beta$ grid via the inverse-Dirichlet rule of §2, computes
+the analytic characteristic function $\chi(\beta)$ and observable
+$C(\beta)=e^{-|\beta|^2/2}\chi(\beta)$ for vacuum and coherent
+$|\alpha|=1$, and stores the grid coordinates, $\chi$, and $C$.
+
+**Output schema (`reach_ladder_ideal.h5`):**
+- `/N_{n}/beta_x` (81,) — Cartesian $\beta$ coordinates
+- `/N_{n}/beta_y` (81,)
+- `/N_{n}/chi_real`, `/N_{n}/chi_imag` (81, 81) — analytic
+  characteristic function
+- `/N_{n}/C_real`, `/N_{n}/C_imag` (81, 81) — analytic contrast
+- Attributes: `beta0`, `n_pulses`, `grid_size`, `state`, `alpha`,
+  `code_version`
+
+**Sidecar manifest:** `numerics/reach_ladder_ideal.manifest.json` per
+`schemas/wp_manifest_v1.schema.json`.
+
+**Plot script:** `wp-wigner-tomography/plots/plot_reach_ladder.py`
+```bash
+python plots/plot_reach_ladder.py \
+    --input numerics/reach_ladder_ideal.h5 \
+    --output plots/reach_ladder_residuals.png
+```
+
+**Plot output:** `plots/reach_ladder_residuals.png` — four-panel figure
+showing $|C(\beta)|$ on the $\beta$ grid for $N=20,40,60,80$, with a
+sub-panel of tooth-width HWHM vs. $1/N$.
+
+**Pass criterion:** The $N=80$ grid covers the disk $|\beta|\leq 4$ with
+no branch-wrap artefacts, and the HWHM scales as $1/N$ to within 10%.
+
+**Native-engine extension (P1, optional):** If an `ideal_sdf` primitive
+is added to `scripts/stroboscopic`, pass `--engine ideal_sdf` and the
+script populates a `/N_{n}/C_engine` dataset. The residual heatmap then
+becomes $|C_\text{engine} - C_\text{analytic}|/|C_\text{analytic}|$.
+
+### D3 — Wigner reconstruction demo
+
+**Script:** `wp-wigner-tomography/numerics/run_reconstruction_demo.py`
+
+**Command:**
+```bash
+cd wp-wigner-tomography
+python numerics/run_reconstruction_demo.py \
+    --beta0 0.05 \
+    --n-pulses 80 \
+    --grid-size 81 \
+    --states vacuum coherent_1.5 thermal_0.5 fock_1 fock_2 cat_1.5 mixed_cat_1.5 \
+    --output numerics/reconstruction_demo.h5
+```
+
+**What it does:** For each state in the test set:
+1. Populates the v0.2 Cartesian $\beta$ grid ($81\times81$, $B=4$).
+2. Computes analytic $\chi(\beta)$.
+3. Applies radial Hanning window and zero-pads to $161\times161$.
+4. 2D FFT $\to W_\text{rec}(\alpha)$.
+5. Computes analytic $W_\text{true}(\alpha)$ on the same $\alpha$ grid.
+6. Computes overlap fidelity $\mathcal F$, $L^1$ error, and negativity
+   ratio $\rho_\text{neg}$ per §7#5.
+
+**Output schema (`reconstruction_demo.h5`):**
+- `/{state}/W_rec` (161, 161) float64 — reconstructed Wigner
+- `/{state}/W_true` (161, 161) float64 — analytic Wigner
+- `/{state}/chi_real`, `/{state}/chi_imag` (81, 81) — characteristic
+  function on $\beta$ grid
+- `/{state}/metrics` — structured array with fields `fidelity`,
+  `L1_error`, `neg_ratio`
+- `/alpha_x`, `/alpha_y` (161,) — reconstructed $\alpha$ coordinates
+- `/beta_x`, `/beta_y` (81,) — $\beta$ coordinates
+
+**Sidecar manifest:** `numerics/reconstruction_demo.manifest.json`.
+
+**Plot script:** `wp-wigner-tomography/plots/plot_reconstruction_demo.py`
+```bash
+python plots/plot_reconstruction_demo.py \
+    --input numerics/reconstruction_demo.h5 \
+    --output plots/reconstruction_demo.png
+```
+
+**Plot output:** `plots/reconstruction_demo.png` — multi-panel figure:
+- Top row: $W_\text{true}$ for each state.
+- Middle row: $W_\text{rec}$ for each state.
+- Bottom row: $L^1$ error map
+  $\Delta(\alpha)=|W_\text{rec}-W_\text{true}|$.
+- Right margin: summary table with $\mathcal F$, $L^1$,
+  $\rho_\text{neg}$.
+
+**Pass criterion:** All headline states meet their §7#5 thresholds;
+deciding states (Fock $|2\rangle$, cat) trigger the diagnostic flow if
+they miss.
+
+### D4 — WP-E / WP-TOM bridge plot
+
+**Panel A — Native Raman convention check**
+
+**Script:** `wp-wigner-tomography/numerics/run_bridge_native.py`
+
+**Command:**
+```bash
+cd wp-wigner-tomography
+python numerics/run_bridge_native.py \
+    --alpha 3.0 --alpha-phase-deg 0.0 \
+    --n-pulses 22 --delta-t 40e-9 \
+    --eta 0.397 --omega-m 1.3 --omega-r 0.300 \
+    --output numerics/bridge_native.json
+```
+
+**What it does:** Runs the native `scripts/stroboscopic` engine at the
+Hasse nominal parameters, $N=22$, $\delta t=40$ ns, for coherent
+$|\alpha=3,\theta_\alpha=0\rangle$, and extracts
+$(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$ at the three tooth
+centres $\delta/\omega_m\in\{-1,0,+1\}$. Compares against the WP-E
+`scan_2d_alpha3_v2.h5` values at the same points.
+
+**Output:** `numerics/bridge_native.json` — JSON with fields
+`wp_e_reference`, `wp_w_native`, `residuals`.
+
+**Pass criterion (Layer A):** Residuals $< 10^{-3}$ (numerical
+tolerance) for all three observables at all three teeth.
+
+**Panel B — Inversion bridge**
+
+**Script:** `wp-wigner-tomography/numerics/run_bridge_inversion.py`
+
+**Command:**
+```bash
+python numerics/run_bridge_inversion.py \
+    --alpha 3.0 --alpha-phase-deg 0.0 \
+    --template-grid ../wp-analysis-train-tomography/data/templates_sz_v1.npz \
+    --beta0 0.05 --n-pulses 80 \
+    --output numerics/bridge_inversion.json
+```
+
+**What it does:**
+- WP-TOM side: loads the saturated-template grid, finds the nearest
+  template for $|\alpha|=3$, reports refined
+  $(|\alpha|_\text{tm}, \theta_\text{tm})$.
+- WP-W side: runs the ideal-SDF FFT reconstruction on the same state,
+  reports the centroid $(|\alpha|_\text{fft}, \theta_\text{fft})$.
+
+**Output:** `numerics/bridge_inversion.json` — JSON with both
+recoveries and their difference.
+
+**Plot script:** `wp-wigner-tomography/plots/plot_bridge.py`
+```bash
+python plots/plot_bridge.py \
+    --native numerics/bridge_native.json \
+    --inversion numerics/bridge_inversion.json \
+    --output plots/bridge_wpe_tom.png
+```
+
+**Plot output:** `plots/bridge_wpe_tom.png` — two-panel figure:
+- Left: bar chart of Layer A residuals
+  $(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$.
+- Right: phase-space scatter showing the WP-TOM template recovery
+  (saturated, orange) and WP-W FFT centroid (perturbative, blue)
+  relative to the true state (black cross).
+
+**Pass criterion (Layer B):**
+$|\Delta\alpha_\text{centroid}|\leq 0.2$,
+$|\Delta\theta_\alpha|\leq 0.05\pi$, no quadrant flip.
+
+### D5 — Logbook
+
+**Command:** None — process deliverable.
+
+**Format:** One dated markdown file per substantive run or decision,
+stored in `wp-wigner-tomography/logbook/YYYY-MM-DD-{topic}.md`.
+
+**Required sections:**
+1. Pre-registered expectations (before running any D2–D4 script).
+2. Actual observations (copy of script stdout and metric values).
+3. Comparison table (expectation vs. observation vs. flag).
+4. Next-step decision.
+
+**First entry template:** `logbook/2026-05-13-v0.4-preflight.md` —
+records the P0 preflight outcome and the decision to proceed to D2–D3
+or to debug.
 
 ## 4a. Preflight gate (gates the main sweep)
 
-Before the six-drive regime sweep or five-state reconstruction demo, run
-a single targeted preflight. Gate condition: the preflight must either
+Before the D2 reach ladder or D3 reconstruction demo, run a single
+targeted preflight. Gate condition: the preflight must either
 pass, or fail with an identified departure from the idealised chain.
 
 The v0.3 SDF-chain resolution makes this a two-layer gate: P0 validates
@@ -357,16 +554,36 @@ inversion grid.
 
 ## 5. Folder layout
 
-[TBD] At initiation. Provisional:
+Final layout, aligned with WP-E precedent and the deliverable commands
+of §4.
 
 ```
 wp-wigner-tomography/
-  WORK-PROGRAM.md      # this document
-  README.md            # short pointer (added at initiation)
-  numerics/            # scan drivers + .h5 outputs
-  plots/               # publication-quality figures
-  logbook/             # dated entries with pre-registered expectations
-  notes/               # analytical derivations (markdown / LaTeX)
+  WORK-PROGRAM.md              # this document
+  README.md                    # short pointer (added at initiation)
+  numerics/                    # scan drivers, .h5 outputs, sidecar manifests
+    run_reach_ladder.py
+    run_reconstruction_demo.py
+    run_bridge_native.py
+    run_bridge_inversion.py
+    reach_ladder_ideal.h5
+    reach_ladder_ideal.manifest.json
+    reconstruction_demo.h5
+    reconstruction_demo.manifest.json
+    bridge_native.json
+    bridge_inversion.json
+  plots/                       # publication-quality figures
+    plot_reach_ladder.py
+    plot_reconstruction_demo.py
+    plot_bridge.py
+    reach_ladder_residuals.png
+    reconstruction_demo.png
+    bridge_wpe_tom.png
+  logbook/                     # dated entries with pre-registered expectations
+    2026-05-13-v0.4-preflight.md
+    ...
+  notes/                       # analytical derivations
+    analytic_chain.md
 ```
 
 ## 6. Connection to other WPs
@@ -623,13 +840,14 @@ saturated-template vs. ideal-SDF FFT inversion comparison. §7#4
 test-state scope resolved: five-class headline set kept, mixed cat
 added as a quantum-vs-classical diagnostic, squeezed vacuum deferred
 to v0.5 (needs $\mathcal O(\eta^2)$ extension), and GKP deferred to a
-separate follow-up WP (needs ~10× finer grid).
+separate follow-up WP (needs ~10× finer grid). §4 deliverable commands
+resolved: D1–D5 each have a concrete script name, CLI invocation,
+output path, and pass criterion; §5 folder layout is final.
 
 Next tightening pass anticipated:
 
-- **v0.4 close:** settle naming (§7#6) and concrete §4 deliverable
-  commands. Become execution-ready if no new structural blocker
-  appears.
+- **v0.4 close:** settle naming (§7#6). Become execution-ready if no
+  new structural blocker appears.
 
 ## References
 
