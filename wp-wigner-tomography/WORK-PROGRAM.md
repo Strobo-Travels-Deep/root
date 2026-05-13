@@ -1,12 +1,15 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Work Program · v0.4-accum · 2026-05-13**
-**Status:** *scaffolding — not yet execution-ready. §2, §7#1–5,
-§7#7, and §4 deliverable commands are settled for the first numerical
-pass. The only remaining [TBD] marker before v0.4 closes is §7#6
-naming.*
-**Numbering:** WP-W (provisional; to reconcile with the existing
-WP-V / WP-E letters in §6).
+**Work Program · v0.4 · 2026-05-13**
+**Status:** *design closed.* §2, §7#1–7, §4 deliverable commands,
+and §5 folder layout are all settled. P0 (analytic-grid gate) and
+D1–D3 (ideal-SDF layer) are ready for initiation once the runner
+scripts of §4 / §5 are written. P1 + D4 (native-engine bridge)
+require the bridge-convention implementation flagged in §7#3 —
+candidate path is adding an `ideal_sdf` primitive to
+`scripts/stroboscopic`. Background citations and references remain
+as polish, not blockers.
+**Numbering:** WP-W (formal, per §7#6).
 
 This document is the full WP that grew out of
 [wp-analysis-train-tomography](../wp-analysis-train-tomography/)
@@ -772,8 +775,23 @@ WP becomes execution-ready.
    it's a quality marker, not a primary success criterion. Promoted to
    gating if a later protocol iteration explicitly targets
    negativity-preserving reconstruction.
-6. **Naming.** Provisional WP-W; the existing letters are V, E, and
-   the kick-off's WP-TOM. Reconcile.
+6. **Naming.** *Resolved for v0.4:* adopt **WP-W** as the formal
+   designator for this work program. The repository's existing WP-naming
+   policy is permissive — single-letter designators
+   ([WP-V](../wp-hasse-reproduction/), [WP-E](../wp-phase-contrast-maps/),
+   WP-W) and codename designators
+   ([WP-TOM](../wp-analysis-train-tomography/),
+   [WP-Coastline](../wp-strong-weak-coastline/)) coexist — so WP-W
+   requires no reconciliation with the letter sequence. The
+   [WP-TOM kick-off](../wp-analysis-train-tomography/) retains its
+   informal label as a labelled predecessor; it is not promoted to a
+   peer WP letter because its scope was explicitly a quick-and-dirty
+   intuition check rather than an execution-ready work program.
+
+   Cross-reference update expected during initiation: add a one-line
+   pointer to WP-W in [ARCHITECTURE.md](../ARCHITECTURE.md) alongside
+   the existing WP-A / WP-B context, mirroring the WP-E pattern from
+   its v0.3 §8 logbook entry.
 7. **Cross-check with WP-E.** *Resolved for v0.4-accum:* use a
    two-layer bridge contract, with one shared state and two observables.
 
@@ -844,10 +862,24 @@ separate follow-up WP (needs ~10× finer grid). §4 deliverable commands
 resolved: D1–D5 each have a concrete script name, CLI invocation,
 output path, and pass criterion; §5 folder layout is final.
 
-Next tightening pass anticipated:
+**v0.4 close (2026-05-13):** §7#6 naming resolved — WP-W adopted as the
+formal designator under the repository's permissive WP-naming policy,
+which already mixes single-letter (V, E) and codename (TOM, Coastline)
+forms. All §7 items now resolved; design surface is closed.
 
-- **v0.4 close:** settle naming (§7#6). Become execution-ready if no
-  new structural blocker appears.
+**Initiation handoff.** P0 + D1–D3 are ready for execution as soon as
+the runner scripts of §4 / §5 are written. P1 + D4 require the
+bridge-convention implementation flagged in §7#3 (leading candidate:
+`ideal_sdf` primitive in `scripts/stroboscopic`). At initiation, add
+the WP-W cross-reference line to [ARCHITECTURE.md](../ARCHITECTURE.md)
+per §7#6, and open the first logbook entry per D5.
+
+Outstanding non-blocking polish:
+
+- Background citations in §Analytical (Hofheinz, Flühmann,
+  Lutterbach–Davidovich, Cahill–Glauber).
+- Pulse-duration $(\delta t/T_m)$ order in the approximation hierarchy
+  (§Analytical bullet 5).
 
 ## References
 
