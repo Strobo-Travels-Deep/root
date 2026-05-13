@@ -94,6 +94,17 @@ expected to break.
   rotation, not directly into $D(\sigma_z\beta)$; see §7#3. [TBD]
   still to document the pulse-duration order ($\delta t/T_m$) and the
   exact bridge residual metric.
+- **Measurement back-action (ideal SDF).** The same ideal-SDF chain
+  gives the unconditional post-train motional state
+  $\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta_\text{tot})\,\rho_m\,D^\dagger(\beta_\text{tot}) + D(-\beta_\text{tot})\,\rho_m\,D^\dagger(-\beta_\text{tot})\bigr)$
+  — measurement-induced decoherence between two displaced branches.
+  Conditioning on a $\sigma_z$-basis spin readout selects one branch
+  ($D(\pm\beta_\text{tot})\,|\psi\rangle$); conditioning on a phase-basis
+  ($\sigma_x/\sigma_y$) readout instead produces cat-like superpositions
+  via the Kraus operator
+  $M_s \propto D(\beta_\text{tot}) + s\,e^{i\phi}D(-\beta_\text{tot})$.
+  The native-engine departure from this prediction is the v0.5
+  back-action diagnostic (§8).
 - **Background.** Hofheinz et al. (cQED), Flühmann et al. (trapped
   ions, sympathetic), Lutterbach–Davidovich for the inversion. [TBD]
   add citations.
@@ -597,8 +608,9 @@ wp-wigner-tomography/
 | [WP-E (Phase-contrast maps)](../wp-phase-contrast-maps/) | mirror image: WP-E is the forward observable at saturation; WP-W is the inverse at perturbation. §3 bullet 3 articulates the bridge. |
 | [WP-TOM kickoff](../wp-analysis-train-tomography/) | direct predecessor; supplies the saturated-regime baseline that WP-W is the perturbative counterpart to. |
 
-[TBD] Reconcile the WP-V / WP-E / WP-T / WP-W lettering once the
-naming policy is fixed (see WP-E §8).
+Naming policy resolved in §7#6 — WP-W is formal; single-letter and
+codename designators coexist in the repo with no letter-sequence
+reconciliation required.
 
 ## 7. Tightening roadmap — what to settle before initiation
 
@@ -880,6 +892,63 @@ Outstanding non-blocking polish:
   Lutterbach–Davidovich, Cahill–Glauber).
 - Pulse-duration $(\delta t/T_m)$ order in the approximation hierarchy
   (§Analytical bullet 5).
+
+**Anticipated v0.5 scope** (deferred, not blockers for v0.4 execution):
+
+- **Squeezed-vacuum reconstruction.** Carried over from §7#4. Requires
+  extending the analytic chain to $\mathcal O(\eta^2)$ so the
+  quadrature-dependent second-order term contributes alongside the
+  first-order displacement, and re-auditing the ideal-SDF bridge.
+  Test state: ideal squeezed vacuum at moderate squeezing $r \sim 0.5$.
+
+- **Motional back-action of the analysis train.** The WP-W v0.4 design
+  characterises the *forward* map $\rho_m \to C(\delta,\varphi_\text{train})$
+  and its *inversion* to $W(\alpha)$ — but **not** the *post-train
+  motional state* $\rho_m^{(\mathrm{post})}$. That state is
+  well-defined and protocol-dependent, and characterising it adds a
+  third diagnostic axis complementary to the spin-side §7#7 bridge.
+
+  - **Ideal-SDF prediction.** Under $U_\text{ideal} = D(\sigma_z\beta_\text{tot})$
+    with initial $|+y\rangle$ spin, the unconditional reduced motional
+    state is the 50/50 mixture
+    $$\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta)\,\rho_m\,D^\dagger(\beta) + D(-\beta)\,\rho_m\,D^\dagger(-\beta)\bigr),$$
+    a measurement-induced decoherence between two displaced branches.
+    The conditional Kraus map *depends on the readout basis*:
+    $\sigma_z$-branch readout selects one displaced branch
+    $D(\pm\beta)\,|\psi\rangle$; $\sigma_x/\sigma_y$-phase readout
+    produces a coherent sum $M_s \propto D(\beta) + s\,e^{i\phi}D(-\beta)$
+    — the conditioned state is cat-like, not single-branch. The
+    readout-basis choice is therefore a v0.5 protocol decision (open
+    item below).
+
+  - **Native-engine prediction.** The Raman engine's JC-like coupling
+    (§7#3) produces a different back-action structure including
+    collapse–revival contributions on coherent inputs. Quantitative
+    form follows from the same forward propagator that drives $C$.
+
+  - **Why it matters.** (i) Back-action sets the *cost of measurement*
+    — how much motional disturbance per bit of phase-space
+    information. (ii) Comparing engine vs. ideal-SDF back-action is a
+    third bridge residual, orthogonal to the spin-side §7#7 anchor.
+    (iii) Forward-looks to weak-measurement and sequential-tomography
+    protocol variants.
+
+  - **Provisional deliverable sketch.** $W$-of-back-action panels:
+    side-by-side $W(\rho_m^{(\mathrm{post})})$ for engine vs. ideal-SDF
+    prediction on each headline state from §7#4. Single figure per
+    state. The Wigner function is computed *directly from the
+    simulated density matrix* via
+    $W(\alpha) = \pi^{-1}\mathrm{Tr}\!\bigl[\rho\,D(\alpha)\Pi D^\dagger(\alpha)\bigr]$
+    (parity operator $\Pi$), not via $\chi\to$FFT inversion — so the
+    pipeline sidesteps v0.4's grid-resolution limits but raises its
+    own implementation question on partial-trace and mixed-state
+    Wigner cost. Open v0.5 implementation item.
+
+  - **Open v0.5 items.** Readout-basis choice (σ_z vs. σ_x/σ_y);
+    input-state subset (start with the §7#4 headline three, or
+    aggressive cat + Fock $|2\rangle$ stress test only?);
+    back-action metric (purity drop, fidelity to pre-train state,
+    Wigner-negativity gain, branch-distance $|\beta_\text{tot}|$?).
 
 ## References
 
