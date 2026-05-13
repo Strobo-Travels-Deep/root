@@ -1,9 +1,9 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
 **Work Program · v0.4-accum · 2026-05-13**
-**Status:** *scaffolding — not yet execution-ready. §2, §7#1–3,
-§7#5, and §7#7 are settled for the first numerical pass. Remaining
-[TBD] markers (§7#4, §7#6, §4 deliverable commands) are the live
+**Status:** *scaffolding — not yet execution-ready. §2, §7#1–5,
+and §7#7 are settled for the first numerical pass. Remaining
+[TBD] markers (§7#6 naming, §4 deliverable commands) are the live
 edit-surface before v0.4 closes.*
 **Numbering:** WP-W (provisional; to reconcile with the existing
 WP-V / WP-E letters in §6).
@@ -463,10 +463,43 @@ WP becomes execution-ready.
      fitting or deriving an effective $\beta_\text{eff}$ on sentinel
      states; the residual is then a diagnostic, not a failure of the
      inversion grid.
-4. **Test states.** The five-class list is provisional. Should we
-   add: squeezed vacuum (needs higher-order LD)?
-   GKP-lattice probe state (ambitious)? Mixed cat (decoherence
-   stress test)?
+4. **Test states.** *Resolved for v0.4-accum:* keep the five-class
+   headline set as the §7#5 gating bench, add **mixed cat** as a
+   sixth diagnostic state, and explicitly defer the other two
+   candidates with reasons.
+
+   **Headline set** (gating per §7#5 thresholds):
+   vacuum / Fock $|0\rangle$; coherent $|\alpha|=1.5$;
+   thermal $\bar n=0.5$; Fock $|1\rangle$; Fock $|2\rangle$;
+   pure cat $(|\alpha\rangle + |\!{-}\alpha\rangle)/\mathcal N$ at $|\alpha|=1.5$.
+
+   **Diagnostic addition — mixed cat.**
+   $\rho_\text{mc} = \tfrac{1}{2}\bigl(|\alpha\rangle\langle\alpha| + |\!{-}\alpha\rangle\langle{-}\alpha|\bigr)$
+   at $|\alpha|=1.5$: an *incoherent* two-hump Gaussian mixture with
+   no fringes and no Wigner negativity. Reconstructing the pure cat
+   *and* the mixed cat together is the protocol's quantum-vs-classical
+   discriminator — invented fringes on the mixed cat would expose an
+   inversion artefact masquerading as quantum coherence. Reported
+   alongside the pure cat in §4 deliverable 3; not gating per §7#5,
+   but a published diagnostic. Cost is essentially zero given the
+   pure-cat infrastructure.
+
+   **Deferred to v0.5+: squeezed vacuum.** A squeezed state's
+   characteristic function $\chi_{|r\rangle}(\beta)$ carries
+   phase-dependent quadratic structure that is not captured by the
+   first-order LD chain anchoring §7#3. Adding it requires extending
+   the analytic chain to $\mathcal O(\eta^2)$ and re-auditing the
+   ideal-SDF bridge. Concrete v0.5 scope item, not a v0.4 blocker.
+
+   **Deferred to a follow-up WP: GKP-lattice probe.** GKP states have
+   structured phase-space negativity on the lattice scale $\sqrt{\pi/2}$,
+   with sub-feature width well below the v0.2 raw
+   $\Delta\alpha = 0.39$. A faithful GKP reconstruction needs
+   $\Delta\alpha$ down by an order of magnitude, which means
+   $\Delta\beta$ down by 10×, $N$ up by 10×, and the perturbativity
+   audit $|\beta_0||\alpha|$ revisited at the larger $|\alpha|$ that
+   GKP support demands. Out of WP-W's scaffold; flagged for a future
+   "WP-W-GKP" if the motivation crystallises.
 5. **Reconstruction fidelity targets.** *Resolved for v0.4-draft:*
    adopt a three-metric bundle and per-state thresholds matched to the
    v0.2 Cartesian grid resolution. Targets apply to the ideal-SDF
@@ -586,13 +619,17 @@ and concrete §4 deliverable commands remained open.
 a three-metric bundle and state-specific thresholds. §7#7 bridge anchor
 resolved as the shared coherent state $|\alpha=3,\theta_\alpha=0\rangle$,
 with a native Raman convention check against WP-E and a separate
-saturated-template vs. ideal-SDF FFT inversion comparison.
+saturated-template vs. ideal-SDF FFT inversion comparison. §7#4
+test-state scope resolved: five-class headline set kept, mixed cat
+added as a quantum-vs-classical diagnostic, squeezed vacuum deferred
+to v0.5 (needs $\mathcal O(\eta^2)$ extension), and GKP deferred to a
+separate follow-up WP (needs ~10× finer grid).
 
 Next tightening pass anticipated:
 
-- **v0.4 close:** settle test-state scope (§7#4), naming (§7#6), and
-  concrete §4 deliverable commands. Become execution-ready if no new
-  structural blocker appears.
+- **v0.4 close:** settle naming (§7#6) and concrete §4 deliverable
+  commands. Become execution-ready if no new structural blocker
+  appears.
 
 ## References
 
