@@ -1,10 +1,10 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Work Program · v0.3 · 2026-05-13 · SDF-chain pass**
-**Status:** *scaffolding — not yet execution-ready. §2 and §7#1–2
-settled; §7#3 direction resolved with bridge convention still pending.
-Remaining [TBD] markers (§7#4–7, §4 deliverables) are the live
-edit-surface for v0.4.*
+**Work Program · v0.4-accum · 2026-05-13**
+**Status:** *scaffolding — not yet execution-ready. §2, §7#1–3,
+§7#5, and §7#7 are settled for the first numerical pass. Remaining
+[TBD] markers (§7#4, §7#6, §4 deliverable commands) are the live
+edit-surface before v0.4 closes.*
 **Numbering:** WP-W (provisional; to reconcile with the existing
 WP-V / WP-E letters in §6).
 
@@ -252,11 +252,14 @@ Three motivations, ranked by priority:
 3. **Bridge to WP-E.** WP-E maps the forward observable
    $(\vartheta_0, \delta) \to (\sigma_z, |C|)$ at saturated drive;
    WP-W maps the inverse $(\delta, \varphi_\text{train}) \to W(\alpha)$
-   at perturbative drive. Cross-checking on a shared anchor state
-   ($|\alpha|=3, \vartheta_0 = 0$) confirms both engines agree on the
-   common physics.
+   at perturbative drive. The shared bridge anchor is the coherent state
+   $|\alpha=3\rangle$ with motional phase zero, prepared on the +X
+   quadrature in both conventions. The cross-check validates state/phase
+   conventions and the native Raman bridge; it does not assert that the
+   WP-E native pulse is the ideal $D(\sigma_z\beta)$ SDF of the WP-W
+   inversion layer.
 
-Out of scope for the v0.3 execution candidate:
+Out of scope for the v0.4 execution candidate:
 
 - Lab implementation (this is a numerical WP).
 - Thermal-state and decoherence sensitivity beyond a single sanity
@@ -266,7 +269,7 @@ Out of scope for the v0.3 execution candidate:
 
 ## 4. Deliverables
 
-[TBD] Tighten this list once §5 and §7#4–7 are settled.
+[TBD] Tighten this list once §5, §7#4, and §7#6 are settled.
 
 Provisional deliverables:
 
@@ -281,9 +284,16 @@ Provisional deliverables:
    coherent $|\alpha|=1.5$, thermal $\bar n = 0.5$, Fock $|1\rangle$,
    cat at $|\alpha|=1.5$. Output: $W_\text{rec}$ vs $W_\text{true}$
    side-by-side, fidelity numbers, L¹ error map.
-4. **WP-TOM bridge plot.** Same input state reconstructed by
-   template matching (saturated drive) and FFT inversion
-   (perturbative drive); residual map.
+4. **WP-E / WP-TOM bridge plot.** Shared coherent anchor
+   $|\alpha=3,\theta_\alpha=0\rangle$. Panel A: native Raman
+   cross-check against WP-E at the Hasse nominal train
+   ($N=22$, $\delta t=40$ ns, $\varphi_\text{train}=0$), reporting raw
+   $(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at $\delta/\omega_m
+   \in \{-1,0,+1\}$. Panel B: inversion-side comparison between the
+   saturated WP-TOM template recovery and the perturbative ideal-SDF FFT
+   centroid for the same state. Use an $\alpha$ display window extended
+   to $[-4,4]^2$ for this bridge so the $|\alpha|=3$ Gaussian is not
+   clipped at the v0.2 demo boundary.
 5. **Logbook** with pre-registered expectations per WP-TOM
    convention.
 
@@ -514,9 +524,43 @@ WP becomes execution-ready.
    negativity-preserving reconstruction.
 6. **Naming.** Provisional WP-W; the existing letters are V, E, and
    the kick-off's WP-TOM. Reconcile.
-7. **Cross-check with WP-E.** Pick the shared anchor state and the
-   shared observable. Document the anchor in §3 bullet 3 once
-   settled.
+7. **Cross-check with WP-E.** *Resolved for v0.4-accum:* use a
+   two-layer bridge contract, with one shared state and two observables.
+
+   **Shared state.** Coherent $|\alpha=3\rangle$ with motional phase
+   zero: $\theta_\alpha=0$ in the WP-TOM notation and
+   $\varphi_\alpha=0$ / $\vartheta_0=0$ in WP-E notation. This is the
+   Hasse / WP-E baseline amplitude, is present in the kick-off template
+   grid, and fixes the sign convention: the packet starts on the +X
+   quadrature.
+
+   **Layer A — native Raman convention check.** Use the WP-E native
+   pulse train, not the ideal-SDF surrogate: Hasse nominal parameters,
+   $N=22$, $\delta t=40$ ns, $\eta=0.397$,
+   $\omega_m/(2\pi)=1.300$ MHz, $\varphi_\text{train}=0$, pure coherent
+   input. Compare raw $(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at the
+   tooth centres $\delta/\omega_m\in\{-1,0,+1\}$ against the same values
+   produced by the WP-E forward-map driver. This is a convention /
+   provenance check and should agree to numerical tolerance if both
+   wrappers call the same engine.
+
+   **Layer B — inversion bridge.** For the same coherent state, compare
+   the saturated WP-TOM template-match recovery of
+   $(|\alpha|,\theta_\alpha)$ with the perturbative ideal-SDF FFT
+   reconstruction centroid. Success target:
+   $|\Delta\alpha_\text{centroid}| \leq 0.2$ and
+   $|\Delta\theta_\alpha| \leq 0.05\pi$, with no quadrant flip. Because
+   $|\alpha|=3$ sits on the edge of the v0.2 demo display window, this
+   bridge plot uses $|\mathrm{Re}\,\alpha|,|\mathrm{Im}\,\alpha|\leq4$;
+   the v0.2 $B=4$ / $\Delta\beta=0.10$ sampling remains unchanged.
+
+   **Interpretation.** Passing Layer A says WP-E, WP-TOM, and WP-W are
+   using the same coherent-state phase convention and native Raman
+   observable. Passing Layer B says the saturated-template and
+   perturbative-FFT inversions identify the same state on their
+   overlapping coherent-state domain. Neither layer claims that the
+   native Raman pulse has become the ideal $D(\sigma_z\beta)$ SDF; that
+   separation remains the §7#3 bridge policy.
 
 ## 8. Status
 
@@ -534,18 +578,21 @@ $D(\sigma_z\beta)$ SDF, and no regime limit recovers it — the bridge is
 structural. Even the sideband-resonant LD term reduces to a
 Jaynes–Cummings coupling, which remains transverse. WP-W therefore
 separates ideal-SDF inversion (clean WP-W tomography claim) from the
-native-engine bridge (diagnostic, not gating). The WP is not yet
-execution-ready because the bridge convention itself, §7#4–7, and
-concrete §4 deliverable commands remain open.
+native-engine bridge (diagnostic, not gating). At v0.3 close the WP was
+not yet execution-ready because the bridge convention itself, §7#4–7,
+and concrete §4 deliverable commands remained open.
+
+**v0.4 accumulation (2026-05-13):** §7#5 fidelity targets resolved with
+a three-metric bundle and state-specific thresholds. §7#7 bridge anchor
+resolved as the shared coherent state $|\alpha=3,\theta_\alpha=0\rangle$,
+with a native Raman convention check against WP-E and a separate
+saturated-template vs. ideal-SDF FFT inversion comparison.
 
 Next tightening pass anticipated:
 
-- **v0.4:** settle the bridge convention (the leading candidate is to
-  add an `ideal_sdf` primitive to `scripts/stroboscopic` so P0 is
-  immediately runnable and P1 becomes a clean ideal-vs-native residual).
-  Tighten §4 deliverables with concrete commands, settle fidelity
-  targets (§7#5), naming (§7#6), and the WP-E bridge anchor (§7#7).
-  Become execution-ready if no new structural blocker appears.
+- **v0.4 close:** settle test-state scope (§7#4), naming (§7#6), and
+  concrete §4 deliverable commands. Become execution-ready if no new
+  structural blocker appears.
 
 ## References
 
