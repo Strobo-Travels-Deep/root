@@ -14,8 +14,8 @@ as polish, not blockers.
 This document is the full WP that grew out of
 [wp-analysis-train-tomography](../wp-analysis-train-tomography/)
 — the quick-and-dirty kick-off ("WP-TOM v0.x") that established the
-protocol carries tomographic information but mis-identified the
-inversion regime (see the kick-off
+protocol encodes motional-state information amenable to phase-space
+inversion, but mis-identified the inversion regime (see the kick-off
 [logbook §6](../wp-analysis-train-tomography/logbook/2026-05-13-kickoff-expectations-and-run.md)).
 WP-W picks up where that logbook ends: in the **Lamb–Dicke regime
 with an idealised pulse train**, there should exist a clean
@@ -24,9 +24,9 @@ data to the motional Wigner function $W(\alpha)$. The inversion is
 formally state-general — the symmetric characteristic function
 $\chi$ is a complete state representation [CG69] — so the chain
 applies to non-Gaussian inputs (Fock states, cat states) within the
-LD / idealised-train approximations. Squeezed states require the
-chain extended to $\mathcal O(\eta^2)$ and are deferred to v0.5 per
-§7#4. Experimental validity, separately, depends on how closely the
+LD / idealised-train approximations. Squeezed states likely require
+terms beyond the linear Lamb–Dicke chain and are deferred to v0.5
+per §7#4. Experimental validity, separately, depends on how closely the
 native engine realises the ideal $\sigma_z$ SDF — quantified
 numerically as the §7#3 bridge residual rather than assumed.
 
@@ -76,11 +76,12 @@ expected to break.
   the post-train complex contrast is
   $C(\delta, \varphi_\text{train}) = \langle\sigma_x\rangle + i\langle\sigma_y\rangle \;=\; e^{-|\beta_\text{tot}|^2/2}\,\chi_{\rho_m}(\beta_\text{tot})$
   with $\chi_{\rho_m}(\beta) = \mathrm{Tr}[\rho_m\,D(\beta)]$ the
-  symmetric characteristic function [CG69]. **The map is observable-equals-$\chi$
-  point-by-point.** The displaced-parity origin of this measurement
-  scheme traces to Lutterbach & Davidovich [LD97]; the modern
-  trapped-ion implementation that motivates WP-W's protocol is the
-  direct characteristic-function tomography of Flühmann & Home [FH20].
+  symmetric characteristic function [CG69]. **The measured contrast
+  is proportional to $\chi$ point-by-point in the idealised chain.**
+  The displaced-parity origin of this measurement scheme traces to
+  Lutterbach & Davidovich [LD97]; the modern trapped-ion
+  implementation that motivates WP-W's protocol is the direct
+  characteristic-function tomography of Flühmann & Home [FH20].
 - **Wigner inversion.** $W(\alpha) = \pi^{-2}\int e^{\alpha\beta^* - \alpha^*\beta}\,\chi(\beta)\,d^2\beta$
   is the Fourier dual of the symmetric characteristic function [CG69].
   The 2D FFT of $\chi(\beta)$ over the $\beta$-grid therefore returns
@@ -96,11 +97,16 @@ expected to break.
   even/odd cats have characteristic Gaussian humps at $\pm 2\alpha$
   with interference fringes through the origin. The trapped-ion
   demonstration of non-Gaussian state tomography by these means is
-  [FH20]. *Caveat:* state-general analytic validity does not imply
-  state-general experimental validity — the latter requires the
-  ideal-SDF assumptions of this chain, and any departure (LD order,
-  pulse duration, native vs. ideal coupling) is a separate numerical
-  question (§7#3).
+  [FH20]. *Two distinct caveats.* (i) **Formal reconstructibility**
+  (the chain provides a unique $\chi \to W$ map for any state) is not
+  the same as **numerical resolvability** on a given grid; on the v0.2
+  $\Delta\alpha = 0.39$ mesh, Fock $|2\rangle$ sits at the resolution
+  stress-test edge (§2) and is therefore a grid probe rather than a
+  clean reconstruction benchmark. (ii) State-general analytic validity
+  does not imply state-general *experimental* validity — the latter
+  requires the ideal-SDF assumptions of this chain, and any departure
+  (LD order, pulse duration, native vs. ideal coupling) is a separate
+  numerical question (§7#3).
 - **Approximation hierarchy.** v0.3 separates the hierarchy into two
   layers. The ideal-SDF inversion assumes instantaneous
   $D(\sigma_z\beta_n)$ pulses, a single selected comb tooth, and fixed
