@@ -1,9 +1,10 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Work Program · v0.2 · 2026-05-13 · tightening pass**
-**Status:** *scaffolding — not yet execution-ready. §2 and §7#1–2 are
-settled for the first numerical pass; remaining [TBD] markers are live
-edit-surface for the next iterations.*
+**Work Program · v0.3 · 2026-05-13 · SDF-chain pass**
+**Status:** *scaffolding — not yet execution-ready. §2 and §7#1–2
+settled; §7#3 direction resolved with bridge convention still pending.
+Remaining [TBD] markers (§7#4–7, §4 deliverables) are the live
+edit-surface for v0.4.*
 **Numbering:** WP-W (provisional; to reconcile with the existing
 WP-V / WP-E letters in §6).
 
@@ -80,12 +81,16 @@ expected to break.
   $\chi(\beta) = e^{-|\beta|^2/2}\,L_n(|\beta|^2)$ (Laguerre);
   even/odd cats have characteristic Gaussian humps at $\pm 2\alpha$
   with interference fringes through the origin.
-- **Approximation hierarchy.** [TBD] Document the LD expansion order,
-  the role of pulse duration ($\delta t/T_m$), the role of finite
-  $N$ tooth width ($1/N$ in $\delta/\omega_m$), and the role of
-  non-σ_z SDF coupling (the engine uses $C\sigma_- + h.c.$). Each is
-  a separate departure from the ideal limit and should be diagnosed
-  as such.
+- **Approximation hierarchy.** v0.3 separates the hierarchy into two
+  layers. The ideal-SDF inversion assumes instantaneous
+  $D(\sigma_z\beta_n)$ pulses, a single selected comb tooth, and fixed
+  per-pulse $\beta_0$. Finite $N$ enters through the Dirichlet tooth width
+  $1/N$ in $\delta/\omega_m$. The native engine bridge is a different
+  approximation question: its $C\sigma_-+\mathrm{h.c.}$ coupling expands
+  into a carrier rotation plus transverse position-dependent spin
+  rotation, not directly into $D(\sigma_z\beta)$; see §7#3. [TBD]
+  still to document the pulse-duration order ($\delta t/T_m$) and the
+  exact bridge residual metric.
 - **Background.** Hofheinz et al. (cQED), Flühmann et al. (trapped
   ions, sympathetic), Lutterbach–Davidovich for the inversion. [TBD]
   add citations.
@@ -95,15 +100,20 @@ expected to break.
 The dataset, validation, and reconstruction pipeline.
 
 - **Engine.** The same `scripts/stroboscopic` package used by WP-V,
-  WP-E, and WP-TOM. The forward maps are exact (full Hilbert-space
-  propagation, no approximation in $\eta$ or pulse duration), so the
-  numerical–analytical comparison directly quantifies the LD /
-  idealised-train errors.
+  WP-E, and WP-TOM remains the full-physics bridge engine. Its native
+  pulse is not the ideal $\sigma_z$ SDF assumed by the analytic
+  inversion; see the §7#3 resolution. Therefore the first numerical
+  layer is an ideal-SDF / analytic-$\chi$ validation, and the engine
+  comparison is a separate bridge test of how far the Raman train
+  departs from that ideal limit.
 - **Forward-map regime sweep.** Drive strength
   $\Omega_r \cdot N\delta t \in \{0.01\pi, 0.05\pi, 0.1\pi, 0.25\pi, 0.5\pi, \pi\}$
   at fixed input state ($|\alpha|=1$); compare to the analytic
   $\chi$ prediction. The perturbative regime boundary is wherever the
-  residual exceeds ~5 %.
+  residual exceeds ~5 %. v0.3 caveat: the ideal-SDF layer should be
+  parameterised directly by $\beta_0$ / $\beta_\text{tot}$; the
+  $\Omega_r N\delta t$ sweep belongs to the native-engine bridge after
+  $\beta_\text{eff}$ is defined.
 - **Reconstruction pipeline.** Three algorithms with shared
   pre-processing:
   1. **Direct FFT** of measured $\chi(\beta)$ → $W(\alpha)$. The scan
@@ -246,7 +256,7 @@ Three motivations, ranked by priority:
    ($|\alpha|=3, \vartheta_0 = 0$) confirms both engines agree on the
    common physics.
 
-Out of scope for the v0.2 execution candidate:
+Out of scope for the v0.3 execution candidate:
 
 - Lab implementation (this is a numerical WP).
 - Thermal-state and decoherence sensitivity beyond a single sanity
@@ -256,7 +266,7 @@ Out of scope for the v0.2 execution candidate:
 
 ## 4. Deliverables
 
-[TBD] Tighten this list once §5 and §7#3 are settled.
+[TBD] Tighten this list once §5 and §7#4–7 are settled.
 
 Provisional deliverables:
 
@@ -283,11 +293,10 @@ Before the six-drive regime sweep or five-state reconstruction demo, run
 a single targeted preflight. Gate condition: the preflight must either
 pass, or fail with an identified departure from the idealised chain.
 
-As of v0.2, only the analytic-grid self-consistency half of this gate is
-fully specified. The engine comparator depends on the §7#3 conversion
-between the engine's $C\sigma_-+\mathrm{h.c.}$ coupling and the idealised
-$\sigma_z$ displacement scale $|\beta_0|$; it must not be treated as
-runnable until that conversion is fixed.
+The v0.3 SDF-chain resolution makes this a two-layer gate: P0 validates
+the ideal inversion grid, while P1 validates any chosen native-engine
+bridge. P0 is required before the reconstruction demo; P1 is required
+only before claims about the current Raman engine.
 
 **Protocol.** At the v0.2 nominal $|\beta_0|=0.05$, run one
 central-lobe target point,
@@ -300,18 +309,18 @@ choose $(\delta,\varphi_\text{train})$ for $N=20$ and $N=80$.
 1. Analytic prediction:
    $C_\text{ideal}(\beta_\star) =
    e^{-|\beta_\star|^2/2}\chi_{\rho_m}(\beta_\star)$.
-2. Engine prediction from `scripts/stroboscopic`, using the weakest
-   available drive setting that realises the same effective per-pulse
-   displacement convention.
+2. P1 only: engine prediction from `scripts/stroboscopic`, after either
+   implementing an ideal-SDF sequence or fitting an effective
+   $\beta_\text{eff}$ bridge for the native Raman train.
 3. Reconstruction sanity check: insert the analytic $\chi$ values on the
    v0.2 grid for a coherent state and verify the FFT peak lands at the
    prepared $\alpha$ within one raw $\Delta\alpha$ cell.
 
 **Pass criteria.**
 
-- Analytic-grid self-consistency: coherent-state peak position within
+- P0 analytic-grid self-consistency: coherent-state peak position within
   one raw $\Delta\alpha$ cell and no sign flip in the phase convention.
-- Engine-vs-analytic single point: complex residual
+- P1 engine-vs-analytic single point: complex residual
   $|C_\text{engine}-C_\text{ideal}|/|C_\text{ideal}| < 5\%$ at $N=20$.
   The $N=80$ comparison is diagnostic, not gating, because finite tooth
   width and non-ideal coupling can accumulate visibly over the longer
@@ -321,8 +330,20 @@ choose $(\delta,\varphi_\text{train})$ for $N=20$ and $N=80$.
 launching the sweep: (i) $\sigma_z$ ideal SDF vs. engine
 $C\sigma_-+\mathrm{h.c.}$ coupling; (ii) finite pulse duration /
 intra-pulse motion; (iii) leakage to carrier or neighbouring sidebands;
-(iv) phase-convention or Dirichlet-branch mismatch. A failure in class
-(i) is expected to reopen §7#3 rather than invalidate the grid decision.
+(iv) phase-convention or Dirichlet-branch mismatch. A class-(i) residual
+belongs to the native-engine bridge layer and does not invalidate the P0
+inversion grid.
+
+**v0.3 split.** Operationally:
+
+1. **P0 analytic-grid gate** — runnable immediately. Populate the v0.2
+   Cartesian $\beta$ grid from known analytic $\chi(\beta)$ for vacuum
+   and a coherent state, then verify FFT phase, centring, and scaling.
+2. **P1 engine-bridge gate** — runnable only after the bridge convention
+   below is implemented. Either add an ideal-SDF sequence to the
+   numerical package, or fit an effective $\beta_\text{eff}$ for the
+   native Raman train from sentinel vacuum / coherent points and compare
+   that fitted bridge against the analytic prediction.
 
 ## 5. Folder layout
 
@@ -365,11 +386,73 @@ WP becomes execution-ready.
    $81\times81$ working grid over $[-4,4]^2$ with $\Delta\beta=0.10$,
    sample the disk $|\beta|\leq4$, radially taper the edge, zero-fill
    outside the accessible disk, and FFT the windowed grid.
-3. **SDF coupling — $\sigma_z$ vs. $\sigma_x$.** The idealised
-   analytic chain assumes $\sigma_z$-coupled displacement; the
-   engine implements $C\sigma_- + h.c.$, which is $\sigma_x$-like
-   on the carrier. How does the analytic chain change, and how
-   does it manifest as an engine residual?
+3. **SDF coupling — $\sigma_z$ vs. $\sigma_x$.** *Direction resolved
+   for v0.3; bridge convention pending.* The current engine does **not**
+   natively realise the ideal WP-W measurement operator. The ideal chain
+   assumes
+   $U_\text{SDF}(\beta)=D(\sigma_z\beta)$, so spin coherence directly
+   reads a displacement characteristic function. The engine implements
+
+   $$
+   H_\text{eng}
+   = \frac{\delta}{2}\sigma_z
+     + \frac{\Omega_r}{2}
+       \left(e^{i\varphi}C\sigma_-+
+             e^{-i\varphi}C^\dagger\sigma_+\right),
+   \qquad
+   C=e^{i\eta X},\quad X=a+a^\dagger .
+   $$
+
+   Since $C$ commutes with spin, the coupling term is equivalently
+
+   $$
+   \frac{\Omega_r}{2}\left[
+     \cos(\varphi+\eta X)\,\sigma_x
+     + \sin(\varphi+\eta X)\,\sigma_y
+   \right].
+   $$
+
+   Its LD expansion is
+
+   $$
+   \frac{\Omega_r}{2}\left[
+     \sigma_\varphi
+     + \eta X\,\sigma_{\varphi+\pi/2}
+     - \frac{\eta^2X^2}{2}\sigma_\varphi
+     + \mathcal O(\eta^3)
+   \right],
+   $$
+
+   where $\sigma_\varphi=\cos\varphi\,\sigma_x+\sin\varphi\,\sigma_y$.
+   Thus the leading engine term is a carrier rotation about an equatorial
+   spin axis, and the leading motional term is a transverse
+   position-dependent spin rotation. That is not the same operator as a
+   longitudinal $\sigma_z$-conditioned displacement of the motion.
+
+   **No limit recovers the ideal SDF.** At sideband resonance
+   $\delta = +\omega_m$ — the WP-W operating point — the leading
+   non-trivial term $\eta X\,\sigma_{\varphi+\pi/2}$ becomes, under the
+   rotating-wave approximation, a Jaynes–Cummings coupling
+   $(\eta\Omega_r/2)\!\left(a\,\sigma_{\varphi+\pi/2}^- + a^\dagger\,\sigma_{\varphi+\pi/2}^+\right)$.
+   That is still **transverse** (spin-flip plus phonon-flip), not a
+   longitudinal $\sigma_z$-conditioned displacement. N-pulse comb
+   sharpening selects this term but does not transform it into the
+   ideal SDF; the bridge between the engine and $D(\sigma_z\beta)$
+   is *structural*, not a regime limit.
+
+   Consequence: there is no standalone §2 conversion
+   $\Omega_r\delta t \mapsto |\beta_0|$ for the native engine until a
+   bridge convention is chosen. The v0.3 policy is to keep two numerical
+   layers distinct:
+
+   - **Ideal-SDF layer:** validate the inversion with analytic or newly
+     implemented $D(\sigma_z\beta)$ pulses. This is the clean WP-W
+     tomography claim.
+   - **Native-engine bridge:** treat `scripts/stroboscopic` as a
+     full-Raman departure from the ideal SDF. Compare it only after
+     fitting or deriving an effective $\beta_\text{eff}$ on sentinel
+     states; the residual is then a diagnostic, not a failure of the
+     inversion grid.
 4. **Test states.** The five-class list is provisional. Should we
    add: squeezed vacuum (needs higher-order LD)?
    GKP-lattice probe state (ambitious)? Mixed cat (decoherence
@@ -394,14 +477,26 @@ hypothesis stated, deliverables sketched.
 **v0.2 tightening pass (2026-05-13):** §2 drive scale and grid settled
 for the first numerical pass: $|\beta_0|=0.05$, $N_\text{rec}=80$,
 $B=4.0$, $\Delta\beta=0.10$, inverse-Dirichlet Cartesian targeting, and a
-single-point preflight gate added in §4a. The WP is still not
-execution-ready because §7#3–7 remain open.
+single-point preflight gate added in §4a.
+
+**v0.3 SDF-chain pass (2026-05-13):** §7#3 direction resolved: the
+native `scripts/stroboscopic` Raman pulse is not an ideal
+$D(\sigma_z\beta)$ SDF, and no regime limit recovers it — the bridge is
+structural. Even the sideband-resonant LD term reduces to a
+Jaynes–Cummings coupling, which remains transverse. WP-W therefore
+separates ideal-SDF inversion (clean WP-W tomography claim) from the
+native-engine bridge (diagnostic, not gating). The WP is not yet
+execution-ready because the bridge convention itself, §7#4–7, and
+concrete §4 deliverable commands remain open.
 
 Next tightening pass anticipated:
 
-- **v0.3:** settle the SDF-coupling chain (§7#3), then tighten §4
-  deliverables with concrete engine commands, fidelity targets, naming,
-  and the WP-E bridge anchor. Become execution-ready.
+- **v0.4:** settle the bridge convention (the leading candidate is to
+  add an `ideal_sdf` primitive to `scripts/stroboscopic` so P0 is
+  immediately runnable and P1 becomes a clean ideal-vs-native residual).
+  Tighten §4 deliverables with concrete commands, settle fidelity
+  targets (§7#5), naming (§7#6), and the WP-E bridge anchor (§7#7).
+  Become execution-ready if no new structural blocker appears.
 
 ## References
 
