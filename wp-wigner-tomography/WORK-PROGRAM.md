@@ -457,12 +457,61 @@ WP becomes execution-ready.
    add: squeezed vacuum (needs higher-order LD)?
    GKP-lattice probe state (ambitious)? Mixed cat (decoherence
    stress test)?
-5. **Reconstruction fidelity targets.** What counts as success for
-   §4 deliverable 3 — fidelity ≥ 95 %? 99 %? Different for Gaussian
-   vs. non-Gaussian? The v0.2 grid makes the cat reconstruction the
-   deciding non-Gaussian benchmark; Fock $|2\rangle$ is near the raw
-   $\Delta\alpha$ resolution and should carry a looser, explicitly
-   resolution-limited target.
+5. **Reconstruction fidelity targets.** *Resolved for v0.4-draft:*
+   adopt a three-metric bundle and per-state thresholds matched to the
+   v0.2 Cartesian grid resolution. Targets apply to the ideal-SDF
+   inversion layer (§7#3); the native-engine bridge residual is
+   reported as a separate diagnostic per §4a, not a fidelity criterion.
+
+   **Metric bundle** (every reconstruction reports all three):
+
+   - **Overlap fidelity**
+     $\mathcal{F} = \pi\!\int W_\text{rec}(\alpha)\,W_\text{true}(\alpha)\,d^2\alpha$.
+     For pure $\psi_\text{true}$ this equals
+     $\langle\psi_\text{true}|\rho_\text{rec}|\psi_\text{true}\rangle \in [0,1]$.
+     For the thermal target this is bounded above by
+     $\mathrm{Tr}(\rho_\text{th}^2)=1/(2\bar n+1)$; report both raw
+     $\mathcal{F}$ and $\mathcal{F}/\mathrm{Tr}(\rho_\text{th}^2)$.
+   - **$L^1$ error map** $\Delta(\alpha)=|W_\text{rec}(\alpha)-W_\text{true}(\alpha)|$
+     and its integral $\|\Delta\|_1$. Diagnoses where the error lives
+     in phase space (centre, ring, fringes).
+   - **Negativity ratio** (non-Gaussian targets only)
+     $\rho_\text{neg}=\int\min(0,W_\text{rec})\,d^2\alpha\,/\int\min(0,W_\text{true})\,d^2\alpha$.
+     Tests whether the reconstruction preserves the quantum signature.
+     Grid-limited reconstructions systematically *under-estimate*
+     $|\rho_\text{neg}|$ (Gibbs / edge-windowing overshoot kills the
+     dip); they almost never over-estimate it. So the quality marker
+     is the lower bound, not a symmetric window.
+
+   **Per-state thresholds** (v0.4 demo, v0.2 grid):
+
+   | state | threshold | rationale |
+   |---|---:|---|
+   | vacuum                 | $\mathcal F \geq 0.999$ | Gaussian, no structure |
+   | coherent $\|\alpha\|=1.5$ | $\mathcal F \geq 0.99$  | off-centre Gaussian |
+   | thermal $\bar n=0.5$     | $\mathcal F/\mathrm{Tr}(\rho_\text{th}^2)\geq 0.98$ | broader Gaussian; absolute $\mathcal F\geq 0.49$ |
+   | Fock $\|1\rangle$        | $\mathcal F \geq 0.95$  | ring at $\|\alpha\|\!\approx\!1.22$, ~3 $\Delta\alpha$ feature width |
+   | Fock $\|2\rangle$        | $\mathcal F \geq 0.90$  | tightest features (~2 $\Delta\alpha$); grid-edge case |
+   | cat $\|\alpha\|=1.5$     | $\mathcal F \geq 0.90$  | fringe period $\pi/(2\|\alpha\|)\!\approx\!1.05$, barely resolved |
+   | $\rho_\text{neg}$ (Fock, cat) | $\geq 0.5$ | sign preserved; magnitude $\geq 50\%$ of true value (one-sided — see metric bundle) |
+
+   **Aggregate.** Geometric mean of (normalised) $\mathcal F$ across the
+   five-state set $\geq 0.95$ for the headline reconstruction claim.
+   The geometric mean is a headline convenience; the deciding-state
+   criterion is the binding validation.
+
+   **Deciding states.** Fock $|2\rangle$ and the cat. If both pass, the
+   inversion pipeline is validated at the chosen Cartesian resolution.
+   If either fails, the diagnostic flow is: (i) re-run with
+   $\Delta\beta=0.05$ (doubled resolution); (ii) localise whether the
+   failure is in analytic $\chi\to$ FFT vs. sampling / windowing;
+   (iii) tighten the grid only if (i) recovers threshold, else identify
+   the residual physics.
+
+   **Negativity preservation** is reported but not gating in v0.4 —
+   it's a quality marker, not a primary success criterion. Promoted to
+   gating if a later protocol iteration explicitly targets
+   negativity-preserving reconstruction.
 6. **Naming.** Provisional WP-W; the existing letters are V, E, and
    the kick-off's WP-TOM. Reconcile.
 7. **Cross-check with WP-E.** Pick the shared anchor state and the
