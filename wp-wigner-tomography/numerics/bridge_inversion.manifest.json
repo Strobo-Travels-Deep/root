@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.4.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "numerics/bridge_inversion.h5",
+    "format": "hdf5",
+    "bytes": 347000,
+    "sha256": "d8e8534209768f70be548c9f7a2b54c9cca3f96f4e4f736170019bea9c59fe28"
+  },
+  "execution": {
+    "timestamp": "2026-05-15T14:29:30.477345+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 1104.4267172813416
+  },
+  "provenance_hash": "fe2e2e3ea9e282d627c41b9960b78e2a1dfd428d740019f6910966f3a2cbc6af",
+  "payload": {
+    "anchor": {
+      "alpha": 3.0,
+      "alpha_phase_deg": 0.0,
+      "alpha_truth_real": 3.0,
+      "alpha_truth_imag": 0.0
+    },
+    "physical_parameters": {
+      "beta0": 0.05,
+      "omega_m": 1.3,
+      "nmax": 40,
+      "k_sideband": 0
+    },
+    "passes": {
+      "coarse": {
+        "N": 20,
+        "grid": 41,
+        "alpha_hat_real": 2.1659940190150833,
+        "alpha_hat_imag": 3.4114421011463215e-13,
+        "r_W": 0.8340059809849167
+      },
+      "fine": {
+        "N": 80,
+        "grid": 81,
+        "alpha_hat_real": 2.980034898383934,
+        "alpha_hat_imag": -3.5431561768291176e-09,
+        "r_W": 0.01996510161606611
+      }
+    },
+    "wp_tom_leg": {
+      "alpha_hat_real": 3.0,
+      "alpha_hat_imag": 0.0,
+      "r_TOM": 0.0,
+      "source": "wp-analysis-train-tomography/data/templates_sz_v1.npz",
+      "regime": "saturated"
+    },
+    "centroid_stability_coarse_vs_fine": 0.814040879368851,
+    "bridge_pass_criteria": {
+      "r_W_fine_target": 0.01,
+      "coarse_stability_target": 0.001
+    },
+    "bridge_pass": false,
+    "metric_window": 4.0,
+    "tags": [
+      "WP-W",
+      "D4",
+      "bridge",
+      "ideal-SDF",
+      "FFT-centroid"
+    ]
+  }
+}

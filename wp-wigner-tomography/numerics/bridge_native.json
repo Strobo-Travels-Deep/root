@@ -1,0 +1,202 @@
+{
+  "engine_parameters": {
+    "alpha": 3.0,
+    "alpha_phase_deg": 0.0,
+    "eta": 0.397,
+    "omega_m": 1.3,
+    "omega_r": 0.09016606431708851,
+    "delta_t": 0.6283185307179586,
+    "n_pulses": 30,
+    "nmax": 60
+  },
+  "comparison_1_nearest_grid": {
+    "label": "native engine vs WP-E nearest-grid",
+    "wpe_reference_file": "/Users/uwarring/Documents/GitHub/Strobo Travels Deep/root/wp-phase-contrast-maps/numerics/scan_2d_alpha3_v2.h5",
+    "wpe_meta": {
+      "wpe_attrs": {
+        "alpha": 3.0,
+        "backend": "numpy",
+        "center_pulses_at_phase": 1.0,
+        "code_version": "1.0.0-restructure",
+        "convention": "synced-phase (laser ref maintained)",
+        "delta_t_us": 0.6283185307179586,
+        "det_step_kHz": 29.99999999999936,
+        "engine": "stroboscopic (restructured)",
+        "eta": 0.397,
+        "intra_pulse_motion": 1.0,
+        "n_pulses": 30.0,
+        "nmax": 60.0,
+        "omega_m": 1.3,
+        "omega_r": 0.09016606431708851,
+        "slice": "2D_alpha3"
+      },
+      "phi_alpha_target_deg": 0.0,
+      "phi_alpha_actual_deg": 0.0,
+      "snap_to_grid_max_offset": 0.0,
+      "det_rel_grid_step": 0.023076923076922995
+    },
+    "detunings_rel": [
+      -0.9923076923076923,
+      0.0,
+      0.9923076923076923
+    ],
+    "engine": [
+      {
+        "det_rel": -0.9923076923076923,
+        "sigma_z": -0.09851410749532197,
+        "sigma_x": -0.303839881975849,
+        "sigma_y": -0.862535200364994,
+        "C_real": -0.303839881975849,
+        "C_imag": -0.862535200364994,
+        "C_abs": 0.9144865476035053,
+        "C_arg_deg": -109.40551304561035
+      },
+      {
+        "det_rel": 0.0,
+        "sigma_z": 0.1173033336945713,
+        "sigma_x": -0.6777359863973792,
+        "sigma_y": -0.6277395229164,
+        "C_real": -0.6777359863973792,
+        "C_imag": -0.6277395229164,
+        "C_abs": 0.923787300134256,
+        "C_arg_deg": -137.193213938598
+      },
+      {
+        "det_rel": 0.9923076923076923,
+        "sigma_z": -0.12066209350357432,
+        "sigma_x": -0.8962136855156184,
+        "sigma_y": -0.25729232193312657,
+        "C_real": -0.8962136855156184,
+        "C_imag": -0.25729232193312657,
+        "C_abs": 0.9324153093076215,
+        "C_arg_deg": -163.98185520780865
+      }
+    ],
+    "reference": [
+      {
+        "det_rel_target": -0.9923076923076923,
+        "det_rel_actual": -0.9923076923076923,
+        "phi_alpha_deg_actual": 0.0,
+        "sigma_z": -0.09851410749532197,
+        "sigma_x": -0.303839881975849,
+        "sigma_y": -0.862535200364994,
+        "C_real": -0.303839881975849,
+        "C_imag": -0.862535200364994,
+        "C_abs": 0.9144865476035053,
+        "C_arg_deg": -109.40551304561035
+      },
+      {
+        "det_rel_target": 0.0,
+        "det_rel_actual": 0.0,
+        "phi_alpha_deg_actual": 0.0,
+        "sigma_z": 0.1173033336945713,
+        "sigma_x": -0.6777359863973792,
+        "sigma_y": -0.6277395229164,
+        "C_real": -0.6777359863973792,
+        "C_imag": -0.6277395229164,
+        "C_abs": 0.923787300134256,
+        "C_arg_deg": -137.193213938598
+      },
+      {
+        "det_rel_target": 0.9923076923076923,
+        "det_rel_actual": 0.9923076923076923,
+        "phi_alpha_deg_actual": 0.0,
+        "sigma_z": -0.12066209350357432,
+        "sigma_x": -0.8962136855156184,
+        "sigma_y": -0.25729232193312657,
+        "C_real": -0.8962136855156184,
+        "C_imag": -0.25729232193312657,
+        "C_abs": 0.9324153093076215,
+        "C_arg_deg": -163.98185520780865
+      }
+    ],
+    "residuals": [
+      {
+        "det_rel": -0.9923076923076923,
+        "sigma_z_residual": 0.0,
+        "C_real_residual": 0.0,
+        "C_imag_residual": 0.0,
+        "max_residual": 0.0
+      },
+      {
+        "det_rel": 0.0,
+        "sigma_z_residual": 0.0,
+        "C_real_residual": 0.0,
+        "C_imag_residual": 0.0,
+        "max_residual": 0.0
+      },
+      {
+        "det_rel": 0.9923076923076923,
+        "sigma_z_residual": 0.0,
+        "C_real_residual": 0.0,
+        "C_imag_residual": 0.0,
+        "max_residual": 0.0
+      }
+    ],
+    "max_residual": 0.0,
+    "pass_threshold": 0.001,
+    "pass": true
+  },
+  "comparison_2_exact_tooth_centres": {
+    "label": "native engine at exact teeth (diagnostic)",
+    "detunings_rel": [
+      -1.0,
+      0.0,
+      1.0
+    ],
+    "engine": [
+      {
+        "det_rel": -1.0,
+        "sigma_z": 0.08497671258419942,
+        "sigma_x": -0.8622599655326828,
+        "sigma_y": -0.30115526315309993,
+        "C_real": -0.8622599655326828,
+        "C_imag": -0.30115526315309993,
+        "C_abs": 0.9133382400213167,
+        "C_arg_deg": -160.7475952867441
+      },
+      {
+        "det_rel": 0.0,
+        "sigma_z": 0.1173033336945713,
+        "sigma_x": -0.6777359863973792,
+        "sigma_y": -0.6277395229164,
+        "C_real": -0.6777359863973792,
+        "C_imag": -0.6277395229164,
+        "C_abs": 0.923787300134256,
+        "C_arg_deg": -137.193213938598
+      },
+      {
+        "det_rel": 1.0,
+        "sigma_z": 0.05729482003244879,
+        "sigma_x": -0.37488234941759724,
+        "sigma_y": -0.8625843705922847,
+        "C_real": -0.37488234941759724,
+        "C_imag": -0.8625843705922847,
+        "C_abs": 0.9405256893328036,
+        "C_arg_deg": -113.48994354636655
+      }
+    ],
+    "note": "no reference available; report-only"
+  },
+  "convention_alignment": {
+    "engine_version": "1.0.0-restructure",
+    "wpe_attrs_subset": {
+      "alpha": 3.0,
+      "eta": 0.397,
+      "omega_m": 1.3,
+      "omega_r": 0.09016606431708851,
+      "delta_t_us": 0.6283185307179586,
+      "n_pulses": 30.0,
+      "nmax": 60.0,
+      "convention": "synced-phase (laser ref maintained)",
+      "code_version": "1.0.0-restructure"
+    },
+    "wpw_d4_spec_deviation": "WP-W \u00a74 D4 reads N=22 (Hasse paper). WP-E scan_2d_alpha3_v2.h5 is at N=30. Ran at N=30 to match WP-E. \u00a74 D4 wording will be reconciled in the v0.5 doc pass.",
+    "mw_pi2_phase_alignment": "WP-E does NOT apply a separate MW \u03c0/2 pulse. Initial spin is |\u2193\u27e9 via prepare_state(theta_deg=0, phi_deg=0); the train itself accumulates the \u03c0/2 spin rotation through the OMEGA_R calibration (OMEGA_EFF = \u03c0/(2\u00b7N\u00b7\u03b4t)). The first attempt at Layer A applied apply_mw_pi2 before the train (residuals \u2248 1.3) \u2014 removing it and using WP-E's prepare_state convention is what aligns the two engines. Logged per the D4 guardrail.",
+    "pulse_centering_alignment": "WP-E v0.9.1 applies shift_deg = \u03c9_m\u00b7\u03b4t/2 to alpha_phase_deg so pulse #1 is centered on the requested \u03c6_\u03b1. This runner adopts the same shift_deg compensation.",
+    "train_flags": "intra_pulse_motion=True, gap_includes_spin_detuning=True, t_sep_factor=1.0, ac_phase_rad=0.0 \u2014 matched to run_2d_alpha3_v2.py.",
+    "comparison_1_label": "nearest-grid diagnostic (per D4 guardrail); gated at 10\u207b\u00b3 as engine-consistency check",
+    "comparison_2_label": "exact-anchor diagnostic; no reference available"
+  },
+  "elapsed_s": 0.10121536254882812
+}
