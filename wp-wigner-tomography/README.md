@@ -1,6 +1,6 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Status:** v0.4 design closed; execution started 2026-05-15. P0 + D2 + D3 + P1 + D4 cleared (ideal-SDF primitive in place; engine bridge demonstrated). v0.5 doc correction pass queued (5 items, see [`logbook/2026-05-15-D4-bridge.md`](./logbook/2026-05-15-D4-bridge.md) §4).
+**Status:** v0.5 (2026-05-15). P0 + D2 + D3 + P1 + D4 cleared (ideal-SDF primitive in place; engine bridge demonstrated). v0.5 doc-correction pass applied: ideal SDF is FH20-style σ_x (not σ_z), direct χ = ⟨σ_y⟩ − i⟨σ_z⟩ readout (no Gaussian prefactor), §4 D4 native-engine convention (N=30, shift_deg = ω_m·δt/2, no separate MW π/2) — see [WORK-PROGRAM.md](./WORK-PROGRAM.md) §8 v0.5. D1 analytical note still pending.
 
 This is a pointer file. The full work-program document is
 [WORK-PROGRAM.md](./WORK-PROGRAM.md) (verified bibliography, design

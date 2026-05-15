@@ -1,19 +1,23 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Work Program · v0.4 · 2026-05-13 (lit-review pass: 2026-05-15)**
-**Status:** *design closed; lit-review completed.* §2, §7#1–7, §4
-deliverable commands, and §5 folder layout are all settled. §5a
+**Work Program · v0.5 · 2026-05-15 (doc correction pass; lit-review pass: 2026-05-15)**
+**Status:** *design closed; lit-review completed; v0.4 execution
+complete; v0.5 doc-correction pass applied.* P0 + D2 + D3 + P1 + D4
+all cleared on 2026-05-15 (see §8 v0.4-execution and the four
+[logbook](./logbook/) entries). The v0.5 doc pass (§8) corrected
+five conventions surfaced by execution — the ideal SDF is the
+FH20-style $\sigma_x$ $D(\sigma_x\beta/2)$ (not $\sigma_z$); the χ
+readout is direct $\langle\sigma_y\rangle-i\langle\sigma_z\rangle$
+with no Gaussian prefactor; §4 D4 native-engine convention (N=30,
+$\texttt{shift\_deg}=\omega_m\delta t/2$, no separate MW π/2)
+documented. §2, §7#1–7, §4 deliverable commands, and §5 folder
+layout are settled and reconciled to the executed artefacts. §5a
 conduct conventions are codified. §References has 11 verified
 entries with per-paper extractions in
 [`refs/extractions/`](./refs/extractions/) and a lineage synthesis
-in [`refs/contextual-notes.md`](./refs/contextual-notes.md). Major
-findings from the lit-review — see §1 and §8 — narrow WP-W's claimed
-contributions to: stroboscopic-comb adaptation of [FH20]'s χ-FFT
-chain on [Hasse24]'s monochromatic engine, high-$\eta$ regime,
-the §7#3 structural-bridge finding, the WP-TOM bridge, and the
-Cartesian Dirichlet-targeting rule. **Initiation-ready** modulo the
-runner-script writing and the §7#3 `ideal_sdf` primitive.
-**Numbering:** WP-W (formal, per §7#6).
+in [`refs/contextual-notes.md`](./refs/contextual-notes.md).
+Remaining: D1 analytical note (to inherit the corrected §Analytical
+material). **Numbering:** WP-W (formal, per §7#6).
 
 This document is the full WP that grew out of
 [wp-analysis-train-tomography](../wp-analysis-train-tomography/)
@@ -31,7 +35,7 @@ applies to non-Gaussian inputs (Fock states, cat states) within the
 LD / idealised-train approximations. Squeezed states likely require
 terms beyond the linear Lamb–Dicke chain and are deferred to v0.5
 per §7#4. Experimental validity, separately, depends on how closely the
-native engine realises the ideal $\sigma_z$ SDF — quantified
+native engine realises the ideal FH20-style $\sigma_x$ SDF — quantified
 numerically as the §7#3 bridge residual rather than assumed.
 
 -----
@@ -44,7 +48,8 @@ from idealisation become diagnostics in their own right.
 - **Idealised analysis train:** $N$ instantaneous SDF pulses at
   period $T_m$, single-tooth (i.e. drive only resolves the chosen
   sideband; carrier and higher sidebands suppressed), spin-dependent
-  displacement $D(\sigma_z\,\beta_n)$ per pulse with
+  displacement $D(\sigma_x\,\beta_n)$ per pulse (FH20-style $\sigma_x$
+  SDF, see §Analytical bullet 2 and §7#3) with
   $\beta_n = \beta_0\,e^{i\varphi_\text{train}}\,e^{i(\delta - k\omega_m)\,n\,T_m}$.
 - **Drive regime:** *perturbative* — $|\beta_0|\,|\alpha| \ll 1$ per
   pulse, with fixed $|\beta_0| = 0.05$ in the first reconstruction pass.
@@ -76,16 +81,32 @@ expected to break.
   = e^{i(N-1)x/2}\sin(Nx/2)/\sin(x/2)$ the Dirichlet kernel. Each
   $(\delta, \varphi_\text{train})$ identifies one point in phase space.
 - **Spin contrast $\to$ characteristic function.** Under the
-  idealised SDF (instantaneous, $\sigma_z$-coupled, perturbative),
-  the post-train complex contrast is
-  $C(\delta, \varphi_\text{train}) = \langle\sigma_x\rangle + i\langle\sigma_y\rangle \;=\; e^{-|\beta_\text{tot}|^2/2}\,\chi_{\rho_m}(\beta_\text{tot})$
+  idealised FH20-style SDF (instantaneous, $\sigma_x$-coupled,
+  $U=D(\sigma_x\,\beta_\text{tot}/2)$ with branch separation
+  $\beta_\text{tot}$, perturbative), with the spin prepared on the
+  $|{+}y\rangle$ equator state orthogonal to the SDF axis, the
+  post-train χ readout is **direct**:
+  $\chi_\text{engine}(\beta_\text{tot}) = \langle\sigma_y\rangle - i\langle\sigma_z\rangle = \chi_{\rho_m}(\beta_\text{tot})$
   with $\chi_{\rho_m}(\beta) = \mathrm{Tr}[\rho_m\,D(\beta)]$ the
-  symmetric characteristic function [CG69]. **The measured contrast
-  is proportional to $\chi$ point-by-point in the idealised chain.**
+  symmetric characteristic function [CG69]. **No Gaussian prefactor,
+  no overall phase, no conjugation** — the σ_x-SDF / |+y⟩-equator
+  combination reads χ point-by-point. ($\langle\sigma_x\rangle$
+  carries no χ information: σ_x is the SDF axis itself.) The earlier
+  v0.4 wording "$\sigma_z$-coupled" with a
+  $C=\langle\sigma_x\rangle+i\langle\sigma_y\rangle=e^{-|\beta|^2/2}\chi$
+  prefactor was inconsistent with the §2 inverse-Dirichlet forward
+  map and with FH20, and is corrected here per the
+  [2026-05-15 ideal-SDF logbook](./logbook/2026-05-15-ideal-sdf-primitive.md)
+  §3.3 (the prefactor was an artefact conflated with the WP-E
+  Doppler-broadening case; σ_z conditioning does not rotate under
+  the σ_z spin precession that generates the Dirichlet kernel,
+  whereas σ_x does — verified at $10^{-14}$ by the P1 sentinel).
   The displaced-parity origin of this measurement scheme traces to
   Lutterbach & Davidovich [LD97]; the modern trapped-ion
   implementation that motivates WP-W's protocol is the direct
-  characteristic-function tomography of Flühmann & Home [FH20].
+  characteristic-function tomography of Flühmann & Home [FH20],
+  whose bichromatic σ_x SDF on the |+y⟩ equator is exactly this
+  ideal chain.
 - **Wigner inversion.** $W(\alpha) = \pi^{-2}\int e^{\alpha\beta^* - \alpha^*\beta}\,\chi(\beta)\,d^2\beta$
   is the Fourier dual of the symmetric characteristic function [CG69].
   The 2D FFT of $\chi(\beta)$ over the $\beta$-grid therefore returns
@@ -112,24 +133,28 @@ expected to break.
   (LD order, pulse duration, native vs. ideal coupling) is a separate
   numerical question (§7#3).
 - **Approximation hierarchy.** v0.3 separates the hierarchy into two
-  layers. The ideal-SDF inversion assumes instantaneous
-  $D(\sigma_z\beta_n)$ pulses, a single selected comb tooth, and fixed
+  layers. The ideal-SDF inversion assumes instantaneous FH20-style
+  $D(\sigma_x\beta_n)$ pulses, a single selected comb tooth, and fixed
   per-pulse $\beta_0$. Finite $N$ enters through the Dirichlet tooth width
   $1/N$ in $\delta/\omega_m$. The native engine bridge is a different
   approximation question: its $C\sigma_-+\mathrm{h.c.}$ coupling expands
   into a carrier rotation plus transverse position-dependent spin
-  rotation, not directly into $D(\sigma_z\beta)$; see §7#3. [TBD]
+  rotation, not directly into a spin-eigenstate-conditioned
+  $D(\sigma_x\beta)$ displacement; see §7#3. [TBD]
   still to document the pulse-duration order ($\delta t/T_m$) and the
   exact bridge residual metric.
 - **Measurement back-action (ideal SDF).** The same ideal-SDF chain
   gives the unconditional post-train motional state
   $\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta_\text{tot})\,\rho_m\,D^\dagger(\beta_\text{tot}) + D(-\beta_\text{tot})\,\rho_m\,D^\dagger(-\beta_\text{tot})\bigr)$
   — measurement-induced decoherence between two displaced branches.
-  Conditioning on a $\sigma_z$-basis spin readout selects one branch
-  ($D(\pm\beta_\text{tot})\,|\psi\rangle$); conditioning on a phase-basis
-  ($\sigma_x/\sigma_y$) readout instead produces cat-like superpositions
+  Conditioning on the SDF-axis spin readout selects one branch
+  ($D(\pm\beta_\text{tot})\,|\psi\rangle$); conditioning on an
+  orthogonal-equator readout instead produces cat-like superpositions
   via the Kraus operator
   $M_s \propto D(\beta_\text{tot}) + s\,e^{i\phi}D(-\beta_\text{tot})$.
+  (Under the corrected FH20-style σ_x SDF the branch-selecting axis is
+  σ_x and the cat-/χ-producing readout is σ_y/σ_z; the full
+  readout-basis treatment is the v0.5 back-action diagnostic, §8.)
   The native-engine departure from this prediction is the v0.5
   back-action diagnostic (§8).
 - **Background.** Phase-space formalism: Cahill & Glauber [CG69].
@@ -148,11 +173,14 @@ The dataset, validation, and reconstruction pipeline.
 
 - **Engine.** The same `scripts/stroboscopic` package used by WP-V,
   WP-E, and WP-TOM remains the full-physics bridge engine. Its native
-  pulse is not the ideal $\sigma_z$ SDF assumed by the analytic
-  inversion; see the §7#3 resolution. Therefore the first numerical
-  layer is an ideal-SDF / analytic-$\chi$ validation, and the engine
-  comparison is a separate bridge test of how far the Raman train
-  departs from that ideal limit.
+  monochromatic pulse is not the ideal FH20-style $\sigma_x$ SDF
+  assumed by the analytic inversion; see the §7#3 resolution. The
+  ideal σ_x SDF is supplied numerically by the `ideal_sdf` primitive
+  (FH20-style bichromatic $U=D(\sigma_x\beta/2)$ added to
+  `scripts/stroboscopic`). Therefore the first numerical layer is an
+  ideal-SDF / analytic-$\chi$ validation, and the engine comparison
+  is a separate bridge test of how far the native Raman train departs
+  from that ideal limit.
 - **Forward-map regime sweep.** Drive strength
   $\Omega_r \cdot N\delta t \in \{0.01\pi, 0.05\pi, 0.1\pi, 0.25\pi, 0.5\pi, \pi\}$
   at fixed input state ($|\alpha|=1$); compare to the analytic
@@ -267,14 +295,16 @@ points:
 In compact form:
 
 > *In the Lamb–Dicke perturbative regime with an idealised
-> $D(\sigma_z\beta)$ SDF, the complex contrast $C(\delta, \varphi_\text{train})$
-> is — up to a prefactor — a point-wise measurement of the symmetric
-> characteristic function $\chi_{\rho_m}(\beta(\delta, \varphi_\text{train}))$
+> FH20-style $D(\sigma_x\beta)$ SDF and the spin on the |+y⟩ equator,
+> the χ readout $\langle\sigma_y\rangle - i\langle\sigma_z\rangle$
+> is — with no prefactor — a direct point-wise measurement of the
+> symmetric characteristic function
+> $\chi_{\rho_m}(\beta(\delta, \varphi_\text{train}))$
 > with $\beta$ given by the Dirichlet kernel of the N-pulse train;
 > a 2D FFT then reconstructs $W(\alpha)$ for any input motional
 > state.*
 
-The first half ($C \propto \chi$, FFT$\to W$) is **[FH20]'s** result
+The first half (direct χ readout, FFT$\to W$) is **[FH20]'s** result
 adapted to our protocol. The Dirichlet-kernel forward map is **WP-W's**
 adaptation. The validity of both *under* the [Hasse24] native engine
 (not the idealised one) is **the open numerical question**, addressed
@@ -388,8 +418,8 @@ and elaborated in [`refs/contextual-notes.md`](./refs/contextual-notes.md).
    saturated drive; WP-W maps the inverse $(\delta, \varphi_\text{train})
    \to W(\alpha)$ at perturbative drive. The cross-check validates
    state/phase conventions and the native Raman bridge; it does not
-   assert that the WP-E native pulse is the ideal $D(\sigma_z\beta)$
-   SDF of the WP-W inversion layer (cf. §7#3).
+   assert that the WP-E native pulse is the ideal FH20-style
+   $D(\sigma_x\beta)$ SDF of the WP-W inversion layer (cf. §7#3).
 
 Out of scope for the v0.4 execution candidate:
 
@@ -427,8 +457,9 @@ if equation density exceeds markdown comfort).
 **Contents checklist:**
 - Closed-form $(\delta, \varphi_\text{train}, N) \to \beta$ map via the
   Dirichlet kernel.
-- $C = e^{-|\beta|^2/2}\chi$ equivalence under the idealised
-  $\sigma_z$ SDF.
+- Direct χ readout $\chi = \langle\sigma_y\rangle - i\langle\sigma_z\rangle$
+  (no prefactor, no phase, no conjugation) under the idealised
+  FH20-style $\sigma_x$ SDF with |+y⟩-equator preparation.
 - LD expansion order at which each step holds: $\mathcal O(\eta)$ for
   the displacement, $\mathcal O(\eta^2)$ for neglected squeezing.
 - Finite-$N$ tooth-width correction: $1/N$ scaling in
@@ -458,16 +489,23 @@ python numerics/run_reach_ladder.py \
 
 **What it does:** For each $N \in \{20,40,60,80\}$, builds the
 Cartesian $\beta$ grid via the inverse-Dirichlet rule of §2, computes
-the analytic characteristic function $\chi(\beta)$ and observable
-$C(\beta)=e^{-|\beta|^2/2}\chi(\beta)$ for vacuum and coherent
-$|\alpha|=1$, and stores the grid coordinates, $\chi$, and $C$.
+the analytic characteristic function $\chi(\beta)$ for vacuum and
+coherent $|\alpha|=1$, and stores the grid coordinates and $\chi$.
+The corrected measurement observable is $\chi$ **directly** (per the
+§Analytical bullet 2 σ_x-SDF / |+y⟩ readout, no Gaussian prefactor);
+the $e^{-|\beta|^2/2}$-weighted quantity
+$C(\beta)=e^{-|\beta|^2/2}\chi(\beta)$ is retained in the output only
+as a legacy analytic radial-envelope diagnostic for the reach /
+tooth-width sub-panel, *not* as the protocol observable.
 
 **Output schema (`reach_ladder_ideal.h5`):**
 - `/N_{n}/beta_x` (81,) — Cartesian $\beta$ coordinates
 - `/N_{n}/beta_y` (81,)
 - `/N_{n}/chi_real`, `/N_{n}/chi_imag` (81, 81) — analytic
   characteristic function
-- `/N_{n}/C_real`, `/N_{n}/C_imag` (81, 81) — analytic contrast
+- `/N_{n}/C_real`, `/N_{n}/C_imag` (81, 81) — legacy analytic
+  radial-envelope diagnostic ($e^{-|\beta|^2/2}\chi$); not the
+  protocol observable (see "What it does")
 - Attributes: `beta0`, `n_pulses`, `grid_size`, `state`, `alpha`,
   `code_version`
 
@@ -488,10 +526,14 @@ sub-panel of tooth-width HWHM vs. $1/N$.
 **Pass criterion:** The $N=80$ grid covers the disk $|\beta|\leq 4$ with
 no branch-wrap artefacts, and the HWHM scales as $1/N$ to within 10%.
 
-**Native-engine extension (P1, optional):** If an `ideal_sdf` primitive
-is added to `scripts/stroboscopic`, pass `--engine ideal_sdf` and the
-script populates a `/N_{n}/C_engine` dataset. The residual heatmap then
-becomes $|C_\text{engine} - C_\text{analytic}|/|C_\text{analytic}|$.
+**Native-engine extension (P1, optional):** The `ideal_sdf` primitive
+(FH20-style σ_x SDF) is now in `scripts/stroboscopic`; the engine-side
+χ is read out directly as $\langle\sigma_y\rangle - i\langle\sigma_z\rangle$.
+The residual heatmap is the canonical bridge metric
+$|\chi_\text{engine} - \chi_\text{analytic}|/|\chi_\text{analytic}|$
+(engine χ vs analytic χ on the β grid — *not* a centroid or
+prefactored-contrast residual; see the
+[2026-05-15 D4-bridge logbook](./logbook/2026-05-15-D4-bridge.md) §3.3).
 
 ### D3 — Wigner reconstruction demo
 
@@ -559,23 +601,75 @@ they miss.
 cd wp-wigner-tomography
 python numerics/run_bridge_native.py \
     --alpha 3.0 --alpha-phase-deg 0.0 \
-    --n-pulses 22 --delta-t 40e-9 \
-    --eta 0.397 --omega-m 1.3 --omega-r 0.300 \
     --output numerics/bridge_native.json
 ```
 
+The engine parameters are pinned inside the runner to the WP-E
+reference scan `wp-phase-contrast-maps/numerics/scan_2d_alpha3_v2.h5`
+($\omega_m/2\pi=1.3$ MHz, $\eta=0.397$, $\Omega_r=0.0902$,
+$\delta t = 0.13\,T_m$, $N=30$, $n_\text{max}=60$) and are not CLI
+arguments — the bridge is a provenance check against that specific
+artefact, so the runner does not expose them as knobs.
+
+**Spec-deviation note (Correction 3, v0.5).** The v0.4 §4 D4 wording
+read $N=22$, $\delta t = 40$ ns (the Hasse-paper numbers). The WP-E
+reference scan at the shared $|\alpha=3,\theta_\alpha=0\rangle$ anchor
+is at $N=30$, $\delta t = 0.13\,T_m \approx 100$ ns. Layer A runs at
+$N=30$ to match WP-E directly; the bridge is meaningful at any $N$ as
+long as both legs agree (resolution chosen per the
+[2026-05-15 D4-bridge logbook](./logbook/2026-05-15-D4-bridge.md) §4
+Correction 3). $N=22$ remains the Hasse-paper number, quoted for
+context only.
+
+**Native-engine convention (Corrections 4 & 5, v0.5).** The runner
+reproduces WP-E `run_2d_alpha3_v2.py` exactly:
+
+- **No separate MW π/2 pulse.** The initial spin is $|{\downarrow}\rangle$
+  via `prepare_state(theta_deg=0, phi_deg=0)`; the train itself
+  accumulates the π/2 spin rotation through the $\Omega_r$
+  calibration ($\Omega_\text{eff} = \pi/(2N\delta t)$). The v0.4
+  description implying a $|{\downarrow}\rangle \to \text{MW }\pi/2 \to \text{train}$
+  preparation is **incorrect** and is removed: it is
+  $|{\downarrow}\rangle \to \text{train}$. (The first Layer A attempt
+  applied `apply_mw_pi2` and produced ≈ 1.3 residuals; removing it
+  was the fix.)
+- **Pulse-centering motional-phase shift.** The prepared motional
+  phase is $\varphi_\alpha + \texttt{shift\_deg}$ with
+  $\texttt{shift\_deg} = \omega_m\,\delta t/2$ (WP-E v0.9.1
+  pulse-centering convention, so pulse #1 is centered on $\varphi_\alpha$).
+  Omitting this shift was the other half of the ≈ 1.3-residual
+  failure.
+- Train flags `intra_pulse_motion=True`,
+  `gap_includes_spin_detuning=True`, `t_sep_factor=1.0`,
+  `ac_phase_rad=0.0` — matched to WP-E.
+
+The `convention_alignment` block in `bridge_native.json` records all
+of the above explicitly, per the session guardrail "log any
+MW-π/2 / contrast-convention alignment before declaring Layer A pass."
+
 **What it does:** Runs the native `scripts/stroboscopic` engine at the
-Hasse nominal parameters, $N=22$, $\delta t=40$ ns, for coherent
-$|\alpha=3,\theta_\alpha=0\rangle$, and extracts
-$(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$ at the three tooth
-centres $\delta/\omega_m\in\{-1,0,+1\}$. Compares against the WP-E
-`scan_2d_alpha3_v2.h5` values at the same points.
+WP-E-matched parameters for coherent $|\alpha=3,\theta_\alpha=0\rangle$
+and extracts $(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$ — where
+$\mathrm{Re}\,C \equiv \langle\sigma_x\rangle$,
+$\mathrm{Im}\,C \equiv \langle\sigma_y\rangle$ for the *native*-engine
+readout (this is the native-engine spin-contrast convention, distinct
+from the ideal-SDF χ readout of §Analytical bullet 2) — at two sets of
+detunings: (i) the three WP-E nearest-grid points
+$\delta/\omega_m \in \{-0.9923, 0, +0.9923\}$ (**gated**, since the WP-E
+grid step 0.023 has no exact-tooth points — labelled "nearest-grid"
+per the guardrail against silent interpolation), and (ii) the exact
+tooth centres $\delta/\omega_m\in\{-1,0,+1\}$ (diagnostic, no
+reference). Compares (i) against the WP-E `scan_2d_alpha3_v2.h5`
+values at the same grid points.
 
-**Output:** `numerics/bridge_native.json` — JSON with fields
-`wp_e_reference`, `wp_w_native`, `residuals`.
+**Output:** `numerics/bridge_native.json` — JSON with
+`comparison_1_nearest_grid`, `comparison_2_exact_tooth_centres`,
+`convention_alignment`, and per-point `residuals`.
 
-**Pass criterion (Layer A):** Residuals $< 10^{-3}$ (numerical
-tolerance) for all three observables at all three teeth.
+**Pass criterion (Layer A):** max residual $< 10^{-3}$ on
+$(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$ across the three
+nearest-grid points (engine-consistency / provenance check).
+*Executed 2026-05-15: PASS at 0.00e+00 (bit-exact).*
 
 **Panel B — Inversion bridge**
 
@@ -585,39 +679,71 @@ tolerance) for all three observables at all three teeth.
 ```bash
 python numerics/run_bridge_inversion.py \
     --alpha 3.0 --alpha-phase-deg 0.0 \
-    --template-grid ../wp-analysis-train-tomography/data/templates_sz_v1.npz \
-    --beta0 0.05 --n-pulses 80 \
-    --output numerics/bridge_inversion.json
+    --beta0 0.05 --N-coarse 20 --N-fine 80 \
+    --grid-coarse 41 --grid-fine 81 \
+    --output numerics/bridge_inversion.h5
 ```
 
-**What it does:**
-- WP-TOM side: loads the saturated-template grid, finds the nearest
-  template for $|\alpha|=3$, reports refined
-  $(|\alpha|_\text{tm}, \theta_\text{tm})$.
-- WP-W side: runs the ideal-SDF FFT reconstruction on the same state,
-  reports the centroid $(|\alpha|_\text{fft}, \theta_\text{fft})$.
+**What it does:** Re-runs the WP-W reconstruction pipeline with
+*engine-measured* χ (the FH20-style `ideal_sdf` primitive) instead of
+analytic χ, at the shared $|\alpha=3,\theta_\alpha=0\rangle$ anchor.
+For each β-node the §2 inverse-Dirichlet rule sets
+$(\delta, \varphi_\text{train})$, the ideal-SDF train evolves
+$|{+}y\rangle|\alpha=3\rangle$, and the **direct χ readout**
+$\langle\sigma_y\rangle - i\langle\sigma_z\rangle$ is recorded (no
+prefactor, per the corrected §Analytical bullet 2). Two passes:
+coarse ($41^2 \times N=20$) and fine ($81^2 \times N=80$, the §2
+reconstruction configuration). 2D-FFT → $W_\text{rec}$, centroid
+$\hat\alpha$ extracted.
+- WP-W side: engine χ vs analytic χ residual on the β grid, plus the
+  FFT centroid $\hat\alpha^W$.
+- WP-TOM side: saturated template-match self-recovery of
+  $(|\alpha|,\theta_\alpha)$ — trivially exact because the template
+  bank in `wp-analysis-train-tomography/data/templates_sz_v1.npz`
+  covers $(\alpha{=}3,\theta{=}0)$ on its native grid; reported as
+  $\hat\alpha^\text{TOM}=3{+}0i$ for the figure annotation.
 
-**Output:** `numerics/bridge_inversion.json` — JSON with both
-recoveries and their difference.
+**Output:** `numerics/bridge_inversion.h5` (HDF5 with `coarse`,
+`fine`, `wp_tom` groups + `wp_manifest_v1` sidecar) — engine χ,
+analytic χ, $W_\text{rec}$, centroids, and residuals per pass.
 
 **Plot script:** `wp-wigner-tomography/plots/plot_bridge.py`
 ```bash
 python plots/plot_bridge.py \
-    --native numerics/bridge_native.json \
-    --inversion numerics/bridge_inversion.json \
-    --output plots/bridge_wpe_tom.png
+    --layer-a numerics/bridge_native.json \
+    --layer-b numerics/bridge_inversion.h5 \
+    --output plots/bridge.png
 ```
 
-**Plot output:** `plots/bridge_wpe_tom.png` — two-panel figure:
-- Left: bar chart of Layer A residuals
-  $(\sigma_z, \mathrm{Re}\,C, \mathrm{Im}\,C)$.
-- Right: phase-space scatter showing the WP-TOM template recovery
-  (saturated, orange) and WP-W FFT centroid (perturbative, blue)
-  relative to the true state (black cross).
+**Plot output:** `plots/bridge.png` — two-panel figure:
+- Left: Layer A bar pairs (engine vs WP-E reference) for
+  $\sigma_z$, $\mathrm{Re}\,C$, $\mathrm{Im}\,C$ at the three
+  nearest-grid $\delta/\omega_m$ points, with residual annotations.
+- Right: Layer B $W_\text{rec}(\alpha)$ heatmap with ground-truth
+  $\alpha=3$ (★), $\hat\alpha^{W,\text{fine}}$ (✕),
+  $\hat\alpha^{W,\text{coarse}}$ (○), and $\hat\alpha^\text{TOM}$ (+).
 
-**Pass criterion (Layer B):**
-$|\Delta\alpha_\text{centroid}|\leq 0.2$,
-$|\Delta\theta_\alpha|\leq 0.05\pi$, no quadrant flip.
+**Pass criterion (Layer B).** The **canonical bridge metric is the
+engine-χ vs analytic-χ residual on the β grid**, not the FFT centroid
+error (the centroid is grid-resolution-limited: at the $81^2$ fine
+grid $\Delta\alpha = 0.39$, so a $\sim 10^{-2}$ centroid residual is
+sub-pixel and not engine-relevant — see the
+[2026-05-15 D4-bridge logbook](./logbook/2026-05-15-D4-bridge.md)
+§3.3):
+
+1. $\max|\chi_\text{engine}-\chi_\text{analytic}| \leq 10^{-3}$ on the
+   fine ($81^2 \times N=80$) grid.
+2. FFT centroid $\hat\alpha^W$ within one $\Delta\alpha$ pixel of
+   $\alpha_\text{truth}$ (reported with $\Delta\alpha$ annotated;
+   sub-pixel = pass).
+
+The coarse pass is a saturated-regime stress diagnostic (at $N=20$ the
+inverse-Dirichlet central monotone branch covers only
+$|\beta|\leq N\beta_0=1$, so outer nodes leave the branch); it is not
+gated. A future centroid-stability check should vary only the β-grid
+resolution at fixed $N$, not $N$. *Executed 2026-05-15: criterion 1
+PASS at $3.75\times10^{-4}$ (6481 fine-grid nodes); criterion 2 PASS,
+$\hat\alpha^W = 2.980+0i$ (1.99×10⁻², 5% of one Δα pixel).*
 
 ### D5 — Logbook
 
@@ -632,9 +758,10 @@ stored in `wp-wigner-tomography/logbook/YYYY-MM-DD-{topic}.md`.
 3. Comparison table (expectation vs. observation vs. flag).
 4. Next-step decision.
 
-**First entry template:** `logbook/2026-05-13-v0.4-preflight.md` —
-records the P0 preflight outcome and the decision to proceed to D2–D3
-or to debug.
+**First entry (executed):** `logbook/2026-05-15-D2-and-P0.md` —
+records the P0 preflight outcome and the decision to proceed to D2–D3.
+Subsequent entries: `2026-05-15-D3-reconstruction.md`,
+`2026-05-15-ideal-sdf-primitive.md`, `2026-05-15-D4-bridge.md`.
 
 ## 4a. Preflight gate (gates the main sweep)
 
@@ -655,12 +782,14 @@ choose $(\delta,\varphi_\text{train})$ for $N=20$ and $N=80$.
 
 **Comparators.**
 
-1. Analytic prediction:
-   $C_\text{ideal}(\beta_\star) =
-   e^{-|\beta_\star|^2/2}\chi_{\rho_m}(\beta_\star)$.
-2. P1 only: engine prediction from `scripts/stroboscopic`, after either
-   implementing an ideal-SDF sequence or fitting an effective
-   $\beta_\text{eff}$ bridge for the native Raman train.
+1. Analytic prediction: $\chi_{\rho_m}(\beta_\star)$ **directly** —
+   the FH20-style σ_x SDF on the |+y⟩ equator reads χ with no
+   Gaussian prefactor (corrected §Analytical bullet 2; the v0.4
+   $C_\text{ideal}=e^{-|\beta_\star|^2/2}\chi$ form was the spurious
+   prefactor and is removed).
+2. P1 only: engine prediction from `scripts/stroboscopic` via the
+   FH20-style `ideal_sdf` primitive, χ read out as
+   $\langle\sigma_y\rangle - i\langle\sigma_z\rangle$.
 3. Reconstruction sanity check: insert the analytic $\chi$ values on the
    v0.2 grid for a coherent state and verify the FFT peak lands at the
    prepared $\alpha$ within one raw $\Delta\alpha$ cell.
@@ -670,13 +799,14 @@ choose $(\delta,\varphi_\text{train})$ for $N=20$ and $N=80$.
 - P0 analytic-grid self-consistency: coherent-state peak position within
   one raw $\Delta\alpha$ cell and no sign flip in the phase convention.
 - P1 engine-vs-analytic single point: complex residual
-  $|C_\text{engine}-C_\text{ideal}|/|C_\text{ideal}| < 5\%$ at $N=20$.
-  The $N=80$ comparison is diagnostic, not gating, because finite tooth
-  width and non-ideal coupling can accumulate visibly over the longer
-  train.
+  $|\chi_\text{engine}-\chi_\text{analytic}|/|\chi_\text{analytic}| < 5\%$
+  at $N=20$. The $N=80$ comparison is diagnostic, not gating, because
+  finite tooth width and non-ideal coupling can accumulate visibly over
+  the longer train. *Executed 2026-05-15: PASS at $10^{-14}$ (vacuum
+  and coherent $|\alpha=1\rangle$, both $N\in\{20,80\}$).*
 
 **Failure classification.** If the gate fails, classify the cause before
-launching the sweep: (i) $\sigma_z$ ideal SDF vs. engine
+launching the sweep: (i) FH20-style $\sigma_x$ ideal SDF vs. engine
 $C\sigma_-+\mathrm{h.c.}$ coupling; (ii) finite pulse duration /
 intra-pulse motion; (iii) leakage to carrier or neighbouring sidebands;
 (iv) phase-convention or Dirichlet-branch mismatch. A class-(i) residual
@@ -704,26 +834,33 @@ wp-wigner-tomography/
   WORK-PROGRAM.md              # this document
   README.md                    # short pointer (added at initiation)
   numerics/                    # scan drivers, .h5 outputs, sidecar manifests
+    _common.py
     run_reach_ladder.py
+    run_p0_preflight.py
     run_reconstruction_demo.py
+    run_p1_preflight.py
     run_bridge_native.py
     run_bridge_inversion.py
-    reach_ladder_ideal.h5
-    reach_ladder_ideal.manifest.json
-    reconstruction_demo.h5
-    reconstruction_demo.manifest.json
+    reach_ladder_ideal.h5 / .manifest.json
+    p0_preflight.h5 / .manifest.json
+    reconstruction_demo.h5 / .manifest.json
+    p1_preflight.h5 / .manifest.json
     bridge_native.json
-    bridge_inversion.json
+    bridge_inversion.h5 / .manifest.json
   plots/                       # publication-quality figures
     plot_reach_ladder.py
+    plot_p0_preflight.py
     plot_reconstruction_demo.py
     plot_bridge.py
     reach_ladder_residuals.png
+    p0_preflight.png
     reconstruction_demo.png
-    bridge_wpe_tom.png
+    bridge.png
   logbook/                     # dated entries with pre-registered expectations
-    2026-05-13-v0.4-preflight.md
-    ...
+    2026-05-15-D2-and-P0.md
+    2026-05-15-D3-reconstruction.md
+    2026-05-15-ideal-sdf-primitive.md
+    2026-05-15-D4-bridge.md
   notes/                       # analytical derivations
     analytic_chain.md
   refs/                        # primary literature + extractions (see §5a)
@@ -852,12 +989,22 @@ WP becomes execution-ready.
    $81\times81$ working grid over $[-4,4]^2$ with $\Delta\beta=0.10$,
    sample the disk $|\beta|\leq4$, radially taper the edge, zero-fill
    outside the accessible disk, and FFT the windowed grid.
-3. **SDF coupling — $\sigma_z$ vs. $\sigma_x$.** *Direction resolved
-   for v0.3; bridge convention pending.* The current engine does **not**
-   natively realise the ideal WP-W measurement operator. The ideal chain
-   assumes
-   $U_\text{SDF}(\beta)=D(\sigma_z\beta)$, so spin coherence directly
-   reads a displacement characteristic function. The engine implements
+3. **SDF coupling — $\sigma_z$ vs. $\sigma_x$.** *Resolved: the ideal
+   is FH20-style $\sigma_x$ (v0.5 Correction 1); structural-bridge
+   finding stands.* The current monochromatic engine does **not**
+   natively realise the ideal WP-W measurement operator. The ideal
+   chain assumes the FH20-style bichromatic σ_x SDF
+   $U_\text{SDF}(\beta)=D(\sigma_x\beta/2)$ (branch separation
+   $\beta$); on the $|{+}y\rangle$ equator the orthogonal spin
+   observables read χ directly,
+   $\chi=\langle\sigma_y\rangle-i\langle\sigma_z\rangle$ (corrected
+   §Analytical bullet 2). The earlier v0.3/v0.4 wording took the ideal
+   as $D(\sigma_z\beta)$; that is corrected to $\sigma_x$ here — σ_z
+   conditioning does not rotate under the σ_z spin precession that
+   generates the §2 Dirichlet kernel, whereas σ_x does (P1 sentinel:
+   σ_x gives $10^{-14}$ agreement, σ_z gives 165% residual; see the
+   [2026-05-15 ideal-SDF logbook](./logbook/2026-05-15-ideal-sdf-primitive.md)
+   §3.2–3.3). The engine implements
 
    $$
    H_\text{eng}
@@ -893,7 +1040,9 @@ WP becomes execution-ready.
    Thus the leading engine term is a carrier rotation about an equatorial
    spin axis, and the leading motional term is a transverse
    position-dependent spin rotation. That is not the same operator as a
-   longitudinal $\sigma_z$-conditioned displacement of the motion.
+   spin-eigenstate-conditioned displacement of the motion (neither the
+   FH20-style σ_x-conditioned $D(\sigma_x\beta/2)$ nor a σ_z-conditioned
+   one).
 
    **No limit of the monochromatic engine recovers the ideal SDF.**
    At sideband resonance $\delta = +\omega_m$ — the WP-W operating
@@ -901,10 +1050,11 @@ WP becomes execution-ready.
    becomes, under the rotating-wave approximation, a Jaynes–Cummings
    coupling $(\eta\Omega_r/2)\!\left(a\,\sigma_{\varphi+\pi/2}^- + a^\dagger\,\sigma_{\varphi+\pi/2}^+\right)$.
    That is still **transverse** (spin-flip plus phonon-flip), not a
-   longitudinal $\sigma_z$-conditioned displacement. N-pulse comb
+   spin-eigenstate-conditioned displacement. N-pulse comb
    sharpening selects this term but does not transform it into the
    ideal SDF; the bridge between the monochromatic Hasse engine and
-   $D(\sigma_z\beta)$ is *structural*, not a regime limit.
+   the FH20-style $D(\sigma_x\beta/2)$ SDF is *structural*, not a
+   regime limit.
 
    *Scope of this finding.* A **bichromatic** SDF (simultaneous red
    and blue sideband drive) gives a *different* leading operator —
@@ -913,19 +1063,20 @@ WP becomes execution-ready.
    ideal-SDF chain on Ca⁺ at $\eta = 0.05$. The structural-bridge
    issue is therefore specific to the **monochromatic-engine**
    constraint inherited from [Hasse24], not a universal trapped-ion
-   tomography limitation. The candidate `ideal_sdf` primitive
-   discussed in §8 below would add an [FH20]-style bichromatic
-   sequence to `scripts/stroboscopic`, sidestepping this issue
-   numerically for the ideal-SDF layer of §4a.
+   tomography limitation. The `ideal_sdf` primitive (FH20-style
+   bichromatic $U=D(\sigma_x\beta/2)$) is now implemented in
+   `scripts/stroboscopic` and sidesteps this issue numerically for
+   the ideal-SDF layer of §4a (P1 sentinel passes at $10^{-14}$;
+   D4 engine-χ bridge at $3.75\times10^{-4}$).
 
    Consequence: there is no standalone §2 conversion
    $\Omega_r\delta t \mapsto |\beta_0|$ for the native engine until a
    bridge convention is chosen. The v0.3 policy is to keep two numerical
    layers distinct:
 
-   - **Ideal-SDF layer:** validate the inversion with analytic or newly
-     implemented $D(\sigma_z\beta)$ pulses. This is the clean WP-W
-     tomography claim.
+   - **Ideal-SDF layer:** validate the inversion with analytic χ or the
+     FH20-style $D(\sigma_x\beta/2)$ `ideal_sdf` primitive. This is the
+     clean WP-W tomography claim.
    - **Native-engine bridge:** treat `scripts/stroboscopic` as a
      full-Raman departure from the ideal SDF. Compare it only after
      fitting or deriving an effective $\beta_\text{eff}$ on sentinel
@@ -1062,32 +1213,45 @@ WP becomes execution-ready.
    quadrature.
 
    **Layer A — native Raman convention check.** Use the WP-E native
-   pulse train, not the ideal-SDF surrogate: Hasse nominal parameters,
-   $N=22$, $\delta t=40$ ns, $\eta=0.397$,
-   $\omega_m/(2\pi)=1.300$ MHz, $\varphi_\text{train}=0$, pure coherent
-   input. Compare raw $(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at the
-   tooth centres $\delta/\omega_m\in\{-1,0,+1\}$ against the same values
-   produced by the WP-E forward-map driver. This is a convention /
-   provenance check and should agree to numerical tolerance if both
+   pulse train, not the ideal-SDF surrogate. Parameters are pinned to
+   the WP-E reference scan `scan_2d_alpha3_v2.h5`: $N=30$,
+   $\delta t = 0.13\,T_m$, $\eta=0.397$, $\omega_m/(2\pi)=1.300$ MHz,
+   $\Omega_r = 0.0902$, pure coherent input, **no separate MW π/2**
+   (the train accumulates the π/2 via the $\Omega_r$ calibration; the
+   spin starts $|{\downarrow}\rangle$), and the WP-E v0.9.1
+   pulse-centering motional-phase shift
+   $\texttt{shift\_deg}=\omega_m\,\delta t/2$ (Corrections 3–5, v0.5;
+   $N=22$ / $\delta t=40$ ns were the stale Hasse-paper numbers).
+   Compare raw $(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at the three
+   WP-E nearest-grid points $\delta/\omega_m\in\{-0.9923,0,+0.9923\}$
+   (the WP-E grid has no exact-tooth points; the exact teeth
+   $\{-1,0,+1\}$ are reported as an unreferenced diagnostic) against
+   the WP-E driver's values at the same grid points. Convention /
+   provenance check; should agree to numerical tolerance if both
    wrappers call the same engine.
 
    **Layer B — inversion bridge.** For the same coherent state, compare
    the saturated WP-TOM template-match recovery of
    $(|\alpha|,\theta_\alpha)$ with the perturbative ideal-SDF FFT
-   reconstruction centroid. Success target:
-   $|\Delta\alpha_\text{centroid}| \leq 0.2$ and
-   $|\Delta\theta_\alpha| \leq 0.05\pi$, with no quadrant flip. Because
-   $|\alpha|=3$ sits on the edge of the v0.2 demo display window, this
-   bridge plot uses $|\mathrm{Re}\,\alpha|,|\mathrm{Im}\,\alpha|\leq4$;
-   the v0.2 $B=4$ / $\Delta\beta=0.10$ sampling remains unchanged.
+   reconstruction, using *engine-measured* χ from the FH20-style
+   `ideal_sdf` primitive. The **canonical bridge metric is the
+   engine-χ vs analytic-χ residual** ($\leq 10^{-3}$ on the $81^2$
+   fine grid); the FFT centroid is reported with its $\Delta\alpha$
+   pixel size annotated (sub-pixel = pass) rather than gated at a
+   raw $|\Delta\alpha_\text{centroid}|$ threshold, since the centroid
+   is grid-resolution-limited (§4 D4 Layer B; D4-bridge logbook §3.3).
+   Because $|\alpha|=3$ sits on the edge of the v0.2 demo display
+   window, this bridge plot uses
+   $|\mathrm{Re}\,\alpha|,|\mathrm{Im}\,\alpha|\leq4$; the v0.2 $B=4$
+   / $\Delta\beta=0.10$ sampling remains unchanged.
 
    **Interpretation.** Passing Layer A says WP-E, WP-TOM, and WP-W are
    using the same coherent-state phase convention and native Raman
    observable. Passing Layer B says the saturated-template and
    perturbative-FFT inversions identify the same state on their
    overlapping coherent-state domain. Neither layer claims that the
-   native Raman pulse has become the ideal $D(\sigma_z\beta)$ SDF; that
-   separation remains the §7#3 bridge policy.
+   native Raman pulse has become the ideal FH20-style $D(\sigma_x\beta)$
+   SDF; that separation remains the §7#3 bridge policy.
 
 ## 8. Status
 
@@ -1101,9 +1265,12 @@ single-point preflight gate added in §4a.
 
 **v0.3 SDF-chain pass (2026-05-13):** §7#3 direction resolved: the
 native `scripts/stroboscopic` Raman pulse is not an ideal
-$D(\sigma_z\beta)$ SDF, and no regime limit recovers it — the bridge is
-structural. Even the sideband-resonant LD term reduces to a
-Jaynes–Cummings coupling, which remains transverse. WP-W therefore
+spin-eigenstate-conditioned SDF, and no regime limit recovers it — the
+bridge is structural. (v0.3/v0.4 took the ideal as $D(\sigma_z\beta)$;
+the v0.5 doc pass corrects this to the FH20-style $D(\sigma_x\beta/2)$
+— see the v0.5 entry below. The structural finding is unchanged: the
+monochromatic engine realises neither.) Even the sideband-resonant LD
+term reduces to a Jaynes–Cummings coupling, which remains transverse. WP-W therefore
 separates ideal-SDF inversion (clean WP-W tomography claim) from the
 native-engine bridge (diagnostic, not gating). At v0.3 close the WP was
 not yet execution-ready because the bridge convention itself, §7#4–7,
@@ -1163,6 +1330,57 @@ v0.5 back-action reframed as quantitative ideal-vs-native diagnostic
 (not first characterisation, which [Hasse24] App. D has done
 qualitatively).
 
+**v0.4 execution (2026-05-15).** Runner scripts written and the
+preflight + deliverable chain executed in four same-day sessions
+(logbook entries [D2/P0](./logbook/2026-05-15-D2-and-P0.md),
+[D3](./logbook/2026-05-15-D3-reconstruction.md),
+[ideal-SDF + P1](./logbook/2026-05-15-ideal-sdf-primitive.md),
+[D4 bridge](./logbook/2026-05-15-D4-bridge.md)). Outcomes: **P0**
+PASS (analytic-grid self-consistency); **D2** reach ladder + figure;
+**D3** reconstruction PASS on all six gated states (deciding states
+Fock $|2\rangle$ and cat clear §7#5); the FH20-style `ideal_sdf`
+primitive added to `scripts/stroboscopic` (28 smoke tests, 4
+convention locks); **P1** sentinel PASS at $10^{-14}$; **D4**
+Layer A PASS at machine precision and Layer B substantive PASS
+(engine-χ vs analytic-χ at $3.75\times10^{-4}$ over the $81^2$ fine
+grid; FFT centroid sub-pixel).
+
+**v0.5 doc correction pass (2026-05-15).** Five convention
+corrections, surfaced by the ideal-SDF + D4 execution, applied to
+make this document match the executed artefacts:
+
+1. **σ_z → σ_x (FH20-style ideal SDF).** §Analytical bullet 2,
+   §1.4 hypothesis, §Experiment, §Numerical, §3 bullet 3, §D1,
+   §4a, §7#3, §8 now state the ideal SDF as the FH20-style
+   bichromatic $U=D(\sigma_x\beta/2)$. σ_z conditioning does not
+   rotate under the σ_z spin precession that generates the §2
+   Dirichlet kernel; σ_x does (P1: σ_x → $10^{-14}$, σ_z → 165%).
+2. **Removed spurious $e^{-|\beta|^2/2}$ prefactor.** The ideal-SDF
+   χ readout on the |+y⟩ equator is **direct**:
+   $\chi=\langle\sigma_y\rangle-i\langle\sigma_z\rangle$, no
+   prefactor, phase, or conjugation. The earlier
+   $C=\langle\sigma_x\rangle+i\langle\sigma_y\rangle=e^{-|\beta|^2/2}\chi$
+   was an artefact conflated with the WP-E Doppler case. §Analytical
+   bullet 2, §1.4, §D1, §D2, §4a updated; D2's $e^{-|\beta|^2/2}\chi$
+   is relabelled a legacy radial-envelope diagnostic, not the
+   observable.
+3. **N=22 ↔ 30 stale wording.** §4 D4 Layer A and §7#7 now read
+   $N=30$ (matching the WP-E `scan_2d_alpha3_v2.h5` reference);
+   $N=22$ noted as the Hasse-paper number for context only.
+4. **shift_deg = $\omega_m\delta t/2$ documented.** §4 D4 Layer A
+   and §7#7 record the WP-E v0.9.1 pulse-centering motional-phase
+   shift explicitly.
+5. **Stale MW π/2 step removed.** §4 D4 Layer A now states the
+   native engine takes **no separate MW π/2**: spin starts
+   $|{\downarrow}\rangle$ and the train accumulates the π/2 via
+   the $\Omega_r$ calibration.
+
+Folder layout (§5) and the §4 D4 commands/outputs reconciled to the
+executed artefact names (`bridge_inversion.h5`, `bridge.png`,
+preflight scripts). This pass is **doc-only**; no code or artefact
+changed. D1 (analytical note) remains to be drafted and should
+inherit the corrected §Analytical material directly.
+
 **Initiation handoff.** P0 + D1–D3 are ready for execution as soon as
 the runner scripts of §4 / §5 are written. P1 + D4 require the
 bridge-convention implementation flagged in §7#3 (leading candidate:
@@ -1204,15 +1422,17 @@ Outstanding non-blocking polish:
   [Hasse24] has done qualitatively, but a Wigner-resolved difference
   diagnostic that ties to §7#7's bridge framework.
 
-  - **Ideal-SDF prediction.** Under $U_\text{ideal} = D(\sigma_z\beta_\text{tot})$
-    with initial $|+y\rangle$ spin, the unconditional reduced motional
-    state is the 50/50 mixture
-    $$\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta)\,\rho_m\,D^\dagger(\beta) + D(-\beta)\,\rho_m\,D^\dagger(-\beta)\bigr),$$
-    a measurement-induced decoherence between two displaced branches.
-    The conditional Kraus map *depends on the readout basis*:
-    $\sigma_z$-branch readout selects one displaced branch
-    $D(\pm\beta)\,|\psi\rangle$; $\sigma_x/\sigma_y$-phase readout
-    produces a coherent sum $M_s \propto D(\beta) + s\,e^{i\phi}D(-\beta)$
+  - **Ideal-SDF prediction.** Under the FH20-style
+    $U_\text{ideal} = D(\sigma_x\beta_\text{tot}/2)$ with initial
+    $|+y\rangle$ spin (equator, orthogonal to the σ_x SDF axis), the
+    unconditional reduced motional state is the 50/50 mixture
+    $$\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta_\text{tot}/2)\,\rho_m\,D^\dagger(\beta_\text{tot}/2) + D(-\beta_\text{tot}/2)\,\rho_m\,D^\dagger(-\beta_\text{tot}/2)\bigr),$$
+    a measurement-induced decoherence between the two σ_x-branch
+    displacements. The conditional Kraus map *depends on the readout
+    basis*: σ_x-axis (SDF-axis) readout selects one displaced branch
+    $D(\pm\beta_\text{tot}/2)\,|\psi\rangle$; an orthogonal-equator
+    (σ_y/σ_z) readout produces a coherent sum
+    $M_s \propto D(\beta_\text{tot}/2) + s\,e^{i\phi}D(-\beta_\text{tot}/2)$
     — the conditioned state is cat-like, not single-branch. The
     readout-basis choice is therefore a v0.5 protocol decision (open
     item below).
