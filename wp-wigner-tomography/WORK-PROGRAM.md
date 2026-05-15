@@ -1,14 +1,18 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Work Program · v0.4 · 2026-05-13**
-**Status:** *design closed.* §2, §7#1–7, §4 deliverable commands,
-and §5 folder layout are all settled. P0 (analytic-grid gate) and
-D1–D3 (ideal-SDF layer) are ready for initiation once the runner
-scripts of §4 / §5 are written. P1 + D4 (native-engine bridge)
-require the bridge-convention implementation flagged in §7#3 —
-candidate path is adding an `ideal_sdf` primitive to
-`scripts/stroboscopic`. Background citations and references remain
-as polish, not blockers.
+**Work Program · v0.4 · 2026-05-13 (lit-review pass: 2026-05-15)**
+**Status:** *design closed; lit-review completed.* §2, §7#1–7, §4
+deliverable commands, and §5 folder layout are all settled. §5a
+conduct conventions are codified. §References has 11 verified
+entries with per-paper extractions in
+[`refs/extractions/`](./refs/extractions/) and a lineage synthesis
+in [`refs/contextual-notes.md`](./refs/contextual-notes.md). Major
+findings from the lit-review — see §1 and §8 — narrow WP-W's claimed
+contributions to: stroboscopic-comb adaptation of [FH20]'s χ-FFT
+chain on [Hasse24]'s monochromatic engine, high-$\eta$ regime,
+the §7#3 structural-bridge finding, the WP-TOM bridge, and the
+Cartesian Dirichlet-targeting rule. **Initiation-ready** modulo the
+runner-script writing and the §7#3 `ideal_sdf` primitive.
 **Numbering:** WP-W (formal, per §7#6).
 
 This document is the full WP that grew out of
@@ -182,38 +186,106 @@ The dataset, validation, and reconstruction pipeline.
 
 ## 1. Introduction
 
-The kick-off WP-TOM demonstrated that the $(\delta, \varphi_\text{train})$
-heatmap visually carries motional-state information and that
-template matching against an engine-precomputed grid recovers
-$(|\alpha|, \theta_\alpha)$ for coherent inputs. But template
+### 1.1 What WP-W inherits, and from whom
+
+WP-W sits at the intersection of two well-established lineages.
+
+**Trapped-ion phase-space tomography lineage.** Initiated by
+Wallentowitz & Vogel [Wal95] (proposal) and first realised
+experimentally by Leibfried *et al.* at NIST [LMKMIW96] on ⁹Be⁺ using
+displaced-Fock-population reconstruction. Flühmann & Home [FH20]
+modernised the trapped-ion implementation with a **direct
+characteristic-function readout** via bichromatic SDF + spin-rotation
++ Z-readout, achieving full Wigner-FFT reconstruction of displaced,
+squeezed, squeezed-cat, and approximate-GKP states on a single ⁴⁰Ca⁺
+ion at $\eta \approx 0.05$. **The χ-FFT chain that WP-W uses is FH20's,
+not WP-W's.**
+
+**Hasse-group stroboscopic protocol lineage.** Clos *et al.* [Clos16]
+established the $H_\text{TI}$ Hamiltonian form on a trapped-ion engine;
+Hasse *et al.* [Hasse24] developed the stroboscopic AC-pulse-train
+protocol, demonstrated coherent-displaced-state probing with
+$\sim 100$ ns time resolution and $1.8$ nm / $8$ zN·μs position /
+momentum noise floors, mapped the back-action $\delta\langle n\rangle$
+qualitatively (App. D, Fig. 6b), and outlined a squeezed-state
+extension with $\Delta t = 2\pi/(2\omega_m)$ (App. E). **The protocol
+WP-W reinterprets is Hasse 2024's, not WP-W's.**
+
+The parallel **cavity-QED** lineage — Lutterbach & Davidovich
+[LD97] (displaced-parity proposal), Bertet *et al.* [Bertet02] (first
+cQED implementation in the Brune/Haroche photon-box), Hofheinz *et
+al.* [Hof09] (superconducting cQED implementation) — informs the
+spiritual lineage of "qubit-observable measures phase-space function"
+but is not WP-W's direct technical precedent.
+
+### 1.2 The kick-off finding
+
+The kick-off
+[wp-analysis-train-tomography](../wp-analysis-train-tomography/)
+("WP-TOM v0.x") demonstrated that the $(\delta, \varphi_\text{train})$
+heatmap encodes motional-state information amenable to phase-space
+inversion (kick-off [logbook §6](../wp-analysis-train-tomography/logbook/2026-05-13-kickoff-expectations-and-run.md)),
+and that **template matching** against an engine-precomputed grid
+recovers $(|\alpha|, \theta_\alpha)$ for coherent inputs. But template
 matching is opaque: it works for the eight states in the table and
 generalises only by enlarging the table. It does not tell us *why*
 the protocol works, where its regime of validity is, or whether it
 extends to non-Gaussian inputs.
 
-WP-W reframes the same protocol as **characteristic-function
-tomography** in the lineage of Lutterbach–Davidovich [LD97] (the
-displaced-parity scheme, originally cavity QED), Hofheinz et al.
-[Hof09] (cQED phase-space synthesis), and Flühmann & Home [FH20]
-(direct trapped-ion implementation), specialised here to the
-stroboscopic-comb forward map. The hypothesis is:
+### 1.3 What WP-W contributes
 
-> *In the Lamb–Dicke perturbative regime with an idealised pulse
-> train, the complex contrast $C(\delta, \varphi_\text{train})$ is
-> a point-wise measurement of the symmetric characteristic function
-> $\chi_{\rho_m}(\beta(\delta, \varphi_\text{train}))$, and a 2D FFT
-> reconstructs $W(\alpha)$ for arbitrary input motional states.*
+Given the prior art, WP-W's contributions narrow to five concrete
+points:
 
-The WP tests this analytically (closed-form $\beta$-map and
-$\chi$-equivalence), numerically (engine vs. analytic agreement
-under controlled drive strength), and operationally (Wigner
-reconstruction on the five-class test set, including non-Gaussian
-inputs).
+1. **Stroboscopic-comb adaptation of [FH20]'s χ-FFT.** [FH20] uses a
+   CW bichromatic SDF; [Hasse24] uses a stroboscopic monochromatic
+   AC train. The connection between the two — the inverse-Dirichlet
+   forward map (§2) that lands the physical $(\delta, \varphi_\text{train})$
+   scan on FFT-friendly Cartesian $\beta$ nodes — is WP-W's
+   theoretical contribution.
+2. **High-$\eta$ regime.** [FH20] operates at $\eta \approx 0.05$;
+   [Hasse24] / WP-W at $\eta = 0.40$. LD corrections at
+   $\mathcal O(\eta^2) \approx 16\%$ matter; WP-W's
+   approximation-hierarchy analysis (§Analytical bullet 5) and the
+   ideal-SDF / native-engine bridge (§7#3) address regime issues that
+   [FH20]'s perturbative platform sidesteps.
+3. **The structural-bridge finding** (§7#3 "no limit recovers the
+   ideal SDF"). Specific to monochromatic engines: [FH20]'s
+   bichromatic SDF *does* natively realise the ideal chain, but
+   [Hasse24]'s monochromatic engine cannot, even at sideband
+   resonance under RWA. *To our knowledge this finding has not been
+   stated previously in the literature.*
+4. **Bridge between WP-TOM saturated template-matching and WP-W
+   perturbative FFT** on the same Mg⁺ engine (§7#7).
+5. **Numerical-WP discipline**: pre-registered expectations,
+   reproducibility manifests, and the conduct conventions of §5a
+   applied to a tomography pipeline that has only been published in
+   *experimental* form previously.
 
-The connection to the kick-off is then clean: WP-W is the
-**perturbative** version of the same protocol; WP-TOM kick-off is
-the **saturated** version. They sample overlapping physics from
-opposite sides; the comparison is one of the WP's deliverables.
+### 1.4 Hypothesis
+
+In compact form:
+
+> *In the Lamb–Dicke perturbative regime with an idealised
+> $D(\sigma_z\beta)$ SDF, the complex contrast $C(\delta, \varphi_\text{train})$
+> is — up to a prefactor — a point-wise measurement of the symmetric
+> characteristic function $\chi_{\rho_m}(\beta(\delta, \varphi_\text{train}))$
+> with $\beta$ given by the Dirichlet kernel of the N-pulse train;
+> a 2D FFT then reconstructs $W(\alpha)$ for any input motional
+> state.*
+
+The first half ($C \propto \chi$, FFT$\to W$) is **[FH20]'s** result
+adapted to our protocol. The Dirichlet-kernel forward map is **WP-W's**
+adaptation. The validity of both *under* the [Hasse24] native engine
+(not the idealised one) is **the open numerical question**, addressed
+by the §4a P0/P1 preflight gates.
+
+### 1.5 Connection to the kick-off
+
+WP-W is the **perturbative** counterpart to the kick-off's
+**saturated** template-matching, on the same engine. The cross-
+comparison of inversion strategies (§7#7 Layer B) at the shared
+anchor $|\alpha=3\rangle$ is one of WP-W's deliverables.
 
 ## 2. Notation and nominal parameters
 
@@ -285,32 +357,57 @@ the inverse map rather than by a coarse uniform detuning grid.
 
 ## 3. Purpose and scope
 
-Three motivations, ranked by priority:
+Three motivations, ranked by priority. Each is framed against the
+prior art identified in [§1.1](#11-what-wp-w-inherits-and-from-whom)
+and elaborated in [`refs/contextual-notes.md`](./refs/contextual-notes.md).
 
-1. **Establish the protocol's regime of validity** quantitatively.
-   The kick-off told us "saturated → template matching"; WP-W tells
-   us "where exactly does the perturbative picture take over, and
-   how does the error scale".
-2. **Demonstrate Wigner reconstruction on a non-Gaussian state**
-   numerically — Fock $|1\rangle$ and the small cat are the
-   headline demos. This is the WP's "deliverable plot".
-3. **Bridge to WP-E.** WP-E maps the forward observable
-   $(\vartheta_0, \delta) \to (\sigma_z, |C|)$ at saturated drive;
-   WP-W maps the inverse $(\delta, \varphi_\text{train}) \to W(\alpha)$
-   at perturbative drive. The shared bridge anchor is the coherent state
-   $|\alpha=3\rangle$ with motional phase zero, prepared on the +X
-   quadrature in both conventions. The cross-check validates state/phase
-   conventions and the native Raman bridge; it does not assert that the
-   WP-E native pulse is the ideal $D(\sigma_z\beta)$ SDF of the WP-W
-   inversion layer.
+1. **Validate the stroboscopic-comb adaptation of [FH20]'s χ-FFT
+   chain on [Hasse24]'s engine** quantitatively. [FH20] demonstrated
+   χ-tomography with a CW bichromatic SDF at $\eta \approx 0.05$;
+   [Hasse24] demonstrated phase-space probing with stroboscopic
+   monochromatic AC pulses at $\eta = 0.40$. Neither work tests the
+   bridge between them. WP-W's first task is to establish that the
+   FH20 χ-FFT chain, parameterised via the Dirichlet-kernel forward
+   map (§2), gives faithful reconstruction in the Hasse engine's
+   high-$\eta$ regime — and to pin down the perturbative-regime
+   boundary beyond which the chain breaks down.
+2. **Demonstrate phase-space reconstruction across a transferable
+   state set on the high-$\eta$ Mg⁺ platform.** Reconstruction of
+   non-Gaussian states (Fock $|1\rangle$, $|2\rangle$, cat, mixed
+   cat) is *capability transfer*, not novelty — [LMKMIW96] showed
+   Fock-state reconstruction in 1996 (⁹Be⁺, η ≈ 0.2);
+   [FH20] showed cat and approximate-GKP at η = 0.05.
+   WP-W's contribution is the *same capability under the [Hasse24]
+   engine constraint*, with explicit grid-resolution analysis
+   (§7#5) accounting for the larger $\eta$ and the stroboscopic-
+   comb structure.
+3. **Bridge WP-TOM saturated template-matching to WP-W perturbative
+   FFT** on the same Mg⁺ engine, and **bridge to WP-E** at the
+   shared anchor $|\alpha=3, \theta_\alpha=0\rangle$. WP-E maps the
+   forward observable $(\vartheta_0, \delta) \to (\sigma_z, |C|)$ at
+   saturated drive; WP-W maps the inverse $(\delta, \varphi_\text{train})
+   \to W(\alpha)$ at perturbative drive. The cross-check validates
+   state/phase conventions and the native Raman bridge; it does not
+   assert that the WP-E native pulse is the ideal $D(\sigma_z\beta)$
+   SDF of the WP-W inversion layer (cf. §7#3).
 
 Out of scope for the v0.4 execution candidate:
 
-- Lab implementation (this is a numerical WP).
-- Thermal-state and decoherence sensitivity beyond a single sanity
-  check.
-- Squeezed-state reconstruction (a follow-up — needs the LD
-  perturbation extended past the linear order).
+- **Lab implementation** (this is a numerical WP).
+- **Thermal-state and decoherence sensitivity beyond a single sanity
+  check.**
+- **Squeezed-state reconstruction.** A follow-up; needs the LD chain
+  extended to $\mathcal O(\eta^2)$ and the timing change
+  $\Delta t = 2\pi/(2\omega_m)$ already outlined in
+  [Hasse24] Appendix E (see §7#4 and §8 v0.5 outlook).
+- **GKP-state reconstruction.** Already demonstrated by [FH20] at
+  $\eta = 0.05$ in their Fig 4. WP-W's deferral is grid-resolution
+  (§7#4), not capability.
+- **First characterisation of back-action.** [Hasse24] App. D /
+  Fig. 6b qualitatively maps $\delta\langle n\rangle(\varphi, \vartheta_0)$
+  for $|\alpha|=3$. WP-W's v0.5 back-action scope (§8) is the
+  *quantitative ideal-SDF-vs-native-engine comparison*, not first
+  characterisation.
 
 ## 4. Deliverables
 
@@ -798,16 +895,28 @@ WP becomes execution-ready.
    position-dependent spin rotation. That is not the same operator as a
    longitudinal $\sigma_z$-conditioned displacement of the motion.
 
-   **No limit recovers the ideal SDF.** At sideband resonance
-   $\delta = +\omega_m$ — the WP-W operating point — the leading
-   non-trivial term $\eta X\,\sigma_{\varphi+\pi/2}$ becomes, under the
-   rotating-wave approximation, a Jaynes–Cummings coupling
-   $(\eta\Omega_r/2)\!\left(a\,\sigma_{\varphi+\pi/2}^- + a^\dagger\,\sigma_{\varphi+\pi/2}^+\right)$.
+   **No limit of the monochromatic engine recovers the ideal SDF.**
+   At sideband resonance $\delta = +\omega_m$ — the WP-W operating
+   point — the leading non-trivial term $\eta X\,\sigma_{\varphi+\pi/2}$
+   becomes, under the rotating-wave approximation, a Jaynes–Cummings
+   coupling $(\eta\Omega_r/2)\!\left(a\,\sigma_{\varphi+\pi/2}^- + a^\dagger\,\sigma_{\varphi+\pi/2}^+\right)$.
    That is still **transverse** (spin-flip plus phonon-flip), not a
    longitudinal $\sigma_z$-conditioned displacement. N-pulse comb
    sharpening selects this term but does not transform it into the
-   ideal SDF; the bridge between the engine and $D(\sigma_z\beta)$
-   is *structural*, not a regime limit.
+   ideal SDF; the bridge between the monochromatic Hasse engine and
+   $D(\sigma_z\beta)$ is *structural*, not a regime limit.
+
+   *Scope of this finding.* A **bichromatic** SDF (simultaneous red
+   and blue sideband drive) gives a *different* leading operator —
+   the standard Mølmer–Sørensen-style spin-eigenstate-conditioned
+   displacement — which [FH20] demonstrates *natively realises* the
+   ideal-SDF chain on Ca⁺ at $\eta = 0.05$. The structural-bridge
+   issue is therefore specific to the **monochromatic-engine**
+   constraint inherited from [Hasse24], not a universal trapped-ion
+   tomography limitation. The candidate `ideal_sdf` primitive
+   discussed in §8 below would add an [FH20]-style bichromatic
+   sequence to `scripts/stroboscopic`, sidestepping this issue
+   numerically for the ideal-SDF layer of §4a.
 
    Consequence: there is no standalone §2 conversion
    $\Omega_r\delta t \mapsto |\beta_0|$ for the native engine until a
@@ -848,17 +957,28 @@ WP becomes execution-ready.
    phase-dependent quadratic structure that is not captured by the
    first-order LD chain anchoring §7#3. Adding it requires extending
    the analytic chain to $\mathcal O(\eta^2)$ and re-auditing the
-   ideal-SDF bridge. Concrete v0.5 scope item, not a v0.4 blocker.
+   ideal-SDF bridge. **Framework precedent**: [Hasse24] Appendix E
+   outlines the squeezed-state extension of the monochromatic
+   stroboscopic protocol with the critical timing change
+   $\Delta t = 2\pi/(2\omega_m)$ (half the displaced-state cycle period —
+   the train syncs to the quadrature dynamics, which evolve at
+   $2\omega_m$). [FH20] demonstrates experimental squeezed-state
+   reconstruction at $\eta = 0.05$. The v0.5 WP-W scope adapts these
+   to the high-$\eta$ stroboscopic regime. Concrete v0.5 scope item,
+   not a v0.4 blocker.
 
-   **Deferred to a follow-up WP: GKP-lattice probe.** GKP states have
-   structured phase-space negativity on the lattice scale $\sqrt{\pi/2}$,
-   with sub-feature width well below the v0.2 raw
-   $\Delta\alpha = 0.39$. A faithful GKP reconstruction needs
-   $\Delta\alpha$ down by an order of magnitude, which means
-   $\Delta\beta$ down by 10×, $N$ up by 10×, and the perturbativity
-   audit $|\beta_0||\alpha|$ revisited at the larger $|\alpha|$ that
-   GKP support demands. Out of WP-W's scaffold; flagged for a future
-   "WP-W-GKP" if the motivation crystallises.
+   **Deferred to a follow-up WP: GKP-lattice probe.** [FH20] Fig 4
+   *already demonstrates* approximate-GKP reconstruction at $\eta = 0.05$
+   on Ca⁺ — so this is a *grid-resolution* deferral, not a *capability*
+   deferral. GKP states have structured phase-space negativity on the
+   lattice scale $\sqrt{\pi/2}$, with sub-feature width well below the
+   v0.2 raw $\Delta\alpha = 0.39$. A faithful GKP reconstruction in the
+   [Hasse24] high-$\eta$ regime needs $\Delta\alpha$ down by an order
+   of magnitude, which cascades into $\Delta\beta$ down by 10×, $N$ up
+   by 10×, and the perturbativity audit $|\beta_0||\alpha|$ revisited
+   at the larger $|\alpha|$ that GKP support demands. Out of WP-W's
+   v0.4 scaffold; flagged for a future "WP-W-GKP" if the motivation
+   crystallises.
 5. **Reconstruction fidelity targets.** *Resolved for v0.4-draft:*
    adopt a three-metric bundle and per-state thresholds matched to the
    v0.2 Cartesian grid resolution. Targets apply to the ideal-SDF
@@ -1006,27 +1126,60 @@ formal designator under the repository's permissive WP-naming policy,
 which already mixes single-letter (V, E) and codename (TOM, Coastline)
 forms. All §7 items now resolved; design surface is closed.
 
+**v0.4 lit-review pass (2026-05-14 / 15):** Path-A literature review
+completed per §5a discipline. Eight primary papers extracted to
+[`refs/extractions/`](./refs/extractions/) ([Hasse24], [FH20], [LD97],
+[CG69], [Wal95], [LMKMIW96], [Bertet02], [STO12]); [Hof09] verified
+inline; secondary survey triaged in
+[`refs/review-tracker.md`](./refs/review-tracker.md). The
+[`refs/contextual-notes.md`](./refs/contextual-notes.md) synthesises
+the lineage map and the narrowed contribution scope.
+
+**Major findings from the lit-review:**
+
+1. [Hasse24] is the **direct experimental antecedent** — the
+   stroboscopic AC-train protocol, $H_\text{TI}$ Hamiltonian, 2D
+   $(\varphi, \vartheta_0)$ scan, back-action concept (App. D, Fig.
+   6b), and squeezed-state extension framework (App. E) all originate
+   there.
+2. [FH20] is the **direct theoretical-and-experimental precedent** for
+   χ-FFT tomography in trapped ions — bichromatic SDF on Ca⁺ at
+   $\eta \approx 0.05$, full 2D-FFT $\chi \to W$, non-Gaussian states
+   including approximate-GKP code state.
+3. WP-W's contribution narrows to: stroboscopic-comb adaptation of
+   [FH20]'s χ-FFT to [Hasse24]'s monochromatic engine; high-$\eta$
+   regime ($0.40$ vs. $0.05$); the §7#3 "no limit recovers ideal SDF"
+   finding (specific to monochromatic engines); the WP-TOM bridge;
+   the inverse-Dirichlet Cartesian targeting rule (§2).
+
+§References expanded from 6 to 11 entries with verified bibliographic
+detail; §1 introduction restructured into 1.1–1.5 (inheritance,
+kick-off finding, contributions, hypothesis, kick-off connection);
+§3 motivations reframed against the prior art; §7#3 softened to
+"no limit *of the monochromatic engine* recovers the ideal SDF"
+([FH20]'s bichromatic protocol does); §7#4 deferrals updated to
+reference [Hasse24] App. E and [FH20] Fig. 4 GKP precedent; §8
+v0.5 back-action reframed as quantitative ideal-vs-native diagnostic
+(not first characterisation, which [Hasse24] App. D has done
+qualitatively).
+
 **Initiation handoff.** P0 + D1–D3 are ready for execution as soon as
 the runner scripts of §4 / §5 are written. P1 + D4 require the
 bridge-convention implementation flagged in §7#3 (leading candidate:
-`ideal_sdf` primitive in `scripts/stroboscopic`). At initiation, add
-the WP-W cross-reference line to [ARCHITECTURE.md](../ARCHITECTURE.md)
-per §7#6, and open the first logbook entry per D5.
+`ideal_sdf` primitive in `scripts/stroboscopic`, implementing an
+[FH20]-style bichromatic SDF sequence). At initiation, add the WP-W
+cross-reference line to [ARCHITECTURE.md](../ARCHITECTURE.md) per §7#6,
+and open the first logbook entry per D5.
 
 Outstanding non-blocking polish:
 
 - ~~Background citations in §Analytical~~ — *done in the v0.4-polish
-  pass (2026-05-13):* inline citation hooks added at the four
-  identified spots; minimum bibliography [CG69], [LD97], [FH20],
-  [STO12], [Hof09], [Hasse24] populated in §References with a
-  verification queue. [STO12] and [Hof09] author lists need
-  confirmation at initiation.
+  pass and verified in the v0.4 lit-review pass.* §References has 11
+  verified entries; only the [Hof09] / [LBMW03] / [Clos16] DOI
+  resolutions to verify at first runner-script commit.
 - ~~Conduct and FAIR conventions section~~ — *done in the v0.4-polish
-  pass (2026-05-13):* §5a codifies FAIR manifests, three-lens framing,
-  logbook discipline, tutorial notebooks, and reference-enrichment
-  practice. Two named conventions ("harbor principles", "DG reports")
-  flagged at the end of §5a as needing user pointers before they
-  become load-bearing.
+  pass.* §5a codifies the practice. The "harbor principles" / "DG
+  reports" placeholders remain pending user pointers.
 - Pulse-duration $(\delta t/T_m)$ order in the approximation hierarchy
   (§Analytical bullet 5) — still outstanding.
 
@@ -1040,10 +1193,16 @@ Outstanding non-blocking polish:
 
 - **Motional back-action of the analysis train.** The WP-W v0.4 design
   characterises the *forward* map $\rho_m \to C(\delta,\varphi_\text{train})$
-  and its *inversion* to $W(\alpha)$ — but **not** the *post-train
-  motional state* $\rho_m^{(\mathrm{post})}$. That state is
-  well-defined and protocol-dependent, and characterising it adds a
-  third diagnostic axis complementary to the spin-side §7#7 bridge.
+  and its *inversion* to $W(\alpha)$ — but not the *post-train
+  motional state* $\rho_m^{(\mathrm{post})}$. **Framework precedent**:
+  [Hasse24] Appendix D / Fig 6b qualitatively maps
+  $\delta\langle n\rangle(\varphi, \vartheta_0)$ for $|\alpha|=3$ —
+  this *is* a back-action map and demonstrates that back-action
+  structure exists in the protocol. **WP-W's v0.5 contribution would
+  be the *quantitative* ideal-SDF-vs-native-engine comparison** of
+  $\rho_m^{(\mathrm{post})}$ — not first characterisation, which
+  [Hasse24] has done qualitatively, but a Wigner-resolved difference
+  diagnostic that ties to §7#7's bridge framework.
 
   - **Ideal-SDF prediction.** Under $U_\text{ideal} = D(\sigma_z\beta_\text{tot})$
     with initial $|+y\rangle$ spin, the unconditional reduced motional
@@ -1089,52 +1248,120 @@ Outstanding non-blocking polish:
 
 ## References
 
-Minimum bibliography for v0.4 — four pillars (phase-space formalism,
-displaced-parity scheme, trapped-ion implementation, sympathetic
-tomography precedent) plus the existing Hasse anchor and the cQED
-synthesis context.
+Verified bibliography after the v0.4 lit-review pass (per [§5a
+discipline](#5a-conduct-and-fair-conventions)). Eleven entries
+spanning formalism foundation, trapped-ion lineage, cavity-QED
+parallel lineage, and the direct experimental antecedent. Each entry
+has a per-paper extraction in [`refs/extractions/`](./refs/extractions/);
+the lineage synthesis is in [`refs/contextual-notes.md`](./refs/contextual-notes.md).
+
+### Foundation
 
 - **[CG69]** K. E. Cahill and R. J. Glauber,
   *Density Operators and Quasiprobability Distributions*,
   Phys. Rev. **177**, 1882 (1969).
   DOI: [10.1103/PhysRev.177.1882](https://doi.org/10.1103/PhysRev.177.1882).
-  *Anchors:* §Analytical (bullets 2, 3, 4), §1 hypothesis.
+  Extraction: [`refs/extractions/CG69.md`](./refs/extractions/CG69.md).
+  *Anchors:* §Analytical (bullets 2, 3, 4); §1 hypothesis.
 
-- **[LD97]** L. G. Lutterbach and L. Davidovich,
-  *Method for Direct Measurement of the Wigner Function in Cavity QED
-  and Ion Traps*,
-  Phys. Rev. Lett. **78**, 2547 (1997).
-  DOI: [10.1103/PhysRevLett.78.2547](https://doi.org/10.1103/PhysRevLett.78.2547).
-  *Anchors:* §Analytical (bullet 2 — displaced-parity origin), §1
-  (lineage statement).
+### Trapped-ion phase-space tomography lineage
+
+- **[Wal95]** S. Wallentowitz and W. Vogel,
+  *Reconstruction of the Quantum Mechanical State of a Trapped Ion*,
+  Phys. Rev. Lett. **75**, 2932 (1995).
+  DOI: [10.1103/PhysRevLett.75.2932](https://doi.org/10.1103/PhysRevLett.75.2932).
+  Extraction: [`refs/extractions/Wal95.md`](./refs/extractions/Wal95.md).
+  *Anchors:* §1 (lineage start — earliest trapped-ion tomography proposal).
+
+- **[LMKMIW96]** D. Leibfried, D. M. Meekhof, B. E. King, C. Monroe,
+  W. M. Itano, D. J. Wineland,
+  *Experimental Determination of the Motional Quantum State of a Trapped Atom*,
+  Phys. Rev. Lett. **77**, 4281 (1996).
+  DOI: [10.1103/PhysRevLett.77.4281](https://doi.org/10.1103/PhysRevLett.77.4281).
+  Extraction: [`refs/extractions/LMKMIW96.md`](./refs/extractions/LMKMIW96.md).
+  *Anchors:* §1 (first experimental trapped-ion Wigner reconstruction);
+  §7#4 (Fock-state benchmark precedent on Be⁺).
 
 - **[FH20]** C. Flühmann and J. P. Home,
   *Direct Characteristic-Function Tomography of Quantum States of the
-  Trapped-Ion Motional Mode*,
+  Trapped-Ion Motional Oscillator*,
   Phys. Rev. Lett. **125**, 043602 (2020).
   DOI: [10.1103/PhysRevLett.125.043602](https://doi.org/10.1103/PhysRevLett.125.043602).
-  *Anchors:* §Analytical (bullet 2 — modern trapped-ion implementation;
-  bullet 4 — non-Gaussian demonstrations), §1 (lineage statement).
+  Extraction: [`refs/extractions/FH20.md`](./refs/extractions/FH20.md).
+  *Anchors:* §Analytical (bullets 2, 4 — direct trapped-ion implementation
+  with non-Gaussian demonstrations: displaced-squeezed, cat, GKP); §1
+  (direct precedent for WP-W's reconstruction pipeline). **WP-W
+  inherits the χ-FFT chain from FH20; the stroboscopic-comb adaptation
+  is WP-W's distinct contribution.**
 
-- **[STO12]** *Sympathetic Wigner-function tomography of a dark
-  trapped ion*, Phys. Rev. A **85**, 042109 (2012).
+### Cavity-QED parallel lineage
+
+- **[LD97]** L. G. Lutterbach and L. Davidovich,
+  *Method for Direct Measurement of the Wigner Function in Cavity QED and Ion Traps*,
+  Phys. Rev. Lett. **78**, 2547 (1997).
+  DOI: [10.1103/PhysRevLett.78.2547](https://doi.org/10.1103/PhysRevLett.78.2547).
+  Extraction: [`refs/extractions/LD97.md`](./refs/extractions/LD97.md).
+  *Anchors:* §Analytical (bullet 2 — displaced-parity origin); §1
+  (lineage statement). Applies to both cavity QED and ion traps.
+
+- **[Bertet02]** P. Bertet, A. Auffeves, P. Maioli, S. Osnaghi,
+  T. Meunier, M. Brune, J. M. Raimond, S. Haroche,
+  *Direct Measurement of the Wigner Function of a One-Photon Fock State in a Cavity*,
+  Phys. Rev. Lett. **89**, 200402 (2002).
+  DOI: [10.1103/PhysRevLett.89.200402](https://doi.org/10.1103/PhysRevLett.89.200402).
+  Extraction: [`refs/extractions/Bertet02.md`](./refs/extractions/Bertet02.md).
+  *Anchors:* §Analytical background — first cQED implementation of LD97.
+
+- **[Hof09]** M. Hofheinz, H. Wang, M. Ansmann, R. C. Bialczak,
+  E. Lucero, M. Neeley, A. D. O'Connell, D. Sank, J. Wenner,
+  J. M. Martinis, A. N. Cleland,
+  *Synthesizing the quantum states of a superconducting resonator*,
+  Nature **459**, 546 (2009).
+  *Anchors:* §1 (lineage — superconducting-cQED implementation);
+  §Analytical background. Author list verified via FH20 ref [13].
+
+### Hasse-group lineage (experimental antecedents)
+
+- **[Hasse24]** F. Hasse, D. Palani, R. Thomm, U. Warring, T. Schaetz,
+  *Phase-stable traveling waves stroboscopically matched for superresolved
+  observation of trapped-ion dynamics*,
+  Phys. Rev. A **109**, 053105 (2024).
+  DOI: [10.1103/PhysRevA.109.053105](https://doi.org/10.1103/PhysRevA.109.053105).
+  ArXiv: [2309.15580](https://arxiv.org/abs/2309.15580).
+  Local PDF: [`../refs/Hasse2024_PRA_109_053105.pdf`](../refs/Hasse2024_PRA_109_053105.pdf).
+  Extraction: [`refs/extractions/Hasse24.md`](./refs/extractions/Hasse24.md).
+  *Anchors:* §Experiment (reference platform); §1 (direct experimental
+  antecedent); §7#7 (bridge anchor); §8 v0.5 back-action and
+  squeezed-state scope (Hasse App D, App E). **WP-W reinterprets
+  Hasse24's protocol; it does not invent it.**
+
+- **[Clos16]** G. Clos, D. Porras, U. Warring, T. Schaetz,
+  *Time-Resolved Observation of Thermalization in an Isolated Quantum System*,
+  Phys. Rev. Lett. **117**, 170401 (2016).
+  DOI: [10.1103/PhysRevLett.117.170401](https://doi.org/10.1103/PhysRevLett.117.170401).
+  *Anchors:* §Analytical bullet 5 — Hasse-group predecessor establishing
+  the $H_\text{TI}$ form. (Hasse 2024 cites this as ref [43].)
+
+### Engine context and supplementary
+
+- **[LBMW03]** D. Leibfried, R. Blatt, C. Monroe, D. J. Wineland,
+  *Quantum dynamics of single trapped ions*,
+  Rev. Mod. Phys. **75**, 281 (2003).
+  DOI: [10.1103/RevModPhys.75.281](https://doi.org/10.1103/RevModPhys.75.281).
+  *Anchors:* §Analytical background — canonical trapped-ion review,
+  spin–motion Hamiltonian conventions.
+
+- **[STO12]** S. S. Mirkhalaf and K. Mølmer,
+  *Sympathetic Wigner-function tomography of a dark trapped ion*,
+  Phys. Rev. A **85**, 042109 (2012).
   DOI: [10.1103/PhysRevA.85.042109](https://doi.org/10.1103/PhysRevA.85.042109).
-  *Author list to be verified at initiation* (sympathetic ion-tomography
-  precedent). *Anchors:* §Analytical background.
+  ArXiv: [1110.4804](https://arxiv.org/abs/1110.4804).
+  Extraction: [`refs/extractions/STO12.md`](./refs/extractions/STO12.md).
+  *Anchors:* §Analytical background — sympathetic-readout extension
+  (off WP-W main lineage; cited as broader trapped-ion tomography
+  context).
 
-- **[Hof09]** M. Hofheinz et al.,
-  *Synthesizing arbitrary quantum states in a superconducting
-  resonator* (Nature 2009).
-  *cQED phase-space synthesis and tomography reference; bibliographic
-  details to verify at initiation.* *Anchors:* §1 (lineage), §Analytical
-  background.
+-----
 
-- **[Hasse24]** J. Hasse et al., Phys. Rev. A **109**, 053105 (2024).
-  Local PDF: [refs/Hasse2024_PRA_109_053105.pdf](../refs/Hasse2024_PRA_109_053105.pdf).
-  *Anchors:* §Experiment (reference platform), §7#7 (bridge anchor).
-
-*Verification queue at initiation.* Author lists for [STO12] and [Hof09]
-need confirmation against the cited DOIs; [FH20] is sometimes also
-listed with the trapped-ion group's expanded author set rather than
-Flühmann/Home alone. Add any further citations encountered when
-drafting D1 (the analytical note) to this section.
+**Lineage map and what-WP-W-actually-contributes synthesis:** see
+[`refs/contextual-notes.md`](./refs/contextual-notes.md).
