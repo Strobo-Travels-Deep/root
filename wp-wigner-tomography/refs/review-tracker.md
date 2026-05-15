@@ -15,9 +15,12 @@ relevance assessment.
 |---|---|---|---|
 | [Hasse24] | ✅ extracted | [Hasse24.md](./extractions/Hasse24.md) | Direct experimental antecedent; protocol foundation. |
 | [FH20] | ✅ extracted | [FH20.md](./extractions/FH20.md) | **Direct theoretical+experimental precedent for χ-FFT tomography in trapped ions.** Reframes WP-W's contributions significantly. |
-| [LD97] | ⏳ pending | — | Displaced-parity Wigner measurement origin. |
-| [CG69] | ⏳ pending | — | Phase-space formalism foundation. |
-| [STO12] | ⏳ pending | — | Sympathetic Wigner tomography precedent; author list unverified. |
+| [LD97] | ✅ extracted | [LD97.md](./extractions/LD97.md) | Displaced-parity scheme; theoretical origin. Dispersive coupling + Ramsey. |
+| [CG69] | ✅ extracted | [CG69.md](./extractions/CG69.md) | $s$-ordered formalism foundation. State-general χ ↔ W Fourier duality. |
+| [Wal95] | ✅ extracted | [Wal95.md](./extractions/Wal95.md) | **Earliest trapped-ion tomography proposal (1995).** Predates LD97 / LMKMIW96. |
+| [LMKMIW96] | ✅ extracted | [LMKMIW96.md](./extractions/LMKMIW96.md) | **First experimental trapped-ion Wigner reconstruction (Be⁺, 1996).** Displaced-Fock-population method. |
+| [Bertet02] | ✅ extracted | [Bertet02.md](./extractions/Bertet02.md) | **First cQED experimental implementation of LD97 (Rb Rydberg, Brune-Haroche, 2002).** Vacuum + Fock $\|1\rangle$. |
+| [STO12] | ✅ extracted | [STO12.md](./extractions/STO12.md) | **VERIFIED**: Mirkhalaf & Mølmer (NOT Casanova et al.). Sympathetic-readout tomography precedent. |
 | [Hof09] | ✅ verified inline | (via FH20 ref [13]) | **VERIFIED**: M. Hofheinz, H. Wang, M. Ansmann, R. C. Bialczak, E. Lucero, M. Neeley, A. D. O'Connell, D. Sank, J. Wenner, J. M. Martinis, A. N. Cleland, *Nature* **459**, 546 (2009). Title: *Synthesizing the quantum states of a superconducting resonator*. |
 
 -----
@@ -67,9 +70,30 @@ Each entry should record: (i) where encountered, (ii) what it claims,
 | FH20 [11] | D. M. Meekhof, C. Monroe, B. E. King, W. M. Itano, D. J. Wineland, *Phys. Rev. Lett.* **76**, 1796 (1996) | generation of nonclassical motional states | Foundational; same group / time as [LMKMIW96]. | MAYBE. |
 | FH20 [36] | K. G. Johnson, B. Neyenhuis, J. Mizrahi, J. D. Wong-Campos, C. Monroe, *Phys. Rev. Lett.* **115**, 213001 (2015) | the Monroe ultrafast / stroboscopic-kick line | Cited in `ideal-limit-principles.md` for the Hasse comparison; if not already covered there, read. | DEFER — likely already covered in the ledger. |
 
-### B.4 To be discovered
+### B.4 Hasse secondary refs — final triage
 
-This section grows as later extractions surface new references.
+After completing primary extractions, the remaining Hasse 2024
+secondary references were triaged via brief web searches. No deep
+extractions warranted; each is annotated with relevance verdict.
+
+| ref | verified citation | relevance to WP-W | decision |
+|---|---|---|---|
+| Hasse [11] | D. Leibfried, R. Blatt, C. Monroe, D. J. Wineland, *Rev. Mod. Phys.* **75**, 281 (2003) | canonical trapped-ion review | Add to §References as **[LBMW03]** for engine context. |
+| Hasse [21] | D. Leibfried et al., *Nature* **422**, 412 (2003) — geometric phase gate | adjacent σ-coupling lineage | Cite as additional state-dependent-force context in §7#3 if revising. Low priority. |
+| Hasse [27] | M. Affolter, K. A. Gilmore, J. E. Jordan, J. J. Bollinger, *PRA* **102**, 052609 (2020) — "Phase-coherent sensing of the center-of-mass motion of trapped-ion crystals" (Penning trap) | adjacent platform: phase-coherent sensing in a Penning-trap ion crystal | SKIP — different platform (Penning, multi-ion), different sensing target (COM, not full Wigner). No prior-art overlap. |
+| Hasse [28] | Vasquez et al., *PRL* **130**, 133201 (2023) | modern trapped-ion context | SKIP — recent context, no specific overlap with WP-W claim. |
+| Hasse [38] | A. A. Pushkina, G. Maltese, J. I. Costa-Filho, P. Patel, A. I. Lvovsky, *PRL* **127**, 253602 (2021) — "Superresolution Linear Optical Imaging in the Far Field" | **MISIDENTIFIED in tracker §B.1** — not state-dependent dipole forces but optical superresolution imaging | SKIP — not relevant to WP-W. |
+| Hasse [43] | **G. Clos**, D. Porras, U. Warring, T. Schaetz, *PRL* **117**, **170401** (2016) — "Time-Resolved Observation of Thermalization in an Isolated Quantum System" | Hasse-group predecessor paper; cited as the source of the $H_\text{TI}$ form. **Author spelling: Clos (not Glos); page 170401 (not 174001).** | Add to §References as **[Clos16]** as the Hasse-group predecessor that established the Hamiltonian. |
+
+**Net additions to WP-W §References from secondary survey:**
+- **[LBMW03]** Leibfried-Blatt-Monroe-Wineland (RMP 2003) — canonical trapped-ion review.
+- **[Clos16]** Clos, Porras, Warring, Schaetz (PRL 2016) — Hasse-group $H_\text{TI}$ predecessor.
+
+No others reached the threshold for inclusion.
+
+### B.5 To be discovered
+
+This section grows if future iterations surface new references.
 
 -----
 
