@@ -27,6 +27,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.optimize import brentq
+from scipy.special import eval_laguerre
 
 
 RUNNER_VERSION = "0.1.0"
@@ -89,6 +90,256 @@ def chi_coherent(beta: np.ndarray, alpha: complex) -> np.ndarray:
 def contrast_from_chi(beta: np.ndarray, chi: np.ndarray) -> np.ndarray:
     """C(β) = e^{-|β|²/2} · χ(β) — the ideal-SDF spin-contrast observable."""
     return np.exp(-np.abs(beta) ** 2 / 2.0) * chi
+
+
+# ---------------------------------------------------------------------------
+# χ for the full WP-W test-state set (D3)
+# ---------------------------------------------------------------------------
+
+def chi_thermal(beta: np.ndarray, n_bar: float) -> np.ndarray:
+    """χ_th(β) = exp(-(2·n̄+1)|β|²/2)."""
+    return np.exp(-(2.0 * n_bar + 1.0) * np.abs(beta) ** 2 / 2.0)
+
+
+def chi_fock(beta: np.ndarray, n: int) -> np.ndarray:
+    """χ_n(β) = exp(-|β|²/2) · L_n(|β|²)."""
+    r2 = np.abs(beta) ** 2
+    return np.exp(-r2 / 2.0) * eval_laguerre(n, r2)
+
+
+def chi_cat(beta: np.ndarray, alpha: complex) -> np.ndarray:
+    """χ for the even pure cat (|α⟩ + |-α⟩)/N with N² = 2(1 + e^{-2|α|²}).
+
+    Decomposed into diagonal and off-diagonal contributions:
+        χ_diag = (2/N²) e^{-|β|²/2} cos(2 Im(α* β))
+        χ_off  = (2/N²) e^{-2|α|² - |β|²/2} cosh(2 Re(α* β))
+
+    The off-diagonal cosh argument is real (Re(α*β), *not* α*β) — the
+    BCH phase factor e^{-i Im(α*β)} on ⟨α|D(β)|-α⟩ exactly cancels the
+    imaginary part of ⟨α|β-α⟩, leaving the entire χ Hermitian:
+    χ(-β) = χ*(β) = χ(β) (real for real α; real-valued more generally
+    because both diag and off are real).
+    """
+    a = complex(alpha)
+    a2 = np.abs(a) ** 2
+    norm_sq = 2.0 * (1.0 + np.exp(-2.0 * a2))
+    diag = 2.0 * np.exp(-np.abs(beta) ** 2 / 2.0) * np.cos(2.0 * np.imag(np.conj(a) * beta))
+    off = 2.0 * np.exp(-2.0 * a2 - np.abs(beta) ** 2 / 2.0) * np.cosh(2.0 * np.real(np.conj(a) * beta))
+    return (diag + off) / norm_sq
+
+
+def chi_mixed_cat(beta: np.ndarray, alpha: complex) -> np.ndarray:
+    """χ for the incoherent mixture ρ_mc = (|α⟩⟨α| + |-α⟩⟨-α|)/2.
+
+    Equivalent to the diagonal half of `chi_cat` without the off-diagonal
+    coherence term, and is the quantum-vs-classical control state per §7#4:
+        χ_mc(β) = e^{-|β|²/2} cos(2 Im(α* β))
+    """
+    a = complex(alpha)
+    return np.exp(-np.abs(beta) ** 2 / 2.0) * np.cos(2.0 * np.imag(np.conj(a) * beta))
+
+
+# ---------------------------------------------------------------------------
+# Analytic Wigner functions on the α grid (ground truth for D3 metrics)
+# ---------------------------------------------------------------------------
+
+def W_vacuum(alpha: np.ndarray) -> np.ndarray:
+    """W_vac(γ) = (2/π) e^{-2|γ|²}."""
+    return (2.0 / np.pi) * np.exp(-2.0 * np.abs(alpha) ** 2)
+
+
+def W_coherent(alpha: np.ndarray, alpha0: complex) -> np.ndarray:
+    """W_{|α₀⟩}(γ) = (2/π) e^{-2|γ-α₀|²}."""
+    return (2.0 / np.pi) * np.exp(-2.0 * np.abs(alpha - complex(alpha0)) ** 2)
+
+
+def W_thermal(alpha: np.ndarray, n_bar: float) -> np.ndarray:
+    """W_th(γ) = (2 / (π (2n̄+1))) e^{-2|γ|² / (2n̄+1)}."""
+    s = 2.0 * n_bar + 1.0
+    return (2.0 / (np.pi * s)) * np.exp(-2.0 * np.abs(alpha) ** 2 / s)
+
+
+def W_fock(alpha: np.ndarray, n: int) -> np.ndarray:
+    """W_n(γ) = (2/π)(-1)^n L_n(4|γ|²) e^{-2|γ|²}."""
+    r2 = np.abs(alpha) ** 2
+    return (2.0 / np.pi) * (-1) ** n * eval_laguerre(n, 4.0 * r2) * np.exp(-2.0 * r2)
+
+
+def W_cat(alpha: np.ndarray, alpha0: complex) -> np.ndarray:
+    """W for the even pure cat (|α₀⟩ + |-α₀⟩)/N.
+
+    W(γ) = (2/π) · (e^{-2|γ-α₀|²} + e^{-2|γ+α₀|²} + 2 e^{-2|γ|²} cos(4 Im(α₀* γ))) / N²
+    with N² = 2(1 + e^{-2|α₀|²}).
+    """
+    a = complex(alpha0)
+    a2 = np.abs(a) ** 2
+    norm_sq = 2.0 * (1.0 + np.exp(-2.0 * a2))
+    W_pos = np.exp(-2.0 * np.abs(alpha - a) ** 2)
+    W_neg = np.exp(-2.0 * np.abs(alpha + a) ** 2)
+    W_int = 2.0 * np.exp(-2.0 * np.abs(alpha) ** 2) * np.cos(4.0 * np.imag(np.conj(a) * alpha))
+    return (2.0 / np.pi) * (W_pos + W_neg + W_int) / norm_sq
+
+
+def W_mixed_cat(alpha: np.ndarray, alpha0: complex) -> np.ndarray:
+    """W_mc(γ) = (1/π) (e^{-2|γ-α₀|²} + e^{-2|γ+α₀|²}).  Half-and-half incoherent mixture."""
+    a = complex(alpha0)
+    return (1.0 / np.pi) * (
+        np.exp(-2.0 * np.abs(alpha - a) ** 2) + np.exp(-2.0 * np.abs(alpha + a) ** 2)
+    )
+
+
+# ---------------------------------------------------------------------------
+# State factory
+# ---------------------------------------------------------------------------
+
+def parse_state(name: str) -> dict:
+    """Parse a state name into a spec dict.
+
+    Recognised forms:
+        vacuum
+        coherent_<alpha>
+        thermal_<n_bar>
+        fock_<n>
+        cat_<alpha>
+        mixed_cat_<alpha>
+    """
+    parts = name.split("_")
+    if parts[0] == "vacuum":
+        return {"name": name, "kind": "vacuum", "gaussian": True, "non_gaussian_metric": False}
+    if parts[0] == "coherent":
+        return {"name": name, "kind": "coherent", "alpha": float(parts[1]),
+                "gaussian": True, "non_gaussian_metric": False}
+    if parts[0] == "thermal":
+        return {"name": name, "kind": "thermal", "n_bar": float(parts[1]),
+                "gaussian": True, "non_gaussian_metric": False,
+                "purity": 1.0 / (2.0 * float(parts[1]) + 1.0)}
+    if parts[0] == "fock":
+        n = int(parts[1])
+        return {"name": name, "kind": "fock", "n": n,
+                "gaussian": False, "non_gaussian_metric": True}
+    if parts[0] == "cat":
+        return {"name": name, "kind": "cat", "alpha": float(parts[1]),
+                "gaussian": False, "non_gaussian_metric": True}
+    if parts[0] == "mixed" and len(parts) >= 3 and parts[1] == "cat":
+        return {"name": name, "kind": "mixed_cat", "alpha": float(parts[2]),
+                "gaussian": True, "non_gaussian_metric": False}
+    raise ValueError(f"Unknown state name: {name!r}")
+
+
+def chi_of_state(beta: np.ndarray, spec: dict) -> np.ndarray:
+    """Return χ(β) for the spec returned by `parse_state`."""
+    kind = spec["kind"]
+    if kind == "vacuum":
+        return chi_vacuum(beta)
+    if kind == "coherent":
+        return chi_coherent(beta, spec["alpha"] + 0.0j)
+    if kind == "thermal":
+        return chi_thermal(beta, spec["n_bar"])
+    if kind == "fock":
+        return chi_fock(beta, spec["n"])
+    if kind == "cat":
+        return chi_cat(beta, spec["alpha"] + 0.0j)
+    if kind == "mixed_cat":
+        return chi_mixed_cat(beta, spec["alpha"] + 0.0j)
+    raise ValueError(f"Unknown kind: {kind!r}")
+
+
+def W_true_of_state(alpha: np.ndarray, spec: dict) -> np.ndarray:
+    """Return analytic W(α) for the spec returned by `parse_state`."""
+    kind = spec["kind"]
+    if kind == "vacuum":
+        return W_vacuum(alpha)
+    if kind == "coherent":
+        return W_coherent(alpha, spec["alpha"] + 0.0j)
+    if kind == "thermal":
+        return W_thermal(alpha, spec["n_bar"])
+    if kind == "fock":
+        return W_fock(alpha, spec["n"])
+    if kind == "cat":
+        return W_cat(alpha, spec["alpha"] + 0.0j)
+    if kind == "mixed_cat":
+        return W_mixed_cat(alpha, spec["alpha"] + 0.0j)
+    raise ValueError(f"Unknown kind: {kind!r}")
+
+
+# ---------------------------------------------------------------------------
+# Window + zero-pad for the D3 reconstruction pipeline
+# ---------------------------------------------------------------------------
+
+def radial_hanning(beta_grid: np.ndarray, B: float) -> np.ndarray:
+    """Radial Hanning window on |β| ∈ [0, B]; zero outside.
+
+        w(β) = 0.5 (1 + cos(π |β| / B))   for |β| ≤ B
+             = 0                           otherwise
+    """
+    r = np.abs(beta_grid)
+    w = np.where(r <= B, 0.5 * (1.0 + np.cos(np.pi * r / B)), 0.0)
+    return w
+
+
+def zero_pad_centered(arr: np.ndarray, target_size: int) -> np.ndarray:
+    """Symmetric zero-pad an N×N array to target_size × target_size."""
+    N = arr.shape[0]
+    if arr.shape[1] != N:
+        raise ValueError("array must be square")
+    if target_size < N:
+        raise ValueError(f"target_size {target_size} < N {N}")
+    if target_size == N:
+        return arr.copy()
+    pad_total = target_size - N
+    pad_lo = pad_total // 2
+    pad_hi = pad_total - pad_lo
+    return np.pad(arr, ((pad_lo, pad_hi), (pad_lo, pad_hi)), mode="constant")
+
+
+def padded_beta_axis(beta_axis: np.ndarray, target_size: int) -> np.ndarray:
+    """Extend a centred β axis to the target size keeping Δβ unchanged."""
+    N = len(beta_axis)
+    d_beta = float(beta_axis[1] - beta_axis[0])
+    extent = (target_size - 1) / 2.0 * d_beta
+    return np.linspace(-extent, +extent, target_size)
+
+
+# ---------------------------------------------------------------------------
+# Metrics — §7#5 reconstruction quality
+# ---------------------------------------------------------------------------
+
+def fidelity(W_rec: np.ndarray, W_true: np.ndarray, d_alpha: float) -> float:
+    """F = π ∫ W_rec W_true d²α.  For pure ψ_true this equals ⟨ψ|ρ_rec|ψ⟩."""
+    return float(np.pi * np.sum(W_rec * W_true) * d_alpha ** 2)
+
+
+def l1_error_map(W_rec: np.ndarray, W_true: np.ndarray) -> np.ndarray:
+    """Pointwise |W_rec − W_true|."""
+    return np.abs(W_rec - W_true)
+
+
+def l1_error_total(W_rec: np.ndarray, W_true: np.ndarray, d_alpha: float) -> float:
+    """∫ |W_rec − W_true| d²α."""
+    return float(np.sum(l1_error_map(W_rec, W_true)) * d_alpha ** 2)
+
+
+def negativity_ratio(W_rec: np.ndarray, W_true: np.ndarray, d_alpha: float) -> float | None:
+    """ρ_neg = ∫ min(0, W_rec) d²α / ∫ min(0, W_true) d²α.
+
+    Returns None if the target has no negativity (denominator zero or tiny).
+    Per §7#5, the criterion is one-sided ρ_neg ≥ 0.5.
+    """
+    num = float(np.sum(np.minimum(0.0, W_rec)) * d_alpha ** 2)
+    den = float(np.sum(np.minimum(0.0, W_true)) * d_alpha ** 2)
+    if abs(den) < 1e-12:
+        return None
+    return num / den
+
+
+def restrict_to_window(W: np.ndarray, alpha_axis: np.ndarray, window: float) -> tuple[np.ndarray, np.ndarray]:
+    """Restrict a 2D W array and its α axis to |α| ≤ window."""
+    mask = np.abs(alpha_axis) <= window
+    idx = np.where(mask)[0]
+    if len(idx) == 0:
+        return W, alpha_axis
+    i_lo, i_hi = idx[0], idx[-1] + 1
+    return W[i_lo:i_hi, i_lo:i_hi], alpha_axis[i_lo:i_hi]
 
 
 # ---------------------------------------------------------------------------

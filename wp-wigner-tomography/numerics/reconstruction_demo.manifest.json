@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.4.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "numerics/reconstruction_demo.h5",
+    "format": "hdf5",
+    "bytes": 4397856,
+    "sha256": "8455da7bf112b23b7126c9f9b9c5831425ebf6b40665dceddbc4974ba0a3336e"
+  },
+  "execution": {
+    "timestamp": "2026-05-15T12:23:17.406666+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 0.019833087921142578
+  },
+  "provenance_hash": "42f9d3f5e350ac0c63cf9a4afa3e2c2cb4c04d8e912f9ca1bb92aabea2a77a9b",
+  "payload": {
+    "physical_parameters": {
+      "beta0": 0.05,
+      "n_pulses": 80
+    },
+    "grid": {
+      "size": 81,
+      "target_size": 161,
+      "B": 4.0,
+      "d_beta": 0.10000000000000009,
+      "d_alpha_padded": 0.1951299784838379
+    },
+    "metric_window": 3.0,
+    "states": [
+      "vacuum",
+      "coherent_1.5",
+      "thermal_0.5",
+      "fock_1",
+      "fock_2",
+      "cat_1.5",
+      "mixed_cat_1.5"
+    ],
+    "thresholds": {
+      "vacuum": {
+        "F_min": 0.999
+      },
+      "coherent_1.5": {
+        "F_min": 0.99
+      },
+      "thermal_0.5": {
+        "F_norm_min": 0.98
+      },
+      "fock_1": {
+        "F_min": 0.95,
+        "rho_neg_min": 0.5
+      },
+      "fock_2": {
+        "F_min": 0.9,
+        "rho_neg_min": 0.5
+      },
+      "cat_1.5": {
+        "F_min": 0.9,
+        "rho_neg_min": 0.5
+      },
+      "mixed_cat_1.5": {
+        "F_min": null,
+        "note": "control state \u2014 reported, not gated"
+      }
+    },
+    "results": {
+      "vacuum": {
+        "metrics": {
+          "fidelity": 0.9999999801868105,
+          "L1_error": 0.00024146475534683843,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true
+        }
+      },
+      "coherent_1.5": {
+        "metrics": {
+          "fidelity": 0.9999936440294761,
+          "L1_error": 0.00022904149331980873,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true
+        }
+      },
+      "thermal_0.5": {
+        "metrics": {
+          "fidelity": 0.4999999988437758,
+          "L1_error": 3.543055542430218e-08,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0,
+          "fidelity_normalised": 0.9999999976875515,
+          "purity": 0.5
+        },
+        "pass": true,
+        "flags": {
+          "fidelity_normalised": true
+        }
+      },
+      "fock_1": {
+        "metrics": {
+          "fidelity": 0.9999942927400866,
+          "L1_error": 0.004083485257027947,
+          "rho_neg": 1.0022597817642023,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true,
+          "rho_neg": true
+        }
+      },
+      "fock_2": {
+        "metrics": {
+          "fidelity": 0.9996744820905968,
+          "L1_error": 0.030479542422648748,
+          "rho_neg": 1.0075288878283564,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true,
+          "rho_neg": true
+        }
+      },
+      "cat_1.5": {
+        "metrics": {
+          "fidelity": 0.9664343323341342,
+          "L1_error": 0.2613441345421584,
+          "rho_neg": 1.2680737244220748,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true,
+          "rho_neg": true
+        }
+      },
+      "mixed_cat_1.5": {
+        "metrics": {
+          "fidelity": 0.5000585276838388,
+          "L1_error": 0.00021710844384426316,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": null,
+        "flags": {}
+      }
+    },
+    "aggregate": {
+      "F_geomean": 0.9012884221260674,
+      "deciding_pass": true,
+      "overall_pass": true
+    },
+    "tags": [
+      "WP-W",
+      "D3",
+      "reconstruction-demo",
+      "ideal-SDF"
+    ]
+  }
+}
