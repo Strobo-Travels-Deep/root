@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.4.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "numerics/p0_preflight.h5",
+    "format": "hdf5",
+    "bytes": 539968,
+    "sha256": "2a943cbd73e87841d471b971075fcb6bf968fe2bfd83a9e1a26b433ee1a2b390"
+  },
+  "execution": {
+    "timestamp": "2026-05-15T11:00:03.580119+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 0.0043239593505859375
+  },
+  "provenance_hash": "552cbcb7900c2dc97c73dc8ddd5751cc4365334adfb6572d532168207e05adb4",
+  "payload": {
+    "physical_parameters": {
+      "beta0": 0.05,
+      "n_pulses": 80,
+      "alpha_test": 1.0
+    },
+    "grid": {
+      "size": 81,
+      "B": 4.0,
+      "d_beta": 0.10000000000000009,
+      "d_alpha": 0.38785094488762845
+    },
+    "pass_criteria": {
+      "vacuum": "|W(\u03b1=0) \u2212 2/\u03c0| < 5e-3 AND peak offset < \u0394\u03b1",
+      "coherent": "peak offset from \u03b1_true < \u0394\u03b1 AND no sign flip"
+    },
+    "results": {
+      "vacuum": {
+        "W_center": 0.6365550301222589,
+        "W_expected": 0.6366197723675814,
+        "peak_alpha_x": 0.0,
+        "peak_alpha_y": 0.0,
+        "peak_offset": 0.0,
+        "err_imag": 1.476895778961089e-16,
+        "pass": true
+      },
+      "coherent": {
+        "alpha": 1.0,
+        "peak_alpha_x": 1.1635528346628854,
+        "peak_alpha_y": 0.0,
+        "peak_offset": 0.1635528346628854,
+        "W_peak": 0.6034200203066444,
+        "W_expected_at_peak": 0.6034562319666844,
+        "err_imag": 3.589879722905609e-16,
+        "pass": true
+      }
+    },
+    "overall_pass": true,
+    "tags": [
+      "WP-W",
+      "P0",
+      "preflight",
+      "analytic-grid"
+    ]
+  }
+}
