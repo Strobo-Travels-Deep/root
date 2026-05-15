@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.4.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "numerics/p1_preflight.h5",
+    "format": "hdf5",
+    "bytes": 13248,
+    "sha256": "c858b44cfeb3bca635fc79906dcaa3c8df22dda66e367cd01d988ab361e407be"
+  },
+  "execution": {
+    "timestamp": "2026-05-15T12:57:24.124272+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 0.07707500457763672
+  },
+  "provenance_hash": "f60458e957d785424388e9e077129a1fea8ede37f2e438ab3737bbadc996aca5",
+  "payload": {
+    "physical_parameters": {
+      "beta0": 0.05,
+      "omega_m": 1.3,
+      "nmax": 30,
+      "k_sideband": 0
+    },
+    "sentinel": {
+      "beta_star_real": 0.3535533905932738,
+      "beta_star_imag": 0.35355339059327373,
+      "states": [
+        "vacuum",
+        "coherent_1.0"
+      ],
+      "N_values": [
+        20,
+        80
+      ]
+    },
+    "pass_criterion": {
+      "rel_tol_at_N20": 0.05,
+      "N80_is_gating": false
+    },
+    "results": [
+      {
+        "state": "vacuum",
+        "alpha": null,
+        "N": 20,
+        "k_sideband": 0,
+        "beta_star": "(0.3535533905932738+0.35355339059327373j)",
+        "delta_offset_in_omega_m": 0.030195334713133883,
+        "delta_physical": 0.03925393512707405,
+        "phi_train_rad": 5.266216078135176,
+        "x_branch_rad": 0.1897228834149325,
+        "chi_engine": "(0.8824969025846056-0j)",
+        "chi_analytic": "(0.8824969025845955+0j)",
+        "rel_residual": 1.1448232276509839e-14,
+        "abs_residual": 1.0103029524088925e-14
+      },
+      {
+        "state": "vacuum",
+        "alpha": null,
+        "N": 80,
+        "k_sideband": 0,
+        "beta_star": "(0.3535533905932738+0.35355339059327373j)",
+        "delta_offset_in_omega_m": 0.011085015910885235,
+        "delta_physical": 0.014410520684150807,
+        "phi_train_rad": 4.317439711082556,
+        "x_branch_rad": 0.06964920910112604,
+        "chi_engine": "(0.8824969025845653-4.996003610813204e-16j)",
+        "chi_analytic": "(0.8824969025845955+0j)",
+        "rel_residual": 3.422357474816543e-14,
+        "abs_residual": 3.020219871062837e-14
+      },
+      {
+        "state": "coherent_1.0",
+        "alpha": 1.0,
+        "N": 20,
+        "k_sideband": 0,
+        "beta_star": "(0.3535533905932738+0.35355339059327373j)",
+        "delta_offset_in_omega_m": 0.030195334713133883,
+        "delta_physical": 0.03925393512707405,
+        "phi_train_rad": 5.266216078135176,
+        "x_branch_rad": 0.1897228834149325,
+        "chi_engine": "(0.6709135021259519+0.5733025865426704j)",
+        "chi_analytic": "(0.6709135021259175+0.5733025865426926j)",
+        "rel_residual": 4.6411553196985635e-14,
+        "abs_residual": 4.0958051940480003e-14
+      },
+      {
+        "state": "coherent_1.0",
+        "alpha": 1.0,
+        "N": 80,
+        "k_sideband": 0,
+        "beta_star": "(0.3535533905932738+0.35355339059327373j)",
+        "delta_offset_in_omega_m": 0.011085015910885235,
+        "delta_physical": 0.014410520684150807,
+        "phi_train_rad": 4.317439711082556,
+        "x_branch_rad": 0.06964920910112604,
+        "chi_engine": "(0.6709135021258807+0.5733025865427097j)",
+        "chi_analytic": "(0.6709135021259175+0.5733025865426926j)",
+        "rel_residual": 4.5927694416318287e-14,
+        "abs_residual": 4.0531048065252705e-14
+      }
+    ],
+    "overall_pass": true,
+    "tags": [
+      "WP-W",
+      "P1",
+      "sentinel",
+      "ideal-SDF"
+    ]
+  }
+}
