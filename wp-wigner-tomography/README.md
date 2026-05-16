@@ -1,6 +1,6 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Status:** v0.5 (2026-05-15). P0 + D2 + D3 + P1 + D4 cleared (ideal-SDF primitive in place; engine bridge demonstrated). v0.5 doc-correction pass applied: ideal SDF is FH20-style σ_x (not σ_z), direct χ = ⟨σ_y⟩ − i⟨σ_z⟩ readout (no Gaussian prefactor), §4 D4 native-engine convention (N=30, shift_deg = ω_m·δt/2, no separate MW π/2) — see [WORK-PROGRAM.md](./WORK-PROGRAM.md) §8 v0.5. D1 analytical note still pending.
+**Status:** v0.5 (2026-05-15). P0 + D2 + D3 + P1 + D4 cleared (ideal-SDF primitive in place; engine bridge demonstrated). v0.5 doc-correction pass applied: ideal SDF is FH20-style σ_x (not σ_z), direct χ = ⟨σ_y⟩ − i⟨σ_z⟩ readout (no Gaussian prefactor), §4 D4 native-engine convention (N=30, shift_deg = ω_m·δt/2, no separate MW π/2) — see [WORK-PROGRAM.md](./WORK-PROGRAM.md) §8 v0.5. D1 analytical note written ([`notes/analytic_chain.md`](./notes/analytic_chain.md)); all §4 deliverables now complete.
 
 This is a pointer file. The full work-program document is
 [WORK-PROGRAM.md](./WORK-PROGRAM.md) (verified bibliography, design
@@ -14,7 +14,7 @@ decisions, deliverables, fidelity targets, conduct conventions).
 | [`numerics/`](./numerics/) | Runner scripts (`run_reach_ladder.py`, `run_p0_preflight.py`, `run_reconstruction_demo.py`, `run_p1_preflight.py`, `run_bridge_native.py`, `run_bridge_inversion.py`) and their HDF5 + `wp_manifest_v1` outputs. |
 | [`plots/`](./plots/) | Plot scripts (`plot_reach_ladder.py`, `plot_p0_preflight.py`, `plot_reconstruction_demo.py`, `plot_bridge.py`) and their PNG outputs. |
 | [`logbook/`](./logbook/) | Dated logbook entries with pre-registered expectations + comparison tables (per §5a discipline). |
-| [`notes/`](./notes/) | Analytical derivations (D1 — to be written). |
+| [`notes/`](./notes/) | Analytical derivations ([`analytic_chain.md`](./notes/analytic_chain.md) — D1, standalone). |
 | [`refs/`](./refs/) | Per-paper extractions + contextual notes + lit-review tracker. |
 
 ## Quick start (execution)
@@ -40,7 +40,7 @@ Each runner writes an HDF5 artefact and a sidecar
 
 | D | name | status |
 |---|---|---|
-| D1 | analytical note | pending (`notes/analytic_chain.md`) |
+| D1 | analytical note | ✅ standalone derivation [`notes/analytic_chain.md`](./notes/analytic_chain.md) (σ_x SDF + direct χ → Dirichlet map → FFT/Wigner → bridge → P0/P1/D4 anchors) |
 | D2 | reach ladder | ✅ runner + outputs + figure |
 | D3 | reconstruction demo | ✅ PASS — all six gated states clear §7#5; deciding-state criterion satisfied |
 | D4 | WP-E / WP-TOM bridge | ✅ Layer A PASS @ machine precision; Layer B substantive PASS (engine χ ↔ analytic χ at $3.75\times10^{-4}$ on 81² fine grid; centroid sub-pixel) |
