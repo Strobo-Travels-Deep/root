@@ -44,6 +44,6 @@ Each runner writes an HDF5 artefact and a sidecar
 | D2 | reach ladder | ✅ runner + outputs + figure |
 | D3 | reconstruction demo | ✅ PASS — all six gated states clear §7#5; deciding-state criterion satisfied |
 | D4 | WP-E / WP-TOM bridge | ✅ Layer A PASS @ machine precision; Layer B substantive PASS (engine χ ↔ analytic χ at $3.75\times10^{-4}$ on 81² fine grid; centroid sub-pixel) |
-| D5 | logbook | live; entries [`2026-05-15-D2-and-P0.md`](./logbook/2026-05-15-D2-and-P0.md), [`2026-05-15-D3-reconstruction.md`](./logbook/2026-05-15-D3-reconstruction.md), [`2026-05-15-ideal-sdf-primitive.md`](./logbook/2026-05-15-ideal-sdf-primitive.md), [`2026-05-15-D4-bridge.md`](./logbook/2026-05-15-D4-bridge.md) |
+| D5 | logbook | live; entries [`2026-05-15-D2-and-P0.md`](./logbook/2026-05-15-D2-and-P0.md), [`2026-05-15-D3-reconstruction.md`](./logbook/2026-05-15-D3-reconstruction.md), [`2026-05-15-ideal-sdf-primitive.md`](./logbook/2026-05-15-ideal-sdf-primitive.md), [`2026-05-15-D4-bridge.md`](./logbook/2026-05-15-D4-bridge.md), [`2026-05-16-wpw-closeout-and-followups.md`](./logbook/2026-05-16-wpw-closeout-and-followups.md) (close-out + ranked follow-ups) |
 | P0 | analytic-grid gate | ✅ PASS (vacuum + coherent $|\alpha=1\rangle$) |
 | P1 | engine-bridge gate | ✅ PASS at $10^{-14}$ (vacuum + coherent $|\alpha=1\rangle$, N=20 and 80, FH20 σ_x SDF) |
