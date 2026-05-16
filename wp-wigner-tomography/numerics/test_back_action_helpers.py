@@ -190,6 +190,33 @@ def test_cat_ket_chi_and_wigner():
 
 
 # ---------------------------------------------------------------------------
+# Lock 6 — conditional_motional_ket σ_y matches the engine convention
+# ---------------------------------------------------------------------------
+
+def test_conditional_sigma_y_matches_engine_convention():
+    """`apply_mw_pi2(|↓⟩|0⟩, 0)` is the engine σ_y=+1 eigenstate
+    (σ_y = −2 Im⟨d|u⟩ = +1; cf. test_ideal_sdf). Post-selecting
+    σ_y=+1 must return prob 1 with ket ∝ |0⟩, and σ_y=−1 prob 0 —
+    the post-run review-pass sign fix."""
+    psi_m0 = states.fock_state(0, NMAX)
+    psi_py = states.apply_mw_pi2(
+        np.concatenate([psi_m0, np.zeros(NMAX, dtype=np.complex128)]),
+        mw_phase_deg=0.0, nmax=NMAX,
+    )
+    d, u = psi_py[:NMAX], psi_py[NMAX:]
+    assert abs(-2.0 * np.imag(np.vdot(d, u)) - 1.0) < 1e-12  # engine σ_y=+1
+    ket_p, p_p = conditional_motional_ket(psi_py, NMAX, "y", +1)
+    _, p_m = conditional_motional_ket(psi_py, NMAX, "y", -1)
+    assert abs(p_p - 1.0) < 1e-12
+    assert p_m < 1e-12
+    assert abs(abs(np.vdot(psi_m0, ket_p)) ** 2 - 1.0) < 1e-12  # ket_p ∝ |0⟩
+    # σ_x, σ_z are orthogonal to σ_y ⇒ 50/50
+    for b in ("x", "z"):
+        _, q = conditional_motional_ket(psi_py, NMAX, b, +1)
+        assert abs(q - 0.5) < 1e-12
+
+
+# ---------------------------------------------------------------------------
 
 def _main() -> int:
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

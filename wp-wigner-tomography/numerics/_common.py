@@ -468,12 +468,19 @@ def conditional_motional_ket(psi: np.ndarray, nmax: int, basis: str,
     Spin eigenvectors / projected (unnormalised) motional components:
         z, +1 → up                z, −1 → down
         x, +1 → (down+up)/√2      x, −1 → (down−up)/√2
-        y, +1 → (down−i·up)/√2    y, −1 → (down+i·up)/√2
-    using |±x⟩=(|↓⟩±|↑⟩)/√2, |±y⟩=(|↓⟩±i|↑⟩)/√2.
+        y, +1 → (down+i·up)/√2    y, −1 → (down−i·up)/√2
+    using |±x⟩=(|↓⟩±|↑⟩)/√2 and the **engine σ_y convention**
+    |±y⟩=(|↓⟩∓i|↑⟩)/√2 — i.e. |+y⟩=(|↓⟩−i|↑⟩)/√2 is the σ_y=+1
+    eigenstate, identical to `states.apply_mw_pi2(|↓⟩,phase=0)` and
+    locked by `observables.compute` (σ_y = −2 Im⟨d|u⟩) and
+    `test_ideal_sdf._spin_expectations`. (The earlier draft used the
+    opposite σ_y sign, mislabelling the conditional outcome; fixed in
+    the post-run review pass and locked by smoke test 6.)
 
-    Returns (ket, prob) with ‖ket‖ = 1 and prob = ‖projected‖². The σ_x
-    convention is the one locked numerically by the back-action smoke
-    test (σ_x post-select of ideal-SDF |+y⟩|0⟩ → D(±β_tot/2)|0⟩).
+    Returns (ket, prob) with ‖ket‖ = 1 and prob = ‖projected‖². The
+    σ_x / σ_y conventions are locked numerically by the back-action
+    smoke tests (σ_x post-select of ideal-SDF |+y⟩|0⟩ → D(±β_tot/2)|0⟩;
+    σ_y=+1 post-select of the |+y⟩ equator state → prob 1).
     """
     down = psi[:nmax]
     up = psi[nmax:]
@@ -485,7 +492,7 @@ def conditional_motional_ket(psi: np.ndarray, nmax: int, basis: str,
     elif basis == "x":
         comp = (down + s * up) / np.sqrt(2.0)
     elif basis == "y":
-        comp = (down - 1j * s * up) / np.sqrt(2.0)
+        comp = (down + 1j * s * up) / np.sqrt(2.0)
     else:
         raise ValueError(f"basis must be 'x'|'y'|'z', got {basis!r}")
     prob = float(np.real(np.vdot(comp, comp)))

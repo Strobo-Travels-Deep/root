@@ -2,11 +2,15 @@
 
 **WP-W · back-action scope · 2026-05-16**
 
-**Status.** *Scoping pass only — proposed, pending user lock.* No
-runner work until the five decisions below are locked. This note
-settles the WORK-PROGRAM §8 "open v0.5 items" and the
-[close-out logbook](../logbook/2026-05-16-wpw-closeout-and-followups.md)
-Rank 1 first step. It is the back-action analogue of
+**Status.** *LOCKED 2026-05-16 (user review + lock) and EXECUTED.*
+The decisions below were proposed in the scoping pass, corrected in a
+user review pass, locked, and then executed end-to-end — see the
+[scope logbook](../logbook/2026-05-16-back-action-scope.md) and the
+[run logbook](../logbook/2026-05-16-back-action-run.md) (commits
+`cb850a5` scope, `1b90f92` execution, + the post-run review-correction
+commit). This note settles the WORK-PROGRAM §8 "open v0.5 items" and
+the [close-out logbook](../logbook/2026-05-16-wpw-closeout-and-followups.md)
+Rank 1. It is the back-action analogue of
 [`analytic_chain.md`](./analytic_chain.md): a convention-locked,
 self-contained scope a future session can execute without re-deriving
 the landscape.
@@ -220,11 +224,18 @@ control, not matched $\beta_\text{tot}$**:
   the *same* $(\delta-k\omega_m,\varphi_\text{train},N)$ the
   inverse-Dirichlet rule assigns to each probe point: $N=30$,
   $\delta t=0.13\,T_m$, $\eta=0.397$, $\omega_m/2\pi=1.300$ MHz,
-  $\Omega_r=0.0902$, **no separate MW π/2**, motional-phase shift
-  $\texttt{shift\_deg}=\omega_m\delta t/2$ (WP-E v0.9.1; §7#7,
-  D4-bridge §2.1). Peak → on-resonance tooth $x=0$; mid-branch →
-  the $x$ solving $|\mathcal D_N(x)|=N\beta_0/2$ on the central
-  monotone branch.
+  $\Omega_r=0.0902$, **no separate MW π/2**. Peak → on-resonance
+  tooth $x=0$; mid-branch → the $x$ solving
+  $|\mathcal D_N(x)|=N\beta_0/2$ on the central monotone branch.
+  *(Execution clarification, post-run review:* the D4-Layer-A
+  $\texttt{shift\_deg}=\omega_m\delta t/2$ was a pulse-centering
+  device to reproduce an *external* WP-E reference scan at a
+  coherent state. This diagnostic has no external reference and is a
+  matched-control structural comparison, so **no input-state phase
+  shift is applied on either leg** — uniform lab frame, identical
+  input both legs. shift_deg is phase-symmetric for vacuum/Fock
+  anyway; a cat-only shift is deliberately *not* applied as it would
+  rotate the native cat vs the ideal cat and break matched control.)*
 - The **ideal-vs-native Wigner $L^1$ is then a *structural*
   back-action residual at matched physical drive** — "given the
   same drive program, how differently is the oscillator disturbed?"

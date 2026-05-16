@@ -1467,7 +1467,9 @@ Outstanding non-blocking polish:
     §4), not via $\chi\to$FFT inversion — so the
     pipeline sidesteps v0.4's grid-resolution limits but raises its
     own implementation question on partial-trace and mixed-state
-    Wigner cost. Open v0.5 implementation item.
+    Wigner cost. *Resolved and executed in v0.6* (`run_back_action.py`
+    via the `_common.wigner_from_rho` / `partial_trace_spin` helpers;
+    see the v0.6 entry below and the run logbook).
 
   - **v0.6 back-action scope (LOCKED 2026-05-16; executed).** The
     open items below are settled in

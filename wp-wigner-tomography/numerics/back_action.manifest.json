@@ -8,15 +8,15 @@
     "path": "wp-wigner-tomography/numerics/back_action.h5",
     "format": "hdf5",
     "bytes": 396928,
-    "sha256": "c4748b4f7a77520e0fb50a437820f274dcde686ee8138dbf3c5b7b1db5ef45ff"
+    "sha256": "c2618faaa86f04d012f6aac67fd0c86564498e40a665402dbe90ade7ab26e16c"
   },
   "execution": {
-    "timestamp": "2026-05-16T12:05:46.135409+00:00",
+    "timestamp": "2026-05-16T16:02:42.545317+00:00",
     "engine": "python-scipy",
     "precision": "complex128",
-    "elapsed_s": 116.1285011768341
+    "elapsed_s": 108.77103519439697
   },
-  "provenance_hash": "5fffbf82bd776debf7808141a0d4ba12190fad8493d20bdb5936bb1df2b0592f",
+  "provenance_hash": "c1b523a16924e061656f60a6479289c918915ad174072074f491d7fad0cc42be",
   "payload": {
     "conventions": {
       "ideal_sdf": "U=D(sigma_x beta_tot/2); branch sep beta_tot",
@@ -26,7 +26,7 @@
       "native_eta": 0.397,
       "native_omega_r": 0.09016606431708851,
       "native_delta_t": 0.6283185307179586,
-      "native_state_prep": "spin |down>, no separate MW pi/2; shift_deg phase-symmetric for vacuum/Fock, logged for cat"
+      "native_state_prep": "spin |down>, no separate MW pi/2; NO input-state phase shift on either leg (uniform lab frame). shift_deg was a D4-Layer-A external-reference device, not applied here: phase-symmetric for vacuum/Fock, and deliberately not applied to the cat (a cat-only shift would break matched control by rotating the native cat vs the ideal cat)."
     },
     "physical_parameters": {
       "beta0": 0.05,

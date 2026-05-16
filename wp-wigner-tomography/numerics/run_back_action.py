@@ -24,13 +24,19 @@ guardrail):
   * **Native-leg state prep**: spin |↓⟩ (NO separate MW π/2 — the
     train accumulates π/2 via the Ω_R calibration; D4 Layer A
     Corrections 4–5), motional input prepared directly in the lab
-    frame (θ=0). The WP-E v0.9.1 pulse-centering shift
-    shift_deg = ω_m·δt/2 is phase-symmetric for vacuum / Fock |2⟩
-    (no-op) and is applied to the coherent components of the cat
-    (cat axis on the real line, shift logged). This is a
-    *reported diagnostic*, not gated, so the second-order phase
-    convention does not affect the headline (the unconditional
-    ρ_m^(post) and its purity/negativity are readout-independent).
+    frame (θ=0). **No input-state phase shift is applied to any
+    input, on either leg** (uniform lab frame). The D4-Layer-A
+    `shift_deg = ω_m·δt/2` was a *pulse-centering compensation to
+    reproduce an external WP-E reference scan at a coherent state*;
+    this diagnostic has no external reference and is a *matched-
+    control structural comparison*, which requires both legs to see
+    the **identical** input in the same frame. shift_deg is
+    phase-symmetric for vacuum / Fock |2⟩ anyway (no-op); applying
+    it to the native cat *only* would rotate the cat relative to the
+    ideal cat and break matched control (conflating an input
+    difference with the propagator difference being measured). It is
+    therefore deliberately not applied — the cat axis is on the real
+    line for both legs.
   * **Probe points** (per state): peak |β_tot| = N·β₀ (x=0,
     on-resonance, max back-action) and mid-branch |β_tot| = N·β₀/2.
   * **Inputs**: vacuum, Fock |2⟩, cat |α|=1.5 (all pure; scope §3
@@ -372,7 +378,7 @@ def main() -> int:
             "native_leg": "D4-Layer-A pinned WP-E v0.9.1; matched physical control, not beta_eff (scope §4a, §7#3)",
             "native_eta": ETA, "native_omega_r": OMEGA_R,
             "native_delta_t": DELTA_T,
-            "native_state_prep": "spin |down>, no separate MW pi/2; shift_deg phase-symmetric for vacuum/Fock, logged for cat",
+            "native_state_prep": "spin |down>, no separate MW pi/2; NO input-state phase shift on either leg (uniform lab frame). shift_deg was a D4-Layer-A external-reference device, not applied here: phase-symmetric for vacuum/Fock, and deliberately not applied to the cat (a cat-only shift would break matched control by rotating the native cat vs the ideal cat).",
         },
         "physical_parameters": {"beta0": b0, "omega_m": wm, "N": N,
                                 "nmax": nmax,

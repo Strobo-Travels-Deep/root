@@ -51,11 +51,12 @@ recorded here explicitly:
   $(\delta{-}k\omega_m,\varphi_\text{train},N)$.
 - **Native state prep**: spin $|{\downarrow}\rangle$, **no separate
   MW π/2** (train accumulates π/2 via $\Omega_r$); motional input
-  lab-frame ($\theta{=}0$). WP-E v0.9.1 `shift_deg` is
-  phase-symmetric for vacuum/Fock (no-op) and logged for the cat.
-  Reported, not gated — the unconditional $\rho_m^{(\rm post)}$ is
-  readout-independent so this second-order phase convention does
-  not move the headline.
+  lab-frame ($\theta{=}0$). **No input-state phase shift on either
+  leg** (uniform lab frame; see §6 review-correction 2). The
+  D4-Layer-A `shift_deg` was an external-reference device, not
+  applicable to a matched-control structural comparison; it is
+  phase-symmetric for vacuum/Fock and deliberately not applied to
+  the cat (a cat-only shift would break matched control).
 - **Probe points**: peak $|\beta_\text{tot}|=N\beta_0=1.5$ (x=0);
   mid-branch $|\beta_\text{tot}|=N\beta_0/2=0.75$.
 - **Inputs**: vacuum, Fock $|2\rangle$, cat $|\alpha|{=}1.5$ (pure).
@@ -144,10 +145,12 @@ targeted.
    is quoted with its regime attached, never as a bare gate —
    same discipline as P0's finite-grid windowing and the D4
    centroid-vs-$\Delta\alpha$ note.
-3. **Native non-coherent state-prep `shift_deg`** is phase-symmetric
-   for vacuum/Fock; for the cat the axis is on the real line and the
-   shift is logged. Non-gated; does not affect the headline
-   unconditional state.
+3. **No input-state `shift_deg`** is applied on either leg (uniform
+   lab frame). Corrected in the post-run review (§6 item 2): the
+   code never applied a shift; the earlier text overclaimed a
+   cat shift. The uniform-no-shift convention is the *correct* one
+   for a matched-control comparison (both legs must see the
+   identical input). Non-gated; headline unaffected.
 
 ## 5. Next-step decision
 
@@ -161,3 +164,46 @@ collapse–revival back-action of §8; (b) the full §7#4 input set
 squeezed-vacuum (needs the $\mathcal O(\eta^2)$ analytic extension
 first, per the close-out logbook). No further action without a
 specific follow-up decision.
+
+## 6. Post-run review corrections (same day, after user audit)
+
+An independent user audit of commit `1b90f92` found three issues;
+all fixed in a follow-up review-correction commit. Numbers
+re-derived/re-run and confirmed.
+
+1. **σ_y conditional outcome was sign-flipped.**
+   `conditional_motional_ket(..., "y", +1)` used
+   $(\text{down}-i\,\text{up})/\sqrt2$, the σ_y$=-1$ projection in
+   the engine convention (where $|{+}y\rangle=(|{\downarrow}\rangle-i|{\uparrow}\rangle)/\sqrt2
+   =\texttt{apply\_mw\_pi2}(|{\downarrow}\rangle,0)$, σ_y$=-2\operatorname{Im}\langle d|u\rangle$).
+   Fixed to $(\text{down}+i\,\text{up})/\sqrt2$; new **smoke lock 6**
+   asserts the engine $|{+}y\rangle$ state post-selects σ_y$=+1$ at
+   prob 1 (8/8 tests pass). *Impact:* the stored
+   `cond_W_sy_plus` and the figure's 4th column were the *opposite*
+   σ_y outcome — relabelled/corrected by re-running. The
+   unconditional headline, the vacuum gate, and the σ_x-branch
+   fidelity (=1.0000) are readout-independent / σ_x-based and are
+   **unchanged**.
+
+2. **`shift_deg` documentation overclaimed a cat shift.** The code
+   never applied an input-state shift on any input; the runner
+   docstring / logbook / manifest text wrongly said it was applied
+   to the cat. Corrected to state the *uniform no-shift lab-frame*
+   convention — which is the **correct** one for a matched-control
+   structural comparison: both legs must see the identical input;
+   a cat-only shift would conflate an input difference with the
+   propagator difference being measured. shift_deg was a
+   D4-Layer-A *external-reference* device, not applicable here.
+   Doc-only (runner, scope §4a, this logbook §1/§4, manifest).
+
+3. **Stale pointer docs refreshed.** `README.md` (v0.5 → v0.6,
+   back-action artefacts + deliverable row), scope-note status line
+   ("proposed, pending lock" → locked + executed), WORK-PROGRAM §8
+   provisional-sketch bullet ("Open v0.5 implementation item" →
+   resolved/executed in v0.6).
+
+Post-correction: 8/8 smoke locks pass; runner re-run (vacuum gate
+still PASS at machine precision — readout-independent); figure
+regenerated with the correct σ_y$=+1$ conditional panel. The
+ideal-vs-native $L^1$ and all §3 unconditional numbers are
+unchanged (verified identical on re-run).
