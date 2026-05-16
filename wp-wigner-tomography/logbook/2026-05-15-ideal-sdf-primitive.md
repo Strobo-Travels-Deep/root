@@ -12,6 +12,17 @@ relative residual on both vacuum and coherent $|\alpha=1\rangle$,
 both $N \in \{20, 80\}$. Two convention corrections logged for the
 v0.5 WP doc pass.
 
+**Postscript (2026-05-16 consistency check).** The queued work described
+below has since landed: D4 is complete, D1 is complete, and the v0.5
+WORK-PROGRAM correction pass updated the WP to the FH20-style
+$\sigma_x$ SDF and direct $\chi=\langle\sigma_y\rangle-i\langle\sigma_z\rangle$
+readout. The original future-tense text in §§3.3–4 is preserved as the
+session record. One wording point was sharpened downstream: the native
+Hasse engine is the monochromatic $C\sigma_-+\mathrm{h.c.}$ coupling,
+not a literal $\sigma_z$-conditioned displacement; the bridge mismatch is
+therefore native monochromatic Raman coupling versus the FH20-style
+bichromatic $\sigma_x$ ideal SDF.
+
 -----
 
 ## 1. Pre-registered expectations
