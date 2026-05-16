@@ -145,18 +145,24 @@ expected to break.
   exact bridge residual metric.
 - **Measurement back-action (ideal SDF).** The same ideal-SDF chain
   gives the unconditional post-train motional state
-  $\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta_\text{tot})\,\rho_m\,D^\dagger(\beta_\text{tot}) + D(-\beta_\text{tot})\,\rho_m\,D^\dagger(-\beta_\text{tot})\bigr)$
+  $\rho_m^{(\mathrm{post})} = \tfrac{1}{2}\bigl(D(\beta_\text{tot}/2)\,\rho_m\,D^\dagger(\beta_\text{tot}/2) + D(-\beta_\text{tot}/2)\,\rho_m\,D^\dagger(-\beta_\text{tot}/2)\bigr)$
   — measurement-induced decoherence between two displaced branches.
-  Conditioning on the SDF-axis spin readout selects one branch
-  ($D(\pm\beta_\text{tot})\,|\psi\rangle$); conditioning on an
+  ($\beta_\text{tot}$ is the branch *separation*; each branch is
+  displaced by $\pm\beta_\text{tot}/2$ — the v0.5-corrected σ_x SDF
+  convention, `analytic_chain.md` §1. Earlier v0.4 wording used the
+  stale full-$\beta_\text{tot}$ form; corrected here in the
+  back-action scoping pass for consistency with §8.) Conditioning on
+  the SDF-axis spin readout selects one branch
+  ($D(\pm\beta_\text{tot}/2)\,|\psi\rangle$); conditioning on an
   orthogonal-equator readout instead produces cat-like superpositions
   via the Kraus operator
-  $M_s \propto D(\beta_\text{tot}) + s\,e^{i\phi}D(-\beta_\text{tot})$.
+  $M_s \propto D(\beta_\text{tot}/2) + s\,e^{i\phi}D(-\beta_\text{tot}/2)$.
   (Under the corrected FH20-style σ_x SDF the branch-selecting axis is
   σ_x and the cat-/χ-producing readout is σ_y/σ_z; the full
-  readout-basis treatment is the v0.5 back-action diagnostic, §8.)
-  The native-engine departure from this prediction is the v0.5
-  back-action diagnostic (§8).
+  readout-basis treatment is the back-action diagnostic, §8.)
+  The native-engine departure from this prediction is the v0.6
+  back-action diagnostic (§8;
+  [`notes/back_action_scope.md`](./notes/back_action_scope.md)).
 - **Background.** Phase-space formalism: Cahill & Glauber [CG69].
   Displaced-parity scheme for direct Wigner measurement (originally
   cavity QED): Lutterbach & Davidovich [LD97]. Trapped-ion
@@ -1454,17 +1460,37 @@ Outstanding non-blocking polish:
     prediction on each headline state from §7#4. Single figure per
     state. The Wigner function is computed *directly from the
     simulated density matrix* via
-    $W(\alpha) = \pi^{-1}\mathrm{Tr}\!\bigl[\rho\,D(\alpha)\Pi D^\dagger(\alpha)\bigr]$
-    (parity operator $\Pi$), not via $\chi\to$FFT inversion — so the
+    $W(\alpha) = \tfrac{2}{\pi}\mathrm{Tr}\!\bigl[\rho\,D(\alpha)\Pi D^\dagger(\alpha)\bigr]$
+    (parity operator $\Pi$; prefactor $2/\pi$ — corrected from a
+    stale $\pi^{-1}$ in the back-action scoping pass, to anchor
+    $W_\text{vac}(0)=2/\pi$ consistent with P0 / `analytic_chain.md`
+    §4), not via $\chi\to$FFT inversion — so the
     pipeline sidesteps v0.4's grid-resolution limits but raises its
     own implementation question on partial-trace and mixed-state
     Wigner cost. Open v0.5 implementation item.
 
-  - **Open v0.5 items.** Readout-basis choice (σ_z vs. σ_x/σ_y);
-    input-state subset (start with the §7#4 headline three, or
-    aggressive cat + Fock $|2\rangle$ stress test only?);
-    back-action metric (purity drop, fidelity to pre-train state,
-    Wigner-negativity gain, branch-distance $|\beta_\text{tot}|$?).
+  - **v0.6 back-action scope (proposed — pending user lock).** The
+    open items below are settled in
+    [`notes/back_action_scope.md`](./notes/back_action_scope.md)
+    (2026-05-16 scoping pass; logbook
+    [`2026-05-16-back-action-scope.md`](./logbook/2026-05-16-back-action-scope.md)).
+    Proposed locks: (1) **readout basis** — compute all three
+    (unconditional, σ_x branch-select, σ_y/σ_z equator); (2)
+    **input subset** — minimal {vacuum, Fock $|2\rangle$, cat
+    $|\alpha|=1.5$}, full §7#4 set a no-new-physics extension; (3)
+    **metrics** — grid-free state-space primary (purity drop,
+    fidelity to pre-train state, analytic $|\beta_\text{tot}|$) +
+    parity-form Wigner ($2/\pi$ prefactor) / negativity-change /
+    ideal-vs-native $L^1$ as reported diagnostic (not gated, per the
+    χ-bridge-metric caveat). The native leg is **matched physical
+    control** (D4 Layer A pinned WP-E v0.9.1 train at the
+    inverse-Dirichlet-assigned $(\delta,\varphi_\text{train})$), a
+    *structural* residual — not a $\beta_\text{eff}$ calibration
+    (§7#3; scope note §4a). (4) **artefacts** — `run_back_action.py` →
+    `back_action.h5`, `plot_back_action.py`; (5) **gating** —
+    exploratory diagnostic, the *only* hard PASS/FAIL is the vacuum
+    analytic self-consistency anchor (back-action analogue of
+    P0/P1). No runner work until the scope note is locked.
 
 ## References
 
