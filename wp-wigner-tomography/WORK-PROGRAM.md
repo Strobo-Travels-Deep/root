@@ -1469,12 +1469,13 @@ Outstanding non-blocking polish:
     own implementation question on partial-trace and mixed-state
     Wigner cost. Open v0.5 implementation item.
 
-  - **v0.6 back-action scope (proposed — pending user lock).** The
+  - **v0.6 back-action scope (LOCKED 2026-05-16; executed).** The
     open items below are settled in
     [`notes/back_action_scope.md`](./notes/back_action_scope.md)
-    (2026-05-16 scoping pass; logbook
-    [`2026-05-16-back-action-scope.md`](./logbook/2026-05-16-back-action-scope.md)).
-    Proposed locks: (1) **readout basis** — compute all three
+    (2026-05-16 scoping pass + user review/lock; logbook
+    [`2026-05-16-back-action-scope.md`](./logbook/2026-05-16-back-action-scope.md),
+    run [`2026-05-16-back-action-run.md`](./logbook/2026-05-16-back-action-run.md)).
+    Locked decisions: (1) **readout basis** — compute all three
     (unconditional, σ_x branch-select, σ_y/σ_z equator); (2)
     **input subset** — minimal {vacuum, Fock $|2\rangle$, cat
     $|\alpha|=1.5$}, full §7#4 set a no-new-physics extension; (3)
@@ -1490,7 +1491,11 @@ Outstanding non-blocking polish:
     `back_action.h5`, `plot_back_action.py`; (5) **gating** —
     exploratory diagnostic, the *only* hard PASS/FAIL is the vacuum
     analytic self-consistency anchor (back-action analogue of
-    P0/P1). No runner work until the scope note is locked.
+    P0/P1). Executed 2026-05-16 (`run_back_action.py`,
+    `plot_back_action.py`, vacuum gate PASS); native leg pinned at
+    the carrier tooth $k=0$ matching the P1/D3/D4-Layer-B
+    inverse-Dirichlet convention (logged in the run logbook
+    pre-registration).
 
 ## References
 

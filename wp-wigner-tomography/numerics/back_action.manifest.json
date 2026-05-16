@@ -1,0 +1,260 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.6.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "wp-wigner-tomography/numerics/back_action.h5",
+    "format": "hdf5",
+    "bytes": 396928,
+    "sha256": "c4748b4f7a77520e0fb50a437820f274dcde686ee8138dbf3c5b7b1db5ef45ff"
+  },
+  "execution": {
+    "timestamp": "2026-05-16T12:05:46.135409+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 116.1285011768341
+  },
+  "provenance_hash": "5fffbf82bd776debf7808141a0d4ba12190fad8493d20bdb5936bb1df2b0592f",
+  "payload": {
+    "conventions": {
+      "ideal_sdf": "U=D(sigma_x beta_tot/2); branch sep beta_tot",
+      "comb_tooth_k": 0,
+      "k_note": "carrier (k=0) \u2014 matches P1/D3/D4-LayerB; sideband variant deferred",
+      "native_leg": "D4-Layer-A pinned WP-E v0.9.1; matched physical control, not beta_eff (scope \u00a74a, \u00a77#3)",
+      "native_eta": 0.397,
+      "native_omega_r": 0.09016606431708851,
+      "native_delta_t": 0.6283185307179586,
+      "native_state_prep": "spin |down>, no separate MW pi/2; shift_deg phase-symmetric for vacuum/Fock, logged for cat"
+    },
+    "physical_parameters": {
+      "beta0": 0.05,
+      "omega_m": 1.3,
+      "N": 30,
+      "nmax": 60,
+      "alpha_window": 3.0,
+      "alpha_points": 41
+    },
+    "inputs": [
+      "vacuum",
+      "fock2",
+      "cat1.5"
+    ],
+    "points": {
+      "peak": 30.0,
+      "mid": 15.0
+    },
+    "gate": {
+      "tol": 1e-06,
+      "pass": true,
+      "rows": [
+        {
+          "point": "peak",
+          "beta_tot": 1.5,
+          "purity": 0.5526996122809315,
+          "purity_target": 0.5526996122809321,
+          "purity_resid": 6.661338147750939e-16,
+          "fidelity": 0.5697828247309227,
+          "fidelity_target": 0.569782824730923,
+          "fidelity_resid": 3.3306690738754696e-16,
+          "W_max_resid": 1.278288289707435e-10,
+          "W_err_imag": 3.533949646070574e-17,
+          "pass": true
+        },
+        {
+          "point": "mid",
+          "beta_tot": 0.75,
+          "purity": 0.7848914123654817,
+          "purity_target": 0.7848914123654616,
+          "purity_resid": 2.0095036745715333e-14,
+          "fidelity": 0.8688150562628578,
+          "fidelity_target": 0.8688150562628432,
+          "fidelity_resid": 1.4654943925052066e-14,
+          "W_max_resid": 2.3616168941505358e-12,
+          "W_err_imag": 1.3252311172764653e-17,
+          "pass": true
+        }
+      ],
+      "criteria": "purity=\u00bd(1+e^-|\u03b2|\u00b2), fidelity=e^-|\u03b2|\u00b2/4, W=W_mixed_cat(\u03b2_tot/2); back-action P0/P1 analogue"
+    },
+    "summary": [
+      {
+        "input": "vacuum",
+        "point": "peak",
+        "leg": "ideal",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.5526996122809315,
+        "purity_drop": 0.44730038771906855,
+        "fidelity_to_pre": 0.5697828247309227,
+        "neg_volume": -1.5858698909775907e-11,
+        "W_err_imag": 3.533949646070574e-17,
+        "ideal_vs_native_W_L1": 0.8133701119720171
+      },
+      {
+        "input": "vacuum",
+        "point": "peak",
+        "leg": "native",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.933629972718547,
+        "purity_drop": 0.06637002728145303,
+        "fidelity_to_pre": 0.9228668908258837,
+        "neg_volume": -3.438378722745951e-13,
+        "W_err_imag": 2.6504622345529306e-17,
+        "ideal_vs_native_W_L1": 0.8133701119720171
+      },
+      {
+        "input": "vacuum",
+        "point": "mid",
+        "leg": "ideal",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.7848914123654817,
+        "purity_drop": 0.21510858763451834,
+        "fidelity_to_pre": 0.8688150562628578,
+        "neg_volume": -2.7185287082265737e-13,
+        "W_err_imag": 1.3252311172764653e-17,
+        "ideal_vs_native_W_L1": 0.2507644801443746
+      },
+      {
+        "input": "vacuum",
+        "point": "mid",
+        "leg": "native",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.9697464036600303,
+        "purity_drop": 0.030253596339969713,
+        "fidelity_to_pre": 0.9826103111092636,
+        "neg_volume": -8.180103750507936e-14,
+        "W_err_imag": 8.42073939102754e-18,
+        "ideal_vs_native_W_L1": 0.2507644801443746
+      },
+      {
+        "input": "fock2",
+        "point": "peak",
+        "leg": "ideal",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.5494573509784912,
+        "purity_drop": 0.45054264902150876,
+        "fidelity_to_pre": 0.0006281556562318393,
+        "neg_volume": -0.2259714639073883,
+        "W_err_imag": 7.067899292141149e-17,
+        "ideal_vs_native_W_L1": 1.8127902774166214
+      },
+      {
+        "input": "fock2",
+        "point": "peak",
+        "leg": "native",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.7223254356740447,
+        "purity_drop": 0.2776745643259553,
+        "fidelity_to_pre": 0.6914240543444151,
+        "neg_volume": -0.26678257005978373,
+        "W_err_imag": 5.300924469105861e-17,
+        "ideal_vs_native_W_L1": 1.8127902774166214
+      },
+      {
+        "input": "fock2",
+        "point": "mid",
+        "leg": "ideal",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.5003140778281194,
+        "purity_drop": 0.49968592217188057,
+        "fidelity_to_pre": 0.46126511329122544,
+        "neg_volume": -0.153921300396593,
+        "W_err_imag": 3.533949646070574e-17,
+        "ideal_vs_native_W_L1": 0.9158811887002031
+      },
+      {
+        "input": "fock2",
+        "point": "mid",
+        "leg": "native",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.8773211920794889,
+        "purity_drop": 0.12267880792051111,
+        "fidelity_to_pre": 0.9298446869955226,
+        "neg_volume": -0.32584134037094253,
+        "W_err_imag": 1.2147951908367599e-17,
+        "ideal_vs_native_W_L1": 0.9158811887002031
+      },
+      {
+        "input": "cat1.5",
+        "point": "peak",
+        "leg": "ideal",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.6159924492658384,
+        "purity_drop": 0.3840075507341616,
+        "fidelity_to_pre": 0.6183085420197167,
+        "neg_volume": -0.09450680534764307,
+        "W_err_imag": 6.184411880623505e-17,
+        "ideal_vs_native_W_L1": 1.8721586741049716
+      },
+      {
+        "input": "cat1.5",
+        "point": "peak",
+        "leg": "native",
+        "beta_tot": 1.5,
+        "x": 0.0,
+        "phi_train": 0.0,
+        "purity": 0.609149004215126,
+        "purity_drop": 0.39085099578487403,
+        "fidelity_to_pre": 0.14203772632759157,
+        "neg_volume": -0.12247787796282092,
+        "W_err_imag": 1.0601848938211722e-16,
+        "ideal_vs_native_W_L1": 1.8721586741049716
+      },
+      {
+        "input": "cat1.5",
+        "point": "mid",
+        "leg": "ideal",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.8091542710098751,
+        "purity_drop": 0.19084572899012486,
+        "fidelity_to_pre": 0.8822771544851276,
+        "neg_volume": -0.18245282428668047,
+        "W_err_imag": 8.834874115176436e-17,
+        "ideal_vs_native_W_L1": 1.993923463373453
+      },
+      {
+        "input": "cat1.5",
+        "point": "mid",
+        "leg": "native",
+        "beta_tot": 0.75,
+        "x": 0.12641764218503504,
+        "phi_train": 4.450129495496578,
+        "purity": 0.826262799595741,
+        "purity_drop": 0.173737200404259,
+        "fidelity_to_pre": 0.19860487856675563,
+        "neg_volume": -0.1914603187403221,
+        "W_err_imag": 1.236882376124701e-16,
+        "ideal_vs_native_W_L1": 1.993923463373453
+      }
+    ],
+    "overall_pass": true,
+    "tags": [
+      "WP-W",
+      "v0.6",
+      "back-action",
+      "ideal-SDF",
+      "native-bridge"
+    ]
+  }
+}

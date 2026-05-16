@@ -7,6 +7,10 @@ Functions:
     chi_coherent(beta, alpha)        — χ for a coherent state |α⟩
     contrast_from_chi(beta, chi)     — C(β) = e^{-|β|²/2} χ(β) (ideal-SDF prefactor)
     wigner_from_chi(chi, beta_axis)  — 2D-FFT inversion χ → W on the α grid
+    partial_trace_spin(psi, nmax)    — physical reduced motional ρ_m (back-action)
+    conditional_motional_ket(...)    — σ_{x,y,z} post-selected motional ket + prob
+    wigner_from_rho(rho, alpha_axis) — parity-form W = (2/π)Tr[ρ D Π D†]
+    cat_ket(alpha, nmax, parity)     — normalised (|α⟩ ± |-α⟩) cat ket
     sha256_of_file(path)             — file digest for manifest binding
     canonical_manifest(...)          — assemble the wp_manifest_v1 envelope
     write_manifest(...)              — write the sidecar JSON
@@ -26,6 +30,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
+from scipy.linalg import expm
 from scipy.optimize import brentq
 from scipy.special import eval_laguerre
 
@@ -405,6 +410,156 @@ def wigner_from_chi(chi: np.ndarray, beta_axis: np.ndarray) -> tuple[np.ndarray,
 
     err_imag = float(np.max(np.abs(W_complex.imag)))
     return alpha_axis, W_complex.real, err_imag
+
+
+# ---------------------------------------------------------------------------
+# Back-action diagnostic helpers (v0.6 — see notes/back_action_scope.md)
+# ---------------------------------------------------------------------------
+
+def _annihilation(nmax: int) -> np.ndarray:
+    """a = √n on the first super-diagonal, (nmax, nmax) complex."""
+    return np.diag(np.sqrt(np.arange(1, nmax, dtype=np.float64)), 1).astype(np.complex128)
+
+
+def _displacement(beta: complex, nmax: int) -> np.ndarray:
+    """D(β) = exp(β a† − β* a), Fock basis (nmax, nmax).
+
+    Mirrors `scripts.stroboscopic.ideal_sdf.displacement` but kept local
+    so `_common` stays a pure numpy/scipy module with no engine import.
+    """
+    b = complex(beta)
+    if b == 0.0:
+        return np.eye(nmax, dtype=np.complex128)
+    a = _annihilation(nmax)
+    adag = a.conj().T
+    return expm(b * adag - np.conj(b) * a)
+
+
+def partial_trace_spin(psi: np.ndarray, nmax: int) -> np.ndarray:
+    """Reduced motional ρ_m = Tr_spin |ψ⟩⟨ψ| for ψ = [down; up] (2·nmax,).
+
+    **Physical index convention** (the back-action load-bearing point,
+    scope §5): ρ_m[i, j] = ⟨i|ρ_m|j⟩
+        = down[i] conj(down[j]) + up[i] conj(up[j]).
+
+    This is *not* `scripts.stroboscopic.observables.compute`'s internal
+    `rho_m = outer(conj(down), down) + outer(conj(up), up)`, which is the
+    conjugate-transpose ρ_m* — harmless for its only consumer (the
+    transpose-invariant purity) but wrong for Wigner / fidelity. Use
+    this helper for every back-action consumer.
+
+    For a normalised ψ, Tr ρ_m = ‖down‖² + ‖up‖² = 1.
+    """
+    if psi.shape[0] != 2 * nmax:
+        raise ValueError(f"psi length {psi.shape[0]} != 2·nmax = {2 * nmax}")
+    down = psi[:nmax]
+    up = psi[nmax:]
+    return np.outer(down, np.conj(down)) + np.outer(up, np.conj(up))
+
+
+def conditional_motional_ket(psi: np.ndarray, nmax: int, basis: str,
+                             outcome: int) -> tuple[np.ndarray, float]:
+    """Post-selected motional ket ⟨s|ψ⟩ (renormalised) and its probability.
+
+    ψ = [down; up] = |↓⟩⊗down + |↑⟩⊗up, engine [down, up] ordering with
+    σ_z = +1 on |↑⟩ (up block), −1 on |↓⟩ (down block) — matching
+    `observables.compute` and `test_ideal_sdf._spin_expectations`.
+
+    Spin eigenvectors / projected (unnormalised) motional components:
+        z, +1 → up                z, −1 → down
+        x, +1 → (down+up)/√2      x, −1 → (down−up)/√2
+        y, +1 → (down−i·up)/√2    y, −1 → (down+i·up)/√2
+    using |±x⟩=(|↓⟩±|↑⟩)/√2, |±y⟩=(|↓⟩±i|↑⟩)/√2.
+
+    Returns (ket, prob) with ‖ket‖ = 1 and prob = ‖projected‖². The σ_x
+    convention is the one locked numerically by the back-action smoke
+    test (σ_x post-select of ideal-SDF |+y⟩|0⟩ → D(±β_tot/2)|0⟩).
+    """
+    down = psi[:nmax]
+    up = psi[nmax:]
+    s = int(outcome)
+    if s not in (+1, -1):
+        raise ValueError(f"outcome must be ±1, got {outcome}")
+    if basis == "z":
+        comp = up if s == +1 else down
+    elif basis == "x":
+        comp = (down + s * up) / np.sqrt(2.0)
+    elif basis == "y":
+        comp = (down - 1j * s * up) / np.sqrt(2.0)
+    else:
+        raise ValueError(f"basis must be 'x'|'y'|'z', got {basis!r}")
+    prob = float(np.real(np.vdot(comp, comp)))
+    if prob < 1e-15:
+        return np.zeros(nmax, dtype=np.complex128), prob
+    return comp / np.sqrt(prob), prob
+
+
+def wigner_from_rho(rho: np.ndarray,
+                    alpha_axis: np.ndarray) -> tuple[np.ndarray, float]:
+    """Wigner via displaced parity: W(α) = (2/π) Tr[ρ D(α) Π D†(α)].
+
+    Π = diag((−1)^n). **Prefactor is 2/π, not π⁻¹** — anchors
+    W_vac(0) = 2/π consistent with P0 / `analytic_chain.md` §4 and the
+    `_common.W_*` analytic references. This canonical form is applied
+    *unchanged to every ρ, pure or mixed*; any per-state prefactor in
+    the closed-form `W_*` helpers (e.g. `W_mixed_cat`'s ½-folded 1/π)
+    is a normalisation artefact of those formulae and is **never** a
+    target for this general helper (scope §4, review-pass guardrail).
+
+    `rho` is (nmax, nmax) in the physical convention of
+    `partial_trace_spin`. `alpha_axis` is the shared 1-D Re/Im axis;
+    the returned grid is W[i, j] = W(alpha_axis[j] + 1j·alpha_axis[i])
+    (rows = Im α, cols = Re α), matching `wigner_from_chi`.
+
+    Returns (W_real, err_imag). err_imag ≲ 1e-13 for a valid ρ; a
+    value > 1e-10 flags a convention/orientation error.
+    """
+    nmax = rho.shape[0]
+    if rho.shape != (nmax, nmax):
+        raise ValueError(f"rho must be square, got {rho.shape}")
+    n = len(alpha_axis)
+    pm = ((-1.0) ** np.arange(nmax)).astype(np.complex128)  # parity diagonal
+    W = np.empty((n, n), dtype=np.complex128)
+    for ii, ay in enumerate(alpha_axis):       # row = Im α
+        for jj, ax in enumerate(alpha_axis):   # col = Re α
+            D = _displacement(ax + 1j * ay, nmax)
+            # Tr[ρ D Π D†] with Π = diag(pm); (D * pm) scales D's columns
+            # by Π, so M = (D·Π)·D† and W = (2/π) Tr[ρ M].
+            M = (D * pm) @ D.conj().T
+            W[ii, jj] = np.trace(rho @ M)
+    W *= 2.0 / np.pi
+    err_imag = float(np.max(np.abs(W.imag)))
+    return W.real, err_imag
+
+
+def cat_ket(alpha: complex, nmax: int, parity: int = +1) -> np.ndarray:
+    """Normalised cat (|α⟩ + parity·|−α⟩)/𝒩, Fock basis (nmax,).
+
+    parity = +1 → even cat, −1 → odd cat. Coherent amplitudes built
+    analytically (|α⟩_n = e^{−|α|²/2} αⁿ/√n!) so `_common` needs no
+    engine import; verified against `chi_cat` / `W_cat` in the
+    back-action smoke tests.
+    """
+    a = complex(alpha)
+    n = np.arange(nmax)
+    log_coef = -0.5 * np.abs(a) ** 2 + n * np.log(a if a != 0 else 1.0) \
+        - 0.5 * _log_factorial(nmax)
+    coh_plus = np.exp(log_coef).astype(np.complex128)
+    coh_minus = np.exp(-0.5 * np.abs(a) ** 2 + n * np.log(-a if a != 0 else 1.0)
+                       - 0.5 * _log_factorial(nmax)).astype(np.complex128)
+    psi = coh_plus + int(parity) * coh_minus
+    nrm = np.sqrt(np.real(np.vdot(psi, psi)))
+    if nrm < 1e-300:
+        raise ValueError("cat ket has zero norm (degenerate α / parity)")
+    return psi / nrm
+
+
+def _log_factorial(nmax: int) -> np.ndarray:
+    """[log(0!), …, log((nmax−1)!)] via cumulative log — Fock-amp stability."""
+    lf = np.zeros(nmax, dtype=np.float64)
+    if nmax > 1:
+        lf[1:] = np.cumsum(np.log(np.arange(1, nmax, dtype=np.float64)))
+    return lf
 
 
 # ---------------------------------------------------------------------------
