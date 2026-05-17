@@ -16,6 +16,7 @@ decisions, deliverables, fidelity targets, conduct conventions).
 | [`logbook/`](./logbook/) | Dated logbook entries with pre-registered expectations + comparison tables (per §5a discipline). |
 | [`notes/`](./notes/) | Analytical derivations: [`analytic_chain.md`](./notes/analytic_chain.md) (D1, standalone) and [`back_action_scope.md`](./notes/back_action_scope.md) (v0.6 back-action scope, locked + executed). |
 | [`refs/`](./refs/) | Per-paper extractions + contextual notes + lit-review tracker. |
+| [`../notebooks/wpw_back_action.ipynb`](../notebooks/wpw_back_action.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): plain-language definitions, the vacuum-gate machinery check, the readout-dependence figure, and the ideal-vs-native structural residual for v0.6. Synthesis artefact — not a source of truth. |
 
 ## Quick start (execution)
 
@@ -34,6 +35,10 @@ python plots/plot_p0_preflight.py
 python plots/plot_reconstruction_demo.py
 python plots/plot_bridge.py                # D4 bridge figure
 python plots/plot_back_action.py           # v0.6 back-action figure
+
+# Explanatory synthesis notebook (repo-root notebooks/):
+jupyter nbconvert --to notebook --execute notebooks/wpw_back_action.ipynb \
+  --output wpw_back_action.executed.ipynb   # or just open it in Jupyter
 ```
 
 Each runner writes an HDF5 artefact and a sidecar
