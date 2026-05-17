@@ -38,6 +38,7 @@ decisions, deliverables, fidelity targets, conduct conventions).
 ## Quick start (execution)
 
 ```bash
+# D2-D4 runners use paths relative to the WP-W folder.
 cd wp-wigner-tomography
 python numerics/run_reach_ladder.py        # D2 reach ladder (analytic)
 python numerics/run_p0_preflight.py        # P0 self-consistency gate
@@ -46,18 +47,21 @@ python numerics/run_p1_preflight.py        # P1 engine-bridge sentinel
 python numerics/run_bridge_native.py       # D4 Layer A — native vs WP-E
 python numerics/run_bridge_inversion.py    # D4 Layer B — engine χ FFT (~18 min)
 python numerics/test_back_action_helpers.py # v0.6 — 8 helper smoke locks
-python numerics/run_back_action.py         # v0.6 — back-action (vacuum gate + sweep, ~2 min)
-python numerics/run_back_action.py --k-sideband 1 \
-  --inputs vacuum coherent2 fock2 cat1.5 --output numerics/back_action_k1.h5
 python plots/plot_reach_ladder.py
 python plots/plot_p0_preflight.py
 python plots/plot_reconstruction_demo.py
 python plots/plot_bridge.py                # D4 bridge figure
-python plots/plot_back_action.py           # v0.6 back-action figure
-python plots/plot_back_action.py --h5 numerics/back_action_k1.h5 \
-  --output plots/back_action_k1.png
 
-# Explanatory synthesis notebooks (repo-root notebooks/; or just open in Jupyter):
+# Back-action runners use repo-root-relative defaults.
+cd ..
+python wp-wigner-tomography/numerics/run_back_action.py # v0.6 carrier back-action (~2 min)
+python wp-wigner-tomography/plots/plot_back_action.py   # v0.6 carrier figure
+python wp-wigner-tomography/numerics/run_back_action.py --k-sideband 1 \
+  --inputs vacuum coherent2 fock2 cat1.5
+python wp-wigner-tomography/plots/plot_back_action.py \
+  --h5 wp-wigner-tomography/numerics/back_action_k1.h5
+
+# Explanatory synthesis notebooks (repo-root notebooks/; or just open in Jupyter).
 jupyter nbconvert --to notebook --execute notebooks/wpw_chi_to_wigner.ipynb \
   --output wpw_chi_to_wigner.executed.ipynb
 jupyter nbconvert --to notebook --execute notebooks/wpw_dirichlet_targeting.ipynb \
