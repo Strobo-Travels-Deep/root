@@ -17,6 +17,7 @@ decisions, deliverables, fidelity targets, conduct conventions).
 | [`notes/`](./notes/) | Analytical derivations: [`analytic_chain.md`](./notes/analytic_chain.md) (D1, standalone) and [`back_action_scope.md`](./notes/back_action_scope.md) (v0.6 back-action scope, locked + executed). |
 | [`refs/`](./refs/) | Per-paper extractions + contextual notes + lit-review tracker. |
 | [`../notebooks/wpw_chi_to_wigner.ipynb`](../notebooks/wpw_chi_to_wigner.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): the core chain — ideal σ_x SDF → direct χ readout → FFT Wigner; live analytic examples, the factor-of-two FFT convention, and the committed D3 reconstruction. Synthesis artefact — not a source of truth. |
+| [`../notebooks/wpw_dirichlet_targeting.ipynb`](../notebooks/wpw_dirichlet_targeting.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): how $(\delta,\varphi_\text{train},N)$ place a probe point β via the Dirichlet kernel, inverse-Dirichlet Cartesian targeting (5025/6561 reach cross-check), and the committed-P1 closed-loop on the ideal-SDF engine. Synthesis artefact — not a source of truth. |
 | [`../notebooks/wpw_back_action.ipynb`](../notebooks/wpw_back_action.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): plain-language definitions, the vacuum-gate machinery check, the readout-dependence figure, and the ideal-vs-native structural residual for v0.6. Synthesis artefact — not a source of truth. |
 
 ## Quick start (execution)
@@ -40,6 +41,8 @@ python plots/plot_back_action.py           # v0.6 back-action figure
 # Explanatory synthesis notebooks (repo-root notebooks/; or just open in Jupyter):
 jupyter nbconvert --to notebook --execute notebooks/wpw_chi_to_wigner.ipynb \
   --output wpw_chi_to_wigner.executed.ipynb
+jupyter nbconvert --to notebook --execute notebooks/wpw_dirichlet_targeting.ipynb \
+  --output wpw_dirichlet_targeting.executed.ipynb
 jupyter nbconvert --to notebook --execute notebooks/wpw_back_action.ipynb \
   --output wpw_back_action.executed.ipynb
 ```
