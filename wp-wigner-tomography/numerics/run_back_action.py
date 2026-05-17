@@ -11,9 +11,11 @@ guardrail):
 
   * **Ideal SDF** U = D(σ_x β_tot/2); branch separation β_tot, each
     branch displaced ±β_tot/2 (analytic_chain.md §1, scope §2).
-  * **Comb tooth k = 0 (carrier)** — matches the P1 / D3 / D4-Layer-B
-    inverse-Dirichlet convention used throughout WP-W. A sideband
-    (k=1) variant is a documented future extension, not in v0.6.
+  * **Comb tooth k** — default k=0 (carrier) matches the P1 / D3 /
+    D4-Layer-B inverse-Dirichlet convention used throughout WP-W.
+    The k=1 sideband follow-up uses the same matched-control
+    diagnostic at the first red/blue sideband tooth to expose the
+    native engine's JC-like motional back-action.
   * **Matched physical control, not β_eff** (scope §4a). The β_tot
     probe points are defined on the *ideal leg* via the
     inverse-Dirichlet rule. The native leg runs the D4-Layer-A pinned
@@ -39,8 +41,11 @@ guardrail):
     line for both legs.
   * **Probe points** (per state): peak |β_tot| = N·β₀ (x=0,
     on-resonance, max back-action) and mid-branch |β_tot| = N·β₀/2.
-  * **Inputs**: vacuum, Fock |2⟩, cat |α|=1.5 (all pure; scope §3
-    decision 2).
+  * **Inputs**: default vacuum, Fock |2⟩, cat |α|=1.5 (all pure;
+    scope §3 decision 2). Follow-up runs may add coherent states
+    (for example `coherent2`) because the native sideband
+    collapse–revival effect is most naturally exposed on coherent
+    inputs.
   * **Readouts**: unconditional ρ_m^(post) (headline) + all three
     conditional bases σ_{x,y,z} (scope §3 decision 1).
 
@@ -56,10 +61,12 @@ aborts non-zero before writing the full sweep.
 
 Usage:
     python wp-wigner-tomography/numerics/run_back_action.py
+    python wp-wigner-tomography/numerics/run_back_action.py --k-sideband 1
 """
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from pathlib import Path
@@ -88,13 +95,31 @@ from _common import (
 )
 
 WP_ID = "wigner-tomography"
-CODE_VERSION = "0.6.0"
+CODE_VERSION = "0.6.1"
 REPOSITORY = "https://github.com/Strobo-Travels-Deep/root"
 
 # D4-Layer-A pinned WP-E v0.9.1 native parameters (run_bridge_native.py).
 ETA = 0.397
 OMEGA_R = 0.09016606431708851
 DELTA_T = 0.6283185307179586  # = 0.13 · T_m at ω_m = 1.3
+
+
+def tooth_label(k: int) -> str:
+    """Human-readable comb-tooth label for reports and manifests."""
+    if int(k) == 0:
+        return "carrier"
+    if int(k) == 1:
+        return "first sideband"
+    if int(k) == -1:
+        return "negative first sideband"
+    return f"k={int(k)} comb tooth"
+
+
+def default_output_for_k(k: int) -> str:
+    """Default artifact path that preserves the parked k=0 result."""
+    if int(k) == 0:
+        return "wp-wigner-tomography/numerics/back_action.h5"
+    return f"wp-wigner-tomography/numerics/back_action_k{int(k)}.h5"
 
 
 def inverse_dirichlet_target(ratio: float, N: int, omega_m: float,
@@ -120,6 +145,11 @@ def motional_input(kind: str, nmax: int) -> np.ndarray:
         return states.fock_state(2, nmax)
     if kind == "cat1.5":
         return cat_ket(1.5 + 0j, nmax, parity=+1)
+    if kind.startswith("coherent"):
+        alpha_s = kind[len("coherent"):].lstrip("_")
+        if not alpha_s:
+            raise ValueError("coherent input must include an amplitude, e.g. coherent2")
+        return states.coherent_state(float(alpha_s), 0.0, nmax)
     raise ValueError(f"unknown input {kind!r}")
 
 
@@ -238,9 +268,20 @@ def main() -> int:
     ap.add_argument("--nmax", type=int, default=60)
     ap.add_argument("--alpha-window", type=float, default=3.0)
     ap.add_argument("--alpha-points", type=int, default=41)
+    ap.add_argument("--gate-alpha-window", type=float, default=3.0,
+                    help="phase-space half-window used only by the hard "
+                         "vacuum Wigner gate; keep at the validated v0.6 "
+                         "value when plotting wider reporting windows")
+    ap.add_argument("--gate-alpha-points", type=int, default=41,
+                    help="number of points on the hard-gate alpha axis")
     ap.add_argument("--gate-tol", type=float, default=1e-6)
-    ap.add_argument("--output", type=str,
-                    default="wp-wigner-tomography/numerics/back_action.h5")
+    ap.add_argument("--inputs", nargs="+",
+                    default=["vacuum", "fock2", "cat1.5"],
+                    help="pure motional inputs to run; known names include "
+                         "vacuum, fock2, cat1.5, coherent2")
+    ap.add_argument("--output", type=str, default=None,
+                    help="output HDF5 path; defaults to back_action.h5 for k=0 "
+                         "and back_action_k{K}.h5 otherwise")
     args = ap.parse_args()
 
     t0 = time.time()
@@ -251,17 +292,30 @@ def main() -> int:
     alpha_axis = np.linspace(-args.alpha_window, args.alpha_window,
                              args.alpha_points)
     d_alpha = float(alpha_axis[1] - alpha_axis[0])
+    gate_alpha_axis = np.linspace(-args.gate_alpha_window,
+                                  args.gate_alpha_window,
+                                  args.gate_alpha_points)
+    gate_d_alpha = float(gate_alpha_axis[1] - gate_alpha_axis[0])
 
     points = [("peak", float(N)), ("mid", float(N) / 2.0)]
-    inputs = ["vacuum", "fock2", "cat1.5"]
+    inputs = list(args.inputs)
 
-    print(f"WP-W v0.6 back-action — N={N}, β₀={b0}, k={k} (carrier), "
+    tlabel = tooth_label(k)
+    if args.output is None:
+        args.output = default_output_for_k(k)
+
+    print(f"WP-W v0.6 back-action — N={N}, β₀={b0}, k={k} ({tlabel}), "
           f"nmax={nmax}, α∈[-{args.alpha_window},{args.alpha_window}]²"
           f" ({args.alpha_points}², Δα={d_alpha:.3f})\n")
+    if (args.gate_alpha_window != args.alpha_window
+            or args.gate_alpha_points != args.alpha_points):
+        print("  hard-gate Wigner axis: "
+              f"α∈[-{args.gate_alpha_window},{args.gate_alpha_window}]²"
+              f" ({args.gate_alpha_points}², Δα={gate_d_alpha:.3f})\n")
 
     gate_ok, gate_rows = run_vacuum_gate(
         hs=hs, nmax=nmax, beta0=b0, N=N, omega_m=wm, k=k, points=points,
-        alpha_axis=alpha_axis, d_alpha=d_alpha, tol=args.gate_tol)
+        alpha_axis=gate_alpha_axis, d_alpha=gate_d_alpha, tol=args.gate_tol)
     if not gate_ok:
         print("ABORT: vacuum gate failed — diagnostic not trusted.")
         return 1
@@ -343,8 +397,13 @@ def main() -> int:
         h5.attrs["k_sideband"] = k
         h5.attrs["omega_m"] = wm
         h5.attrs["nmax"] = nmax
+        h5.attrs["alpha_window"] = args.alpha_window
+        h5.attrs["alpha_points"] = args.alpha_points
         h5.attrs["gate_pass"] = bool(gate_ok)
         h5.attrs["gate_tol"] = args.gate_tol
+        h5.attrs["gate_alpha_window"] = args.gate_alpha_window
+        h5.attrs["gate_alpha_points"] = args.gate_alpha_points
+        h5.attrs["inputs_json"] = json.dumps(inputs)
         h5.create_dataset("alpha_axis", data=alpha_axis)
         g = h5.create_group("gate")
         for i, r in enumerate(gate_rows):
@@ -374,7 +433,13 @@ def main() -> int:
         "conventions": {
             "ideal_sdf": "U=D(sigma_x beta_tot/2); branch sep beta_tot",
             "comb_tooth_k": k,
-            "k_note": "carrier (k=0) — matches P1/D3/D4-LayerB; sideband variant deferred",
+            "k_note": (
+                "carrier (k=0) — matches P1/D3/D4-LayerB"
+                if k == 0 else
+                f"{tooth_label(k)} (k={k}) — sideband follow-up at matched "
+                "physical control; native leg exposes JC-like motional "
+                "back-action rather than carrier-dominated response"
+            ),
             "native_leg": "D4-Layer-A pinned WP-E v0.9.1; matched physical control, not beta_eff (scope §4a, §7#3)",
             "native_eta": ETA, "native_omega_r": OMEGA_R,
             "native_delta_t": DELTA_T,
@@ -383,7 +448,9 @@ def main() -> int:
         "physical_parameters": {"beta0": b0, "omega_m": wm, "N": N,
                                 "nmax": nmax,
                                 "alpha_window": args.alpha_window,
-                                "alpha_points": args.alpha_points},
+                                "alpha_points": args.alpha_points,
+                                "gate_alpha_window": args.gate_alpha_window,
+                                "gate_alpha_points": args.gate_alpha_points},
         "inputs": inputs,
         "points": {p: r for p, r in points},
         "gate": {"tol": args.gate_tol, "pass": bool(gate_ok),

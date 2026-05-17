@@ -1499,6 +1499,22 @@ Outstanding non-blocking polish:
     inverse-Dirichlet convention (logged in the run logbook
     pre-registration).
 
+  - **k=1 sideband follow-up (executed 2026-05-17).** The first
+    sideband variant promised in the v0.6 run logbook is executed in
+    [`2026-05-17-back-action-k1-sideband.md`](./logbook/2026-05-17-back-action-k1-sideband.md).
+    The runner is now tooth-aware (`--k-sideband 1`) and writes
+    `back_action_k1.h5` / `back_action_k1.png` without touching the
+    parked carrier artefact. The hard ideal-vacuum gate remains
+    PASS at machine precision. Vacuum, Fock $|2\rangle$, and the
+    small cat are close to their carrier-tooth native results at the
+    locked probe points; the useful sideband witness is coherent
+    $|\alpha|=2$, where the native leg stays nearly pure but lands
+    far from the input and far from either ideal σ_x branch
+    (peak native $F_\mathrm{pre}=0.0486$, σ_x branch
+    $F=0.0372$). This closes the single-point k=1 follow-up; a full
+    collapse-revival map would require a separate scan over coherent
+    phase, detuning, or train length.
+
 ## References
 
 Verified bibliography after the v0.4 lit-review pass (per [§5a
