@@ -19,6 +19,7 @@ decisions, deliverables, fidelity targets, conduct conventions).
 | [`../notebooks/wpw_chi_to_wigner.ipynb`](../notebooks/wpw_chi_to_wigner.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): the core chain — ideal σ_x SDF → direct χ readout → FFT Wigner; live analytic examples, the factor-of-two FFT convention, and the committed D3 reconstruction. Synthesis artefact — not a source of truth. |
 | [`../notebooks/wpw_dirichlet_targeting.ipynb`](../notebooks/wpw_dirichlet_targeting.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): how $(\delta,\varphi_\text{train},N)$ place a probe point β via the Dirichlet kernel, inverse-Dirichlet Cartesian targeting (5025/6561 reach cross-check), and the committed-P1 closed-loop on the ideal-SDF engine. Synthesis artefact — not a source of truth. |
 | [`../notebooks/wpw_back_action.ipynb`](../notebooks/wpw_back_action.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): plain-language definitions, the vacuum-gate machinery check, the readout-dependence figure, and the ideal-vs-native structural residual for v0.6. Synthesis artefact — not a source of truth. |
+| [`../notebooks/wpw_native_bridge.ipynb`](../notebooks/wpw_native_bridge.ipynb) | **Explanatory notebook** (repo-root `notebooks/`, source + `.executed` pair): the capstone — why the native monochromatic Raman engine is a *different operator* than the FH20 SDF (structural, not calibration), via the three executed evidence layers P1 / D4-A / D4-B+back-action. Synthesis artefact — not a source of truth. |
 
 ## Quick start (execution)
 
@@ -45,6 +46,8 @@ jupyter nbconvert --to notebook --execute notebooks/wpw_dirichlet_targeting.ipyn
   --output wpw_dirichlet_targeting.executed.ipynb
 jupyter nbconvert --to notebook --execute notebooks/wpw_back_action.ipynb \
   --output wpw_back_action.executed.ipynb
+jupyter nbconvert --to notebook --execute notebooks/wpw_native_bridge.ipynb \
+  --output wpw_native_bridge.executed.ipynb
 ```
 
 Each runner writes an HDF5 artefact and a sidecar
