@@ -186,12 +186,18 @@ always quoted with the Δα pixel size attached.
 
 ## 6. Cross-cutting structural conclusion
 
-The single most important physics conclusion: **the ideal↔native
-bridge is *structural*, not a regime limit.** No limit of the
-monochromatic Raman engine recovers the bichromatic FH20 σ_x SDF
-([`analytic_chain.md`](./analytic_chain.md) §5); the first-order term
-is single-phonon (displacement), the 𝒪(η²) $X^2\sigma_\varphi$ term
-is two-phonon (squeezing-type, ≈16 % at η=0.397). Consequently every
+**For the monochromatic stroboscopic engine specifically**, the
+ideal↔native bridge is *structural*, not a regime limit: no limit of
+the monochromatic Raman engine recovers the bichromatic FH20 σ_x SDF
+([`analytic_chain.md`](./analytic_chain.md) §5) — the first-order
+term is single-phonon (displacement), the 𝒪(η²) $X^2\sigma_\varphi$
+term is two-phonon (squeezing-type, ≈16 % at η=0.397). This is
+**engine-specific, not a universal tomography limitation**: [FH20]'s
+*bichromatic* SDF natively realises the ideal chain — WP-W's
+contribution is the *quantitative characterisation* of the
+monochromatic departure, subordinate to [FH20]/[Hasse24] (see
+[`publication_assessment.md`](./publication_assessment.md)).
+Consequently every
 ideal-vs-native comparison is run as a **matched physical control**
 (same drive program, no $\beta_\text{eff}$ calibration —
 `back_action_scope.md` §4a), and the residual *is* the diagnostic.

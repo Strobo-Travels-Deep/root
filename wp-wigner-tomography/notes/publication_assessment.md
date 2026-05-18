@@ -155,18 +155,57 @@ Supplementary: P0/P1 gates, convention table, the analytic chain
 
 ## 7. Prerequisites before any drafting (ordered)
 
-1. **Fix R-4** — doc-only reconciliation of `WORK-PROGRAM.md`
-   §1.3/§7#3 with the `FH20.md`/`Hasse24.md` extractions (soften to
-   engine-specific; remove "not previously stated"; foreground
-   FH20/Hasse24 credit). *Blocking.*
-2. **Confirm the author set / program-continuation framing** (§5).
-3. **Lock the scope of claims** to §3 (1)–(4); strike any
-   "first/structural-impossibility" language project-wide.
-4. *Then* a paper outline + draft is a reasonable next artifact.
+1. **Fix R-4** — ✅ done (`605c212`): `WORK-PROGRAM.md` §1.3 item 3
+   re-cast as engine-specific quantitative characterisation;
+   "not previously stated" removed; forward-facing framing-discipline
+   note added. §7#3 was already engine-bounded.
+2. **Author set / program-continuation framing** — ✅ confirmed
+   (user, 2026-05-18): **U. Warring et al. (provisional)**;
+   program-continuation of the group's own [Hasse24] ²⁵Mg⁺
+   programme. Positioning aid only — does **not** waive [FH20]/[Hasse24]
+   credit (§5).
+3. **Claim-scope lock** — ✅ done (§8 below): `wpw_findings.md` §6
+   de-grandiosed + engine-bounded; sweep of forward-facing docs
+   confirmed no other residual overclaim (the "out-of-scope/not
+   claimed" disclaimer list and the corrected "not first
+   characterisation" text are honest and stay).
+4. **Outline/draft** — ✅ cleared to proceed →
+   [`publication_outline.md`](./publication_outline.md).
 
 No new science is required — the artefact chain is complete and the
 η² thread is quantified. The gating work is *framing honesty and the
 R-4 correction*, not more runs.
+
+## 8. Locked claim scope (prereq 3 — the single reference for any draft)
+
+Any outline, abstract, or draft inherits **exactly** this and nothing
+broader:
+
+- **Claims = §3 (1)–(4) only:** (1) the inverse-Dirichlet Cartesian
+  forward map; (2) validated reconstruction at η=0.40; (3) the
+  *quantitative* Wigner-resolved ideal-vs-native back-action map
+  (carrier + first sideband, quantum/classical discriminator);
+  (4) the native 𝒪(η²) two-phonon squeezing-channel null
+  (N-6 + (r,θ) re-audit, P-D-gated). Nothing else is a claim.
+- **Subordination (mandatory in every framing):** χ-FFT tomography =
+  [FH20]; the stroboscopic protocol, the back-action concept (App. D),
+  and the squeezed-state concept + Δt=2π/2ω_m timing (App. E) =
+  [Hasse24]. WP-W = *reinterpretation + quantitative
+  characterisation*, framed as continuation of the group's own
+  [Hasse24] programme.
+- **Banned in all external-facing text:** "first",
+  "first characterisation", "structural impossibility",
+  "not previously stated", "novel/novelty" as a headline, and any
+  *unbounded* "structural, not a regime limit" (always carry the
+  *engine-specific* qualifier + the [FH20]-bichromatic-realises-it
+  credit).
+- **No-experiment honesty:** theory/numerics; the native engine and
+  the D4 bridge are simulations; [Hasse24]'s experiment is cited as
+  motivation/consistency, never as a demonstrated experimental match.
+- **Author line for drafts:** "U. Warring *et al.* (provisional)" —
+  final list TBD; does not change the [FH20]/[Hasse24] credit.
+
+This §8 is the contract; the outline (§7.4) is built against it.
 
 -----
 
