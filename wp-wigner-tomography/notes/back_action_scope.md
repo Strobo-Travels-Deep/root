@@ -319,7 +319,116 @@ discipline.
 
 -----
 
+## 8. Full §7#4 input-set extension *(proposed 2026-05-17 — pending user lock)*
+
+The v0.6 minimal set (§3 decision 2) was {vacuum, Fock $|2\rangle$,
+cat $|\alpha|{=}1.5$}, all *pure*. The k=0 carrier result is
+committed and parked (`back_action.h5`); the k=1 sideband follow-up
+is `back_action_k1.h5`. This section scopes the **full §7#4 headline
+set + mixed-cat control** as a back-action diagnostic — the
+"documented no-new-physics extension" §3 decision 2 deferred. It is
+*proposed*; no code until the user locks it (mirroring the original
+`cb850a5` doc-only checkpoint discipline).
+
+**Inputs** (k=0 carrier; the parked thread's tooth):
+vacuum (=Fock$|0\rangle$, pure) · coherent $|\alpha|{=}1.5$ (pure) ·
+**thermal $\bar n{=}0.5$ (mixed)** · Fock$|1\rangle$ (pure) ·
+Fock$|2\rangle$ (pure) · pure cat $|\alpha|{=}1.5$ (pure) ·
+**mixed cat $|\alpha|{=}1.5$ (mixed)** — the quantum/classical
+control.
+
+### Decision A — mixed-input propagation (no new physics/engine code)
+
+Represent *every* input as a list of $(w_i,|\phi_i\rangle)$,
+$\sum w_i=1$ (pure = one term, $w{=}1$). Propagate each $|\phi_i\rangle$
+through the **unchanged** `evolve_ideal`/`evolve_native`,
+`partial_trace_spin` each → $\rho_i^{(\rm post)}$, then
+$\rho_m^{(\rm post)}=\sum_i w_i\,\rho_i^{(\rm post)}$. The validated
+pure pipeline (and the gate) is reused verbatim per term.
+- **thermal $\bar n{=}0.5$**: $\rho=\sum_n p_n|n\rangle\langle n|$,
+  $p_n=\bar n^{\,n}/(1{+}\bar n)^{n+1}$. For $\bar n{=}0.5$,
+  $p_n=\tfrac23(\tfrac13)^n$, so the tail after keeping $n=0..M$ is
+  exactly $(1/3)^{M+1}$ ⇒ $\le10^{-6}$ needs $M{+}1\ge13$, i.e.
+  **13 terms ($n=0..12$)** (8 terms would leave a $\sim1.5\times10^{-4}$
+  tail). **Renormalise** the kept weights by $1/\sum_{n\le M}p_n$ and
+  **store/report the discarded tail mass** in the artefact for
+  honesty.
+- **mixed cat**: exactly two terms, $w{=}\tfrac12$,
+  $|{\pm}\alpha\rangle$ lab-frame on the real axis (same
+  matched-control convention as the pure cat — §4a).
+
+### Decision B — metric generalisation (backward-compatible)
+
+- **purity** $\operatorname{Tr}[(\rho_m^{(\rm post)})^2]$ — unchanged
+  (matrix form already general).
+- **fidelity-to-pre** → $\operatorname{Tr}[\rho_m^{(\rm pre)}\rho_m^{(\rm post)}]$
+  (state overlap). For a pure pre-state this equals the current
+  $\langle\psi_{\rm pre}|\rho^{(\rm post)}|\psi_{\rm pre}\rangle$
+  **exactly** → the three committed states' numbers are unchanged.
+- **purity drop** → report *both* the absolute post-purity and the
+  drop **relative to the input's own pre-purity**
+  ($\rho_{\rm pre}$ is mixed for thermal/mixed-cat:
+  $\operatorname{Tr}\rho_{\rm th}^2=1/(2\bar n{+}1)=0.5$;
+  mixed-cat pre-purity $\tfrac12\big(1+|\langle\alpha|{-}\alpha\rangle|^2\big)
+  =\tfrac12\big(1+e^{-4|\alpha|^2}\big)$ ≈ $0.50006$ at $|\alpha|{=}1.5$).
+  Pre-purity logged per input so the drop is interpretable.
+- negativity volume, ideal-vs-native $W$ $L^1$ — unchanged
+  (unconditional $W$).
+
+### Decision C — conditional readouts for mixed inputs
+
+The **unconditional** $\rho_m^{(\rm post)}$ + its metrics are the
+headline and are well-defined for all seven. The conditional
+$\sigma_{x,y,z}$ probabilities/purities and the $\sigma_y{+}$
+conditional Wigner are computed for all (weighted-density-matrix
+conditional). The **σ_x-branch fidelity** ("conditional ket $\approx
+D(\pm\beta_\text{tot}/2)|\psi_{\rm pre}\rangle$") is intrinsically a
+*pure-input* probe of the ideal SDF's branch action — there is no
+single $|\psi_{\rm pre}\rangle$ for thermal/mixed-cat. Convention:
+**omit the `branch_fidelity` HDF5 attr for the two mixed inputs**
+(h5py attrs cannot natively hold `None`/`null`; omission is the
+clean signal), and render it `N/A` at readout. **The plotter must
+be patched**: `plot_back_action.py` reads a missing fidelity as
+`None` (`_recs`, ~L69) but then *unconditionally* formats it
+`f"… {…:.3f}"` (~L153) → it **crashes** on mixed rows. The
+implementation step must guard that annotation (skip / render "N/A"
+when `None`). It is **not** already handled — this corrects a wrong
+claim in the earlier draft of this section.
+
+### Decision D — gate unchanged
+
+The only hard PASS/FAIL stays the **vacuum (pure) analytic anchor**
+(§6) — already machine-precision. Mixed states get a *reported,
+non-gated* closed-form sanity line where one exists (e.g. the
+displaced-thermal 50/50 mixture purity has a closed form), in the
+P0/P1 spirit but not promoted to a gate (consistent with §5).
+
+### Decision E — artefacts
+
+New `back_action_full.h5` (+`wp_manifest_v1`) at k=0, all seven
+inputs; the parked 3-input `back_action.h5` is left **untouched**
+(provenance-stable — `back_action_full.h5` is its superset).
+`plot_back_action.py` already reads `inputs_json` + handles arbitrary
+inputs, **but** needs the missing-`branch_fidelity` format guard of
+Decision C (one-line patch). New dated logbook
+`2026-05-1X-back-action-full-set.md` with pre-registered
+expectations → run → comparison; one clean commit.
+
+**Recommended execution order (on lock):** (1) add the
+weighted-ket-list input layer + thermal/mixed-cat builders to
+`run_back_action.py` (pure path = 1-term) and the
+`plot_back_action.py` `None`-fidelity guard; (2) regression-check
+the three committed states reproduce the `back_action.h5` numbers —
+**bit-for-bit if the single-term pure path is byte-retained, else
+$\le10^{-12}$** (trace/dot reassociation is harmless; cf. the
+package's own conftest tolerance note); (3) run the 7-input
+`back_action_full.h5`; (4) plot + pre-registered logbook + commit.
+Vacuum gate must still PASS first.
+
+-----
+
 *Source of truth for conventions:
 [`analytic_chain.md`](./analytic_chain.md) §1–§2 (σ_x SDF, branches
 at $\pm\beta_\text{tot}/2$). This note adds no new physics; it locks
-the back-action protocol decisions left open in WORK-PROGRAM §8.*
+the back-action protocol decisions left open in WORK-PROGRAM §8. §8
+(full §7#4 set) is proposed and pending user lock.*
