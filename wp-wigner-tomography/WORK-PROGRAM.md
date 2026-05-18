@@ -283,12 +283,22 @@ points:
    approximation-hierarchy analysis (§Analytical bullet 5) and the
    ideal-SDF / native-engine bridge (§7#3) address regime issues that
    [FH20]'s perturbative platform sidesteps.
-3. **The structural-bridge finding** (§7#3 "no limit recovers the
-   ideal SDF"). Specific to monochromatic engines: [FH20]'s
-   bichromatic SDF *does* natively realise the ideal chain, but
-   [Hasse24]'s monochromatic engine cannot, even at sideband
-   resonance under RWA. *To our knowledge this finding has not been
-   stated previously in the literature.*
+3. **Quantitative characterisation of the monochromatic-engine
+   departure from the ideal SDF** (§7#3). [FH20]'s *bichromatic* SDF
+   natively realises the ideal $D(\sigma_x\beta/2)$ chain; the
+   [Hasse24] *monochromatic* stroboscopic engine does not — its
+   leading term stays Jaynes–Cummings-type and comb-sharpening
+   selects but does not transmute it, even at sideband resonance
+   under RWA. This is an **engine-specific** property of the
+   monochromatic constraint inherited from [Hasse24], **not** a
+   universal trapped-ion tomography limitation (§7#3, *Scope of this
+   finding*). WP-W's contribution is to *quantify* this departure:
+   the Wigner-resolved ideal-vs-native back-action map across the
+   §7#4 set on carrier and first sideband, and the native
+   $\mathcal O(\eta^2)$ two-phonon squeezing-channel null (the
+   App.-E-timing re-audit) — turning [Hasse24]'s qualitative
+   $\delta\langle n\rangle$ (App. D) and squeezed-state concept
+   (App. E) into a gate-anchored quantitative characterisation.
 4. **Bridge between WP-TOM saturated template-matching and WP-W
    perturbative FFT** on the same Mg⁺ engine (§7#7).
 5. **Numerical-WP discipline**: pre-registered expectations,
@@ -1574,6 +1584,25 @@ Outstanding non-blocking polish:
     pairing every load-bearing conclusion (the validated chain, the
     five execution-surfaced conventions, the back-action family, and
     Rank 2) with its gate number, commit, and primary logbook.
+
+  - **Publication framing correction (R-4, 2026-05-18).** §1.3 item 3
+    was reconciled with the project's own
+    [`refs/extractions/FH20.md`](./refs/extractions/FH20.md) /
+    [`Hasse24.md`](./refs/extractions/Hasse24.md): the stale
+    "not been stated previously in the literature" novelty language
+    was removed and the item re-cast as the *engine-specific
+    quantitative characterisation* it actually is (consistent with
+    §7#3 *Scope of this finding*). **Forward-facing framing
+    discipline:** WP-W is a theory/numerics methods+characterisation
+    contribution explicitly subordinate to [FH20] (χ-FFT framework)
+    and [Hasse24] (the protocol, the back-action and squeezed-state
+    concepts); avoid "first", "structural impossibility", and
+    "not previously stated" in any external-facing text. The
+    author-overlap/program-continuation framing is a positioning aid
+    pending paper-author-list confirmation and does **not** waive the
+    [FH20]/[Hasse24] credit obligation. Rationale, prior-art table,
+    referee-risk register, and venue analysis:
+    [`notes/publication_assessment.md`](./notes/publication_assessment.md).
 
 ## References
 
