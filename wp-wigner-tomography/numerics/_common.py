@@ -520,6 +520,23 @@ def _displacement(beta: complex, nmax: int) -> np.ndarray:
     return expm(b * adag - np.conj(b) * a)
 
 
+def squeezed_ket(r: float, theta: float, nmax: int) -> np.ndarray:
+    """|r,θ⟩ = S(ξ)|0⟩, S(ξ) = exp[½(ξ* a² − ξ a†²)], ξ = r e^{iθ}.
+
+    Matches the `chi_squeezed` / `W_squeezed` convention (verified to
+    the complex128 floor in test_squeezed_helpers). r=0 ⇒ |0⟩.
+    """
+    if r == 0.0:
+        v = np.zeros(nmax, dtype=np.complex128)
+        v[0] = 1.0
+        return v
+    a = _annihilation(nmax)
+    adag = a.conj().T
+    xi = r * np.exp(1j * theta)
+    S = expm(0.5 * (np.conj(xi) * (a @ a) - xi * (adag @ adag)))
+    return S[:, 0].astype(np.complex128)
+
+
 def partial_trace_spin(psi: np.ndarray, nmax: int) -> np.ndarray:
     """Reduced motional ρ_m = Tr_spin |ψ⟩⟨ψ| for ψ = [down; up] (2·nmax,).
 
