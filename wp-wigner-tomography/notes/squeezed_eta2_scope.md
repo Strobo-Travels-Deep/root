@@ -2,8 +2,11 @@
 
 **WP-W · Rank 2 prerequisite · 2026-05-19**
 
-**Status.** *PROPOSED — doc-only derivation/scope checkpoint.* No
-runner code until the user locks §8 (mirroring the
+**Status.** *LOCKED 2026-05-19 (user review + lock; one §3 closed-form
+sign correction applied at lock — see the §3 correction note). The §7
+D1 §6 rewrite is applied in this same lock commit (§9 step 0).* The
+note was proposed as a doc-only derivation/scope checkpoint (commit
+`3b3db78`), reviewed, corrected, and locked, mirroring the
 [`back_action_scope.md`](./back_action_scope.md) / `cb850a5`
 discipline: derive → user lock → execute). This note is the Rank 2
 first step recorded in
@@ -152,14 +155,44 @@ zero-mean Gaussian
 $$
   \boxed{\;\chi_{|r,\theta\rangle}(\beta)
    =\exp\!\Big[-\tfrac12\big(|\beta|^2\cosh2r
-   -\operatorname{Re}(\beta^2e^{-i\theta})\,\sinh2r\big)\Big]\;}
+   +\operatorname{Re}(\beta^2e^{-i\theta})\,\sinh2r\big)\Big]\;}
 $$
 
 (derived from $\langle0|S^\dagger D(\beta)S|0\rangle$ with
-$S^\dagger aS=a\cosh r-a^\dagger e^{i\theta}\sinh r$; reduces to the
-vacuum $e^{-|\beta|^2/2}$ at $r=0$). For $\theta=0$ this is
-$\exp[-\tfrac12(\beta_x^2e^{-2r}+\beta_y^2e^{+2r})]$ — narrow along
-the anti-squeezed χ-axis, **broad by $e^{+2r}$ along the other**.
+$S^\dagger aS=a\cosh r-a^\dagger e^{i\theta}\sinh r$, giving the
+displaced argument $\gamma=\beta\cosh r+\beta^*e^{i\theta}\sinh r$ and
+$\chi=e^{-|\gamma|^2/2}$; reduces to the vacuum $e^{-|\beta|^2/2}$ at
+$r=0$; verified numerically against the exact
+$\langle r,\theta|D(\beta)|r,\theta\rangle$ to machine precision).
+Writing $D(\beta)=\exp[i(\beta_yX-\beta_xP)]$
+($X=a+a^\dagger,\;P=-i(a-a^\dagger)$), for $\theta=0$ this is
+
+$$
+  \chi_{|r,0\rangle}(\beta)
+   =\exp\!\big[-\tfrac12(\beta_x^2e^{+2r}+\beta_y^2e^{-2r})\big],
+$$
+
+i.e. $\chi$ is **narrow along $\beta_x$ and broad (by $e^{+r}$) along
+$\beta_y$** — consistent with the state being squeezed in $X$
+($\operatorname{Var}X=e^{-2r}$): the $\beta_y$ axis is the one $X$
+couples to in $D(\beta)$, so a tight $X$ distribution makes $\chi$
+decay slowly in $\beta_y$.
+
+**Correction note (lock pass, 2026-05-19).** The proposed-commit
+(`3b3db78`) boxed form carried the cross term with a **−** sign and a
+correspondingly flipped $\theta{=}0$ reduction
+($\beta_x^2e^{-2r}+\beta_y^2e^{+2r}$). A user review flagged the §3
+directional wording as wrong/ambiguous; the root cause was this sign
+error (the suggested replacement, naming the $\beta_x$ axis as broad,
+followed from the erroneous form — $\beta_x$ is the *narrow* axis
+once the sign is fixed). Corrected to **+** here and verified
+numerically (three independent routes: $S^\dagger D S$ displaced
+argument; the $D=\exp[i(\beta_yX-\beta_xP)]$ + quadrature-variance
+argument; the $r\!\to\!0$ vacuum limit). Recorded explicitly, not
+silently, per the repo convention. The §3 conclusion (support
+$\sim e^{+r}$, no grid escalation) and every §4–§8 result are
+**unaffected** — they depend only on the $e^{+r}$ magnitude, not the
+axis assignment or the cross-term sign.
 
 The phase-dependent $\operatorname{Re}(\beta^2e^{-i\theta})$ term is
 the "quadratic structure" the WP text refers to: it is the angular
@@ -169,8 +202,10 @@ resolve.
 
 **Grid/window consequence (provenance: same logic as the GKP
 deferral, close-out §5 Rank 3).** χ support extends to
-$|\beta|\sim e^{+r}$ along the anti-squeezed quadrature. At $r\sim0.5$,
-$e^{+r}\approx1.65$ — well inside the validated $B=N\beta_0$ reach and
+$|\beta|\sim e^{+r}$ along $\beta_y$ (for $\theta=0$; the β-axis that
+couples to the state's squeezed quadrature $X$, where χ is broadest).
+At $r\sim0.5$, $e^{+r}\approx1.65$ — well inside the validated
+$B=N\beta_0$ reach and
 the $[-3,3]$ Wigner window, so **no grid escalation is required at
 $r\sim0.5$** (unlike GKP). This is recorded as a *proposed* gate
 input, to be re-checked at runtime against the inverse-Dirichlet
@@ -354,8 +389,11 @@ this note (the `back_action_scope.md` discipline).
 
 One clean commit each, WP-W discipline:
 
-0. **Lock.** User confirms §8 → apply the §7 D1 §6 rewrite (doc-only
-   commit; the analogue of the `cb850a5` scope promotion).
+0. **Lock.** ✅ *Done in this commit.* User review + lock confirmed
+   §8 (one §3 sign correction applied); the §7 D1 §6 rewrite is
+   applied to [`analytic_chain.md`](./analytic_chain.md) here — the
+   analogue of the `cb850a5` scope promotion. Steps 1–2 below now
+   proceed.
 1. **χ helper + smoke test.** Add `_common.chi_squeezed(beta,r,θ)`
    (§3 closed form) + smoke test vs. (i) $r\!\to\!0$ → vacuum χ, (ii)
    the squeezed Wigner Gaussian via the existing `wigner_from_chi`,
@@ -378,5 +416,7 @@ consequences and locks the squeezed-vacuum protocol decisions left
 open at WP-W close-out. [Hasse24] App. E (Δt=2π/2ω_m squeezing
 timing) and [FH20] (η=0.05 squeezed-state demonstration) are the
 external precedents; the high-η stroboscopic adaptation and the
-δt/T_m closure are derived here. PROPOSED — no code until §8 is
-locked.*
+δt/T_m closure are derived here. LOCKED 2026-05-19 (one §3 closed-form
+sign correction at lock); §9 steps 1–2 (χ helper + ideal
+squeezed-vacuum reconstruction) proceed; the native-engine 𝒪(η²)
+re-audit (step 3) remains a separate deferred scope.*

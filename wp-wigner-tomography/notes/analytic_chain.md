@@ -293,9 +293,10 @@ bridge** (a measured diagnostic, not a fidelity gate).
 ## 6. Approximation hierarchy
 
 1. **Ideal-SDF inversion** assumes instantaneous
-   $D(\sigma_x\beta/2)$ pulses, a single resolved comb tooth, fixed
-   $\beta_0$. Finite $N$ enters only through the Dirichlet tooth
-   width $\sim1/N$ in $\delta/\omega_m$.
+   $D(\sigma_x\beta/2)$ pulses (finite pulse duration → point 4(b)),
+   a single resolved comb tooth, fixed $\beta_0$. Finite $N$ enters
+   only through the Dirichlet tooth width $\sim1/N$ in
+   $\delta/\omega_m$.
 2. **Perturbativity** is audited *per pulse*: $|\beta_0||\alpha|$
    ($=0.075$ at the $|\alpha|=1.5$ headline, $0.15$ at the
    $|\alpha|=3$ bridge anchor) — not $N|\beta_0||\alpha|$.
@@ -305,10 +306,23 @@ bridge** (a measured diagnostic, not a fidelity gate).
    resolution stress test, not a clean benchmark; a centroid
    residual below $\Delta\alpha$ is sub-pixel and *not* an engine
    defect.
-4. **Native-engine departure** (LD order, pulse duration
-   $\delta t/T_m$, carrier/sideband leakage) is the §5 bridge
-   residual — quantified, never assumed. Pulse-duration order is
-   still open ([TBD] in WP §Analytical bullet 5).
+4. **Native-engine departure** is the §5 bridge residual —
+   quantified, never assumed. (a) *LD order:* the first-order term
+   is single-phonon (displacement); the $\mathcal O(\eta^2)$
+   $X^2\sigma_\varphi$ term is two-phonon (squeezing-type), relative
+   size $\eta^2$ (≈16 % at $\eta=0.397$) — negligible for
+   displaced-state χ readout (the ideal-SDF chain is η-exact; §1–§4
+   are not a regime limit) but the dominant structural residual for
+   squeezed inputs. (b) *Pulse duration:* the leading
+   $\mathcal O(\delta t/T_m)$ effect is a pure displacement phase
+   $\omega_m\delta t/2$, exactly absorbed by the D4 Layer A
+   `shift_deg`; the residual is $\mathcal O((\delta t/T_m)^2)\approx1.7\%$
+   at $\delta t=0.13\,T_m$, two-phonon in character, sub-dominant to
+   (a). (c) *Carrier/sideband leakage* as before. The
+   $\mathcal O(\eta^2)$ and $\delta t/T_m$ orders and the
+   squeezed-vacuum consequences are derived and locked in
+   [`squeezed_eta2_scope.md`](./squeezed_eta2_scope.md) (this closes
+   the former [TBD] of WP §Analytical bullet 5).
 
 ## 7. Executed residual anchors (provenance)
 
