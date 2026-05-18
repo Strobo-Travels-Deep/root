@@ -132,17 +132,32 @@ ideal-vs-native Wigner L¹ grows with r (0.77 → 0.86 → 1.03 at θ=0).
 | **P-C** (failure persists/grows with r) | **Confirmed** — native F-to-input 0.996→0.93→0.76; L¹ grows with r |
 | **P-E** (systematic, uniform null) | **Confirmed** — no (r,θ,probe) cell recovers the squeezed state |
 
-**Honesty flag (reported, not hidden).** The runner's *printed
-aggregate* lines — "P-C cov-ratio change r=0→0.5 = +5.996", "P-B
-θ-spread = 5.999" — are **confounded**: they are dominated by the
-input $e^{4r}$ growth and the r-range, *not* by engine-generated
-squeezing or a pure θ effect, so they must **not** be read as the
-result. The result is the per-(r,θ) table, the r=0 engine-anisotropy
-control, and the F-to-input degradation. The HDF5 per-record data is
-correct and complete; only the convenience print is crude. A
-follow-up one-line fix to compute the *within-r* θ-spread and the
-*engine* anisotropy (native ratio − input ratio) is noted, non-gating
-(the scientific conclusion does not depend on it).
+**Honesty flag — RESOLVED (2026-05-18, presentation-only).** The
+original runner *printed aggregate* lines — "P-C cov-ratio change
+r=0→0.5 = +5.996", "P-B θ-spread = 5.999" — were **confounded**:
+dominated by the input $e^{4r}$ growth and the r-range, *not* by an
+engine effect. **Fixed:** the runner now reports the **engine-excess
+anisotropy** (native ratio − input $e^{4r}$, the pass-through
+subtracted) and the **within-fixed-r θ-spread**, persisted as
+`agg_*` HDF5 attrs + manifest so any draft pulls authoritative
+numbers. Corrected aggregates:
+
+- engine-excess (θ=0 peak): r=0 **+0.022** (≈ the N-6 vacuum null)
+  → r=0.5 **−0.371** — small at r=0, *negative* at r=0.5: the engine
+  adds **no** squeezing; it mildly *erodes* the input anisotropy via
+  decoherence (not engineering). Δ = −0.393.
+- θ-modulation **within fixed r** (max over r, peak): **0.574** (vs
+  the confounded cross-r 5.999) — the genuine, modest, decoherence-
+  flavoured P-B effect.
+- native fidelity-to-input degradation: r=0 **0.996** → r=0.5
+  **0.760** (unchanged — was already from the per-record data).
+
+The fix is **presentation-only**: the regenerated
+`squeezed_native_audit.h5` is **per-record bit-identical** to the
+`3f9f7dd` artefact (max|Δ| = 0.000e+00; verdict and P-D gate
+unchanged) — verified before commit, the `d297112`-style discipline.
+No scientific conclusion changed; the systematic-structural-null
+verdict and every §3/§4 number stand.
 
 **Verdict: SYSTEMATIC STRUCTURAL NULL, (r,θ)-robust.** Across the
 full grid the monochromatic engine at the App. E two-phonon timing
@@ -161,5 +176,6 @@ deliberation, now with the η² thread *quantified*: the structural
 claim is no longer analytic-only but a numerically demonstrated,
 gate-anchored, (r,θ)-robust native null with a sound η-exact ideal
 reference. No open blockers; no further runner work scoped (the
-within-r-θ-spread print fix is optional polish). Parked artefacts
+within-r θ-spread / engine-excess print fix is **done** — see the
+§4 RESOLVED honesty flag). Parked artefacts
 untouched; new family `squeezed_native_audit.{h5,manifest.json}`.

@@ -191,15 +191,41 @@ def main() -> int:
                       f"|⟨q⟩|={rec['native_mean_mag']:.2e} fidpre="
                       f"{mn['fidelity_to_pre']:.3f} | L¹={L1:.3f}")
 
-    # ---- pre-registered P-A…P-E comparison
+    # ---- pre-registered P-A…P-E comparison.
+    # HONEST aggregates: the 3f9f7dd-era prints reported the raw native
+    # cov-ratio change with r and the cross-r max−min, both DOMINATED
+    # by the input squeezed-vacuum ratio e^{4r} (pass-through), not by
+    # an engine effect — the confound flagged in
+    # 2026-05-18-squeezed-native-audit.md §4. Replaced here by (i) the
+    # ENGINE-EXCESS anisotropy native_ratio − e^{4r} (the pass-through
+    # subtracted) and (ii) the WITHIN-fixed-r θ-spread.
     peak = [r for r in recs if r["probe"] == "peak"]
-    by_r = lambda rr: sorted([x for x in peak if x["theta_name"] == "0"],
-                             key=lambda x: x["r"])
-    ratios_r = [(x["r"], x["native_cov_ratio"]) for x in by_r(None)]
-    aniso_grows = (ratios_r[-1][1] - ratios_r[0][1]) if ratios_r else 0.0
-    th_spread = (max(x["native_cov_ratio"] for x in peak)
-                 - min(x["native_cov_ratio"] for x in peak))
-    max_nat_fidpre = max(x["native_fid_pre"] for x in peak)
+    r_max = max(R_GRID)
+
+    def _input_ratio(r):                 # squeezed-vacuum cov ratio
+        return float(np.exp(4.0 * r))
+
+    exc = {x["r"]: x["native_cov_ratio"] - _input_ratio(x["r"])
+           for x in peak if x["theta_name"] == "0"}
+    pc_excess_r0 = float(exc.get(0.0, float("nan")))
+    pc_excess_rmax = float(exc.get(r_max, float("nan")))
+    pc_excess_change = float(pc_excess_rmax - pc_excess_r0)
+    pb_theta_spread = 0.0                # θ-modulation WITHIN fixed r
+    for r in R_GRID:
+        vals = [x["native_cov_ratio"] for x in peak if x["r"] == r]
+        if len(vals) > 1:
+            pb_theta_spread = max(pb_theta_spread,
+                                  max(vals) - min(vals))
+    fid_r0 = max(x["native_fid_pre"] for x in peak if x["r"] == 0.0)
+    fid_rmax = min(x["native_fid_pre"] for x in peak if x["r"] == r_max)
+    aggregates = {
+        "pc_engine_excess_r0": pc_excess_r0,
+        "pc_engine_excess_rmax": pc_excess_rmax,
+        "pc_engine_excess_change": pc_excess_change,
+        "pb_theta_spread_within_r_max": float(pb_theta_spread),
+        "native_fidpre_r0": float(fid_r0),
+        "native_fidpre_rmax_min": float(fid_rmax),
+    }
     verdict = ("SYSTEMATIC STRUCTURAL NULL — native engine fails to "
                "realise/preserve squeezing across (r,θ); P-D ideal leg "
                "sound" if gate_ok else
@@ -207,11 +233,16 @@ def main() -> int:
 
     print(f"\n>>> P-D hard gate: {'PASS' if gate_ok else 'FAIL'} "
           f"(all (r,θ); 2 shared bit-for-bit vs cd22ef6)")
-    print(f">>> P-C native cov-ratio change r=0→0.5 (θ=0,peak): "
-          f"{aniso_grows:+.4f}")
-    print(f">>> P-B native cov-ratio θ-spread (peak): {th_spread:.4f}")
-    print(f">>> native max fidelity-to-input over peak grid: "
-          f"{max_nat_fidpre:.3f}")
+    print(f">>> P-A/P-C engine-excess anisotropy (native−input e^4r, "
+          f"θ=0 peak): r=0 {pc_excess_r0:+.3f} → r={r_max:g} "
+          f"{pc_excess_rmax:+.3f}  (Δ {pc_excess_change:+.3f}) — "
+          f"small at r=0, NEGATIVE at r={r_max:g} ⇒ engine adds no "
+          f"squeezing (mild decoherence-driven erosion of the input "
+          f"anisotropy, not engineering)")
+    print(f">>> P-B θ-modulation WITHIN fixed r (max over r, peak): "
+          f"{pb_theta_spread:.3f}")
+    print(f">>> P-C native fidelity-to-input degradation: r=0 "
+          f"{fid_r0:.3f} → r={r_max:g} {fid_rmax:.3f}")
     print(f">>> VERDICT: {verdict}")
 
     out = Path("wp-wigner-tomography/numerics/squeezed_native_audit.h5")
@@ -227,6 +258,8 @@ def main() -> int:
         h5.attrs["delta_over_omega_m_base"] = 2.0
         h5.attrs["pd_gate_pass"] = bool(gate_ok)
         h5.attrs["verdict"] = verdict
+        for k, v in aggregates.items():        # honest aggregates
+            h5.attrs[f"agg_{k}"] = v
         for i, rc in enumerate(recs):
             g = h5.create_group(f"rec_{i:02d}")
             for k, v in rc.items():
@@ -241,6 +274,7 @@ def main() -> int:
         "grid": {"r": R_GRID, "theta": [t[0] for t in THETA_GRID],
                  "probes": [p[0] for p in PROBES]},
         "pd_gate_pass": bool(gate_ok),
+        "aggregates": aggregates,
         "records": recs,
         "verdict": verdict,
         "tags": ["WP-W", "Rank2", "native-eta2", "re-audit", "step2"],

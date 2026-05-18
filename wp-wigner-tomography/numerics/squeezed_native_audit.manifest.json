@@ -7,16 +7,16 @@
   "artifact": {
     "path": "wp-wigner-tomography/numerics/squeezed_native_audit.h5",
     "format": "hdf5",
-    "bytes": 47624,
-    "sha256": "4277b3ff455de6634adb01687c469e61444b783b3458a1e3fc991f1a6ed5a7dd"
+    "bytes": 48144,
+    "sha256": "81257414c006f9ea0627eb9ff769b26a0981708856a7d337ada2319b5be0ea32"
   },
   "execution": {
-    "timestamp": "2026-05-18T15:27:31.037263+00:00",
+    "timestamp": "2026-05-18T18:58:57.967316+00:00",
     "engine": "python-scipy",
     "precision": "complex128",
-    "elapsed_s": 188.0860321521759
+    "elapsed_s": 225.29585790634155
   },
-  "provenance_hash": "4c9e6f718d860d198423d15b12837eecc62a4ac1bba318b9a200c541719f1286",
+  "provenance_hash": "ded6b17afb4e69c37a71d6392a04f489ec5a2ef2dd29d1c756c9b575ea04c4a3",
   "payload": {
     "physical_parameters": {
       "eta": 0.397,
@@ -45,6 +45,14 @@
       ]
     },
     "pd_gate_pass": true,
+    "aggregates": {
+      "pc_engine_excess_r0": 0.021917308256760748,
+      "pc_engine_excess_rmax": -0.3710722203991885,
+      "pc_engine_excess_change": -0.39298952865594927,
+      "pb_theta_spread_within_r_max": 0.5736840502683425,
+      "native_fidpre_r0": 0.9964927689185505,
+      "native_fidpre_rmax_min": 0.7603098061144931
+    },
     "records": [
       {
         "r": 0.0,
