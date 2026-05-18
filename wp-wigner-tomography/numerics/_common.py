@@ -77,6 +77,28 @@ def inverse_dirichlet(N: int, ratio: float) -> float:
     return brentq(f, 1e-9, 2.0 * np.pi / N - 1e-9, xtol=1e-12)
 
 
+def xi_tot_target_appE(ratio: float, N: int, omega_m: float,
+                       theta: float = 0.0) -> tuple[float, float, float]:
+    """App. E two-phonon (squeezing) inverse-Dirichlet targeting.
+
+    The squeezed-vacuum native-audit scope (squeezed_native_audit_scope.md
+    §2; squeezed_eta2_scope.md §4) re-derives the §3 Dirichlet β-map at
+    the **2ω_m** two-phonon fundamental with gap Δt = T_m/2: the comb
+    kernel 𝒟_N is unchanged, only the fundamental (ω_m→2ω_m, T_m→T_m/2)
+    and the per-pulse scale (β₀=𝒪(η)→ξ₀=𝒪(η²)) change. This returns
+    (x̃, φ_train, δ−kω_m) so the train delivers |ξ_tot| = ratio·ξ₀ on
+    the monotone central branch, with the **T_m/2** detuning conversion
+    (the only structural difference from `inverse_dirichlet_target`).
+
+    ratio = |ξ_tot|/ξ₀ ∈ [0, N]; θ = arg ξ_tot; arg ξ₀ = 0,
+    arg 𝒟_N(x̃) = (N−1)x̃/2 ⇒ φ_train = θ − (N−1)x̃/2.
+    """
+    x_t = inverse_dirichlet(N, ratio)
+    phi_train = (theta - (N - 1) * x_t / 2.0) % (2.0 * np.pi)
+    half_period = np.pi / omega_m            # T_m / 2  (App. E timing)
+    return float(x_t), float(phi_train), float(x_t / half_period)
+
+
 # ---------------------------------------------------------------------------
 # Characteristic functions on the β grid
 # ---------------------------------------------------------------------------
@@ -249,7 +271,11 @@ def parse_state(name: str) -> dict:
         cat_<alpha>
         mixed_cat_<alpha>
         squeezed_<r>            (θ = 0, squeezed in X)
-        squeezed_<r>_perp       (θ = π/2 anisotropy-orientation control)
+        squeezed_<r>_perp       (θ = π/2 alias; cd22ef6 back-compat)
+        squeezed_<r>_th<deg>    (θ = <deg>·π/180; angle-general — the
+                                 native-audit N-1 grid needs θ=π, the
+                                 true perpendicular, since the Wigner
+                                 ellipse rotates by θ/2)
     """
     parts = name.split("_")
     if parts[0] == "vacuum":
@@ -273,7 +299,14 @@ def parse_state(name: str) -> dict:
                 "gaussian": True, "non_gaussian_metric": False}
     if parts[0] == "squeezed":
         r = float(parts[1])
-        theta = np.pi / 2.0 if (len(parts) >= 3 and parts[2] == "perp") else 0.0
+        theta = 0.0
+        if len(parts) >= 3:
+            if parts[2] == "perp":
+                theta = np.pi / 2.0
+            elif parts[2].startswith("th"):
+                theta = float(parts[2][2:]) * np.pi / 180.0
+            else:
+                raise ValueError(f"Unknown squeezed qualifier: {parts[2]!r}")
         return {"name": name, "kind": "squeezed", "r": r, "theta": theta,
                 "gaussian": True, "non_gaussian_metric": False, "purity": 1.0}
     raise ValueError(f"Unknown state name: {name!r}")
@@ -507,6 +540,55 @@ def partial_trace_spin(psi: np.ndarray, nmax: int) -> np.ndarray:
     down = psi[:nmax]
     up = psi[nmax:]
     return np.outer(down, np.conj(down)) + np.outer(up, np.conj(up))
+
+
+def gaussian_moments(rho_m: np.ndarray) -> dict:
+    """Full Gaussian-state characterisation of a reduced motional ρ_m.
+
+    For the native-audit N-6 capability smoke (squeezed_native_audit_scope.md
+    §3 N-6): the post-train motional state must be reported as a Gaussian
+    state to discriminate a genuine 2ω_m **squeezing** channel from
+    **displacement** (first-order leakage) or **heating/decoherence**.
+
+    Quadratures X = a + a†, P = −i(a − a†) (vacuum variance 1, so
+    Var X = Var P = 1 for |0⟩; squeezed vacuum θ=0 has Var X = e^{−2r}).
+    Returns:
+      mean_X, mean_P            — first moments ⟨X⟩, ⟨P⟩
+      cov                       — 2×2 symmetric covariance matrix
+      lambda_max, lambda_min    — covariance eigenvalues
+      ratio                     — λ_max / λ_min  (1 ⇒ isotropic)
+      orient_deg                — principal-axis angle (deg, mod 180)
+      purity                    — Tr ρ_m²
+    All values are real (imaginary parts at the complex128 floor).
+    """
+    n = rho_m.shape[0]
+    a = _annihilation(n)
+    adag = a.conj().T
+    X = a + adag
+    P = -1j * (a - adag)
+
+    def ev(M):
+        return complex(np.trace(rho_m @ M))
+
+    mX, mP = ev(X).real, ev(P).real
+    XX, PP = ev(X @ X).real, ev(P @ P).real
+    XP_sym = ev(0.5 * (X @ P + P @ X)).real
+    vXX = XX - mX * mX
+    vPP = PP - mP * mP
+    vXP = XP_sym - mX * mP
+    cov = np.array([[vXX, vXP], [vXP, vPP]], dtype=float)
+    evals = np.linalg.eigvalsh(cov)               # ascending
+    lam_min, lam_max = float(evals[0]), float(evals[1])
+    orient = 0.5 * np.degrees(np.arctan2(2.0 * vXP, vXX - vPP)) % 180.0
+    purity = float(np.real(np.trace(rho_m @ rho_m)))
+    return {
+        "mean_X": float(mX), "mean_P": float(mP),
+        "cov": cov,
+        "lambda_max": lam_max, "lambda_min": lam_min,
+        "ratio": float(lam_max / lam_min) if lam_min > 0 else float("inf"),
+        "orient_deg": float(orient),
+        "purity": purity,
+    }
 
 
 def conditional_motional_ket(psi: np.ndarray, nmax: int, basis: str,

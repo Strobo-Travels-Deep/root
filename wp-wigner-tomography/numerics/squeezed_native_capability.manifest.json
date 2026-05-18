@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.7.0-capability",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "wp-wigner-tomography/numerics/squeezed_native_capability.h5",
+    "format": "hdf5",
+    "bytes": 14384,
+    "sha256": "f125a20fb3a30b6d9d2d0b6883ad6edf37e98bacbe4f9140f22ef3d61de20ce1"
+  },
+  "execution": {
+    "timestamp": "2026-05-18T15:07:51.877956+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 0.1149287223815918
+  },
+  "provenance_hash": "3439984730c8a9faf41d2c35bf741dd6a24d6dffcdeb240d895652cbaa807a84",
+  "payload": {
+    "physical_parameters": {
+      "eta": 0.397,
+      "omega_r": 0.09016606431708851,
+      "omega_m": 1.3,
+      "delta_over_omega_m": 2.0,
+      "delta_t": 0.6283185307179586,
+      "nmax": 60
+    },
+    "timings": {
+      "appE_t_sep_factor": 0.5,
+      "ref_t_sep_factor": 1.0
+    },
+    "N_values": [
+      10,
+      20,
+      30
+    ],
+    "rows": [
+      {
+        "timing": "AppE T/2",
+        "t_sep_factor": 0.5,
+        "N": 10,
+        "mean_X": -0.001430943762933772,
+        "mean_P": -0.003296947167410346,
+        "lambda_max": 1.003168895184643,
+        "lambda_min": 0.9994496574852981,
+        "ratio": 1.0037212856810644,
+        "orient_deg": 157.91116764738237,
+        "purity": 0.9993488595713176
+      },
+      {
+        "timing": "AppE T/2",
+        "t_sep_factor": 0.5,
+        "N": 20,
+        "mean_X": -0.0025011992167021995,
+        "mean_P": -0.005743031469889353,
+        "lambda_max": 1.012078856016005,
+        "lambda_min": 0.9992079187459177,
+        "ratio": 1.0128811401797548,
+        "orient_deg": 156.78433217795683,
+        "purity": 0.9972211207117679
+      },
+      {
+        "timing": "AppE T/2",
+        "t_sep_factor": 0.5,
+        "N": 30,
+        "mean_X": -0.0029244714284898067,
+        "mean_P": -0.006682701601694454,
+        "lambda_max": 1.0250827740934199,
+        "lambda_min": 1.0030975753234466,
+        "ratio": 1.0219173082567607,
+        "orient_deg": 155.98719845030303,
+        "purity": 0.9931368311721551
+      },
+      {
+        "timing": "ref  T",
+        "t_sep_factor": 1.0,
+        "N": 10,
+        "mean_X": -0.018033294079284154,
+        "mean_P": -0.04285757217506994,
+        "lambda_max": 1.0250897998687796,
+        "lambda_min": 1.000489085537617,
+        "ratio": 1.0245886883592972,
+        "orient_deg": 66.30839917631262,
+        "purity": 0.9878166062380701
+      },
+      {
+        "timing": "ref  T",
+        "t_sep_factor": 1.0,
+        "N": 20,
+        "mean_X": -0.06867199621554422,
+        "mean_P": -0.1606527763190649,
+        "lambda_max": 1.0739469795302545,
+        "lambda_min": 1.0019851210279718,
+        "ratio": 1.071819288522423,
+        "orient_deg": 66.34686797259623,
+        "purity": 0.9637946449441299
+      },
+      {
+        "timing": "ref  T",
+        "t_sep_factor": 1.0,
+        "N": 30,
+        "mean_X": -0.13969985596170936,
+        "mean_P": -0.32484615967987646,
+        "lambda_max": 1.0936404416103358,
+        "lambda_min": 1.004563502250843,
+        "ratio": 1.0886722831955424,
+        "orient_deg": 66.2758697255771,
+        "purity": 0.9530449819763004
+      }
+    ],
+    "verdict": "HEATING-DOMINATED",
+    "verdict_reason": "purity 0.9993\u21920.9931 falls, anisotropy 0.022<0.10 (\u2248isotropic growth)",
+    "tags": [
+      "WP-W",
+      "Rank2",
+      "native-eta2",
+      "capability-smoke",
+      "N-6"
+    ]
+  }
+}
