@@ -250,6 +250,13 @@ f0cec92  back-action k=1 full §7#4   ·  c1f7d3b  WP chronology index
 3b3db78  𝒪(η²)/δt scope (PROPOSED)   ·  2d74ba1  LOCK (+§3 sign fix, D1 §6 rewrite)
 5474fce  squeezed χ/W helpers + locks
 cd22ef6  ideal squeezed-vacuum reconstruction (gate PASS)
+d989175  program findings synthesis (this note)   ·  fd2731e  date/provenance/cross-link review fix
+a5f8aaf  native 𝒪(η²) re-audit scope (PROPOSED)    ·  ba030c9  LOCK (+4 amendments)
+1ad9c4b  native 𝒪(η²) N-6 capability null          ·  3f9f7dd  native re-audit (r,θ) systematic null, P-D PASS
+afd59d4  publication feasibility memo (novelty gate)
+605c212  R-4 fix (WORK-PROGRAM §1.3 ↔ FH20/Hasse24)·  cc2478b  prereq-3 claim-scope lock
+5e0e1ac  prereq-4 paper outline                    ·  0d8cff5  stale-status fix (re-audit EXECUTED)
+2661d67  3f9f7dd aggregate-print confound resolved (presentation-only, bit-identical)
 ```
 
 -----
