@@ -1531,6 +1531,30 @@ Outstanding non-blocking polish:
     while thermal is the most robust ($L^1{=}0.49$). σ_x-branch
     fidelity is N/A for the mixed inputs (no single $\psi_\text{pre}$).
 
+  - **k=1 sideband, full §7#4 input set (executed 2026-05-19).** The
+    JC-regime counterpart of the 2026-05-18 carrier full set, run as
+    the designated next-session pick-up (2026-05-18 §5) on the
+    unchanged v0.6.2 runner — no code change. Every pre-registered
+    expectation held: the hard vacuum gate is PASS at machine
+    precision with residuals **bit-identical** to both prior runs
+    (ideal leg + gate tooth-independent); the three inputs shared
+    with the parked k=1 single-point reproduce `back_action_k1.h5`
+    **bit-for-bit** (0.0e+00 over 225 committed-schema fields, the
+    v0.6.2-only `pre_purity`/`drop_vs_pre` attrs legitimately absent
+    there); input preparation is tooth-independent (all seven
+    pre-purities Δ=0 vs the k=0 full set); ideal σ_x-branch
+    $F{=}1.0$ for the five pure inputs, N/A for the two mixed. The
+    quantum/classical $L^1$ ordering of the carrier set is reproduced
+    (pure cat 1.87 > mixed cat 1.47; thermal most robust 0.49) — the
+    discriminator is **tooth-robust**. The sole materially larger
+    sideband signature is the coherent input's σ_x-branch fidelity
+    (+0.078 k1−k0); all unconditional metrics shift ≤1e-2, so the
+    k=0 carrier conclusion is not retroactively changed. New artefact
+    family `back_action_k1_full.{h5,manifest.json,png}`; the three
+    parked back-action artefacts left untouched
+    ([`2026-05-19-back-action-k1-full-set.md`](./logbook/2026-05-19-back-action-k1-full-set.md);
+    `back_action_k1_full.h5`).
+
 ## References
 
 Verified bibliography after the v0.4 lit-review pass (per [§5a
