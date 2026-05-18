@@ -123,10 +123,63 @@ pure; N/A for mixed):
 
 ## 5. Next-step decision
 
-Full §7#4 back-action set delivered (k=0). No open blockers.
-Optional, decision-gated (unchanged): the k=1 sideband already has
-its own artefact family (`back_action_k1.h5`); a thermal/mixed-cat
-k=1 variant would be a trivial re-run with `--k-sideband 1`. Rank 2
-squeezed-vacuum still needs the $\mathcal O(\eta^2)$ analytic
-extension first (separate, foundational). Re-park; no further action
-without a specific decision.
+Full §7#4 back-action set delivered (k=0). No open blockers. Re-park.
+
+**>>> NEXT SESSION — designated pick-up (user decision 2026-05-18).**
+Run the **k=1 sideband** at the full §7#4 input set (thermal +
+mixed-cat included), the JC-regime counterpart of this carrier run.
+It is a *trivial re-run on the existing v0.6.2 runner* — no code
+change expected (the tooth-aware `--k-sideband` and the weighted-ket
+mixed-input path are both already in place and validated here).
+
+Exact command (writes its own artefact family; **parked
+`back_action.h5` / `back_action_k1.h5` / `back_action_full.h5` must
+stay untouched** — use the explicit `--output`):
+
+```
+python wp-wigner-tomography/numerics/run_back_action.py --k-sideband 1 \
+  --inputs vacuum coherent1.5 thermal0.5 fock1 fock2 cat1.5 mixed_cat1.5 \
+  --output wp-wigner-tomography/numerics/back_action_k1_full.h5
+python wp-wigner-tomography/plots/plot_back_action.py \
+  --h5 wp-wigner-tomography/numerics/back_action_k1_full.h5
+```
+
+Pre-registered expectations for that session: vacuum hard gate must
+still PASS at machine precision (tooth-independent); the five pure
+inputs reproduce the k=1 single-point witness trends from
+`2026-05-17-back-action-k1-sideband.md` (coherent strong native
+mismatch at the sideband); thermal/mixed-cat are *new* k=1 data —
+expect the quantum/classical L¹ ordering of §4 to persist but with
+the JC-type native back-action of the sideband. New logbook
+`2026-05-19-…-k1-full-set.md`, pre-reg → run → comparison, one
+clean commit; do **not** regenerate parked artefacts.
+
+Other decision-gated items unchanged: Rank 2 squeezed-vacuum still
+needs the $\mathcal O(\eta^2)$ analytic extension first (separate,
+foundational); GKP is a separate future WP.
+
+## 6. Post-run review corrections (user audit, same day)
+
+A user audit of the execution commits (`298dbcc` + `be90a21`) found
+one **presentation** defect; fixed in `d297112` (plot-only, no data).
+
+- **Figure annotated the absolute purity drop for mixed inputs.**
+  `plot_back_action.py` printed `drop = 1−purity` on every post
+  panel. For the two *mixed* inputs this is the drop from a *pure*
+  reference, not from the input's own (mixed) pre-purity: thermal
+  showed `0.517`, mixed-cat `0.533`, when the scientifically
+  relevant drops are **0.017** and **0.033**. The HDF5 / manifest /
+  this logbook's §3 table already carried the correct
+  `purity_drop_vs_pre`; **only the figure text was wrong**.
+- **Fix (`d297112`).** Annotate `r.get("purity_drop_vs_pre",
+  r["purity_drop"])`, label `drop/pre`, with a legacy fallback for
+  pre-v0.6.2 all-pure h5 (where `drop ≡ drop/pre`). Pure rows
+  numerically unchanged (vacuum 0.066, coherent 0.061, fock1 0.185,
+  fock2 0.278, cat 0.391); mixed rows corrected
+  (thermal 0.517→0.017, mixed-cat 0.533→0.033). Regenerated
+  `back_action_full.png` only; parked `back_action.png` /
+  `back_action_k1.png` left untouched (all-pure ⇒ never numerically
+  wrong; not regenerated for a label-wording change, to preserve
+  provenance stability).
+- **Scope:** figure presentation only — no data, conventions, gate,
+  or backward-compat claim affected; all §3 numbers stand.
