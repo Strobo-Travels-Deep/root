@@ -132,11 +132,15 @@ def main() -> int:
                              fontsize=11)
             a.set_xlabel(r"Re $\alpha$", fontsize=9)
             fig.colorbar(im, ax=a, shrink=0.82, pad=0.02)
-        # annotate post panels with purity drop + F_pre
+        # annotate post panels: drop relative to the input's OWN
+        # pre-purity (≡ 1−purity for pure inputs, where pre-purity=1;
+        # the scientifically meaningful drop for mixed thermal/mixed-cat).
+        # Legacy fallback to `purity_drop` for pre-v0.6.2 (all-pure) h5.
         for ci, r in ((1, ideal), (2, native)):
+            drop_vs_pre = r.get("purity_drop_vs_pre", r["purity_drop"])
             axes[ri, ci].text(
                 0.03, 0.97,
-                f"drop {r['purity_drop']:.3f}\n"
+                f"drop/pre {drop_vs_pre:.3f}\n"
                 f"$F_{{\\rm pre}}$ {r['fidelity_to_pre']:.3f}\n"
                 f"neg {r['neg_volume']:+.3f}",
                 transform=axes[ri, ci].transAxes, va="top", ha="left",
