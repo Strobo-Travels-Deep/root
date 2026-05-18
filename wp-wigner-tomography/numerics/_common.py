@@ -144,6 +144,26 @@ def chi_mixed_cat(beta: np.ndarray, alpha: complex) -> np.ndarray:
     return np.exp(-np.abs(beta) ** 2 / 2.0) * np.cos(2.0 * np.imag(np.conj(a) * beta))
 
 
+def chi_squeezed(beta: np.ndarray, r: float, theta: float = 0.0) -> np.ndarray:
+    """χ for squeezed vacuum S(ξ)|0⟩, ξ = r e^{iθ}, S = exp[½(ξ*a² − ξ a†²)].
+
+        χ_{|r,θ⟩}(β) = exp[ −½ ( |β|² cosh 2r + Re(β² e^{−iθ}) sinh 2r ) ]
+
+    Derivation: S†aS = a cosh r − a† e^{iθ} sinh r ⇒ S†D(β)S = D(γ) with
+    γ = β cosh r + β* e^{iθ} sinh r, so χ = ⟨0|D(γ)|0⟩ = e^{−|γ|²/2} and
+    |γ|² = |β|² cosh 2r + Re(β² e^{−iθ}) sinh 2r. Reduces to χ_vacuum at
+    r = 0. For θ = 0 this is exp[−½(β_x² e^{+2r} + β_y² e^{−2r})] —
+    narrow along β_x, broad (∝ e^{+r}) along β_y, consistent with the
+    state being squeezed in X (Var X = e^{−2r}). χ is real and even, so
+    χ(−β) = χ*(β) = χ(β) (Hermiticity). The cross-term sign is **+**:
+    this matches the exact ⟨r,θ|D(β)|r,θ⟩ to machine precision (see
+    notes/squeezed_eta2_scope.md §3, incl. the lock-pass sign correction).
+    """
+    b2 = np.abs(beta) ** 2
+    cross = np.real(beta ** 2 * np.exp(-1j * theta))
+    return np.exp(-0.5 * (b2 * np.cosh(2.0 * r) + cross * np.sinh(2.0 * r)))
+
+
 # ---------------------------------------------------------------------------
 # Analytic Wigner functions on the α grid (ground truth for D3 metrics)
 # ---------------------------------------------------------------------------
@@ -193,6 +213,27 @@ def W_mixed_cat(alpha: np.ndarray, alpha0: complex) -> np.ndarray:
     )
 
 
+def W_squeezed(alpha: np.ndarray, r: float, theta: float = 0.0) -> np.ndarray:
+    """W for squeezed vacuum S(ξ)|0⟩, ξ = r e^{iθ} (pure ⇒ Gaussian, no
+    negativity).
+
+        W(γ) = (2/π) exp[ −2 ( e^{+2r} ζ_x² + e^{−2r} ζ_y² ) ],
+        ζ = γ e^{−iθ/2},  ζ_x = Re ζ,  ζ_y = Im ζ.
+
+    The squeeze angle θ rotates the phase-space ellipse by θ/2. For
+    θ = 0 the state is squeezed in X (narrow along Re γ, Var X = e^{−2r})
+    and anti-squeezed in P (broad along Im γ); θ = π/2 swaps the axes.
+    Reduces to W_vacuum at r = 0. Verified to machine precision against
+    the parity-form Wigner of the explicit S(ξ)|0⟩ ket and against
+    `wigner_from_chi(chi_squeezed)` (notes/squeezed_eta2_scope.md §3).
+    """
+    zeta = np.asarray(alpha) * np.exp(-1j * theta / 2.0)
+    zx, zy = np.real(zeta), np.imag(zeta)
+    return (2.0 / np.pi) * np.exp(
+        -2.0 * (np.exp(2.0 * r) * zx ** 2 + np.exp(-2.0 * r) * zy ** 2)
+    )
+
+
 # ---------------------------------------------------------------------------
 # State factory
 # ---------------------------------------------------------------------------
@@ -207,6 +248,8 @@ def parse_state(name: str) -> dict:
         fock_<n>
         cat_<alpha>
         mixed_cat_<alpha>
+        squeezed_<r>            (θ = 0, squeezed in X)
+        squeezed_<r>_perp       (θ = π/2 anisotropy-orientation control)
     """
     parts = name.split("_")
     if parts[0] == "vacuum":
@@ -228,6 +271,11 @@ def parse_state(name: str) -> dict:
     if parts[0] == "mixed" and len(parts) >= 3 and parts[1] == "cat":
         return {"name": name, "kind": "mixed_cat", "alpha": float(parts[2]),
                 "gaussian": True, "non_gaussian_metric": False}
+    if parts[0] == "squeezed":
+        r = float(parts[1])
+        theta = np.pi / 2.0 if (len(parts) >= 3 and parts[2] == "perp") else 0.0
+        return {"name": name, "kind": "squeezed", "r": r, "theta": theta,
+                "gaussian": True, "non_gaussian_metric": False, "purity": 1.0}
     raise ValueError(f"Unknown state name: {name!r}")
 
 
@@ -246,6 +294,8 @@ def chi_of_state(beta: np.ndarray, spec: dict) -> np.ndarray:
         return chi_cat(beta, spec["alpha"] + 0.0j)
     if kind == "mixed_cat":
         return chi_mixed_cat(beta, spec["alpha"] + 0.0j)
+    if kind == "squeezed":
+        return chi_squeezed(beta, spec["r"], spec.get("theta", 0.0))
     raise ValueError(f"Unknown kind: {kind!r}")
 
 
@@ -264,6 +314,8 @@ def W_true_of_state(alpha: np.ndarray, spec: dict) -> np.ndarray:
         return W_cat(alpha, spec["alpha"] + 0.0j)
     if kind == "mixed_cat":
         return W_mixed_cat(alpha, spec["alpha"] + 0.0j)
+    if kind == "squeezed":
+        return W_squeezed(alpha, spec["r"], spec.get("theta", 0.0))
     raise ValueError(f"Unknown kind: {kind!r}")
 
 
