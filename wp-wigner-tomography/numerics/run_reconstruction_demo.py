@@ -67,6 +67,17 @@ PASS_THRESHOLDS = {
 
 DEFAULT_STATES = list(PASS_THRESHOLDS.keys())
 
+# Rank 2 (squeezed-vacuum reconstruction; squeezed_eta2_scope.md §8 D-5).
+# Squeezed vacuum is a *pure* Gaussian — the coherent-state analogue —
+# so it is gated at the §7#5 Gaussian/coherent tier F ≥ 0.99 (not the
+# thermal mixed tier). Added *after* DEFAULT_STATES is frozen so the
+# bare D3 demo (the parked reconstruction_demo.h5 provenance) is
+# unchanged; these run only when named explicitly via --states.
+PASS_THRESHOLDS.update({
+    "squeezed_0.5":      {"F_min": 0.99},
+    "squeezed_0.5_perp": {"F_min": 0.99},
+})
+
 
 def reconstruct(
     beta_axis: np.ndarray,

@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "wp_id": "wigner-tomography",
+  "code_version": "0.4.0",
+  "runner_version": "0.1.0",
+  "repository": "https://github.com/Strobo-Travels-Deep/root",
+  "artifact": {
+    "path": "wp-wigner-tomography/numerics/squeezed_recon.h5",
+    "format": "hdf5",
+    "bytes": 1261984,
+    "sha256": "3a54fbc2408065b59c786c1fbe6d2c554508512aab04e2ee95d966f5237cdcec"
+  },
+  "execution": {
+    "timestamp": "2026-05-18T11:39:34.690836+00:00",
+    "engine": "python-scipy",
+    "precision": "complex128",
+    "elapsed_s": 0.02957296371459961
+  },
+  "provenance_hash": "dd4dac4fc57c46ab2302fdbdbf44d7eec4565251c69d5326185c6e37d71e6851",
+  "payload": {
+    "physical_parameters": {
+      "beta0": 0.05,
+      "n_pulses": 80
+    },
+    "grid": {
+      "size": 81,
+      "target_size": 161,
+      "B": 4.0,
+      "d_beta": 0.10000000000000009,
+      "d_alpha_padded": 0.1951299784838379
+    },
+    "metric_window": 3.0,
+    "states": [
+      "squeezed_0.5",
+      "squeezed_0.5_perp"
+    ],
+    "thresholds": {
+      "vacuum": {
+        "F_min": 0.999
+      },
+      "coherent_1.5": {
+        "F_min": 0.99
+      },
+      "thermal_0.5": {
+        "F_norm_min": 0.98
+      },
+      "fock_1": {
+        "F_min": 0.95,
+        "rho_neg_min": 0.5
+      },
+      "fock_2": {
+        "F_min": 0.9,
+        "rho_neg_min": 0.5
+      },
+      "cat_1.5": {
+        "F_min": 0.9,
+        "rho_neg_min": 0.5
+      },
+      "mixed_cat_1.5": {
+        "F_min": null,
+        "note": "control state \u2014 reported, not gated"
+      },
+      "squeezed_0.5": {
+        "F_min": 0.99
+      },
+      "squeezed_0.5_perp": {
+        "F_min": 0.99
+      }
+    },
+    "results": {
+      "squeezed_0.5": {
+        "metrics": {
+          "fidelity": 0.9994889768517203,
+          "L1_error": 0.04165250569060687,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true
+        }
+      },
+      "squeezed_0.5_perp": {
+        "metrics": {
+          "fidelity": 0.9999923814922637,
+          "L1_error": 0.005208523002114457,
+          "d_alpha": 0.19512997848383762,
+          "metric_window": 3.0
+        },
+        "pass": true,
+        "flags": {
+          "fidelity": true
+        }
+      }
+    },
+    "aggregate": {
+      "F_geomean": 0.9997406474867458,
+      "deciding_pass": true,
+      "overall_pass": true
+    },
+    "tags": [
+      "WP-W",
+      "D3",
+      "reconstruction-demo",
+      "ideal-SDF"
+    ]
+  }
+}
