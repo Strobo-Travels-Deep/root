@@ -25,8 +25,12 @@ extension — the 𝒪(η²)/δt analytic pass (locked) and an ideal-leg
 squeezed-vacuum reconstruction that passes the Gaussian-tier gate.
 Every hard gate ever set has passed; the one substantive caveat
 (D4 Layer B FFT centroid) was correctly re-attributed to grid
-resolution, not engine error. The only open work is the deliberately
-deferred native-engine 𝒪(η²) re-audit and the separate-WP GKP probe.
+resolution, not engine error. The native-engine 𝒪(η²) re-audit has
+since been **executed** (a gate-anchored, $(r,\theta)$-robust
+*structural null*: the monochromatic engine does not cleanly engineer
+the 2ω_m squeezing channel — `1ad9c4b`/`3f9f7dd`; see §7 and
+[`publication_assessment.md`](./publication_assessment.md) §3); the
+only remaining deferred item is the separate-WP GKP probe.
 
 -----
 
@@ -208,12 +212,15 @@ in the measurement-cost channel.
 
 ## 7. Open / deferred (no execution blockers)
 
-- **Native-engine 𝒪(η²) squeezing re-audit** (`squeezed_eta2_scope.md`
-  §9 step 3): the structural ideal↔native residual for squeezed
-  inputs on the §4 $\xi_\text{tot}$ comb. Deliberately deferred (the
-  scope-breadth decision); the scope §5 pins its mechanism, sign, and
-  ≈16 % scale so the follow-up is bounded and pre-registerable. Its
-  own scope/lock when reopened.
+- **Native-engine 𝒪(η²) squeezing re-audit — ✅ EXECUTED** (was the
+  `squeezed_eta2_scope.md` §9 step 3 deferral; reopened, scoped and
+  locked as `squeezed_native_audit_scope.md`, run as `1ad9c4b`
+  (N-6 capability null) + `3f9f7dd` (the $(r,\theta)$ sweep)). Result:
+  a gate-anchored (**P-D PASS**, ideal leg η-exact bit-for-bit vs
+  `cd22ef6`), $(r,\theta)$-robust **systematic structural null** —
+  the monochromatic engine neither engineers nor faithfully realises
+  the 2ω_m squeezing channel (parent §2 / `analytic_chain.md` §5,
+  now quantitative at the squeezing-channel level). No longer open.
 - **GKP-lattice probe** — a *grid-resolution* deferral ([FH20] Fig. 4
   already demonstrated it at η=0.05): needs Δα ÷10 → Δβ ÷10 → N ×10
   and a re-audited perturbativity at larger \|α\|. Separate future WP,

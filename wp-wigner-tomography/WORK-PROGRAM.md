@@ -1575,8 +1575,13 @@ Outstanding non-blocking polish:
     Gaussian tier (F = 0.999489 at θ=0, 0.999992 at θ=π/2; max|Im W|
     at the complex128 floor)
     ([`2026-05-18-squeezed-vacuum-reconstruction.md`](./logbook/2026-05-18-squeezed-vacuum-reconstruction.md);
-    `squeezed_recon.h5`). The native-engine 𝒪(η²) re-audit is the
-    one remaining deferred follow-up.
+    `squeezed_recon.h5`). The native-engine 𝒪(η²) re-audit has since
+    been **executed** (scoped+locked `squeezed_native_audit_scope.md`;
+    `1ad9c4b` N-6 capability null + `3f9f7dd` the $(r,\theta)$ sweep,
+    P-D gate PASS): a $(r,\theta)$-robust systematic structural null —
+    the monochromatic engine does not cleanly engineer the 2ω_m
+    squeezing channel. The only genuinely deferred follow-up is the
+    separate-WP GKP probe.
 
   - **Program synthesis (2026-05-18).** A standalone findings entry
     point ([`notes/wpw_findings.md`](./notes/wpw_findings.md))
