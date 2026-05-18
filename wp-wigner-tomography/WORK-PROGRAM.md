@@ -1531,7 +1531,7 @@ Outstanding non-blocking polish:
     while thermal is the most robust ($L^1{=}0.49$). σ_x-branch
     fidelity is N/A for the mixed inputs (no single $\psi_\text{pre}$).
 
-  - **k=1 sideband, full §7#4 input set (executed 2026-05-19).** The
+  - **k=1 sideband, full §7#4 input set (executed 2026-05-18).** The
     JC-regime counterpart of the 2026-05-18 carrier full set, run as
     the designated next-session pick-up (2026-05-18 §5) on the
     unchanged v0.6.2 runner — no code change. Every pre-registered
@@ -1552,8 +1552,28 @@ Outstanding non-blocking polish:
     k=0 carrier conclusion is not retroactively changed. New artefact
     family `back_action_k1_full.{h5,manifest.json,png}`; the three
     parked back-action artefacts left untouched
-    ([`2026-05-19-back-action-k1-full-set.md`](./logbook/2026-05-19-back-action-k1-full-set.md);
+    ([`2026-05-18-back-action-k1-full-set.md`](./logbook/2026-05-18-back-action-k1-full-set.md);
     `back_action_k1_full.h5`).
+
+  - **Rank 2 — squeezed-vacuum (executed 2026-05-18).** The
+    foundational 𝒪(η²)/δt analytic pass, locked
+    ([`squeezed_eta2_scope.md`](./notes/squeezed_eta2_scope.md);
+    the ideal-SDF χ chain is η-exact for squeezed vacuum, the
+    [Hasse24] App. E timing re-derived as the 2ω_m Dirichlet map,
+    and the long-open pulse-duration δt/T_m order closed), followed
+    by an ideal squeezed-vacuum reconstruction that clears the §7#5
+    Gaussian tier (F = 0.999489 at θ=0, 0.999992 at θ=π/2; max|Im W|
+    at the complex128 floor)
+    ([`2026-05-18-squeezed-vacuum-reconstruction.md`](./logbook/2026-05-18-squeezed-vacuum-reconstruction.md);
+    `squeezed_recon.h5`). The native-engine 𝒪(η²) re-audit is the
+    one remaining deferred follow-up.
+
+  - **Program synthesis (2026-05-18).** A standalone findings entry
+    point ([`notes/wpw_findings.md`](./notes/wpw_findings.md))
+    supersedes the 2026-05-16 close-out as the reader's first stop,
+    pairing every load-bearing conclusion (the validated chain, the
+    five execution-surfaced conventions, the back-action family, and
+    Rank 2) with its gate number, commit, and primary logbook.
 
 ## References
 

@@ -1,9 +1,9 @@
-# Logbook — 2026-05-19 — squeezed-vacuum reconstruction (Rank 2, §9 step 2)
+# Logbook — 2026-05-18 — squeezed-vacuum reconstruction (Rank 2, §9 step 2)
 
 **Status.** Run entry. The Rank 2 payload: ideal squeezed-vacuum
 reconstruction, executing
 [`squeezed_eta2_scope.md`](../notes/squeezed_eta2_scope.md) §9 step 2
-under the locked §8 decisions (scope LOCKED 2026-05-19, commit
+under the locked §8 decisions (scope LOCKED 2026-05-18, commit
 `2d74ba1`; helpers + smoke locks `5474fce`). Per D-2 the **ideal-SDF
 χ chain is η-exact for squeezed vacuum**, so this reuses
 `run_reconstruction_demo.py`'s analytic/ideal path verbatim with the

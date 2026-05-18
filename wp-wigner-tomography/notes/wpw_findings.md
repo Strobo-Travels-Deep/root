@@ -1,6 +1,6 @@
 # WP-W — Overall findings (program synthesis)
 
-**WP-W · findings synthesis · 2026-05-19**
+**WP-W · findings synthesis · 2026-05-18**
 
 **Status.** Standalone, citable synthesis of the *entire* WP-W
 program. This is the reader's **first stop**: every load-bearing
@@ -103,9 +103,9 @@ executed runs:
 | run | inputs · tooth | key result | logbook |
 |---|---|---|---|
 | **k=0 minimal** | vacuum/Fock\|2⟩/cat · k=0 | vacuum analytic gate PASS at machine precision (the only hard gate); ideal-vs-native structural $L^1$ established | [2026-05-16-run](../logbook/2026-05-16-back-action-run.md) (`1b90f92`) |
-| **k=1 single-point** | +coherent\|2⟩ · k=1 | gate tooth-safe (ideal leg tooth-independent); coherent is the cleanest sideband witness | [2026-05-17](../logbook/2026-05-17-back-action-k1-sideband.md) |
-| **k=0 full §7#4** | all 7 + mixed-cat · k=0 | 3 parked inputs reproduce `back_action.h5` **bit-for-bit (0.0e0 / 240 fields)**; quantum/classical discriminator carries into back-action: pure cat $L^1$=1.87 > mixed cat 1.47; thermal most robust 0.49 | [2026-05-18](../logbook/2026-05-18-back-action-full-set.md) |
-| **k=1 full §7#4** | all 7 · k=1 | bit-for-bit vs parked k=1 (0.0e0 / 225 fields); **L¹ ordering tooth-robust**; sideband signature concentrated in the *coherent σ_x-branch fidelity* (+0.078 k1−k0), unconditional metrics ≤1e−2 | [2026-05-19-k1-full](../logbook/2026-05-19-back-action-k1-full-set.md) (`f0cec92`) |
+| **k=1 single-point** | +coherent $\|\alpha\|{=}2$ · k=1 | gate tooth-safe (ideal leg tooth-independent); coherent is the cleanest sideband witness | [2026-05-17](../logbook/2026-05-17-back-action-k1-sideband.md) (`339690b`) |
+| **k=0 full §7#4** | all 7 (incl. mixed-cat control) · k=0 | 3 parked inputs reproduce `back_action.h5` **bit-for-bit (0.0e0 / 240 fields)**; quantum/classical discriminator carries into back-action: pure cat $L^1$=1.87 > mixed cat 1.47; thermal most robust 0.49 | [2026-05-18](../logbook/2026-05-18-back-action-full-set.md) |
+| **k=1 full §7#4** | all 7 · k=1 | bit-for-bit vs parked k=1 (0.0e0 / 225 fields); **L¹ ordering tooth-robust**; sideband signature concentrated in the *coherent σ_x-branch fidelity* (+0.078 k1−k0), unconditional metrics ≤1e−2 | [2026-05-18-k1-full](../logbook/2026-05-18-back-action-k1-full-set.md) (`f0cec92`) |
 
 **Findings.** (i) The **vacuum analytic anchor** (purity
 $\tfrac12(1{+}e^{-|\beta|^2})$, fidelity $e^{-|\beta|^2/4}$,
@@ -151,7 +151,7 @@ proposed `3b3db78`, locked `2d74ba1`). Key derived results:
   (depend only on the $e^{+r}$ magnitude).
 
 **4.2 Ideal squeezed-vacuum reconstruction — gate PASS**
-([2026-05-19-squeezed](../logbook/2026-05-19-squeezed-vacuum-reconstruction.md);
+([2026-05-18-squeezed](../logbook/2026-05-18-squeezed-vacuum-reconstruction.md);
 helpers `5474fce`, run `cd22ef6`). Reuses the D3 ideal path verbatim
 (confirming the η-exactness claim empirically):
 
@@ -231,7 +231,7 @@ fe8f8b0  v0.5 doc-correction pass (doc-only)
 64a2e10  D1 standalone analytic note
 cb850a5  back-action scope (doc-only checkpoint)
 1b90f92  back-action k=0 minimal execution
- …       2026-05-17 k=1 single-point sideband
+339690b  back-action k=1 single-point sideband
 298dbcc/be90a21/d297112/a33bbc0  back-action k=0 full §7#4 (scope→run→fix→logbook)
 f0cec92  back-action k=1 full §7#4   ·  c1f7d3b  WP chronology index
 3b3db78  𝒪(η²)/δt scope (PROPOSED)   ·  2d74ba1  LOCK (+§3 sign fix, D1 §6 rewrite)

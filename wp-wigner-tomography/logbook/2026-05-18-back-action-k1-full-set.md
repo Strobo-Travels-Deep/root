@@ -1,4 +1,4 @@
-# Logbook — 2026-05-19 — back-action: k=1 sideband, full §7#4 input set
+# Logbook — 2026-05-18 — back-action: k=1 sideband, full §7#4 input set
 
 **Status.** Run entry. Designated next-session pick-up (user decision
 2026-05-18, recorded in [`2026-05-18-back-action-full-set.md`](./2026-05-18-back-action-full-set.md)

@@ -151,8 +151,11 @@ inputs reproduce the k=1 single-point witness trends from
 mismatch at the sideband); thermal/mixed-cat are *new* k=1 data —
 expect the quantum/classical L¹ ordering of §4 to persist but with
 the JC-type native back-action of the sideband. New logbook
-`2026-05-19-…-k1-full-set.md`, pre-reg → run → comparison, one
-clean commit; do **not** regenerate parked artefacts.
+`2026-05-18-…-k1-full-set.md` *[filename aligned post-hoc: this
+designation predicted `2026-05-19-…`, but the pick-up executed
+same-day; see [`../notes/wpw_findings.md`](../notes/wpw_findings.md)
+provenance]*, pre-reg → run → comparison, one clean commit; do
+**not** regenerate parked artefacts.
 
 Other decision-gated items unchanged: Rank 2 squeezed-vacuum still
 needs the $\mathcal O(\eta^2)$ analytic extension first (separate,

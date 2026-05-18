@@ -1,5 +1,7 @@
 # Logbook — 2026-05-16 — WP-W close-out + follow-up options
 
+> **Superseded as first stop by [`../notes/wpw_findings.md`](../notes/wpw_findings.md) (2026-05-18).** That synthesis is the current reader's entry point (it covers the back-action family and Rank 2, which postdate this close-out). This entry remains the primary source for the Rank 1/2/3 scoping *decisions* taken on 2026-05-16.
+
 **Status.** Decision / milestone entry (not a run entry). WP-W's
 entire §4 deliverable surface plus both preflight gates are executed,
 documented, and pushed to `origin/main`. This entry summarises the

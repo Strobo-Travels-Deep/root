@@ -1,8 +1,8 @@
 # WP-W — 𝒪(η²) analytic extension & squeezed-vacuum scope
 
-**WP-W · Rank 2 prerequisite · 2026-05-19**
+**WP-W · Rank 2 prerequisite · 2026-05-18**
 
-**Status.** *LOCKED 2026-05-19 (user review + lock; one §3 closed-form
+**Status.** *LOCKED 2026-05-18 (user review + lock; one §3 closed-form
 sign correction applied at lock — see the §3 correction note). The §7
 D1 §6 rewrite is applied in this same lock commit (§9 step 0).* The
 note was proposed as a doc-only derivation/scope checkpoint (commit
@@ -178,7 +178,7 @@ $\beta_y$** — consistent with the state being squeezed in $X$
 couples to in $D(\beta)$, so a tight $X$ distribution makes $\chi$
 decay slowly in $\beta_y$.
 
-**Correction note (lock pass, 2026-05-19).** The proposed-commit
+**Correction note (lock pass, 2026-05-18).** The proposed-commit
 (`3b3db78`) boxed form carried the cross term with a **−** sign and a
 correspondingly flipped $\theta{=}0$ reduction
 ($\beta_x^2e^{-2r}+\beta_y^2e^{+2r}$). A user review flagged the §3
@@ -416,7 +416,7 @@ consequences and locks the squeezed-vacuum protocol decisions left
 open at WP-W close-out. [Hasse24] App. E (Δt=2π/2ω_m squeezing
 timing) and [FH20] (η=0.05 squeezed-state demonstration) are the
 external precedents; the high-η stroboscopic adaptation and the
-δt/T_m closure are derived here. LOCKED 2026-05-19 (one §3 closed-form
+δt/T_m closure are derived here. LOCKED 2026-05-18 (one §3 closed-form
 sign correction at lock); §9 steps 1–2 (χ helper + ideal
 squeezed-vacuum reconstruction) proceed; the native-engine 𝒪(η²)
 re-audit (step 3) remains a separate deferred scope.*
