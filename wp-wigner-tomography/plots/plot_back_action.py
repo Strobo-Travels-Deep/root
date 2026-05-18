@@ -148,9 +148,12 @@ def main() -> int:
             transform=axes[ri, 2].transAxes, va="bottom", ha="right",
             fontsize=8.5, color="darkred",
             bbox=dict(boxstyle="round", fc="mistyrose", alpha=0.85))
+        _sxf = ideal["sx_branch_fid"]
+        _sxf_txt = (f"$\\sigma_x$-branch $F$ = {_sxf:.3f}"
+                    if _sxf is not None
+                    else r"$\sigma_x$-branch $F$: N/A (mixed input)")
         axes[ri, 1].text(
-            0.97, 0.03,
-            f"$\\sigma_x$-branch $F$ = {ideal['sx_branch_fid']:.3f}",
+            0.97, 0.03, _sxf_txt,
             transform=axes[ri, 1].transAxes, va="bottom", ha="right",
             fontsize=8.0, color="darkgreen",
             bbox=dict(boxstyle="round", fc="honeydew", alpha=0.85))

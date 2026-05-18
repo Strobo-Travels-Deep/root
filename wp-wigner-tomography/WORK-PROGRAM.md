@@ -1515,6 +1515,22 @@ Outstanding non-blocking polish:
     collapse-revival map would require a separate scan over coherent
     phase, detuning, or train length.
 
+  - **Full §7#4 input set (executed 2026-05-18).** The scope
+    addendum (`back_action_scope.md` §8, corrected under user review
+    and locked) extends the diagnostic to all seven §7#4 states —
+    adding coherent $|\alpha|{=}1.5$, thermal $\bar n{=}0.5$,
+    Fock $|1\rangle$, and the mixed-cat control. The two **mixed**
+    inputs use density-matrix propagation via a weighted-ket-list
+    layer; the pure path is reused verbatim, so the three parked
+    inputs reproduce `back_action.h5` **bit-for-bit** (0.0e+00 over
+    240 fields) and the hard vacuum gate is untouched
+    ([`2026-05-18-back-action-full-set.md`](./logbook/2026-05-18-back-action-full-set.md);
+    `back_action_full.h5`). Finding: the quantum/classical
+    discriminator carries into the back-action channel — the pure
+    cat's structural $L^1$ (1.87) exceeds the mixed cat's (1.47),
+    while thermal is the most robust ($L^1{=}0.49$). σ_x-branch
+    fidelity is N/A for the mixed inputs (no single $\psi_\text{pre}$).
+
 ## References
 
 Verified bibliography after the v0.4 lit-review pass (per [§5a

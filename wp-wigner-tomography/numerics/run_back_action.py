@@ -95,7 +95,7 @@ from _common import (
 )
 
 WP_ID = "wigner-tomography"
-CODE_VERSION = "0.6.1"
+CODE_VERSION = "0.6.2"
 REPOSITORY = "https://github.com/Strobo-Travels-Deep/root"
 
 # D4-Layer-A pinned WP-E v0.9.1 native parameters (run_bridge_native.py).
@@ -145,12 +145,85 @@ def motional_input(kind: str, nmax: int) -> np.ndarray:
         return states.fock_state(2, nmax)
     if kind == "cat1.5":
         return cat_ket(1.5 + 0j, nmax, parity=+1)
+    if kind.startswith("fock"):
+        n_s = kind[len("fock"):].lstrip("_")
+        if not n_s:
+            raise ValueError("fock input must include a level, e.g. fock1")
+        return states.fock_state(int(n_s), nmax)
     if kind.startswith("coherent"):
         alpha_s = kind[len("coherent"):].lstrip("_")
         if not alpha_s:
             raise ValueError("coherent input must include an amplitude, e.g. coherent2")
         return states.coherent_state(float(alpha_s), 0.0, nmax)
     raise ValueError(f"unknown input {kind!r}")
+
+
+def thermal_terms(nbar: float, nmax: int, tol: float = 1e-6):
+    """Thermal ρ = Σ pₙ|n⟩⟨n| as a truncated, renormalised ket list.
+
+    pₙ = n̄ⁿ/(1+n̄)^{n+1} = p·rⁿ with p=1/(1+n̄), r=n̄/(1+n̄). The tail
+    after keeping n=0..M is exactly r^{M+1}; pick the smallest M with
+    r^{M+1} ≤ tol (scope §8 Decision A; n̄=0.5 ⇒ 13 terms). Kept
+    weights are renormalised; the discarded tail mass is returned for
+    honest reporting.
+    """
+    p0 = 1.0 / (1.0 + nbar)
+    r = nbar / (1.0 + nbar)
+    M = 0
+    while r ** (M + 1) > tol and M < nmax - 1:
+        M += 1
+    raw = np.array([p0 * r ** n for n in range(M + 1)], dtype=np.float64)
+    tail = float(1.0 - raw.sum())
+    w = raw / raw.sum()
+    terms = [(float(wi), states.fock_state(n, nmax))
+             for n, wi in enumerate(w)]
+    return terms, {"pre_kind": "thermal", "nbar": float(nbar),
+                   "n_terms": M + 1, "discarded_tail": tail}
+
+
+def motional_input_terms(kind: str, nmax: int):
+    """Input as a weighted ket list [(wᵢ,|φᵢ⟩)], Σwᵢ=1 (scope §8 A).
+
+    Pure inputs → a single (1.0, ket) term so the existing pure
+    pipeline is reused verbatim (byte-identical regression). Mixed
+    inputs → genuinely multi-term.
+    """
+    if kind.startswith("thermal"):
+        nbar = float(kind[len("thermal"):].lstrip("_"))
+        return thermal_terms(nbar, nmax)
+    if kind.startswith("mixed_cat"):
+        a = float(kind[len("mixed_cat"):].lstrip("_"))
+        return ([(0.5, states.coherent_state(a, 0.0, nmax)),
+                 (0.5, states.coherent_state(a, 180.0, nmax))],
+                {"pre_kind": "mixed_cat", "alpha": a})
+    return [(1.0, motional_input(kind, nmax))], {"pre_kind": "pure"}
+
+
+def rho_pre_of_terms(terms, nmax: int) -> np.ndarray:
+    """ρ_m^pre = Σ wᵢ |φᵢ⟩⟨φᵢ| (single-term ⇒ exactly |φ⟩⟨φ|)."""
+    rho = np.zeros((nmax, nmax), dtype=np.complex128)
+    for w, ket in terms:
+        rho += w * np.outer(ket, np.conj(ket))
+    return rho
+
+
+def mixed_conditional_rho(outs, nmax, basis, s):
+    """Conditional motional ρ for a mixed input + total outcome prob.
+
+    ρ_cond,s = Σ wᵢ (M_s|φᵢ⟩)(M_s|φᵢ⟩)† / P(s),  P(s)=Σ wᵢ ‖M_s|φᵢ⟩‖².
+    `conditional_motional_ket` returns (normalised ket, prob=‖proj‖²),
+    so the unnormalised projected vector is √probᵢ · ketᵢ.
+    """
+    acc = np.zeros((nmax, nmax), dtype=np.complex128)
+    P = 0.0
+    for w, po in outs:
+        ket_i, prob_i = conditional_motional_ket(po, nmax, basis, s)
+        comp = np.sqrt(prob_i) * ket_i
+        acc += w * np.outer(comp, np.conj(comp))
+        P += w * prob_i
+    if P < 1e-15:
+        return np.zeros((nmax, nmax), dtype=np.complex128), float(P)
+    return acc / P, float(P)
 
 
 def evolve_ideal(psi_m, *, hs, nmax, beta0, N, omega_m, k, x, phi_train):
@@ -320,66 +393,116 @@ def main() -> int:
         print("ABORT: vacuum gate failed — diagnostic not trusted.")
         return 1
 
-    # Pre-state Wigners (one per input).
-    W_pre, psi_pre = {}, {}
-    AX, AY = np.meshgrid(alpha_axis, alpha_axis)
+    # Per-input weighted ket lists (scope §8 A). Pure = single (1,ket)
+    # term ⇒ the existing pure pipeline is reused verbatim below.
+    terms_by, premeta_by, W_pre, pre_purity = {}, {}, {}, {}
     for inp in inputs:
-        pm = motional_input(inp, nmax)
-        psi_pre[inp] = pm
-        Wp, _ = wigner_from_rho(np.outer(pm, np.conj(pm)), alpha_axis)
+        terms, meta = motional_input_terms(inp, nmax)
+        terms_by[inp] = terms
+        premeta_by[inp] = meta
+        rho_pre = rho_pre_of_terms(terms, nmax)
+        pre_purity[inp] = float(np.real(np.trace(rho_pre @ rho_pre)))
+        Wp, _ = wigner_from_rho(rho_pre, alpha_axis)
         W_pre[inp] = Wp
+        if meta.get("pre_kind") == "thermal":
+            print(f"  thermal n̄={meta['nbar']}: {meta['n_terms']} Fock "
+                  f"terms, discarded tail = {meta['discarded_tail']:.2e}")
 
     print("=" * 66)
     print("DIAGNOSTIC SWEEP  (reported, not gated)")
     print("=" * 66)
     records = []
     for inp in inputs:
-        pm = psi_pre[inp]
+        terms = terms_by[inp]
+        pure = len(terms) == 1
+        ppre = pre_purity[inp]
         for pname, ratio in points:
             x, phi, _ = inverse_dirichlet_target(ratio, N, wm)
             beta_tot = ratio * b0
             leg_W = {}
             for leg in ("ideal", "native"):
-                if leg == "ideal":
-                    psi_out = evolve_ideal(pm, hs=hs, nmax=nmax, beta0=b0,
-                                           N=N, omega_m=wm, k=k, x=x,
-                                           phi_train=phi)
+                def _evolve(ket):
+                    if leg == "ideal":
+                        return evolve_ideal(ket, hs=hs, nmax=nmax, beta0=b0,
+                                            N=N, omega_m=wm, k=k, x=x,
+                                            phi_train=phi)
+                    return evolve_native(ket, hs=hs, nmax=nmax, N=N,
+                                         omega_m=wm, k=k, x=x,
+                                         phi_train=phi, C=C, Cdag=Cdag)
+                if pure:
+                    # ---- pure path: existing primitives, verbatim ----
+                    pm = terms[0][1]
+                    psi_out = _evolve(pm)
+                    rho, m = state_metrics(psi_out, pm, nmax, alpha_axis,
+                                           d_alpha, want_wigner=True)
+                    cond = conditional_metrics(psi_out, nmax, beta_tot, pm)
+                    cond_W = None
+                    if pname == "peak":
+                        ky, _p = conditional_motional_ket(psi_out, nmax,
+                                                          "y", +1)
+                        cond_W, _ = wigner_from_rho(
+                            np.outer(ky, np.conj(ky)), alpha_axis)
+                    purity = m["purity"]
+                    rec = {"input": inp, "point": pname, "leg": leg,
+                           "beta_tot": beta_tot, "x": x, "phi_train": phi,
+                           "purity": purity, "purity_drop": m["purity_drop"],
+                           "fidelity_to_pre": m["fidelity_to_pre"],
+                           "neg_volume": m["neg_volume"],
+                           "pre_purity": ppre,
+                           "purity_drop_vs_pre": ppre - purity,
+                           "W": m["W"], "W_err_imag": m["W_err_imag"],
+                           "cond": cond, "cond_W_sy_plus": cond_W}
                 else:
-                    psi_out = evolve_native(pm, hs=hs, nmax=nmax, N=N,
-                                            omega_m=wm, k=k, x=x,
-                                            phi_train=phi, C=C, Cdag=Cdag)
-                rho, m = state_metrics(psi_out, pm, nmax, alpha_axis,
-                                       d_alpha, want_wigner=True)
-                cond = conditional_metrics(psi_out, nmax, beta_tot, pm)
-                # σ_y+ conditional Wigner only at the peak (headline panel).
-                cond_W = None
-                if pname == "peak":
-                    ky, _p = conditional_motional_ket(psi_out, nmax, "y", +1)
-                    cond_W, _ = wigner_from_rho(
-                        np.outer(ky, np.conj(ky)), alpha_axis)
-                leg_W[leg] = m["W"]
-                rec = {"input": inp, "point": pname, "leg": leg,
-                       "beta_tot": beta_tot, "x": x, "phi_train": phi,
-                       "purity": m["purity"], "purity_drop": m["purity_drop"],
-                       "fidelity_to_pre": m["fidelity_to_pre"],
-                       "neg_volume": m["neg_volume"],
-                       "W": m["W"], "W_err_imag": m["W_err_imag"],
-                       "cond": cond, "cond_W_sy_plus": cond_W}
+                    # ---- mixed path: weighted-density-matrix sum ----
+                    outs = [(w, _evolve(ket)) for w, ket in terms]
+                    rho = np.zeros((nmax, nmax), dtype=np.complex128)
+                    for w, po in outs:
+                        rho += w * partial_trace_spin(po, nmax)
+                    purity = float(np.real(np.trace(rho @ rho)))
+                    rho_pre = rho_pre_of_terms(terms, nmax)
+                    fid = float(np.real(np.trace(rho_pre @ rho)))
+                    W, werr = wigner_from_rho(rho, alpha_axis)
+                    cond = {}
+                    for basis in ("x", "y", "z"):
+                        for s in (+1, -1):
+                            rc, P = mixed_conditional_rho(outs, nmax,
+                                                          basis, s)
+                            cond[f"{basis}{'+' if s > 0 else '-'}"] = {
+                                "prob": P,
+                                "purity": float(np.real(np.trace(rc @ rc)))}
+                            # branch_fidelity intentionally omitted (mixed
+                            # input has no single ψ_pre; scope §8 C)
+                    cond_W = None
+                    if pname == "peak":
+                        rc_y, _P = mixed_conditional_rho(outs, nmax, "y", +1)
+                        cond_W, _ = wigner_from_rho(rc_y, alpha_axis)
+                    rec = {"input": inp, "point": pname, "leg": leg,
+                           "beta_tot": beta_tot, "x": x, "phi_train": phi,
+                           "purity": purity, "purity_drop": 1.0 - purity,
+                           "fidelity_to_pre": fid,
+                           "neg_volume": neg_volume(W, d_alpha),
+                           "pre_purity": ppre,
+                           "purity_drop_vs_pre": ppre - purity,
+                           "W": W, "W_err_imag": float(werr),
+                           "cond": cond, "cond_W_sy_plus": cond_W}
+                leg_W[leg] = rec["W"]
                 records.append(rec)
-                bx = cond.get("x+", {}).get("branch_fidelity")
-                print(f"  {inp:>7} {pname:>4} {leg:>6}: "
-                      f"purity={m['purity']:.4f} "
-                      f"drop={m['purity_drop']:.4f} "
-                      f"F_pre={m['fidelity_to_pre']:.4f} "
-                      f"neg={m['neg_volume']:+.4f}"
-                      + (f" σx-branchF={bx:.4f}" if bx is not None else ""))
+                bx = rec["cond"].get("x+", {}).get("branch_fidelity")
+                print(f"  {inp:>10} {pname:>4} {leg:>6}: "
+                      f"purity={rec['purity']:.4f} "
+                      f"drop_vs_pre={rec['purity_drop_vs_pre']:.4f} "
+                      f"F_pre={rec['fidelity_to_pre']:.4f} "
+                      f"neg={rec['neg_volume']:+.4f}"
+                      + (f" σx-branchF={bx:.4f}" if bx is not None
+                         else "  (σx-branchF N/A: mixed)" if not pure
+                         else ""))
             # Structural ideal-vs-native L¹ on the unconditional W.
             l1 = float(np.sum(np.abs(leg_W["ideal"] - leg_W["native"]))
                        * d_alpha ** 2)
             for rec in records:
                 if rec["input"] == inp and rec["point"] == pname:
                     rec["ideal_vs_native_W_L1"] = l1
-            print(f"  {inp:>7} {pname:>4}  ideal-vs-native W L¹ = {l1:.4e}"
+            print(f"  {inp:>10} {pname:>4}  ideal-vs-native W L¹ = {l1:.4e}"
                   f"  (structural residual, §4a)")
 
     elapsed = time.time() - t0
@@ -412,6 +535,12 @@ def main() -> int:
                 gg.attrs[kk] = vv
         for inp in inputs:
             h5.create_dataset(f"W_pre/{inp}", data=W_pre[inp])
+        pmg = h5.create_group("pre_meta")
+        for inp in inputs:
+            pg = pmg.create_group(inp)
+            pg.attrs["pre_purity"] = pre_purity[inp]
+            for mk, mv in premeta_by[inp].items():
+                pg.attrs[mk] = mv
         for i, r in enumerate(records):
             grp = h5.create_group(f"rec_{i:02d}")
             for kk, vv in r.items():
@@ -452,6 +581,9 @@ def main() -> int:
                                 "gate_alpha_window": args.gate_alpha_window,
                                 "gate_alpha_points": args.gate_alpha_points},
         "inputs": inputs,
+        "pre_meta": {inp: {**premeta_by[inp],
+                           "pre_purity": pre_purity[inp]}
+                     for inp in inputs},
         "points": {p: r for p, r in points},
         "gate": {"tol": args.gate_tol, "pass": bool(gate_ok),
                  "rows": gate_rows,

@@ -1,6 +1,6 @@
 # WP-W — Wigner-Like Reconstruction in the Lamb–Dicke / Idealised-Train Limit
 
-**Status:** v0.6 (2026-05-16; k=1 sideband follow-up 2026-05-17).
+**Status:** v0.6 (2026-05-16; k=1 sideband 2026-05-17; full §7#4 set 2026-05-18).
 P0 + D2 + D3 + P1 + D4 cleared (ideal-SDF primitive in place; engine
 bridge demonstrated); v0.5 doc-correction pass applied (ideal SDF is
 FH20-style σ_x not σ_z, direct χ = ⟨σ_y⟩ − i⟨σ_z⟩ readout, §4 D4
@@ -60,6 +60,11 @@ python wp-wigner-tomography/numerics/run_back_action.py --k-sideband 1 \
   --inputs vacuum coherent2 fock2 cat1.5
 python wp-wigner-tomography/plots/plot_back_action.py \
   --h5 wp-wigner-tomography/numerics/back_action_k1.h5
+python wp-wigner-tomography/numerics/run_back_action.py \
+  --inputs vacuum coherent1.5 thermal0.5 fock1 fock2 cat1.5 mixed_cat1.5 \
+  --output wp-wigner-tomography/numerics/back_action_full.h5  # full §7#4 set (~4 min)
+python wp-wigner-tomography/plots/plot_back_action.py \
+  --h5 wp-wigner-tomography/numerics/back_action_full.h5
 
 # Explanatory synthesis notebooks (repo-root notebooks/; or just open in Jupyter).
 jupyter nbconvert --to notebook --execute notebooks/wpw_chi_to_wigner.ipynb \
@@ -83,7 +88,7 @@ Each runner writes an HDF5 artefact and a sidecar
 | D2 | reach ladder | ✅ runner + outputs + figure |
 | D3 | reconstruction demo | ✅ PASS — all six gated states clear §7#5; deciding-state criterion satisfied |
 | D4 | WP-E / WP-TOM bridge | ✅ Layer A PASS @ machine precision; Layer B substantive PASS (engine χ ↔ analytic χ at $3.75\times10^{-4}$ on 81² fine grid; centroid sub-pixel) |
-| D5 | logbook | live; D2/P0, D3, ideal-SDF, D4 (all 2026-05-15), close-out + ranked follow-ups, [`2026-05-16-back-action-scope.md`](./logbook/2026-05-16-back-action-scope.md) (v0.6 scope), [`2026-05-16-back-action-run.md`](./logbook/2026-05-16-back-action-run.md) (v0.6 execution + post-run review), [`2026-05-17-back-action-k1-sideband.md`](./logbook/2026-05-17-back-action-k1-sideband.md) (k=1 sideband follow-up) |
+| D5 | logbook | live; D2/P0, D3, ideal-SDF, D4 (all 2026-05-15), close-out + ranked follow-ups, [`2026-05-16-back-action-scope.md`](./logbook/2026-05-16-back-action-scope.md) (v0.6 scope), [`2026-05-16-back-action-run.md`](./logbook/2026-05-16-back-action-run.md) (v0.6 execution + post-run review), [`2026-05-17-back-action-k1-sideband.md`](./logbook/2026-05-17-back-action-k1-sideband.md) (k=1 sideband follow-up), [`2026-05-18-back-action-full-set.md`](./logbook/2026-05-18-back-action-full-set.md) (full §7#4 set, bit-for-bit backward-compat) |
 | P0 | analytic-grid gate | ✅ PASS (vacuum + coherent $|\alpha=1\rangle$) |
 | P1 | engine-bridge gate | ✅ PASS at $10^{-14}$ (vacuum + coherent $|\alpha=1\rangle$, N=20 and 80, FH20 σ_x SDF) |
-| v0.6 | back-action diagnostic | ✅ Rank-1 follow-up. Vacuum analytic gate **PASS at machine precision** (purity ½(1+e⁻\|β\|²) Δ≤2e-14, fidelity e⁻\|β\|²/4 Δ≤1.5e-14, W vs W_mixed_cat(β_tot/2) Δ≤1.3e-10 — the P0/P1 analogue); ideal σ_x-branch fidelity = 1.0000 vs native ≪1 (§7#3 structural bridge quantified); ideal-vs-native Wigner L¹ = third bridge residual. k=1 sideband follow-up executed on 2026-05-17 with coherent `|alpha|=2` witness (`F_pre=0.0486`, σ_x-branch `F=0.0372` at the peak native point). |
+| v0.6 | back-action diagnostic | ✅ Rank-1 follow-up. Vacuum analytic gate **PASS at machine precision** (purity ½(1+e⁻\|β\|²) Δ≤2e-14, fidelity e⁻\|β\|²/4 Δ≤1.5e-14, W vs W_mixed_cat(β_tot/2) Δ≤1.3e-10 — the P0/P1 analogue); ideal σ_x-branch fidelity = 1.0000 vs native ≪1 (§7#3 structural bridge quantified); ideal-vs-native Wigner L¹ = third bridge residual. k=1 sideband follow-up executed on 2026-05-17 with coherent `|alpha|=2` witness (`F_pre=0.0486`, σ_x-branch `F=0.0372` at the peak native point). Full §7#4 set (incl. mixed thermal/mixed-cat via density-matrix propagation) executed 2026-05-18 (`back_action_full.h5`); the 3 parked inputs reproduce `back_action.h5` **bit-for-bit** (0.0e+00 over 240 fields). |

@@ -319,7 +319,7 @@ discipline.
 
 -----
 
-## 8. Full §7#4 input-set extension *(proposed 2026-05-17 — pending user lock)*
+## 8. Full §7#4 input-set extension *(corrected + LOCKED 2026-05-18; EXECUTED)*
 
 The v0.6 minimal set (§3 decision 2) was {vacuum, Fock $|2\rangle$,
 cat $|\alpha|{=}1.5$}, all *pure*. The k=0 carrier result is
@@ -431,4 +431,7 @@ Vacuum gate must still PASS first.
 [`analytic_chain.md`](./analytic_chain.md) §1–§2 (σ_x SDF, branches
 at $\pm\beta_\text{tot}/2$). This note adds no new physics; it locks
 the back-action protocol decisions left open in WORK-PROGRAM §8. §8
-(full §7#4 set) is proposed and pending user lock.*
+(full §7#4 set) was corrected under user review, locked, and
+executed on 2026-05-18 — see
+[`logbook/2026-05-18-back-action-full-set.md`](../logbook/2026-05-18-back-action-full-set.md)
+(`back_action_full.h5`; bit-for-bit backward-compatible).*
