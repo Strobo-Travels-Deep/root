@@ -1,10 +1,16 @@
 <!--
 WP-W PAPER DRAFT — Markdown working copy.
 Built strictly against publication_assessment.md §8 (locked claim
-contract) and publication_outline.md. Status: §V and §II drafted in
-full (proof-of-structure + the theoretical contribution); I/III/IV/
-VI/VII as structured prose with key paragraphs; abstract from the
-vetted outline sketch; figures = placeholders → committed artefacts.
+contract) and publication_outline.md. Status: §II, §III, §IV, §V
+drafted in full (theoretical contribution + validated reconstruction
++ quantitative back-action + the proof-of-structure squeezing
+result); §I/VI/VII structured prose with key paragraphs; abstract
+from the vetted outline sketch; figures = placeholders → committed
+artefacts. A claim-hygiene pass separated the ideal-SDF
+direct-χ-readout layer from the native engine throughout (§II.A/§IV),
+tightened the Hasse24-experimental attribution (§I.P2), fixed the
+Ω_r unit/convention note (§II.A), and bounded the FH20 χ-measurement
+phrasing (§V.D/§VI.P3).
 Claims = exactly the four of publication_assessment.md §3. Banned in
 all prose: "first", "first characterisation", "structural
 impossibility", "not previously stated", headline "novel/novelty",
@@ -65,13 +71,14 @@ framework and its non-Gaussian reach are [FH20]'s; this work adopts,
 not introduces, that framework.*
 
 **P2 — the Freiburg ²⁵Mg⁺ programme.** [Hasse24] established the
-monochromatic stroboscopic AC-train protocol (Hamiltonian Eq. (C1)),
-the 2D $(\varphi,\vartheta_0)$ scan, phase-space position/momentum
-readout, and outlined back-action (App. D / Fig. 6b) and the
+monochromatic stroboscopic AC-train protocol (Hamiltonian Eq. (C1))
+and demonstrated phase-space position/momentum readout
+*experimentally* on ²⁵Mg⁺ at $\eta=0.40$, via the 2D
+$(\varphi,\vartheta_0)$ scan. It additionally gave a *qualitative*
+back-action map (App. D / Fig. 6b) and a *numerical/conceptual*
 squeezed-state extension with the timing change
-$\Delta t = 2\pi/(2\omega_m)$ (App. E / Fig. 9) — experimentally, on
-²⁵Mg⁺ at $\eta=0.40$. *This manuscript is a theory/numerics
-continuation of that programme.*
+$\Delta t = 2\pi/(2\omega_m)$ (App. E / Fig. 9). *This manuscript is a
+theory/numerics continuation of that programme.*
 
 **P3 — the gap this paper fills.** One sentence per claim,
 subordinated: (1) the stroboscopic-monochromatic-specific
@@ -104,25 +111,42 @@ $$
   \qquad C=e^{i\eta(a+a^\dagger)},
 $$
 with Lamb–Dicke parameter $\eta=0.40$ (engine value $0.397$),
-$\omega_m/2\pi=1.3$ MHz, $\Omega_r/2\pi\!\approx\!0.30$ MHz, flash
-duration $\delta t=0.13\,T_m$, $T_m=2\pi/\omega_m$. This is Eq. (C1)
-of [Hasse24] in the analysis frame; we take it as given (parameter
-provenance: the pinned WP-E/[Hasse24] D4-Layer-A set). The train is
-$N$ flashes at period $T_m$ with a programmed per-flash phase
-$\varphi_\text{train}$.
+$\omega_m/2\pi=1.3$ MHz, flash duration $\delta t=0.13\,T_m$,
+$T_m=2\pi/\omega_m$, and dimensionless engine coupling
+$\Omega_r=0.0902$ — the pinned D4-Layer-A simulation value. (The
+corresponding *physical* AC Rabi rate in [Hasse24] is
+$\Omega_\text{AC}/2\pi\!\approx\!0.3$ MHz; this is a different
+unit/convention, not the same number — we work throughout in the
+engine's dimensionless units, the pinned WP-E/[Hasse24] D4-Layer-A
+set.) This is Eq. (C1) of [Hasse24] in the analysis frame; we take it
+as given. The train is $N$ flashes at period $T_m$ with a programmed
+per-flash phase $\varphi_\text{train}$.
 
-A *single resolved comb tooth* of this drive, on the equatorial
-spin state $|{+}y\rangle$ (Ramsey-orthogonal to the SDF axis),
-reads the symmetric characteristic function **directly**:
+**The ideal measurement operator is *not* this native drive.** It is
+the FH20-style σ_x state-dependent force $U=D(\sigma_x\beta/2)$ —
+which [FH20] realises with a *bichromatic* drive and which we supply
+numerically as a separate primitive. On the equatorial spin state
+$|{+}y\rangle$ (Ramsey-orthogonal to the σ_x SDF axis) a single
+resolved comb tooth of *the ideal SDF* reads the symmetric
+characteristic function **directly**,
 $$
   \chi_{\rho_m}(\beta)=\langle\sigma_y\rangle-i\langle\sigma_z\rangle,
 $$
-with **no Gaussian prefactor and no overall phase** — a v0.5
-convention correction we verified to $10^{-14}$ (the σ_x SDF axis,
+with **no Gaussian prefactor and no overall phase** (the σ_x axis,
 not σ_z: a σ_z-conditioned displacement commutes with the σ_z
-detuning precession and never builds the comb, giving a 165 %
-residual; σ_x gives $10^{-14}$). The full derivation and the
-convention locks are Appendix A.
+detuning precession and never builds the comb — a 165 % residual,
+versus $10^{-14}$ for σ_x; a v0.5 convention correction, Appendix A).
+
+The native monochromatic engine of the Hamiltonian above does **not**
+natively realise this ideal operator: its leading term is
+Jaynes–Cummings-type and comb-sharpening selects but does not
+transmute it (engine-specific — [FH20]'s bichromatic drive *does*
+realise the ideal χ-measurement chain; §VI). The native engine
+therefore enters this work only as the **matched-control comparison**
+against the ideal-SDF prediction (§IV back-action; §V the
+$\mathcal O(\eta^2)$ channel), never as a direct χ reader. Keeping
+the ideal-SDF measurement layer and the native engine distinct is the
+load-bearing framing of this manuscript.
 
 ### II.B The Dirichlet forward map
 
@@ -175,73 +199,82 @@ displaces every reconstruction (Appendix A; validated by P0 below).
 matching $\pi(N\beta_0)^2/\Delta\beta^2$ and the independent grid
 count $5025$. *(artefact: `reach_ladder_ideal.h5`, D2.)*
 
-## III. Validated reconstruction at η = 0.40 *(structured prose; key paragraphs — claim 2)*
+## III. Validated reconstruction at η = 0.40 *(claim 2)*
 
-**P1 — preflight gates.** *P0* (analytic χ → FFT → W
-self-consistency): vacuum $W(0)=0.636555$ vs $2/\pi=0.636620$
-($\Delta=-6.5\times10^{-5}$, finite-grid windowing), coherent peak on
-the predicted node to $1$ part in $10^4$, $\max|\mathrm{Im}\,W|\sim
-10^{-16}$ — validates the $\Delta\alpha=\pi/(N_g\Delta\beta)$ relation
-and the FFT convention. *P1* (engine χ vs analytic χ at the sentinel
-$\beta_\star=0.5\,e^{i\pi/4}$, vacuum + coherent, $N\in\{20,80\}$):
-relative residual $\sim10^{-14}$ — the σ_x-SDF/direct-χ chain is
-engine-faithful at a point.
+Before any native comparison the inversion chain itself must be
+trustworthy at $\eta=0.40$. Two preflight gates establish this. The
+analytic self-consistency gate Fourier-transforms an analytically
+evaluated χ and recovers the vacuum centre $W(0)=0.636555$ against
+$2/\pi=0.636620$ (a $-6.5\times10^{-5}$ finite-grid-windowing
+residual), places the coherent peak on the predicted node to one part
+in $10^4$, and holds $\max|\mathrm{Im}\,W|\sim10^{-16}$ — confirming
+the FFT convention and in particular the
+$\Delta\alpha=\pi/(N_g\Delta\beta)$ relation of §II.B. The
+engine-faithfulness gate feeds the *ideal-SDF* primitive's measured χ
+— not the native engine — at the sentinel
+$\beta_\star=0.5\,e^{i\pi/4}$ for vacuum and a coherent state,
+$N\in\{20,80\}$, reproducing the analytic χ to a relative residual
+$\sim10^{-14}$: the σ_x-SDF / direct-χ chain of §II.A is exact at a
+point.
 
-**P2 — D3 reconstruction.** Seven §7#4 states on the v0.2 grid; the
-deciding states reconstruct at F = 0.9997 (Fock $|2\rangle$) and
-0.9664 (cat $|\alpha|=1.5$); the *mixed-cat control reconstructs as
-two incoherent humps with no invented fringes* — a
-quantum/classical sanity the pipeline passes. **[Fig. 2]** =
-reconstruction gallery + F/L¹ table *(artefact:
-`reconstruction_demo.h5`)*.
+On the v0.2 Cartesian grid the seven headline §7#4 states reconstruct
+through the full inverse-Dirichlet → FFT pipeline; the two deciding
+states clear at $F=0.9997$ (Fock $|2\rangle$) and $F=0.9664$ (cat
+$|\alpha|=1.5$). The quantum/classical control behaves as required:
+the *mixed* cat reconstructs as two incoherent Gaussian humps with no
+interference fringes while the *pure* cat's fringes are recovered —
+the pipeline does not manufacture coherence (**[Fig. 2]**; artefact
+`reconstruction_demo.h5`).
 
-**P3 — the ideal↔native bridge (D4).** Layer A: the native engine
-reproduces the WP-E reference scan bit-exactly
-($\max|\Delta|=0.00\times10^{0}$ on $(\sigma_z,\mathrm{Re}\,C,
-\mathrm{Im}\,C)$ at three δ/ω_m points). Layer B: engine-measured χ
-vs analytic χ, $\max|\Delta|=3.75\times10^{-4}$ over 6481 nodes — the
-load-bearing bridge number; the FFT-centroid residual
-$1.99\times10^{-2}$ is reported only with its $\Delta\alpha=0.388$
-pixel size and is sub-pixel by construction, never a bare gate.
-**[Fig. 3]** *(artefact: `bridge_inversion.h5`)*.
+The ideal↔native bridge is then quantified at the shared
+$|\alpha=3\rangle$ anchor. At matched physical drive the native
+engine reproduces an independent reference scan bit-exactly
+($\max|\Delta|=0.00\times10^{0}$ on
+$(\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)$ at three δ/ω_m points), and
+the engine-measured χ matches the analytic χ to
+$\max|\Delta|=3.75\times10^{-4}$ over the 6481-node fine grid — the
+load-bearing bridge number. The associated FFT-centroid residual
+$1.99\times10^{-2}$ is sub-pixel by construction and is quoted only
+with its $\Delta\alpha=0.388$ pixel size attached, never as a bare
+gate (**[Fig. 3]**; artefact `bridge_inversion.h5`).
 
-**P4 — the high-η regime.** At $\eta=0.40$ the LD expansion's
-$\mathcal O(\eta^2)\!\approx\!16\%$ term is non-negligible (a known
-deviation of this platform; cf. the project's ideal-limit analysis).
-We frame the validated reconstruction as *establishing the chain in
-the regime [FH20]'s $\eta\!\approx\!0.05$ platform avoids*, with the
-deviation hierarchy stated explicitly (Appendix B), not as a new
-observation that η² matters.
+Together these establish the chain in the *non-perturbative*
+$\eta=0.40$ regime that [FH20]'s $\eta\!\approx\!0.05$ platform
+avoids. The LD expansion's $\mathcal O(\eta^2)\!\approx\!16\%$ term is
+non-negligible here — a known deviation of this platform, not a new
+observation; the deviation hierarchy is carried explicitly
+(Appendix B) rather than asserted as a finding.
 
-## IV. Quantitative ideal-vs-native back-action *(structured prose; key paragraphs — claim 3)*
+## IV. Quantitative ideal-vs-native back-action *(claim 3)*
 
-**P1 — prior art, stated up front.** [Hasse24] App. D / Fig. 6b maps
+[Hasse24] App. D / Fig. 6b already maps the back-action
 $\delta\langle n\rangle(\varphi,\vartheta_0)$ *qualitatively* for
-$|\alpha|=3$. The contribution here is the *quantitative,
-Wigner-resolved* ideal-vs-native comparison, not characterisation of
-back-action per se.
+$|\alpha|=3$; the contribution here is the *quantitative,
+Wigner-resolved* ideal-vs-native comparison, not a characterisation
+of back-action as such. Both legs run the *same* physical drive
+program — the inverse-Dirichlet-assigned
+$(\delta,\varphi_\text{train},N)$, with no $\beta_\text{eff}$
+calibration — so the η-exact ideal-SDF prediction and the
+native-engine result form a matched-control pair (the §II.A
+ideal/native separation). The single hard gate is the vacuum analytic
+anchor: post-measurement purity $\tfrac12(1+e^{-|\beta|^2})$,
+fidelity $e^{-|\beta|^2/4}$, and
+$W=W_\text{mixed-cat}(\beta_\text{tot}/2)$, passed at machine
+precision and tooth-independent.
 
-**P2 — matched-control method.** Both legs run the *same* physical
-drive program (the inverse-Dirichlet-assigned
-$(\delta,\varphi_\text{train},N)$); no $\beta_\text{eff}$
-calibration. The ideal leg is the η-exact FH20-style SDF; the native
-leg is the [Hasse24] engine. The single hard gate is the vacuum
-analytic anchor (purity $\tfrac12(1+e^{-|\beta|^2})$, fidelity
-$e^{-|\beta|^2/4}$, $W=W_\text{mixed-cat}(\beta_\text{tot}/2)$),
-passed at machine precision and tooth-independent.
-
-**P3 — result.** Wigner-resolved ideal-vs-native residual across the
-seven §7#4 inputs on the carrier ($k=0$) and first sideband ($k=1$).
-A **tooth-robust quantum/classical discriminator**: the pure cat's
-structural $L^1$ (1.87) exceeds the mixed cat's (1.47) on both teeth;
-thermal is the most robust ($L^1=0.49$). The mixed-input pipeline
-reuses the validated pure path verbatim — bit-for-bit backward
-compatibility ($0.0\times10^{0}$ over 240 fields at $k=0$, 225 at
-$k=1$). The sideband signature is concentrated in the conditional
-(branch-selected) channel; the carrier conclusion is not
-retroactively changed. **[Fig. 4]** ideal-vs-native W panels +
-discriminator, $k=0/k=1$ *(artefacts: `back_action_full.h5`,
-`back_action_k1_full.h5`)*.
+Across the seven §7#4 inputs, on the carrier ($k=0$) and the first
+sideband ($k=1$), the Wigner-resolved ideal-vs-native residual
+exhibits a **tooth-robust quantum/classical discriminator**: the pure
+cat's structural $L^1$ ($1.87$) exceeds the mixed cat's ($1.47$) on
+*both* teeth, while a broad thermal input is the most robust
+($L^1=0.49$) — the same coherence-sensitivity ordering survives the
+carrier→sideband change of native dynamics. The mixed-input
+propagation reuses the validated pure-state pipeline verbatim,
+reproduced bit-for-bit ($0.0\times10^{0}$ across 240 fields at $k=0$,
+225 at $k=1$). The sideband signature is concentrated in the
+conditional, branch-selected channel, so the $k=1$ data do not
+retroactively change the carrier conclusion (**[Fig. 4]**; artefacts
+`back_action_full.h5`, `back_action_k1_full.h5`).
 
 ## V. The native 𝒪(η²) squeezing-channel result *(DRAFTED IN FULL — proof-of-structure, claim 4)*
 
@@ -348,9 +381,11 @@ reconstructs every squeezed state (P-D, bit-for-bit). This is a
 gate-anchored, $(r,\theta)$-robust *quantitative* boundary on the
 native platform — turning [Hasse24] App. E's ideal-timing concept
 into a measured characterisation. It is **engine-specific**: [FH20]'s
-*bichromatic* SDF natively realises the squeezing chain; the result
-bounds the *monochromatic* constraint inherited from [Hasse24], not
-trapped-ion CF-tomography in general. **[Fig. 5]** — the η-exact P-D
+*bichromatic* SDF natively realises the ideal χ-measurement chain
+(including for squeezed inputs — it is the *measurement* operator,
+not a squeezed-state engineering mechanism); the result bounds the
+*monochromatic* constraint inherited from [Hasse24], not trapped-ion
+CF-tomography in general. **[Fig. 5]** — the η-exact P-D
 reconstruction beside the native $(r,\theta)$ null *(artefacts:
 `squeezed_recon.h5`, `squeezed_native_audit.h5`)*. *(This is the
 sharpest, most distinctive figure: ideal-sound / native-fails in one
@@ -374,8 +409,9 @@ D4 centroid sub-pixel with $\Delta\alpha$ attached). The
 departure result is engine-specific (P3 below).
 
 **P3 — relation to the broader picture.** [FH20]'s bichromatic SDF
-realises the ideal chain natively; the present quantitative departure
-is a property of the [Hasse24] monochromatic constraint. The
+realises the ideal χ-measurement chain natively; the present
+quantitative departure is a property of the [Hasse24] monochromatic
+constraint. The
 perturbative-FFT / saturated-template-matching bridge to the sibling
 WP-TOM programme is outlook, not a claim of this paper.
 
@@ -415,8 +451,9 @@ into a measured one.
 
 *Draft built against [`publication_assessment.md`](./publication_assessment.md)
 §8 (locked claim contract), §3 (claims), §6 (figure→artefact map),
-and [`publication_outline.md`](./publication_outline.md). §V and §II
-drafted in full; I/III/IV/VI/VII structured prose + key paragraphs;
-no new claims; every number quoted from a committed artefact/logbook.
-Next: complete §I/III/IV prose, generate Fig. 1–5 from the artefacts,
-finalise references — on direction.*
+and [`publication_outline.md`](./publication_outline.md). §II/III/IV/V
+drafted in full; §I/VI/VII structured prose + key paragraphs; the
+ideal-SDF/native separation is consistent throughout (claim-hygiene
+pass); no new claims; every number quoted from a committed
+artefact/logbook. Next: flesh §I/VI/VII to full prose, generate
+Fig. 1–5 from the artefacts, finalise references — on direction.*
