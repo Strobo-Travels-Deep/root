@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>WP-W — paper draft (internal, in progress)</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root{--accent:#1763a6;--muted:#666;--warn-bg:#fff6e5;--warn-bd:#c9912f;}
+    html{font-size:17px;}
+    body{font-family:Georgia,"Times New Roman",serif;max-width:52rem;
+         margin:0 auto;padding:1.5rem 1.3rem 4rem;line-height:1.62;color:#1a1a1a;}
+    a{color:var(--accent);} code{font-family:ui-monospace,Menlo,monospace;
+         font-size:0.9em;background:#f4f4f4;padding:0.05em 0.3em;border-radius:3px;}
+    h1{font-size:1.6rem;line-height:1.28;margin:1.2rem 0 0.4rem;}
+    h2{font-size:1.2rem;margin-top:2rem;border-bottom:1px solid #e2e2e2;padding-bottom:0.2rem;}
+    h3{font-size:1.02rem;margin-top:1.4rem;}
+    table{border-collapse:collapse;width:100%;font-size:0.9rem;margin:0.8rem 0;}
+    th,td{border:1px solid #ddd;padding:0.35rem 0.5rem;text-align:left;vertical-align:top;}
+    th{background:#f4f4f4;}
+    blockquote{border-left:3px solid #ccc;margin:0.8rem 0;padding:0.2rem 0 0.2rem 1rem;color:#444;}
+    hr{border:none;border-top:1px solid #ddd;margin:2rem 0;}
+    .nav-bar{font-family:-apple-system,system-ui,sans-serif;font-size:0.85rem;
+         color:var(--muted);margin-bottom:0.6rem;}
+    .draft-banner{font-family:-apple-system,system-ui,sans-serif;
+         background:var(--warn-bg);border:1px solid var(--warn-bd);
+         border-left:5px solid var(--warn-bd);border-radius:5px;
+         padding:0.9rem 1.1rem;margin:0 0 1.6rem;font-size:0.9rem;color:#5a4011;}
+    .draft-banner strong{color:#7a3b00;}
+    .gen-note{font-family:-apple-system,system-ui,sans-serif;font-size:0.78rem;
+         color:var(--muted);border-top:1px solid #ddd;margin-top:2.5rem;padding-top:0.8rem;}
+  </style>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<p class="nav-bar"><a href="../index.html">← WP-W</a> ·
+<a href="../../index.html">Overview</a> ·
+source: <a href="paper_draft.md">paper_draft.md</a></p>
+
+<div class="draft-banner">
+<strong>⚠ INTERNAL IN-PROGRESS PAPER DRAFT — not a preprint, not for
+external circulation.</strong> §II–V are drafted; §I/VI/VII are
+key-paragraph scaffolding only; there are <em>no figures</em>, the
+references are a stub, and the author list is provisional
+(“U.&nbsp;Warring <em>et&nbsp;al.</em>”). In-prose annotations such as
+<em>“(structured prose; key paragraphs)”</em> are working markers,
+not part of the manuscript. Publication status is a <strong>conditional
+GO</strong> for a methods/characterisation paper, explicitly
+subordinate to&nbsp;[FH20] and&nbsp;[Hasse24]; the locked claim scope
+and prior-art obligations are recorded in
+<a href="publication_assessment.md">publication_assessment.md</a>
+§7/§8. This page is a faithful rendering of the working draft, <em>not</em>
+a finished result.
+</div>
+<header id="title-block-header">
+<h1 class="title">WP-W — paper draft (internal, in progress)</h1>
+</header>
+<h1
+id="characteristic-function-tomography-under-a-high-lambdicke-monochromatic-stroboscopic-drive-forward-map-validated-reconstruction-and-the-native-engines-quantitative-departure-from-the-ideal-sdf">Characteristic-function
+tomography under a high-Lamb–Dicke monochromatic stroboscopic drive:
+forward map, validated reconstruction, and the native engine’s
+quantitative departure from the ideal SDF</h1>
+<p><strong>U. Warring <em>et al.</em> (author list
+provisional)</strong></p>
+<p><em>Theory/numerics manuscript — draft. Target: Phys. Rev. A (regular
+article) / New J. Phys.</em></p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Direct characteristic-function (χ) tomography reconstructs a motional
+quantum state by sampling <span
+class="math inline">\(\chi(\beta)=\langle \hat D(\beta)\rangle\)</span>
+and Fourier-transforming to the Wigner function. Flühmann and Home
+[FH20] realised this on a Ca⁺ ion with a <em>bichromatic</em>
+state-dependent force (SDF) at Lamb–Dicke parameter <span
+class="math inline">\(\eta\!\approx\!0.05\)</span>, demonstrating
+displaced, squeezed, squeezed-cat and approximate-GKP states. The
+Freiburg ²⁵Mg⁺ programme [Hasse24] instead drives a
+<em>monochromatic</em> stroboscopic AC pulse train at <span
+class="math inline">\(\eta=0.40\)</span>, measuring phase-space position
+and momentum and outlining back-action and squeezed-state extensions.
+Here we adapt the χ-FFT framework to that monochromatic stroboscopic
+regime. An inverse-Dirichlet rule maps the physical <span
+class="math inline">\((\delta,\varphi_\text{train})\)</span> scan onto
+FFT-ready Cartesian <span class="math inline">\(\beta\)</span> nodes; we
+validate the full chain numerically at <span
+class="math inline">\(\eta=0.40\)</span> against analytic truth
+(machine-precision preflight gates; engine-vs-analytic χ residual <span
+class="math inline">\(3.75\times10^{-4}\)</span> over 6481 nodes). We
+then <em>quantify</em>, where [Hasse24] gave qualitative or conceptual
+sketches, (i) the Wigner-resolved ideal-vs-native back-action across
+seven input states on the carrier and first sideband, exhibiting a
+tooth-robust quantum/classical discriminator, and (ii) the <span
+class="math inline">\(\mathcal O(\eta^2)\)</span> two-phonon (squeezing)
+channel: at the [Hasse24] App.-E timing the monochromatic engine does
+not cleanly engineer it — a gate-anchored, <span
+class="math inline">\((r,\theta)\)</span>-robust null, with the η-exact
+ideal reconstruction as a bit-for-bit reference. The study is numerical;
+the [Hasse24] experiment is cited as motivation and for parameter
+provenance, not as a demonstrated experimental match.</p>
+<hr />
+<h2 id="i.-introduction-structured-prose-key-paragraphs">I. Introduction
+<em>(structured prose; key paragraphs)</em></h2>
+<p><strong>P1 — the χ-tomography lineage.</strong> Cahill–Glauber [CG69]
+symmetric characteristic function; the displaced-parity reconstruction
+proposal [Wal95]/[LD97] and its cavity-QED implementation [Bertet02];
+trapped-ion Wigner reconstruction [LMKMIW96]; and the direct trapped-
+ion precedent <strong>[FH20]</strong>: χ → 2D-FFT → W on a single Ca⁺
+ion at <span class="math inline">\(\eta\!\approx\!0.05\)</span> via a
+bichromatic SDF, with squeezed, squeezed-cat and approximate-GKP states.
+<em>State plainly: the χ-FFT framework and its non-Gaussian reach are
+[FH20]’s; this work adopts, not introduces, that framework.</em></p>
+<p><strong>P2 — the Freiburg ²⁵Mg⁺ programme.</strong> [Hasse24]
+established the monochromatic stroboscopic AC-train protocol
+(Hamiltonian Eq. (C1)) and demonstrated phase-space position/momentum
+readout <em>experimentally</em> on ²⁵Mg⁺ at <span
+class="math inline">\(\eta=0.40\)</span>, via the 2D <span
+class="math inline">\((\varphi,\vartheta_0)\)</span> scan. It
+additionally gave a <em>qualitative</em> back-action map (App. D / Fig.
+6b) and a <em>numerical/conceptual</em> squeezed-state extension with
+the timing change <span class="math inline">\(\Delta t =
+2\pi/(2\omega_m)\)</span> (App. E / Fig. 9). <em>This manuscript is a
+theory/numerics continuation of that programme.</em></p>
+<p><strong>P3 — the gap this paper fills.</strong> One sentence per
+claim, subordinated: (1) the stroboscopic-monochromatic-specific
+inverse-Dirichlet Cartesian forward map that makes χ-FFT tomography
+applicable to the [Hasse24] protocol; (2) numerical validation of the
+chain in the non-perturbative <span
+class="math inline">\(\eta=0.40\)</span> regime that [FH20]’s platform
+sidesteps; (3) the <em>quantitative</em> Wigner-resolved ideal-vs-native
+back-action map (vs [Hasse24]’s qualitative <span
+class="math inline">\(\delta\langle n\rangle\)</span>); (4) the
+quantitative native <span class="math inline">\(\mathcal
+O(\eta^2)\)</span> two-phonon squeezing-channel result, where [Hasse24]
+App. E gave only the ideal-timing concept. Explicitly <em>not</em>
+claimed: the framework, the protocol, the back-action or squeezed-state
+concepts, or GKP.</p>
+<p><strong>P4 — scope and honesty.</strong> This is a numerical study.
+The “native engine” is a simulation of the [Hasse24] Hamiltonian; the
+ideal↔︎ native bridge is validated against a sibling numerical reference,
+not against experimental data. [Hasse24]’s measurements motivate the
+work and fix all engine parameters; no experimental match is
+claimed.</p>
+<h2
+id="ii.-protocol-and-the-inverse-dirichlet-forward-map-drafted-in-full-the-theoretical-contribution-claim-1">II.
+Protocol and the inverse-Dirichlet forward map <em>(drafted in full —
+the theoretical contribution, claim 1)</em></h2>
+<h3 id="ii.a-the-monochromatic-stroboscopic-engine">II.A The
+monochromatic stroboscopic engine</h3>
+<p>The [Hasse24] analysis interaction during one AC flash is, in the
+spin-rotating frame, <span class="math display">\[
+  H_\text{eng}=\frac{\delta}{2}\,\sigma_z+\omega_m a^\dagger a
+  +\frac{\Omega_r}{2}\big(e^{i\varphi}\,C\,\sigma_-+e^{-i\varphi}\,C^\dagger\,\sigma_+\big),
+  \qquad C=e^{i\eta(a+a^\dagger)},
+\]</span> with Lamb–Dicke parameter <span
+class="math inline">\(\eta=0.40\)</span> (engine value <span
+class="math inline">\(0.397\)</span>), <span
+class="math inline">\(\omega_m/2\pi=1.3\)</span> MHz, flash duration
+<span class="math inline">\(\delta t=0.13\,T_m\)</span>, <span
+class="math inline">\(T_m=2\pi/\omega_m\)</span>, and dimensionless
+engine coupling <span class="math inline">\(\Omega_r=0.0902\)</span> —
+the pinned D4-Layer-A simulation value. (The corresponding
+<em>physical</em> AC Rabi rate in [Hasse24] is <span
+class="math inline">\(\Omega_\text{AC}/2\pi\!\approx\!0.3\)</span> MHz;
+this is a different unit/convention, not the same number — we work
+throughout in the engine’s dimensionless units, the pinned
+WP-E/[Hasse24] D4-Layer-A set.) This is Eq. (C1) of [Hasse24] in the
+analysis frame; we take it as given. The train is <span
+class="math inline">\(N\)</span> flashes at period <span
+class="math inline">\(T_m\)</span> with a programmed per-flash phase
+<span class="math inline">\(\varphi_\text{train}\)</span>.</p>
+<p><strong>The ideal measurement operator is <em>not</em> this native
+drive.</strong> It is the FH20-style σ_x state-dependent force <span
+class="math inline">\(U=D(\sigma_x\beta/2)\)</span> — which [FH20]
+realises with a <em>bichromatic</em> drive and which we supply
+numerically as a separate primitive. On the equatorial spin state <span
+class="math inline">\(|{+}y\rangle\)</span> (Ramsey-orthogonal to the
+σ_x SDF axis) a single resolved comb tooth of <em>the ideal SDF</em>
+reads the symmetric characteristic function <strong>directly</strong>,
+<span class="math display">\[
+  \chi_{\rho_m}(\beta)=\langle\sigma_y\rangle-i\langle\sigma_z\rangle,
+\]</span> with <strong>no Gaussian prefactor and no overall
+phase</strong> (the σ_x axis, not σ_z: a σ_z-conditioned displacement
+commutes with the σ_z detuning precession and never builds the comb — a
+165 % residual, versus <span class="math inline">\(10^{-14}\)</span> for
+σ_x; a v0.5 convention correction, Appendix A).</p>
+<p>The native monochromatic engine of the Hamiltonian above does
+<strong>not</strong> natively realise this ideal operator: its leading
+term is Jaynes–Cummings-type and comb-sharpening selects but does not
+transmute it (engine-specific — [FH20]’s bichromatic drive <em>does</em>
+realise the ideal χ-measurement chain; §VI). The native engine therefore
+enters this work only as the <strong>matched-control comparison</strong>
+against the ideal-SDF prediction (§IV back-action; §V the <span
+class="math inline">\(\mathcal O(\eta^2)\)</span> channel), never as a
+direct χ reader. Keeping the ideal-SDF measurement layer and the native
+engine distinct is the load-bearing framing of this manuscript.</p>
+<h3 id="ii.b-the-dirichlet-forward-map">II.B The Dirichlet forward
+map</h3>
+<p>[FH20] uses a CW bichromatic SDF whose displacement amplitude is a
+free continuous knob; [Hasse24] uses a <em>stroboscopic</em> train whose
+physical knobs are the detuning <span
+class="math inline">\(\delta\)</span> and the train phase <span
+class="math inline">\(\varphi_\text{train}\)</span>, scanned on a polar
+<span class="math inline">\((\varphi,\vartheta_0)\)</span> grid. Neither
+yields, directly, the <em>Cartesian</em> <span
+class="math inline">\(\beta\)</span> samples a 2D FFT needs. The bridge
+is the central construction of this paper.</p>
+<p>Between flashes the rotating-frame SDF axis advances by the per-gap
+detuning phase <span
+class="math inline">\(x=(\delta-k\omega_m)\,T_m\)</span> on comb tooth
+<span class="math inline">\(k\)</span> (<span
+class="math inline">\(k=0\)</span> = carrier). Flash <span
+class="math inline">\(n\in[0,N)\)</span> therefore contributes a
+displacement <span
+class="math inline">\(\beta_0\,e^{i(\varphi_\text{train}+nx)}\)</span>,
+and the accumulated branch separation is the geometric sum <span
+class="math display">\[
+  \beta_\text{tot}(\delta,\varphi_\text{train};N)
+  =\beta_0\,e^{i\varphi_\text{train}}\sum_{n=0}^{N-1}e^{inx}
+  =\beta_0\,e^{i\varphi_\text{train}}\,\mathcal D_N(x),
+  \quad
+  \mathcal D_N(x)=e^{i(N-1)x/2}\frac{\sin(Nx/2)}{\sin(x/2)},
+\]</span> the <strong>Dirichlet kernel</strong>, <span
+class="math inline">\(\mathcal D_N(0)=N\)</span> (on-resonance reach
+<span
+class="math inline">\(|\beta_\text{tot}|_\text{max}=N\beta_0\)</span>).
+This per-flash-phase implementation is exact at all <span
+class="math inline">\(\beta_0\)</span> (putting the detuning into free
+σ_z gap precession instead contaminates the lab-frame χ readout by <span
+class="math inline">\((N-1)\delta T_m\)</span> — Appendix A).</p>
+<p><strong>Inverse-Dirichlet Cartesian targeting.</strong>
+Reconstruction needs χ on a Cartesian <span
+class="math inline">\(\beta\)</span> grid; the knobs are <span
+class="math inline">\((\delta,\varphi_\text{train})\)</span>. For a
+target node <span
+class="math inline">\(\beta_\star=r\,e^{i\theta}\)</span>, <span
+class="math inline">\(r\le N\beta_0\)</span>: solve <span
+class="math inline">\(r/\beta_0=|\mathcal D_N(x)|\)</span> on the
+monotone central branch <span class="math inline">\(0\le x\le
+2\pi/N\)</span> (a 1-D root find; <span class="math inline">\(|\mathcal
+D_N|\)</span> decreases monotonically from <span
+class="math inline">\(N\)</span> to <span
+class="math inline">\(0\)</span> there), then set <span
+class="math inline">\(\varphi_\text{train}=\theta-\arg\mathcal
+D_N(x)=\theta-(N-1)x/2\)</span> and the physical detuning <span
+class="math inline">\(\delta-k\omega_m=x/T_m\)</span>. Nodes with <span
+class="math inline">\(r&gt;N\beta_0\)</span> are zero-filled before the
+FFT. This rule — the
+<strong>stroboscopic-monochromatic-specific</strong> map from the
+[Hasse24] physical scan to FFT-ready Cartesian χ — is absent from [FH20]
+(continuous bichromatic amplitude, no comb) and from [Hasse24] (polar
+scan, no χ frame). It is the theoretical contribution of this work.</p>
+<p>The conjugate α-grid spacing is <span
+class="math inline">\(\Delta\alpha=\pi/(N_g\Delta\beta)\)</span> —
+<em>not</em> the textbook <span
+class="math inline">\(2\pi/(N_g\Delta\beta)\)</span> — because the
+Cahill–Glauber kernel carries a factor <span
+class="math inline">\(2i\)</span>; getting this wrong displaces every
+reconstruction (Appendix A; validated by P0 below).</p>
+<p><strong>[Fig. 1]</strong> forward-map schematic + the reach ladder:
+measured <code>n_in_disk</code> <span
+class="math inline">\(=\{317,1257,2821,5025\}\)</span> for <span
+class="math inline">\(N=\{20,40,60,80\}\)</span>, matching <span
+class="math inline">\(\pi(N\beta_0)^2/\Delta\beta^2\)</span> and the
+independent grid count <span class="math inline">\(5025\)</span>.
+<em>(artefact: <code>reach_ladder_ideal.h5</code>, D2.)</em></p>
+<h2 id="iii.-validated-reconstruction-at-η-0.40-claim-2">III. Validated
+reconstruction at η = 0.40 <em>(claim 2)</em></h2>
+<p>Before any native comparison the inversion chain itself must be
+trustworthy at <span class="math inline">\(\eta=0.40\)</span>. Two
+preflight gates establish this. The analytic self-consistency gate
+Fourier-transforms an analytically evaluated χ and recovers the vacuum
+centre <span class="math inline">\(W(0)=0.636555\)</span> against <span
+class="math inline">\(2/\pi=0.636620\)</span> (a <span
+class="math inline">\(-6.5\times10^{-5}\)</span> finite-grid-windowing
+residual), places the coherent peak on the predicted node to one part in
+<span class="math inline">\(10^4\)</span>, and holds <span
+class="math inline">\(\max|\mathrm{Im}\,W|\sim10^{-16}\)</span> —
+confirming the FFT convention and in particular the <span
+class="math inline">\(\Delta\alpha=\pi/(N_g\Delta\beta)\)</span>
+relation of §II.B. The engine-faithfulness gate feeds the
+<em>ideal-SDF</em> primitive’s measured χ — not the native engine — at
+the sentinel <span
+class="math inline">\(\beta_\star=0.5\,e^{i\pi/4}\)</span> for vacuum
+and a coherent state, <span
+class="math inline">\(N\in\{20,80\}\)</span>, reproducing the analytic χ
+to a relative residual <span
+class="math inline">\(\sim10^{-14}\)</span>: the σ_x-SDF / direct-χ
+chain of §II.A is exact at a point.</p>
+<p>On the v0.2 Cartesian grid the seven headline §7#4 states reconstruct
+through the full inverse-Dirichlet → FFT pipeline; the two deciding
+states clear at <span class="math inline">\(F=0.9997\)</span> (Fock
+<span class="math inline">\(|2\rangle\)</span>) and <span
+class="math inline">\(F=0.9664\)</span> (cat <span
+class="math inline">\(|\alpha|=1.5\)</span>). The quantum/classical
+control behaves as required: the <em>mixed</em> cat reconstructs as two
+incoherent Gaussian humps with no interference fringes while the
+<em>pure</em> cat’s fringes are recovered — the pipeline does not
+manufacture coherence (<strong>[Fig. 2]</strong>; artefact
+<code>reconstruction_demo.h5</code>).</p>
+<p>The ideal↔︎native bridge is then quantified at the shared <span
+class="math inline">\(|\alpha=3\rangle\)</span> anchor. At matched
+physical drive the native engine reproduces an independent reference
+scan bit-exactly (<span
+class="math inline">\(\max|\Delta|=0.00\times10^{0}\)</span> on <span
+class="math inline">\((\sigma_z,\mathrm{Re}\,C,\mathrm{Im}\,C)\)</span>
+at three δ/ω_m points), and the engine-measured χ matches the analytic χ
+to <span class="math inline">\(\max|\Delta|=3.75\times10^{-4}\)</span>
+over the 6481-node fine grid — the load-bearing bridge number. The
+associated FFT-centroid residual <span
+class="math inline">\(1.99\times10^{-2}\)</span> is sub-pixel by
+construction and is quoted only with its <span
+class="math inline">\(\Delta\alpha=0.388\)</span> pixel size attached,
+never as a bare gate (<strong>[Fig. 3]</strong>; artefact
+<code>bridge_inversion.h5</code>).</p>
+<p>Together these establish the chain in the <em>non-perturbative</em>
+<span class="math inline">\(\eta=0.40\)</span> regime that [FH20]’s
+<span class="math inline">\(\eta\!\approx\!0.05\)</span> platform
+avoids. The LD expansion’s <span class="math inline">\(\mathcal
+O(\eta^2)\!\approx\!16\%\)</span> term is non-negligible here — a known
+deviation of this platform, not a new observation; the deviation
+hierarchy is carried explicitly (Appendix B) rather than asserted as a
+finding.</p>
+<h2 id="iv.-quantitative-ideal-vs-native-back-action-claim-3">IV.
+Quantitative ideal-vs-native back-action <em>(claim 3)</em></h2>
+<p>[Hasse24] App. D / Fig. 6b already maps the back-action <span
+class="math inline">\(\delta\langle
+n\rangle(\varphi,\vartheta_0)\)</span> <em>qualitatively</em> for <span
+class="math inline">\(|\alpha|=3\)</span>; the contribution here is the
+<em>quantitative, Wigner-resolved</em> ideal-vs-native comparison, not a
+characterisation of back-action as such. Both legs run the <em>same</em>
+physical drive program — the inverse-Dirichlet-assigned <span
+class="math inline">\((\delta,\varphi_\text{train},N)\)</span>, with no
+<span class="math inline">\(\beta_\text{eff}\)</span> calibration — so
+the η-exact ideal-SDF prediction and the native-engine result form a
+matched-control pair (the §II.A ideal/native separation). The single
+hard gate is the vacuum analytic anchor: post-measurement purity <span
+class="math inline">\(\tfrac12(1+e^{-|\beta|^2})\)</span>, fidelity
+<span class="math inline">\(e^{-|\beta|^2/4}\)</span>, and <span
+class="math inline">\(W=W_\text{mixed-cat}(\beta_\text{tot}/2)\)</span>,
+passed at machine precision and tooth-independent.</p>
+<p>Across the seven §7#4 inputs, on the carrier (<span
+class="math inline">\(k=0\)</span>) and the first sideband (<span
+class="math inline">\(k=1\)</span>), the Wigner-resolved ideal-vs-native
+residual exhibits a <strong>tooth-robust quantum/classical
+discriminator</strong>: the pure cat’s structural <span
+class="math inline">\(L^1\)</span> (<span
+class="math inline">\(1.87\)</span>) exceeds the mixed cat’s (<span
+class="math inline">\(1.47\)</span>) on <em>both</em> teeth, while a
+broad thermal input is the most robust (<span
+class="math inline">\(L^1=0.49\)</span>) — the same
+coherence-sensitivity ordering survives the carrier→sideband change of
+native dynamics. The mixed-input propagation reuses the validated
+pure-state pipeline verbatim, reproduced bit-for-bit (<span
+class="math inline">\(0.0\times10^{0}\)</span> across 240 fields at
+<span class="math inline">\(k=0\)</span>, 225 at <span
+class="math inline">\(k=1\)</span>). The sideband signature is
+concentrated in the conditional, branch-selected channel, so the <span
+class="math inline">\(k=1\)</span> data do not retroactively change the
+carrier conclusion (<strong>[Fig. 4]</strong>; artefacts
+<code>back_action_full.h5</code>,
+<code>back_action_k1_full.h5</code>).</p>
+<h2
+id="v.-the-native-𝒪η²-squeezing-channel-result-drafted-in-full-proof-of-structure-claim-4">V.
+The native 𝒪(η²) squeezing-channel result <em>(DRAFTED IN FULL —
+proof-of-structure, claim 4)</em></h2>
+<h3 id="v.a-prior-art-and-the-timing-stated-up-front">V.A Prior art and
+the timing, stated up front</h3>
+<p>[Hasse24] Appendix E extends the stroboscopic protocol to squeezed
+states, introducing the squeezing operator <span
+class="math inline">\(S(\xi)=\exp[\tfrac12(\xi^* a^2-\xi
+a^{\dagger2})]\)</span> and the <strong>critical timing change</strong>
+<span class="math inline">\(\Delta t=2\pi/(2\omega_m)=T_m/2\)</span> —
+the train syncs to the quadrature dynamics, which evolve at <span
+class="math inline">\(2\omega_m\)</span> — together with numerical <span
+class="math inline">\(\langle\sigma_z\rangle\)</span> and <span
+class="math inline">\(\delta\langle n\rangle\)</span> maps for <span
+class="math inline">\(\langle n\rangle_\text{sq}=1\)</span>. That
+concept and that timing are [Hasse24]’s. This section asks a different,
+quantitative question: <em>does the monochromatic engine, at the App.-E
+timing, actually realise a clean two-phonon (squeezing) channel — and,
+when it does not, by how much does it fall short of the η-exact ideal
+prediction across the squeezed-state family?</em></p>
+<p>We first re-derive the App.-E timing as the §II Dirichlet map at the
+doubled fundamental. The <span class="math inline">\(\mathcal
+O(\eta^2)\)</span> term of the LD expansion is <span
+class="math inline">\(-\tfrac{\eta^2}{2}X^2\sigma_\varphi\)</span> with
+<span class="math inline">\(X^2=a^2+a^{\dagger2}+2a^\dagger
+a+1\)</span>; the two-phonon part <span
+class="math inline">\(a^2,a^{\dagger2}\)</span> evolves at <span
+class="math inline">\(2\omega_m\)</span>, so the coherent stroboscopic
+build-up requires the gap to be an integer fraction of the <span
+class="math inline">\(2\omega_m\)</span> period — exactly <span
+class="math inline">\(\Delta t=T_m/2\)</span>. The §II construction then
+carries over verbatim with a doubled fundamental and a per-flash scale
+<span class="math inline">\(\xi_0=\mathcal O(\eta^2\Omega_r\Delta
+t)\)</span>: <span
+class="math inline">\(\xi_\text{tot}=\xi_0\,e^{i\varphi_\text{train}}\mathcal
+D_N(\tilde
+x)\)</span>, <span class="math inline">\(\tilde
+x=(\delta-k\omega_m)T_m/2\)</span>, the same Dirichlet kernel. A
+by-product of this analysis closes the long-open finite-pulse order: the
+leading <span class="math inline">\(\mathcal O(\delta t/T_m)\)</span>
+effect is a pure displacement phase <span
+class="math inline">\(\omega_m\delta t/2\)</span> (the bit-exact
+D4-Layer-A <code>shift_deg</code>), the residual <span
+class="math inline">\(\mathcal O((\delta
+t/T_m)^2)\!\approx\!1.7\%\)</span> at <span class="math inline">\(\delta
+t=0.13\,T_m\)</span> — two-phonon in character, sub-dominant to the
+<span class="math inline">\(\eta^2\!\approx\!16\%\)</span> term and
+carried, never subtracted (Appendix B).</p>
+<h3 id="v.b-the-ideal-leg-is-η-exact-the-hard-gate-p-d">V.B The ideal
+leg is η-exact — the hard gate (P-D)</h3>
+<p>A central, easily-missed point: the ideal-SDF χ chain is
+<strong>η-exact for squeezed vacuum</strong>. The ideal SDF is an exact
+displacement; the §II direct-χ readout and the FFT carry no η expansion
+and no comb-timing dependence. The <span class="math inline">\(\mathcal
+O(\eta^2)\)</span> dependence therefore lives entirely in the <em>native
+realisation</em>, not in the readout — the App.-E timing is a
+native-protocol device, not a property the ideal chain acquires. We make
+this a hard PASS/FAIL: the analytic squeezed-vacuum reconstruction must
+reproduce the independently committed η-exact baseline
+<strong>bit-for-bit</strong>. It does, to <span
+class="math inline">\(\le10^{-12}\)</span>: <span
+class="math inline">\(F=0.999489\)</span> at <span
+class="math inline">\(\theta=0\)</span> and <span
+class="math inline">\(F=0.999992\)</span> at <span
+class="math inline">\(\theta=\pi/2\)</span> (squeezed vacuum <span
+class="math inline">\(r=0.5\)</span>), <span
+class="math inline">\(\max|\mathrm{Im}\,W|\)</span> at the
+<code>complex128</code> floor, <strong>independent of the native App.-E
+gap</strong>. The ideal reference is sound; any departure measured below
+is the native engine’s.</p>
+<h3 id="v.c-the-native-engine-does-not-cleanly-engineer-the-channel">V.C
+The native engine does not cleanly engineer the channel</h3>
+<p><em>Capability smoke (N-6), pre-registered.</em> We characterise the
+native post-train <strong>vacuum</strong> at the App.-E timing (<span
+class="math inline">\(\Delta t=T_m/2\)</span>, second- sideband
+resonance <span class="math inline">\(\delta=2\omega_m\)</span>) as a
+full Gaussian state versus <span
+class="math inline">\(N\in\{10,20,30\}\)</span>: first moments,
+covariance eigenvalues and orientation, purity. A genuine 2ω_m squeeze
+would show the covariance eigenvalue ratio departing from 1 and growing
+with <span class="math inline">\(N\)</span> along the predicted axis, at
+fixed first moments and purity. Instead the anisotropy reaches only
+<span class="math inline">\(\lambda_+/\lambda_- - 1 = 0.022\)</span> at
+<span class="math inline">\(N=30\)</span> — five times below the
+pre-registered <span class="math inline">\(0.10\)</span> threshold — and
+is <em>coupled to purity loss</em> (<span
+class="math inline">\(0.99935\!\to\!0.99314\)</span>), i.e. not a clean
+unitary squeeze. First moments stay <span
+class="math inline">\(\approx0\)</span> (<span
+class="math inline">\(\sim10^{-3}\)</span>): <span
+class="math inline">\(\delta=2\omega_m\)</span> correctly off-resonates
+the first-order single-phonon term (the reference <span
+class="math inline">\(T_m\)</span>-timing run instead grows a clear
+displacement <span class="math inline">\(\langle
+P\rangle\!\to\!-0.32\)</span>). The App.-E timing <em>suppresses
+displacement but does not convert it into squeezing.</em></p>
+<p><em>The <span class="math inline">\((r,\theta)\)</span> sweep.</em>
+We then run squeezed-vacuum inputs <span
+class="math inline">\(r\in\{0,0.25,0.5\}\times\theta\in\{0,\tfrac\pi2,\pi\}\)</span>
+(the Wigner ellipse rotates by <span
+class="math inline">\(\theta/2\)</span>, so <span
+class="math inline">\(\theta=0\)</span> and <span
+class="math inline">\(\theta=\pi\)</span> are the perpendicular
+squeezed-in-<span class="math inline">\(X\)</span>/squeezed-in-<span
+class="math inline">\(P\)</span> alignments, <span
+class="math inline">\(\theta=\pi/2\)</span> the 45° intermediate), peak
+and mid probes, ideal and native legs. The decisive control is <span
+class="math inline">\(r=0\)</span>: the engine-induced anisotropy
+(native ratio minus the input squeezed-vacuum ratio <span
+class="math inline">\(e^{4r}\)</span>) is <span
+class="math inline">\(+0.022\)</span> — the vacuum null again — and it
+does <strong>not</strong> track the input as <span
+class="math inline">\(r\)</span> grows; the engine-excess goes
+<em>negative</em>, <span class="math inline">\(-0.371\)</span> at <span
+class="math inline">\(r=0.5\)</span>. That is, the native post-train
+covariance ratio tracks the <em>input</em> ratio (pass-through), not
+engine-generated squeezing: the monochromatic engine adds no coherent
+squeezing and, at larger <span class="math inline">\(r\)</span>, mildly
+<em>erodes</em> the input anisotropy through decoherence. Consistent
+with this, the native fidelity-to-input degrades systematically with
+<span class="math inline">\(r\)</span> (peak: <span
+class="math inline">\(0.996\!\to\!0.934\!\to\!0.760\)</span>); the
+within-fixed-<span class="math inline">\(r\)</span> <span
+class="math inline">\(\theta\)</span>-modulation of the native ratio is
+modest (max spread <span class="math inline">\(0.574\)</span>),
+decoherence-flavoured rather than a clean coherent modulation; and the
+ideal-vs-native Wigner <span class="math inline">\(L^1\)</span> grows
+with <span class="math inline">\(r\)</span>. No <span
+class="math inline">\((r,\theta,\text{probe})\)</span> cell recovers the
+squeezed state.</p>
+<p>(<em>Reporting note.</em> An earlier internal aggregate that compared
+the raw native covariance ratio across <span
+class="math inline">\(r\)</span> was confounded by the input <span
+class="math inline">\(e^{4r}\)</span> pass-through; the corrected
+engine-excess and within-<span class="math inline">\(r\)</span> <span
+class="math inline">\(\theta\)</span>-spread reported here are persisted
+with the artefact, and the per-record data is bit-identical across that
+correction.)</p>
+<h3 id="v.d-interpretation-engine-specific-bounded">V.D Interpretation —
+engine-specific, bounded</h3>
+<p>Across the squeezed-state family the [Hasse24] monochromatic engine,
+at the App.-E timing, <strong>neither engineers nor faithfully
+realises</strong> the <span class="math inline">\(2\omega_m\)</span>
+squeezing operation, while the η-exact ideal leg reconstructs every
+squeezed state (P-D, bit-for-bit). This is a gate-anchored, <span
+class="math inline">\((r,\theta)\)</span>-robust <em>quantitative</em>
+boundary on the native platform — turning [Hasse24] App. E’s
+ideal-timing concept into a measured characterisation. It is
+<strong>engine-specific</strong>: [FH20]’s <em>bichromatic</em> SDF
+natively realises the ideal χ-measurement chain (including for squeezed
+inputs — it is the <em>measurement</em> operator, not a squeezed-state
+engineering mechanism); the result bounds the <em>monochromatic</em>
+constraint inherited from [Hasse24], not trapped-ion CF-tomography in
+general. <strong>[Fig. 5]</strong> — the η-exact P-D reconstruction
+beside the native <span class="math inline">\((r,\theta)\)</span> null
+<em>(artefacts: <code>squeezed_recon.h5</code>,
+<code>squeezed_native_audit.h5</code>)</em>. <em>(This is the sharpest,
+most distinctive figure: ideal-sound / native-fails in one
+panel.)</em></p>
+<h2 id="vi.-discussion-structured-prose-key-paragraphs">VI. Discussion
+<em>(structured prose; key paragraphs)</em></h2>
+<p><strong>P1 — what this gives the [Hasse24] platform.</strong> A
+precise, quantified map of where and by how much the monochromatic
+stroboscopic drive departs from the ideal FH20 SDF, including the <span
+class="math inline">\(\mathcal O(\eta^2)\)</span> squeezing ceiling —
+directly useful to anyone planning high-η stroboscopic CF-tomography or
+stroboscopic squeezing on this class of apparatus.</p>
+<p><strong>P2 — limits, stated honestly.</strong> Numerical only; engine
+and bridge are simulations; [Hasse24]’s experiment is cited as
+motivation and parameter provenance, not a demonstrated match.
+Grid-resolution caveats are carried explicitly (GKP deferred — [FH20]
+already demonstrated it at small η, a resolution not a capability
+deferral; D4 centroid sub-pixel with <span
+class="math inline">\(\Delta\alpha\)</span> attached). The departure
+result is engine-specific (P3 below).</p>
+<p><strong>P3 — relation to the broader picture.</strong> [FH20]’s
+bichromatic SDF realises the ideal χ-measurement chain natively; the
+present quantitative departure is a property of the [Hasse24]
+monochromatic constraint. The perturbative-FFT /
+saturated-template-matching bridge to the sibling WP-TOM programme is
+outlook, not a claim of this paper.</p>
+<h2 id="vii.-conclusion-outlook-structured-prose">VII. Conclusion &amp;
+outlook <em>(structured prose)</em></h2>
+<p>Recap of claims 1–4 in subordinate language; outlook: a
+bichromatic-SDF realisation on the Mg⁺ platform; the WP-TOM bridge; GKP
+at finer grid; and an experimental test against [Hasse24]-class data —
+the natural way to convert this numerical characterisation into a
+measured one.</p>
+<h2 id="appendices-supplementary">Appendices / Supplementary</h2>
+<ul>
+<li><strong>A.</strong> The analytic chain and convention locks (σ_x not
+σ_z; no <span class="math inline">\(e^{-|\beta|^2/2}\)</span>; <span
+class="math inline">\(\Delta\alpha=\pi/(N_g\Delta\beta)\)</span>; cat
+<span class="math inline">\(\cosh
+2\,\mathrm{Re}(\alpha^*\beta)\)</span>; parity prefactor <span
+class="math inline">\(2/\pi\)</span>). <em>Source:
+<code>analytic_chain.md</code>.</em></li>
+<li><strong>B.</strong> The <span class="math inline">\(\mathcal
+O(\eta^2)\)</span> / <span class="math inline">\(\delta t/T_m\)</span>
+derivation; the App.-E timing as the <span
+class="math inline">\(2\omega_m\)</span> Dirichlet map; the
+finite-pulse-order closure. <em>Source:
+<code>squeezed_eta2_scope.md</code>.</em></li>
+<li><strong>C.</strong> Pre-registration logbooks and reproducibility
+manifests (the numerical-WP discipline) — a methods-paper strength.</li>
+<li><strong>D.</strong> The native-audit scope and the N-6 capability
+methodology (pre-registered null). <em>Source:
+<code>squeezed_native_audit_scope.md</code>.</em></li>
+</ul>
+<h2 id="references-stub-full-list-at-submission">References <em>(stub —
+full list at submission)</em></h2>
+<p>[CG69] Cahill &amp; Glauber, Phys. Rev. 177, 1882 (1969). [Wal95]
+Wallentowitz &amp; Vogel, PRL 75, 2932 (1995). [LD97] Lutterbach &amp;
+Davidovich, PRL 78, 2547 (1997). [Bertet02] Bertet <em>et al.</em>, PRL
+89, 200402 (2002). [LMKMIW96] Leibfried <em>et al.</em>, PRL 77, 4281
+(1996). [FH20] Flühmann &amp; Home, PRL 125, 043602 (2020). [Hasse24]
+Hasse, Palani, Thomm, Warring, Schaetz, Phys. Rev. A 109, 053105
+(2024).</p>
+<hr />
+<p><em>Draft built against <a
+href="./publication_assessment.md"><code>publication_assessment.md</code></a>
+§8 (locked claim contract), §3 (claims), §6 (figure→artefact map), and
+<a
+href="./publication_outline.md"><code>publication_outline.md</code></a>.
+§II/III/IV/V drafted in full; §I/VI/VII structured prose + key
+paragraphs; the ideal-SDF/native separation is consistent throughout
+(claim-hygiene pass); no new claims; every number quoted from a
+committed artefact/logbook. Next: flesh §I/VI/VII to full prose,
+generate Fig. 1–5 from the artefacts, finalise references — on
+direction.</em></p>
+<p class="gen-note">Generated from
+<a href="paper_draft.md">notes/paper_draft.md</a> via
+<code>pandoc --standalone --mathjax</code> (math rendered client-side
+by MathJax). <strong>Do not hand-edit this file</strong> — edit the
+<code>.md</code> source and regenerate; the exact command is in
+<a href="../README.md">wp-wigner-tomography/README.md</a>. The
+<code>.md</code> remains the source of truth.</p>
+</body>
+</html>
