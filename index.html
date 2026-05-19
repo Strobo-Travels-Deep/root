@@ -22,6 +22,7 @@
     <a href="wp-phase-contrast-maps/">WP-E</a>
     <a href="wp-strobo-2p0/">Strobo 2.0</a>
     <a href="wp-strong-weak-coastline/">WP-C</a>
+    <a href="wp-wigner-tomography/">WP-W</a>
     <a href="getting-started.html">Start</a>
   </nav>
 </header>
@@ -144,6 +145,12 @@
     </div>
   </a>
 
+  <div class="wp-card" style="border-left:3px solid var(--accent);grid-column:1 / -1;">
+    <p class="wp-title" style="color:var(--accent);">WP-W — Wigner tomography <span style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);">· new</span></p>
+    <p style="margin-bottom:0.5rem;">Characteristic-function tomography adapted to the high-η (η = 0.40) <em>monochromatic stroboscopic</em> drive of Hasse 2024, building on the <a href="https://doi.org/10.1103/PhysRevLett.125.043602" style="color:var(--accent);">Flühmann–Home</a> χ → FFT framework. An inverse-Dirichlet rule maps the physical scan to FFT-ready Cartesian β; reconstruction is validated against analytic truth at η = 0.40; and the ideal-SDF vs native-engine departure is <em>quantified</em> — a Wigner-resolved back-action map (carrier + first sideband, with a tooth-robust quantum/classical discriminator) and the native 𝒪(η²) two-phonon squeezing-channel null. Engine-specific (Flühmann–Home's bichromatic drive realises the ideal χ-measurement chain); a theory/numerics continuation of the Hasse 2024 programme, not an experimental result. Entry point: <a href="wp-wigner-tomography/notes/wpw_findings.md" style="color:var(--accent);">findings synthesis</a> · <a href="wp-wigner-tomography/WORK-PROGRAM.md" style="color:var(--accent);">work program</a>.</p>
+    <p style="margin:0;font-size:0.82rem;border-left:2px solid var(--text-muted);padding-left:0.7rem;color:var(--text-muted);"><strong>⚠ Internal in-progress paper draft</strong> — <a href="wp-wigner-tomography/notes/paper_draft.md" style="color:var(--text-muted);text-decoration:underline;">paper_draft.md</a>: §II–V drafted, §I/VI/VII key-paragraphs only, no figures, stub references, provisional author list (“U. Warring <em>et al.</em>”). Conditional-GO scope and the prior-art subordination it must honour are recorded in <a href="wp-wigner-tomography/notes/publication_assessment.md" style="color:var(--text-muted);text-decoration:underline;">publication_assessment.md</a>. <strong>Not a preprint; not for external circulation.</strong></p>
+  </div>
+
 </div>
 
 <hr>
@@ -209,11 +216,11 @@
 
 <p><strong>Primary framing: Tomography.</strong> The η ≈ 0.4 nonlinearity is an asset for characteristic function sampling, a liability for strict BAE. The Doppler detuning spectrum — not contrast loss — is the primary momentum readout: δ<sub>D</sub>/Ω ≫ 1 for all α ≥ 1.</p>
 
-<p><strong>Status of the work-package (WP) streams:</strong> <a href="wp-hasse-reproduction/"><strong>WP-V</strong></a> (Validation — reproducing the Hasse 2024 experiment in simulation, within 5%) <em>complete</em>; <a href="wp-phase-contrast-maps/"><strong>WP-E</strong></a> (Extension — forward map over coherent-state parameters) <em>active</em>; <a href="wp-strong-weak-coastline/"><strong>WP-C</strong></a> (Coastline — strong/weak-binding boundary map) <em>v0.1.1 executed</em>; <a href="wp-strobo-2p0/"><strong>Strobo 2.0</strong></a> (short-train detuning × motional-phase maps, Hasse Fig. 6 reproduction) <em>v0.3 executed, π/2-calibrated per train</em>. The theoretical work-package sequence A → B → C → D on the <a href="tutorial.html">Tutorial</a> page is a <em>separate</em> labelling scheme for analytical sub-tasks (A: signal model, B: numerics, C: tomography, D: BAE); do not confuse WP-V/E/C/Strobo-2 (numerical work streams) with WP-A/B/C/D (theoretical sub-tasks).</p>
+<p><strong>Status of the work-package (WP) streams:</strong> <a href="wp-hasse-reproduction/"><strong>WP-V</strong></a> (Validation — reproducing the Hasse 2024 experiment in simulation, within 5%) <em>complete</em>; <a href="wp-phase-contrast-maps/"><strong>WP-E</strong></a> (Extension — forward map over coherent-state parameters) <em>active</em>; <a href="wp-strong-weak-coastline/"><strong>WP-C</strong></a> (Coastline — strong/weak-binding boundary map) <em>v0.1.1 executed</em>; <a href="wp-strobo-2p0/"><strong>Strobo 2.0</strong></a> (short-train detuning × motional-phase maps, Hasse Fig. 6 reproduction) <em>v0.3 executed, π/2-calibrated per train</em>; <a href="wp-wigner-tomography/notes/wpw_findings.md"><strong>WP-W</strong></a> (Wigner tomography — χ → FFT reconstruction adapted to the high-η monochromatic stroboscopic drive; quantitative ideal-vs-native back-action and the native 𝒪(η²) squeezing-channel re-audit complete) <em>findings synthesised; internal paper draft in progress (not for external circulation)</em>. The theoretical work-package sequence A → B → C → D on the <a href="tutorial.html">Tutorial</a> page is a <em>separate</em> labelling scheme for analytical sub-tasks (A: signal model, B: numerics, C: tomography, D: BAE); do not confuse WP-V/E/C/Strobo-2 (numerical work streams) with WP-A/B/C/D (theoretical sub-tasks).</p>
 
 <footer>
   <p>Dossier v0.9 · Council-4 ADM-EC · Guardian / Scout / Architect / Integrator convergent.<br>
-  Open Science Harbour · Breakwater Layer · WP-V complete · WP-E + WP-C + Strobo 2.0 active.</p>
+  Open Science Harbour · Breakwater Layer · WP-V complete · WP-E + WP-C + Strobo 2.0 active · WP-W findings synthesised (paper draft in progress, internal).</p>
 </footer>
 
 </div>
