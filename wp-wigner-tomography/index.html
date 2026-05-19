@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WP-W — Characteristic-function tomography (high-η monochromatic stroboscopic)</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* self-contained fallback so the page is readable even if ../style.css
+     does not resolve under the Pages serve */
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+       max-width:54rem;margin:2rem auto;padding:0 1.2rem;line-height:1.55;color:#1a1a1a;}
+  a{color:#1763a6;} code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.92em;}
+  .draft{border-left:3px solid #999;background:#f6f6f6;padding:0.8rem 1rem;
+          font-size:0.9rem;color:#444;margin:1.2rem 0;border-radius:4px;}
+  .nav{font-size:0.9rem;margin-bottom:1.4rem;}
+  h1{font-size:1.5rem;line-height:1.25;} h2{font-size:1.05rem;margin-top:1.6rem;}
+  ul{padding-left:1.2rem;}
+</style>
+</head>
+<body>
+
+<p class="nav"><a href="../index.html">← Overview</a> · WP-W · Wigner tomography</p>
+
+<h1>WP-W — Characteristic-function tomography under a high-η monochromatic stroboscopic drive</h1>
+
+<p>A numerical adaptation of the Flühmann–Home
+(<a href="https://doi.org/10.1103/PhysRevLett.125.043602">[FH20]</a>,
+PRL <strong>125</strong> 043602) direct characteristic-function → FFT
+Wigner framework to the <em>monochromatic stroboscopic</em> AC-train
+drive of
+<a href="https://doi.org/10.1103/PhysRevA.109.053105">[Hasse24]</a>
+(PRA <strong>109</strong> 053105), at high Lamb–Dicke parameter
+η = 0.40. It is a <strong>theory/numerics continuation of the
+Hasse-2024 ²⁵Mg⁺ programme — not an experimental result</strong>, and
+explicitly subordinate to [FH20] (the χ-FFT framework) and [Hasse24]
+(the protocol, the back-action and squeezed-state concepts).</p>
+
+<h2>Start here</h2>
+<ul>
+  <li><strong><a href="notes/wpw_findings.md">notes/wpw_findings.md</a></strong>
+      — the single citable entry point: every load-bearing conclusion
+      with its gate number, commit, and primary logbook.</li>
+  <li><a href="WORK-PROGRAM.md">WORK-PROGRAM.md</a> — the full design
+      document (bibliography, deliverables, conventions).</li>
+  <li><a href="README.md">README.md</a> — pointer file / folder map and
+      quick-start.</li>
+  <li><a href="notes/publication_assessment.md">notes/publication_assessment.md</a>
+      — novelty-gate verdict (CONDITIONAL GO), prior-art table, and the
+      §8 locked claim contract.</li>
+</ul>
+
+<h2>What was done</h2>
+<ul>
+  <li>Core chain validated (P0/D2/D3/P1/D4); engine bridge: Layer A
+      bit-exact, Layer B engine-χ vs analytic-χ = 3.75×10⁻⁴ over 6481
+      nodes.</li>
+  <li>Quantitative ideal-vs-native back-action map across the full
+      §7#4 set on the carrier and first sideband, with a tooth-robust
+      quantum/classical discriminator.</li>
+  <li>Squeezed vacuum: the 𝒪(η²)/δt analytic pass (locked); ideal
+      reconstruction clears the §7#5 Gaussian tier; and the native
+      𝒪(η²) re-audit — the monochromatic engine does not cleanly
+      engineer the 2ω_m two-phonon squeezing channel (engine-specific;
+      [FH20]'s bichromatic drive realises the ideal χ-measurement
+      chain).</li>
+</ul>
+
+<h2>Browse</h2>
+<ul>
+  <li><a href="notes/">notes/</a> — analytic chain, scopes, the
+      findings synthesis, publication assessment/outline.</li>
+  <li><a href="logbook/">logbook/</a> — dated pre-reg → run →
+      comparison entries.</li>
+  <li><a href="numerics/">numerics/</a> · <a href="plots/">plots/</a>
+      · <a href="refs/extractions/">refs/extractions/</a>
+      (prior-art adjudication — source of truth).</li>
+</ul>
+
+<div class="draft">
+  <strong>⚠ Internal in-progress paper draft</strong> —
+  <a href="notes/paper_draft.md">notes/paper_draft.md</a>: §II–V
+  drafted; §I/VI/VII key-paragraphs only; no figures; stub
+  references; provisional author list (“U. Warring <em>et al.</em>”).
+  Conditional-GO scope and the prior-art subordination it must honour
+  are in
+  <a href="notes/publication_assessment.md">publication_assessment.md</a>
+  §7/§8. <strong>Not a preprint; not for external circulation.</strong>
+</div>
+
+<p style="font-size:0.82rem;color:#666;border-top:1px solid #ddd;padding-top:0.8rem;">
+Honest framing per <code>notes/publication_assessment.md</code> §8: no
+“first / novel / structural-impossibility” framing; subordinate to
+[FH20]/[Hasse24]; theory/numerics, not an experimental result. This
+landing page exists so the
+<code>…/wp-wigner-tomography/</code> nav link resolves under GitHub
+Pages (default Jekyll does not serve a bare <code>README.md</code> as
+a directory index).
+</p>
+
+</body>
+</html>
